@@ -1,28 +1,42 @@
 <template>
-  <Card>
-    <template #content>
-      <div class="row justify-space-evenly">
-        <div class="flex xs12 md6 xl4">
-          <div class="item">
-            <Image :src="product.specification!.image" height="250" />
-          </div>
-        </div>
-        <div class="flex xs12 md6 xl4">
-          <div class="item">
-            <h3>{{ product.specification!.name }}</h3>
-            <p>{{ product.specification!.description }}</p>
-            <p>{{ product.currentPrice }}€</p>
-          </div>
-        </div>
-      </div>
-    </template>
-  </Card>
+  <div class="surface-card shadow-2 border-rounded p-4">
+    <div
+      class="flex flex-column align-items-center border-bottom-1 surface-border pb-3"
+    >
+      <Image
+        :src="product.specification!.image"
+        alt="product image"
+        height="210"
+        class="mb-3"
+      />
+
+      <span class="text-lg text-900 font-medium mb-2 p-component">
+        {{ product.specification!.name }}
+      </span>
+
+      <span class="text-600 font-medium mb-3 p-component">
+        {{ product.specification!.description }}
+      </span>
+
+      <span class="text-2xl text-800 block mb-3 font-semibold p-component">
+        {{ product.currentPrice }} €
+      </span>
+    </div>
+
+    <div class="flex pt-3 justify-content-between align-items-center">
+      <Button
+        class="p-button-text"
+        icon="pi pi-shopping-cart"
+        label="Comprar"
+      />
+      <Button class="p-button-text" icon="pi pi-heart" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import Card from "primevue/card";
+import Button from "primevue/button";
 import Image from "primevue/image";
-
 import { Product } from "../types/interfaces";
 
 const props = defineProps<{ product: Product }>();

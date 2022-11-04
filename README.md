@@ -1,16 +1,30 @@
-# Vue 3 + TypeScript + Vite
+# RF03
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Requirements
 
-## Recommended IDE Setup
+1. Node.js (v18.10.0)
+2. Yarn (v3.2.4) ou NPM (v8.19.2)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## Setup
 
-## Type Support For `.vue` Imports in TS
+Nota: Pode-se usar `npm run` no lugar de `yarn` para executar os comandos.
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+1. Copiar variáveis de ambiente
+   - `cp .env.example .env`
+2. Editar variáveis de ambiente conforme necessário
+   - `nano .env`
+3. Instalar dependências
+   - `yarn install`
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+## Processo de Desenvolvimento
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+Nota: Pode-se usar `npm run` no lugar de `yarn` para executar os comandos.
+Shortcuts do vscode entre parênteses.
+
+1. Abrir um terminal (CTRL+J)
+2. Correr o servidor de desenvolvimento
+   - `yarn dev` - o servidor reinicia conforme os ficheiros são alterados
+3. Desenvolver
+
+
+> Rebuçados
