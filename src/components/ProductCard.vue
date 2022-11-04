@@ -21,6 +21,11 @@
       <span class="text-2xl text-800 block mb-3 font-semibold p-component">
         {{ product.currentPrice }} €
       </span>
+
+      <span class="p-component text-700">Vendido por</span>
+      <span class="text-xl text-700 block mb-3 font-semibold p-component">
+        {{ product.producer!.name }}
+      </span>
     </div>
 
     <div class="flex pt-3 justify-content-between align-items-center">
