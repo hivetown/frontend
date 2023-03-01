@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 
 function makeApi(baseURL: string, options = {}) {
     const api = axios.create({
         baseURL,
         ...options,
     });
-    
+
     return api;
 }
 
