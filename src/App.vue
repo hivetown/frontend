@@ -58,4 +58,12 @@ import Footer from "@/components/Footer.vue";
 .light-search::placeholder {
   color: #a9a9a9 !important;
 }
+
+.separator-top{
+  border-top: 1px solid #f3f3f3;
+}
+
+.separator-bottom{
+  border-bottom: 1px solid #f3f3f3;
+}
 </style>

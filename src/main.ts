@@ -6,6 +6,7 @@ import router from "./router";
 
 //
 import BootstrapVue3, { BCarousel, BCarouselSlide } from "bootstrap-vue-3";
+
 import { BootstrapIconsPlugin } from "bootstrap-icons-vue";
 
 import "bootstrap/dist/css/bootstrap.css";
