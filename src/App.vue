@@ -58,4 +58,15 @@ import Footer from "@/components/Footer.vue";
 .light-search::placeholder {
   color: #a9a9a9 !important;
 }
+
+button a{
+  color:#5A5A5A;
+  text-decoration: none !important;
+}
+
+button a:hover{
+  color: white;
+  text-decoration: none !important;
+}
+
 </style>

@@ -44,13 +44,13 @@
       <CustomViews></CustomViews>
       <div>
         <!-- TODO por isto automático -->
-        <div class="parent d-flex justify-content-center gap-8 mt-5">
+        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
         </div>
-        <div class="parent d-flex justify-content-center gap-8 mt-5">
+        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
