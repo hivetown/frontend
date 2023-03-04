@@ -7,6 +7,7 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+import Testes from "./views/Testes.vue";
 
 const routes = [
     {
@@ -44,6 +45,15 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
+        path: "/products",
+        name: "Products",
+        component: Testes,
+    },
+
+    {
+        path: "/testes",
+        name: "Testes",
+        component: Testes,
     },
 ];
 
