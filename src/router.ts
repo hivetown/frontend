@@ -7,6 +7,7 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+import Login from "./views/Login.vue";
 
 const routes = [
     {
@@ -28,6 +29,9 @@ const routes = [
         path: "/favoritos",
         name: "Favoritos",
         component: Favourites,
+        meta: {
+            requiresAuth: true,
+        }
     },
     {
         path: "/carrinho",
@@ -44,6 +48,14 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login,
     },
 ];
 
