@@ -28,34 +28,38 @@
                </span>
             </div>
 				<!-- <img class="square-image rounded-3" src="https://placehold.jp/500x500.png"> -->
-            <img class="square-image rounded-3" src="mac.png" style="margin-top:-10%;">
+            <!-- <img class="square-image rounded-3" src="mac.png" style="margin-top:-10%;"> -->
+            <img class="square-image rounded-3" :src="productSpec.images[0]" style="margin-top:-10%;">
 				<div>
                <!-- TODO ver se vale a pena meter umas setas para ver mais imagens ou não -->
 					<!-- <i class="bi bi-chevron-left grey-txt"></i> -->
 					<div class="d-flex justify-content-between align-items-center mt-3" style="">	
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" src="mac.png">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" src="mac.png">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" src="mac.png">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" src="mac.png">
+						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[1]">
+						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[2]">
+						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[3]">
+						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[4]">
 					</div>
 					<!-- <i class="bi bi-chevron-right grey-txt"></i> -->
 				</div>
 			</div>
 		</div>
 		
-		<div class="w-50 py-5" style="background-color: ;">
+		<div class="w-50" style="background-color: ;">
 			<div class="w-75">
-				<h1 class="product-title">Apple MacBook</h1>
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-					Sunt obcaecati repellendus soluta modi commodi earum 
-				</p>
+				<!-- <h1 class="product-title">Apple MacBook</h1> -->
+            <h1 class="product-title">{{ productSpec.name }}</h1>
+				<p>{{ productSpec.description }}</p>
 
             <div>
-              
+               <div class="rating d-flex gap-1">
+                  <!-- <p v-for="star in 5">a</p> -->
+                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
+                  <span class="">(10)</span>
+               </div>
             </div>
 			</div>
 
-         <div class="d-flex align-items-center gap-3" style="border-top: 1px solid #f3f3f3;">
+         <div class="d-flex align-items-center gap-3 mt-4" style="border-top: 1px solid #f3f3f3;">
             <h3 class="mt-4">999€</h3>
             <h5 class="mt-4 grey-txt text-decoration-line-through">999€</h5>
          </div>
@@ -86,7 +90,7 @@
             </div>
          </div>
 
-         <div class="mt-5 separator-top">
+         <div class="" style="margin-top: -2vh;">
             <div class="d-flex gap-3 grey-txt mt-5" >
                <p class="fw-bold">Código do produto:</p>
                <p>Código do produto</p>
@@ -97,7 +101,7 @@
             </div>
          </div>
          
-         <div class="mt-5 d-flex align-items-center gap-3" style="background-color: ;">
+         <div class="mt-4 d-flex align-items-center gap-3" style="background-color: ;">
             <b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
                   <!-- TODO badges das notificações  -->
             </b-avatar> 
@@ -110,7 +114,7 @@
 		</div>
 	</div>
 
-   <div class="parent px-5" style="height: 80vh; background-color: ;">
+   <div class="parent px-5 " style="background-color:;">
       <!-- <div class="mt-4 d-flex gap-4">
          <h5 class="py-2 line-active">Detalhes do Produto</h5>   
          <h5 class="py-2">Avaliações</h5>
@@ -148,7 +152,7 @@
             </button>
          </div>
 
-         <div class="d-flex justify-content-center" style="gap: 12vh">
+         <div class="d-flex justify-content-center" style="background-color:; gap: 12vh">
             <ProductCard></ProductCard>
             <ProductCard></ProductCard>
             <ProductCard></ProductCard>
@@ -214,15 +218,31 @@
 </style>
 
 <script lang="ts">
-import ProductCard from "@/components/ProductCard.vue";
 
-import { defineComponent } from "vue";
+import ProductCard from "@/components/ProductCard.vue";
+import { fetchProduct } from "@/api";
+
+import { defineComponent, PropType } from 'vue';
+import { Product } from "@/types";
+// import { Producer } from "@/types";
+import { beforeMain } from "@popperjs/core";
+
 
 export default defineComponent({
+   name: 'Rating',
+   props: {
+      value: {
+         type: Number as PropType<number>,
+         required: true,
+         validator: (v: number) => v >= 0 && v <= 5
+      }
+   },
     data() {
         return {
             quantity: 0,
             currentPage: "detalhes",
+            productSpec: {} as Product,
+            // producerProduct: {} as Producer,
         };
     },
     methods: {
@@ -235,6 +255,10 @@ export default defineComponent({
             }
         },
     },
+      async beforeMount() {
+         this.productSpec = await (await fetchProduct(1)).data.productSpec;
+         // this.producerProduct = await (await fetchProduct(1)).data.producerProduct;
+      },
     components: { ProductCard }
 });
 </script>
