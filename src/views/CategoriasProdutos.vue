@@ -59,6 +59,8 @@
       </div>
     </div>
   </div>
+
+  <CompareBanner></CompareBanner>
 </template>
 
 <script setup lang="ts">
@@ -67,11 +69,13 @@ import PriceFilter from "@/components/PriceFilter.vue";
 import SupplierFilter from "@/components/SupplierFilter.vue";
 import RatingFilter from "@/components/RatingFilter.vue";
 import CustomViews from "@/components/CustomViews.vue";
+import CompareBanner from "@/components/CompareBanner.vue";
 
 import ProductCard from "@/components/ProductCard.vue";
 import { onMounted, ref, watch } from "vue";
 import { fetchAllProducts } from "@/api";
 import { Product } from "@/types/interfaces";
+
 
 const products = ref<Product[]>([]);
 
