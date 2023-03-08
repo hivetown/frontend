@@ -12,10 +12,10 @@
         Cancelar encomenda
       </b-button> 
       -->
-      <div class="table-container">
+      <div class="table-container" style="overflow: auto">
   
       <table style="border: 2px " class="table" >
-        <thead>
+        <thead >
           <tr>
             <th><h4>Encomenda</h4></th>
             <th><h4>Total</h4></th>
@@ -37,7 +37,7 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
-                  <MDBCarousel v-model="carousels[index]" :items="items[index]" fade />
+                  <MDBCarousel v-model="carousels[index]" :items="items[index]" fade  />
                 </div>
               </div>
             </td>
@@ -185,7 +185,8 @@
   
   <style scoped>
   tr:nth-child(even) {
-    background:#f1b02380;
+    background:#f1b0231c;
+    z-index: 0;
   }
   
   button {
@@ -202,6 +203,7 @@
     max-width: 1600px;
     margin:auto;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
+    position: relative;
   }
   .table thead th {
     position: sticky;
@@ -211,6 +213,7 @@
     position: -webkit-sticky;
     position: -moz-sticky;
     position: -ms-sticky;
+    z-index: 2 ;
   }
    .table {
     border: 1px solid rgb(216, 176, 33) !important;
@@ -232,6 +235,7 @@
    
    tr:hover {
          background-color: #f5f5f5;
+        z-index: -2;
    }
    
    span {
@@ -269,6 +273,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
    }
    .carousel-text {
     margin-left: 290px;
@@ -279,6 +284,7 @@
    .carousel-info {
     text-align: right;
    }
+  
  
    .bar {
     display: inline-block;
@@ -295,11 +301,13 @@
    }
    .carousel {
     width: 140px; /* Set a fixed width for the carousel container */
+    z-index: 1;
    }
    .carousel img {
     width: 100%; /* Set the width of the images to fill the container */
     height: 100%; /* Set the height of the images to fill the container */
     object-fit: contain; /* Scale the images proportionally to fit inside the container */
    }
+
   </style>
     
