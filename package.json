@@ -32,6 +32,7 @@
     "dotenv-cra": "^3.0.2",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-vue": "^9.6.0",
+    "mdb-vue-ui-kit": "^3.2.0",
     "sass": "^1.56.0",
     "vue": "^3.2.41",
     "vue-router": "4"
