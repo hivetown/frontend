@@ -41,7 +41,7 @@
 								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
 							</b-avatar>
-							<router-link to="../views/Login.vue" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
+							<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
 					</div>
