@@ -1,5 +1,5 @@
 <template>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <div class="pagination-demo">
       <!--    alerta de nao ser possivel cancelar
@@ -43,10 +43,13 @@
             </td>
             <td><h4>{{ encomenda.total }} </h4></td>
             <td>
-  
-              <h4>{{encomenda.estado}}</h4>
+              <div v-if="encomenda.estado === 'Entregue'" class="inline"><i class="bi bi-check-all"></i></div>
+              <div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
+              <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>
+              <h4 class="inline">{{encomenda.estado}}</h4>
+
               <div v-if=" encomenda.estado === 'Em preparação'"> <a href="#">Cancelar encomenda </a></div>
-  
+
             </td>
             <td>
               <h4>{{ encomenda.numero }}</h4>
@@ -184,6 +187,10 @@
   </script>
   
   <style scoped>
+  .inline {
+  display: inline-block;
+  vertical-align: middle; /* opcional: alinha verticalmente os elementos */
+}
   tr:nth-child(even) {
     background:#f1b0231c;
     z-index: 0;
@@ -202,6 +209,7 @@
     max-height: 700px; /* Altura máxima da tabela */
     max-width: 1600px;
     margin:auto;
+    max-width: 92%;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
     position: relative;
   }
@@ -272,7 +280,7 @@
    .carousel-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     position: relative;
    }
    .carousel-text {
@@ -302,12 +310,50 @@
    .carousel {
     width: 140px; /* Set a fixed width for the carousel container */
     z-index: 1;
+    max-width: 100%;
    }
    .carousel img {
     width: 100%; /* Set the width of the images to fill the container */
     height: 100%; /* Set the height of the images to fill the container */
     object-fit: contain; /* Scale the images proportionally to fit inside the container */
    }
+   @media (max-width: 768px) {
+  /* regras de estilo para telas menores que 768px */
+  .table-container {
+    overflow-x: auto;
+  }
+  table {
+    max-width: 100%;
+    overflow-x: auto;
+    font-size: 5px;
+  }
+  
+}
+@media only screen and (max-width: 660px) {
+    /*em telemovel remove colunas 3,4,5 */
+    .table th:nth-child(3),
+  .table td:nth-child(3) {
+    display: none;
+  }
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    display: none;
+  }
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    display: none;
+  }
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
+  .carousel {
+    width: 70%;
+    font-size: 12px;
+  }
+  header {
+    font-size: 8px;
+  }
 
-  </style>
-    
+}
+   </style>
