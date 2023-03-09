@@ -1,96 +1,119 @@
 <template>
-   <div class="parent mb-4 px-3">
+
+   <!-- Caminho -->
+   <div class="parent mb-5 px-3">
       <b-breadcrumb>
          <b-breadcrumb-item href="#home">
-         <b-icon
-            icon="house-fill"
-            scale="1.25"
-            shift-v="1.25"
-            aria-hidden="true"
-         ></b-icon>
-         Home
-         </b-breadcrumb-item>
+         <i class="bi bi-house-fill"></i>Home</b-breadcrumb-item>
          <b-breadcrumb-item href="#foo">Foo</b-breadcrumb-item>
          <b-breadcrumb-item href="#bar">Bar</b-breadcrumb-item>
          <b-breadcrumb-item active>Baz</b-breadcrumb-item>
       </b-breadcrumb>
    </div>
-   <!-- <div class="d-flex parent" style="background-color: red; height: 80vh;"> -->
-   <div class="d-flex parent" style="height: 80vh;">
-		<!-- <div class="d-flex flex-row justify-content-center w-50" style="background-color: green;"> -->
-      <div class="d-flex flex-row justify-content-center w-50" style="">
-			<!-- <div class="d-flex flex-column align-items-center w-75 h-75"  style="background-color: aqua;"> -->
-         <div class="d-flex flex-column align-items-center w-75 h-75 rounded-3" style="background-color: #f3f3f3;">
-            <div class="d-flex justify-content-end w-100 p-4">
-               <!-- <span class="position-absolute top-0 end-0 p-3 fav"> -->
-               <span class="" style="font-size: 2vh;">
-                  <i class="bi bi-heart" style="color: #DC6942; cursor:pointer;"></i>
+
+   <!-- Detaçhes do produto -->
+   <div class="d-flex parent">
+
+      <!-- Imagens -->
+      <div class="d-flex flex-row justify-content-center w-50">
+
+         <div class="d-flex flex-column align-items-center w-75 h-75 rounded-3">
+            
+            <!-- TODO ver se é preciso um fundo por causa das imagens -->
+            <!-- Coração dos favoritos -->
+            <div class="d-flex justify-content-end w-100 px-4 py-2"  style="z-index:1212;">
+               <span class="" style="font-size: 2.5vh;">
+                  <i v-bind:class="[isFavorite ? 'bi-heart-fill' : 'bi-heart']" 
+                     style="color: #DC6942; cursor: pointer;" 
+                     v-on:click="isFavorite = !isFavorite"></i>
                </span>
             </div>
-				<!-- <img class="square-image rounded-3" src="https://placehold.jp/500x500.png"> -->
-            <!-- <img class="square-image rounded-3" src="mac.png" style="margin-top:-10%;"> -->
-            <img class="square-image rounded-3" :src="productSpec.images[0]" style="margin-top:-10%;">
+			
+            <!-- Imagem grande -->
+            <img class="square-image rounded-3" :src="selectedImage" style="margin-top:-10%;">
+
+            <!-- Imagens alternativas -->
 				<div>
-               <!-- TODO ver se vale a pena meter umas setas para ver mais imagens ou não -->
-					<!-- <i class="bi bi-chevron-left grey-txt"></i> -->
-					<div class="d-flex justify-content-between align-items-center mt-3" style="">	
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[1]">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[2]">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[3]">
-						<img class="square-image alternative-img rounded-3" style="background-color: #f3f3f3;" :src="productSpec.images[4]">
-					</div>
-					<!-- <i class="bi bi-chevron-right grey-txt"></i> -->
+               <!-- TODO mmelhorar a navegação das imagens -->
+               <div class="d-flex justify-content-between align-items-center mt-3 gap-3" style="overflow: auto;">
+                  <img class="square-image alternative-img rounded-3"
+                     style="background-color: #f3f3f3;"
+                     v-for="(image, index) in productSpec.images"
+                     :key="index"
+                     :src="image"
+                     @click="selectImage(index)" />
+               </div>
 				</div>
+
 			</div>
+
 		</div>
 		
-		<div class="w-50" style="background-color: ;">
-			<div class="w-75">
-				<!-- <h1 class="product-title">Apple MacBook</h1> -->
-            <h1 class="product-title">{{ productSpec.name }}</h1>
-				<p>{{ productSpec.description }}</p>
+      <!-- Lado direito da página -->
+		<div class="w-50">
+			<div class="w-75" style="min-height: 20vh;">
 
+            <!-- Informação do produto -->
+            <h1 class="product-title">{{ productSpec.name }}</h1>
+				<p class="grey-txt">{{ productSpec.description }}</p>
+
+            <!-- TODO rating automático -->
+            <!-- Rating -->
             <div>
-               <div class="rating d-flex gap-1">
-                  <!-- <p v-for="star in 5">a</p> -->
-                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
+               <div class="rating d-flex gap-1 separator-bottom">
+                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
                   <span class="">(10)</span>
                </div>
             </div>
+
 			</div>
 
-         <div class="d-flex align-items-center gap-3 mt-4" style="border-top: 1px solid #f3f3f3;">
-            <h3 class="mt-4">999€</h3>
-            <h5 class="mt-4 grey-txt text-decoration-line-through">999€</h5>
-         </div>
-
-         <div class="d-flex align-items-center gap-4" style="margin-top: 2%;">
-            <div class="quantity-div d-flex justify-content-between rounded-pill">
-               <b-button class="mr-3 rounded-pill" @click="decrement">-</b-button>
-               <b-button>{{ quantity }}</b-button>
-               <!-- <div>{{ quantity }}</div> -->
-               <b-button class="ml-3 rounded-pill" @click="increment">+</b-button>
+         <div class="separator-bottom" style="min-height: 30vh;">
+            <!-- TODO preço automático -->
+            <!-- Preço -->
+            <div class="d-flex align-items-center gap-3">
+               <h3 class="">999€</h3>
+               <h5 class="grey-txt text-decoration-line-through">999€</h5>
             </div>
-            <p class="mt-3 grey-txt">Disponibilidade: <span>3</span></p>
-         </div>
 
-         <div class="d-flex gap-4 align-items-center mt-5">
-            <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
+            <!-- Quantidade -->
+            <div class="d-flex align-items-center gap-4" style="margin-top: 2%;">
+
+               <!-- Botão da quantidade -->
+               <div class="quantity-div d-flex justify-content-between rounded-pill">
+                  <b-button class="mr-3 rounded-pill" @click="decrement"><i class="bi bi-dash-lg"></i></b-button>
+                  <b-button>{{ quantity }}</b-button>
+                  <b-button class="ml-3 rounded-pill" @click="increment"><i class="bi bi-plus-lg"></i></b-button>
+               </div>
+
+               <!-- TODO disponibilidade automático -->
+               <p class="mt-3 grey-txt">Disponibilidade: <span>3</span></p>
+
+            </div>
+
+            <!-- Botões compra -->
+            <div class="d-flex gap-4 align-items-center" style="margin-top:10vh;">
+               <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
             
-            <div class="aux-btns d-flex align-items-center gap-1"> 
-               <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Adicionar ao carrinho">
-                  <i class="bi bi-cart"></i>
-               </button>
-               <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Ver produto" >
-                  <i class="bi bi-eye"></i>
-               </button>
-               <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Comparar produto">
-                  <i class="bi bi-arrow-left-right"></i>
-               </button>
+               <div class="aux-btns d-flex align-items-center gap-1"> 
+                  <button type="button" class="btn btn-outline-secondary circle-btn" 
+                          v-b-tooltip.hover title="Adicionar ao carrinho">
+                          <i class="bi bi-cart"></i>
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary circle-btn" 
+                          v-b-tooltip.hover title="Ver produto" >
+                          <i class="bi bi-eye"></i>
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary circle-btn" 
+                          v-b-tooltip.hover title="Comparar produto">
+                          <i class="bi bi-arrow-left-right"></i>
+                  </button>
+               </div>
             </div>
          </div>
-
-         <div class="" style="margin-top: -2vh;">
+         
+         <!-- Detalhes do produto -->
+         <!-- <div class="" style="margin-top: -2vh;">
             <div class="d-flex gap-3 grey-txt mt-5" >
                <p class="fw-bold">Código do produto:</p>
                <p>Código do produto</p>
@@ -99,44 +122,43 @@
                <p class="fw-bold">Categoria:</p>
                <p>Tecnologia</p>
             </div>
-         </div>
+         </div> -->
          
-         <div class="mt-4 d-flex align-items-center gap-3" style="background-color: ;">
-            <b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
-                  <!-- TODO badges das notificações  -->
+         <!-- Vendedor -->
+         <div class="mt-5 d-flex align-items-center gap-3">
+            <b-avatar class="nav-item" src="https://placekitten.com/320/320" 
+                      style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
             </b-avatar> 
-            <div class="" style="line-height: 0.2em; margin-top: -0.2em;">
+            <div class="seller">
                <h5>Maria Fernandes</h5>
                <a href="#" class="grey-txt">Sobre o vendedor</a>
             </div>
-            
          </div>
 		</div>
 	</div>
 
-   <div class="parent px-5 " style="background-color:;">
-      <!-- <div class="mt-4 d-flex gap-4">
-         <h5 class="py-2 line-active">Detalhes do Produto</h5>   
-         <h5 class="py-2">Avaliações</h5>
-         <hr style=" border: none !important; border-top: 5px solid green !important;">   
-      </div> -->
-      
+   <!-- Informação adicional -->
+   <div class="parent px-5">
       <div class="separator-top mt-4">
          <b-navbar class="mt-3">
             <b-nav v-model="currentPage">
-               <b-nav-item @click="currentPage = 'detalhes'" v-bind:class="{ 'active-view': currentPage === 'detalhes' }">
+               <b-nav-item @click="currentPage = 'detalhes'" 
+                           v-bind:class="{ 'active-view': currentPage === 'detalhes' }">
                   <h5 class="grey-txt">Detalhes do produto</h5>
                </b-nav-item>
-               <b-nav-item @click="currentPage = 'avaliacoes'" v-bind:class="{ 'active-view': currentPage === 'avaliacoes' }">
+               <b-nav-item @click="currentPage = 'avaliacoes'" 
+                           v-bind:class="{ 'active-view': currentPage === 'avaliacoes' }">
                   <h5 class="grey-txt">Avaliações</h5>
                </b-nav-item>
             </b-nav>
          </b-navbar>
+         <!-- Página dos detalhes -->
          <div class="px-4" v-if="currentPage === 'detalhes'" >
             <div class="mt-4">
                <p>Aqui vão estar os <b>detalhes</b> do produto</p>
             </div>
          </div>
+         <!-- Página das avaliações -->
          <div class="px-4" v-if="currentPage === 'avaliacoes'">
             <div class="mt-4">
                <p>Aqui vão estar as <b>avaliações</b> do produto</p>
@@ -144,14 +166,14 @@
          </div>
       </div>
 
-      <div class="separator-top mt-5" style="background-color:;">
+      <!-- Produtos semelhantes -->
+      <div class="separator-top mt-5">
          <div class="title d-flex justify-content-between align-items-center mb-5">
             <h4 class="grey-txt mt-4">Produtos semelhantes</h4>
-            <button type="button" class="btn btn-outline-secondary btn-sm">
-            Ver todos
-            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm"> Ver todos </button>
          </div>
 
+         <!-- TODO pôr automático -->
          <div class="d-flex justify-content-center" style="background-color:; gap: 12vh">
             <ProductCard></ProductCard>
             <ProductCard></ProductCard>
@@ -175,90 +197,113 @@
 
    .quantity-div{
       width: 14vh;
-      background-color: #f3f3f3 !important;
-      border:solid 2px #f3f3f3;
-      padding: 0.2em;
+      background-color: #f7f7f7 !important;
+      padding: 0.5em;
+      box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
    }
 
    .quantity-div button{
-      background-color: #f3f3f3 !important;
-      color:#5A5A5A;
+      background-color: #f7f7f7 !important;
       border: none !important;
    }
 
-   .quantity-div button:hover{
-      background-color: #f3f3f3 !important;
-      color:#5A5A5A;
-      border: none !important;
+   .quantity-div .btn-content{
+      color:#5A5A5A !important;
    }
 
    .buy-btn{
       background-color: #4D774E !important;
       padding: 0.8em !important;
+      box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+   }
+
+   .buy-btn .btn-content{
+      color: white !important;
    }
 
    .aux-btns{
       scale: 1.2;
    }
 
-   /* .about-prod-active{
-      border-bottom: solid 2px green;
-   } */
-   
+   .aux-btns button:hover i{
+      color: white !important;
+   }
+
+   .seller{
+      margin-top: -0.5em;
+      line-height: 0.2em;
+   }
+
 </style>
 
 <style scoped>
-.active-view {
-  border-bottom: 3px solid #4D774E;
-}
+   .active-view {
+   border-bottom: 3px solid #4D774E;
+   }
 
-.active-view h5 {
-  color:#4D774E !important;
-}
+   .active-view h5 {
+   color:#4D774E !important;
+   }
 </style>
 
 <script lang="ts">
 
-import ProductCard from "@/components/ProductCard.vue";
-import { fetchProduct } from "@/api";
+   // Componentes
+   import ProductCard from "@/components/ProductCard.vue";
 
-import { defineComponent, PropType } from 'vue';
-import { Product } from "@/types";
-// import { Producer } from "@/types";
-import { beforeMain } from "@popperjs/core";
+   // API
+   import { fetchProduct } from "@/api";
+   import { Product } from "@/types";
 
+   import { defineComponent, PropType } from 'vue';
 
-export default defineComponent({
-   name: 'Rating',
-   props: {
-      value: {
-         type: Number as PropType<number>,
-         required: true,
-         validator: (v: number) => v >= 0 && v <= 5
-      }
-   },
-    data() {
-        return {
-            quantity: 0,
-            currentPage: "detalhes",
-            productSpec: {} as Product,
-            // producerProduct: {} as Producer,
-        };
-    },
-    methods: {
-        increment() {
-            this.quantity++;
-        },
-        decrement() {
-            if (this.quantity > 0) {
-                this.quantity--;
-            }
-        },
-    },
-      async beforeMount() {
-         this.productSpec = await (await fetchProduct(1)).data.productSpec;
-         // this.producerProduct = await (await fetchProduct(1)).data.producerProduct;
+   export default defineComponent({
+      // TODO substituir o rating para ser automático e ver se isto ainda é necessário
+      name: 'Rating',
+      props: {
+         value: {
+            type: Number as PropType<number>,
+            required: true,
+            validator: (v: number) => v >= 0 && v <= 5
+         },
       },
-    components: { ProductCard }
-});
+      data() {
+         return {
+
+            selectedImage: '', // Imagem selecionada
+            isFavorite: false, // Se o produto está nos favoritos
+            quantity: 0, // Quantidade de produtos
+            currentPage: "detalhes", // Página atual das tabs do produto
+            
+            // Dados da BD
+            productSpec: {} as Product,
+         };
+      },
+      methods: {
+         // Aumentar e diminuir a quantidade de produtos
+         increment() {
+            this.quantity++;
+         },
+         decrement() {
+            if (this.quantity > 0) {
+               this.quantity--;
+            }
+         },
+         
+         // Selecionar a imagem do produto a visualizar
+         selectImage(index: number) {
+            this.selectedImage = this.productSpec.images[index];
+         },
+      },
+
+      // A fazer antes de montar o componente
+      async beforeMount() {
+         // Carregar os dados do produto da BD
+         this.productSpec = await (await fetchProduct(1)).data.productSpec;
+
+         // Carregar a imagem principal do produto
+         this.selectedImage = this.productSpec.images[0];
+      },
+      components: { ProductCard }
+   });
 </script>

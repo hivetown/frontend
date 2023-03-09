@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Product from "./views/Product.vue";
+import Teste from "./views/Teste.vue";
 
 const routes = [
     {
