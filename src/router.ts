@@ -8,6 +8,7 @@ import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Login from "./views/Login.vue";
+import Registration from "./views/Registration.vue";
 
 const routes = [
     {
@@ -56,6 +57,11 @@ const routes = [
         path: "/login",
         name: "Login",
         component: Login,
+    },
+    {
+        path: "/registration",
+        name: "Registration",
+        component: Registration,
     },
 ];
 
