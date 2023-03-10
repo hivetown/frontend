@@ -7,6 +7,7 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+import Order from "./views/Order.vue";
 
 const routes = [
     {
@@ -44,6 +45,12 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
+    },
+    {
+            // O link para a encomenda deve ter o codigo
+        path: "/encomenda",
+        name: "Encomenda",
+        component: Order,
     },
 ];
 
