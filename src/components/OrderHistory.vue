@@ -244,15 +244,21 @@
       }
     ,
   
-  
-    ordenarPorData() {
-    if (this.ordenacaoCrescente) {
-      this.encomendas.sort((a, b) => new Date(a.data) - new Date(b.data));
-    } else {
-      this.encomendas.sort((a, b) => new Date(b.data) - new Date(a.data));
-    }
-    this.ordenacaoCrescente = !this.ordenacaoCrescente;
-  },
+    async ordenarPorData() {
+  // Define uma função que retorna uma Promise que resolve após um certo tempo
+  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Aguarda 100ms antes de começar a ordenação
+  await sleep(100);
+
+  if (this.ordenacaoCrescente) {
+    this.encomendas.sort((a, b) => new Date(a.data) - new Date(b.data));
+  } else {
+    this.encomendas.sort((a, b) => new Date(b.data) - new Date(a.data));
+  }
+  this.ordenacaoCrescente = !this.ordenacaoCrescente;
+},
+
   
   
   
