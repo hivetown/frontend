@@ -4,6 +4,8 @@
         <i class="bi bi-arrow-left"></i>      
         <h4 style="display: inline-block; color: black; font: DM Serif Display;">Continuar a comprar</h4>
       </a>  
+      <br>
+      <h1  style="font: DM Serif Display;">Histórico de encomendas</h1>
       <div class="historico">
         <OrderHistory/>  
       </div>
@@ -24,6 +26,10 @@
   <style scoped>
   .historico {
     margin-top: 50px;
+
+  }
+  h1 {
+    text-align: center;
   }
   
   i {

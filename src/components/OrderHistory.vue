@@ -2,16 +2,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <div class="pagination-demo">
-      <!--    alerta de nao ser possivel cancelar
-      <b-alert v-model="showDismissibleAlert" variant="warning" dismissible>
-        <h3>Nao é possivel cancelar a encomenda.</h3>
-        <br>
-        O prazo de cancelamento é de x dias após a compra.
-      </b-alert>
-      <b-button @click="showDismissibleAlert=true" variant="info" class="m-1">
-        Cancelar encomenda
-      </b-button> 
-      -->
+      
       <div class="table-container" style="overflow: auto">
   
       <table style="border: 2px " class="table" >
@@ -24,7 +15,7 @@
             <th id="coluna-data">
               <div class="data">
                 <h4>Data</h4>
-                <button @click="ordenarPorData">
+                <button @click="ordenarPorData" style=" background-color: transparent;">
                   <i class="bi bi-arrow-down-up"></i>
                 </button>
               </div>
@@ -37,7 +28,9 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
+                  <a href="#">
                   <MDBCarousel v-model="carousels[index]" :items="items[index]" fade  />
+                </a>
                 </div>
               </div>
             </td>
@@ -48,11 +41,16 @@
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>
               <h4 class="inline">{{encomenda.estado}}</h4>
 
-              <div v-if=" encomenda.estado === 'Em preparação'"> <a href="#">Cancelar encomenda </a></div>
+              <div v-if=" encomenda.estado === 'Em andamento'">
+                <BButton variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
+              </div>
+              <div v-if=" encomenda.estado === 'Em preparação'">
+                <BButton variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
+            </div>
 
             </td>
             <td>
-              <h4>{{ encomenda.numero }}</h4>
+              <h4> <a class="numero" href="#">{{ encomenda.numero }}</a></h4>
             </td>
             <td>
               <h4>{{ encomenda.data }}</h4>
@@ -65,14 +63,18 @@
       </table>
       </div>
     </div>
+
+ 
+
   </template>
   
   
   <script>
+  import Swal from 'sweetalert2';
   import { MDBPagination, MDBPageNav, MDBPageItem } from 'mdb-vue-ui-kit';
   import { ref } from "vue";
   import { MDBCarousel } from "mdb-vue-ui-kit";
-  const nEncomendas = 8; //TODO ver a situacao dos carousels
+  const nEncomendas = 8; //TODO mudar para o numero de encomendas
   const ordenacaoCrescente = ref(true);
    // definir os dados de encomenda
    const encomendas = [
@@ -99,7 +101,7 @@
           numero: "atyyyua8",
           total: "1456,8€",
           data: "05/10/2018",
-          estado: "Em preparação"
+          estado: "Entregue"
   
         },
         {
@@ -107,6 +109,27 @@
           total: "456,8€",
           data: "07/01/2016",
           estado: "Em andamento"
+  
+        },
+        {
+          numero: "anajdi",
+          total: "456,8€",
+          data: "07/01/2016",
+          estado: "Entregue"
+  
+        },
+        {
+          numero: "anajdi",
+          total: "456,8€",
+          data: "07/01/2016",
+          estado: "Em andamento"
+  
+        },
+        {
+          numero: "anajdi",
+          total: "456,8€",
+          data: "07/01/2016",
+          estado: "Em preparação"
   
         },
   
@@ -118,9 +141,11 @@
       MDBPagination,
       MDBPageNav,
       MDBPageItem,
-      MDBCarousel
+      MDBCarousel,
+      
     },
     setup() {
+      const showModal = ref(false);
       const items = [ //as fotos dos artigos
       //encomenda 1
         [
@@ -144,6 +169,24 @@
           { src: "https://i.imgur.com/Tja5H1c.jpg" },
           { src: "https://i.imgur.com/Tja5H1c.jpg" },
         ],
+       [
+          { src: "https://i.imgur.com/o2fKskJ.jpg" },
+          { src: "https://i.imgur.com/GQnIUfs.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+        ],
+        [
+          { src: "https://i.imgur.com/o2fKskJ.jpg" },
+          { src: "https://i.imgur.com/GQnIUfs.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+        ],
+        [
+          { src: "https://i.imgur.com/o2fKskJ.jpg" },
+          { src: "https://i.imgur.com/GQnIUfs.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+          { src: "https://i.imgur.com/Tja5H1c.jpg" },
+        ],
         [
           { src: "https://i.imgur.com/o2fKskJ.jpg" },
           { src: "https://i.imgur.com/GQnIUfs.jpg" },
@@ -152,8 +195,7 @@
         ],
       ];
   
-      const carousels = ref([0, 0, 0, 0, 0]);
-  
+      const carousels = ref(Array(nEncomendas).fill(0));  
      
   
   
@@ -163,15 +205,47 @@
         carousels,
         encomendas,
         ordenacaoCrescente,
+        showPopup: false, // inicialmente, o pop-up não é exibido
+
       };
     },
     methods: {
       showAlert() {
-          this.dismissCountDown = this.dismissSecs
+          this.dismissCountDown = this.dismissSecs;
         },
+     
+        async cancelarEncomenda() {
+      const result = await Swal.fire({
+        title: 'Tem certeza que deseja cancelar esta encomenda?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não'
+      });
+    },
+    async cancelarEncomendaImpossivel() {
+      const result = await Swal.fire({
+        title: 'Não é possível cancelar a encomenda, já se encontra em dstribuição!',
+        icon: 'warning',
+        showCancelButton: false,
+ 
+      });
+    },
+    showModal() {
+        this.$refs['my-modal'].show()
+      },
+      hideModal() {
+        this.$refs['my-modal'].hide()
+      },
+      toggleModal() {
+        // We pass the ID of the button that we want to return focus to
+        // when the modal has hidden
+        this.$refs['my-modal'].toggle('#toggle-btn')
+      }
+    ,
   
   
-        ordenarPorData() {
+    ordenarPorData() {
     if (this.ordenacaoCrescente) {
       this.encomendas.sort((a, b) => new Date(a.data) - new Date(b.data));
     } else {
@@ -192,7 +266,7 @@
   vertical-align: middle; /* opcional: alinha verticalmente os elementos */
 }
   tr:nth-child(even) {
-    background:#f1b0231c;
+    background:#cfc9be25;
     z-index: 0;
   }
   
@@ -203,6 +277,10 @@
   .data {
     display: flex;
     align-items: center; /* Centralizar os itens verticalmente */
+  }
+
+  i{
+    font-size: 30px;
   }
   
   .table-container {
@@ -216,7 +294,7 @@
   .table thead th {
     position: sticky;
     top: 0;
-    background-color: #F1B123 !important;
+    background-color: white !important;
     /* Prefixos do navegador */
     position: -webkit-sticky;
     position: -moz-sticky;
@@ -224,7 +302,6 @@
     z-index: 2 ;
   }
    .table {
-    border: 1px solid rgb(216, 176, 33) !important;
     text-align: center;
      border-collapse: collapse;
      margin-bottom: 20px;
@@ -248,6 +325,10 @@
    
    span {
      color: black;
+   }
+   .numero {
+    color: black;
+    text-decoration: none;
    }
    
    th {
@@ -308,7 +389,7 @@
     animation-delay: .5s;
    }
    .carousel {
-    width: 140px; /* Set a fixed width for the carousel container */
+    width: 90px; /* Set a fixed width for the carousel container */
     z-index: 1;
     max-width: 100%;
    }
