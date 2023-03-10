@@ -56,7 +56,7 @@
               <h4>{{ encomenda.data }}</h4>
             </td>
             <td>
-              <h4><a href="/">Ver detalhes</a></h4>
+              <BButton variant="outline-primary" href="/">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
