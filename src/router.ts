@@ -9,6 +9,7 @@ import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
+import { auth } from "./components/firebase";
 
 const routes = [
     {
@@ -67,7 +68,21 @@ const routes = [
 
 const router = createRouter({
     history: createWebHistory(),
-    routes,
-});
-
-export default router;
+    routes
+  })
+  
+  router.beforeEach((to, from, next) => {
+    if (to.path === '/login' && auth.currentUser) {
+      next('/')
+      return;
+    }
+  
+    if (to.matched.some(record => record.meta.requiresAuth) && !auth.currentUser) {
+      next('/login')
+      return;
+    }
+  
+    next();
+  })
+  
+  export default router

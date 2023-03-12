@@ -22,3 +22,12 @@ export interface Producer {
     vat: string;
     products?: Product[];
 }
+
+export interface Consumer {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    vat: string;
+    
+}

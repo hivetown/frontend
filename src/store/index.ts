@@ -16,10 +16,10 @@ export default createStore({
         user: null,
     },
     mutations: {
-        setUser(state, user) {
+        SET_USER (state, user) {
             state.user = user
         },
-        clearUser(state) {
+        CLEAR_USER (state) {
             state.user = null
         }
     },
@@ -70,10 +70,27 @@ export default createStore({
 
             router.push('/')
         },
-        async logout({ commit }) {
+        async logout ({ commit }) {
             await signOut(auth)
+      
             commit('CLEAR_USER')
+      
             router.push('/login')
-        },
-    }
-})
+          },
+      
+          fetchUser ({ commit }) {
+            auth.onAuthStateChanged(async user => {
+              if (user === null) {
+                commit('CLEAR_USER')
+              } else {
+                commit('SET_USER', user)
+      
+                if (router.currentRoute.value.path === '/login') {
+                  router.push('/')
+                }
+              }
+            })
+          }
+          
+        }
+      })

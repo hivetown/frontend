@@ -55,7 +55,7 @@ form {
 	padding: 8rem 1rem 1rem;
 }
 form.register {
-	color: #FFF;
+	color: rgb(0, 0, 0);
 	background-color: rgb(245, 66, 101);
 	background-image: linear-gradient(
 		to bottom right,
