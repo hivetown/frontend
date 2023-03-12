@@ -32,8 +32,8 @@
 							<router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Carrinho</router-link>
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
-						<!-- Create login button to redirect to login page -->
-						<div class="d-flex">
+						
+						<div class="d-flex" v-if="!$store.state.user">
 							<b-avatar>
 								class="nav-item" 
 								style="background-color: #f3f3f3 !important; 
@@ -43,8 +43,10 @@
 							<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
+
 					</div>
-					<div class="d-flex nav-items-right">
+
+					<div class="d-flex nav-items-right" v-if="$store.state.user">
 						<router-link to="/conta">
 							<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 									<!-- TODO badges das notificações  -->
@@ -110,6 +112,8 @@ export default {
     })
   }
 }
+
+
 </script>
 
 <style>

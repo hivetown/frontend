@@ -39,6 +39,9 @@ const routes = [
         path: "/carrinho",
         name: "Cart",
         component: Cart,
+        meta: {
+            requiresAuth: true,
+        }
     },
     // O link para o produto deveria ter o seu nome ou id
     {
