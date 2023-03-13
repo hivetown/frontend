@@ -15,7 +15,7 @@
     </div>
   </template>
   <script>
-  import Progresso from '../components/Progresso.vue';
+  import Progresso from '../components/Progress.vue';
   import OrderDetails from '../components/OrderDetails.vue';
   export default {
     components:{

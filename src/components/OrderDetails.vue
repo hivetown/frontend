@@ -5,6 +5,7 @@
     <tr>
       <th scope="col">Item</th>
       <th scope="col">Nome</th>
+      <th scope="col">Fornecedor</th>
       <th scope="col">Preço</th>
       <th scope="col">Quantidade</th>
       <th scope="col">Total</th>
@@ -14,6 +15,7 @@
     <tr>
       <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td>
       <td>Iphone X</td>
+      <td>MediaMarkt</td>
       <td>550€</td>
       <td>2</td>
       <td>1100€</td>
@@ -22,6 +24,7 @@
         <!--TODO trocar fotos-->
       <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
       <td>Capa Iphone x</td>
+      <td>Capas e companhia</td>
       <td>10€</td>
       <td>1</td>
       <td>10€</td>
@@ -29,6 +32,7 @@
     <tr>
       <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
       <td>Água</td>
+      <td>Lidl</td>
       <td>1€</td>
       <td>3</td>
       <td>3€</td>
@@ -36,6 +40,7 @@
     <tr>
       <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
       <td>Água</td>
+      <td>MediaMarkt</td>
       <td>1€</td>
       <td>3</td>
       <td>3€</td>
@@ -43,6 +48,7 @@
     <tr>
       <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
       <td>Água</td>
+      <td>MediaMarkt</td>
       <td>1€</td>
       <td>3</td>
       <td>3€</td>
@@ -50,6 +56,7 @@
     <tr>
       <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
       <td>Água</td>
+      <td>MediaMarkt</td>
       <td>1€</td>
       <td>3</td>
       <td>3€</td>

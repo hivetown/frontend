@@ -23,8 +23,8 @@
   <style scoped>
       .progressbar li.step1:before {
   content: "";
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -33,13 +33,13 @@
   background-color: #fff;
   text-align: center;
   font-weight: bold;
-  background-image: url('../../public/progress/folha.png');
+  background-image: url('/progress/folha.png');
   background-size: contain;
 }
       .progressbar li.step2:before {
   content: "";
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -48,13 +48,13 @@
   background-color: #fff;
   text-align: center;
   font-weight: bold;
-  background-image: url('../../public/progress/box.png');
+  background-image: url('/progress/box.png');
   background-size: contain;
 }
     .progressbar li.step3:before {
   content: "";
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -63,15 +63,15 @@
   background-color: #fff;
   text-align: center;
   font-weight: bold;
-  background-image: url('../../public/progress/camiao.png');
+  background-image: url('/progress/camiao.png');
   background-size: contain;
 }
 
 
   .progressbar li.step4:before {
   content: "";
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -80,12 +80,12 @@
   background-color: #fff;
   text-align: center;
   font-weight: bold;
-  background-image: url('../../public/progress/casa.png');
+  background-image: url('/progress/casa.png');
   background-size: contain;
 }
 
 .progressbar li.active:before{
-  background-image: url('../../public/progress/aviao.png');
+  background-image: url('/progress/aviao.png');
   background-size: cover;
   z-index: 2;
 }
@@ -100,8 +100,10 @@
   }
   .progressbar{
     counter-reset: step;
+    height: 10px; /* altura da barra de progresso */
+
   }
-  .progressbar li{
+  .progressbar li{ 
     float: left;
     width: 14.28%;
     position: relative;
@@ -121,8 +123,8 @@
   }
 .progressbar li:before {
   content: "";
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 80px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -153,20 +155,20 @@
   }
   
 .progressbar li.step1:before {
-  background-image: url('../../public/progress/folha.png');
+  background-image: url('/progress/folha.png');
   background-size: cover ;
 }
 
 .progressbar li.step2:before {
-  background-image: url('../../public/progress/box.png');
+  background-image: url('/progress/box.png');
   background-size: cover ;
 }
 .progressbar li.step3:before {
-  background-image: url('../../public/progress/camiao.png');
+  background-image: url('/progress/camiao.png');
   background-size: cover ;
 }
 .progressbar li.step4:before {
-  background-image: url('../../public/progress/casa.png');
+  background-image: url('/progress/casa.png');
   background-size: cover ;
 }
 @media (max-width: 768px) {
