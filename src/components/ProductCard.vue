@@ -7,7 +7,7 @@
                 <span class="position-absolute top-0 end-0 p-3 fav">
                     <i class="bi bi-heart" style="color: #DC6942; cursor:pointer;"></i>
                 </span>
-                <img src="mac.png" class="square-image">
+                <img :src="productImage" class="square-image">
             </b-card>
         </router-link>
 
@@ -15,8 +15,8 @@
             <div>
                 <!-- Dados do produto -->
                 <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">Tecnologia</div>
-                <h5>Apple MacBook</h5>
-                <p class="grey-txt mt-3">16GB RAM | 1TB | Placa gráfica</p>
+                <h5>{{ productTitle }}</h5>
+                <p class="grey-txt mt-3">{{productDescription}}</p>
                 <div class="d-flex gap-2">
                     <h4 class="mb-3">999€</h4>
                     <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
@@ -69,3 +69,22 @@
         cursor: pointer;
     }
 </style>
+
+<script>
+export default {
+    props: {
+        productTitle: {
+            type: String,
+            required: true,
+        },
+        productDescription: {
+            type: String,
+            required: true,
+        }, 
+        productImage: {
+            type: String,
+            required: true,
+        },
+    },
+};
+</script>

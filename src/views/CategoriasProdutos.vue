@@ -47,17 +47,33 @@
       <!-- TODO por isto automático -->
       <div id="page-products">
         <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
         </div>
 
         <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
-          <ProductCard></ProductCard>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
+          <ProductCard :productTitle="productSpec.name" 
+                       :productDescription="productSpec.description"
+                        productImage="mac.png"/>
         </div>
       </div>
 
@@ -105,4 +121,29 @@
   // watch(search, fetchProducts);
   
   /////////////////////////////////////////////////////////////////////////////////////
+</script>
+
+<script lang="ts">
+// Componentes
+// import ProductCard from "@/components/ProductCard.vue";
+
+// API
+import { fetchProduct } from "@/api";
+import { Product } from "@/types";
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  data() {
+    return {
+      // Dados da BD
+      productSpec: {} as Product,
+    };
+  },
+  // A fazer antes de montar o componente
+  async beforeMount() {
+    // Carregar os dados do produto da BD
+    this.productSpec = await (await fetchProduct(1)).data.productSpec;
+  },
+  components: { ProductCard }
+});
 </script>
