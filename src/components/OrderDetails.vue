@@ -72,13 +72,15 @@
   .table thead th {
     position: sticky;
     top: 0;
-    background-color: white !important;
     /* Prefixos do navegador */
     position: -webkit-sticky;
     position: -moz-sticky;
     position: -ms-sticky;
     z-index: 2 ;
   }
+
+
+  
   
    .table th,
    .table td {
@@ -103,7 +105,7 @@
    }
    
    th {
-         background-color: #e9e5de !important;
+    background-color: #e9e5de !important;
          font-size: 30px;
          color: rgb(0, 0, 0);
        }
@@ -111,16 +113,15 @@
     .table  {
     max-height: 80%; /* Altura máxima da tabela */
     margin:auto;
-    max-width: 92%;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
     position: relative;
   }
   .table-container {
     max-height: 390px; /* Altura máxima da tabela */
-    max-width: 1600px;
     margin:auto;
-    max-width: 92%;
+    max-width: 90%;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
     position: relative;
   }
+  
 </style>

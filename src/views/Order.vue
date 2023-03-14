@@ -3,15 +3,15 @@
       <div class="wrapper-mains">
         <div class="left-align">
             <!-- TODO adicionar o numero da encomenda -->
-          <h2 class="bold center" style="color:#3aac5d;">Progresso da encomenda X</h2>
+          <h2 class="bold center" >Progresso da encomenda X</h2>
           <Progresso :length="4"></Progresso>
         </div>
       </div>
     </div>
     <div class="tabela">
         <OrderDetails />
-        <h2>Valor total: 600€</h2>
-        <h4>2023/02/12</h4>
+        <h2 class="resumo">Valor total: 600€</h2>
+        <h4 class="resumo">2023/02/12</h4>
     </div>
   </template>
   <script>
@@ -42,7 +42,7 @@
   .tabela{
     margin-top: 120px;
   }
-  h2, h4 {
+  .resumo {
     margin-top: 20px;
     text-align: right;
     margin-right: 70px;

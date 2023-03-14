@@ -139,15 +139,16 @@
   
   .progressbar li.active:after{
     
-   background: #3aac5d;
+   background: #F1B123;
    z-index: 0;
   }
   .progressbar li.active:after{
-   background: #3aac5d;
+   background: #F1B123;
+   z-index: -2;
   }
   .progressbar li.active:before{
-  border-color: #3aac5d;
-  background: #3aac5d;
+  border-color: #F1B123;
+  background: #F1B123;
   color: white;
   }
   .progressbar li:first-child:after{
