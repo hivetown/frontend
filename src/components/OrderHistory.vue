@@ -4,7 +4,7 @@
     <div class="pagination-demo">
       
       <div class="table-container" style="overflow: auto">
-  
+        <p class="h5 mb-2" style="color:grey"><i class="fas fa-exclamation"></i> Algumas encomendas podem se encontrar divididas devido a terem diferentes transportadores.</p>
       <table style="border: 2px " class="table" >
         <thead >
           <tr>
@@ -71,6 +71,7 @@
   
   <script>
   import Swal from 'sweetalert2';
+  import '@fortawesome/fontawesome-free/css/all.css'
   import { MDBPagination, MDBPageNav, MDBPageItem } from 'mdb-vue-ui-kit';
   import { ref } from "vue";
   import { MDBCarousel } from "mdb-vue-ui-kit";
@@ -214,15 +215,39 @@
           this.dismissCountDown = this.dismissSecs;
         },
      
-        async cancelarEncomenda() {
-      const result = await Swal.fire({
-        title: 'Tem certeza que deseja cancelar esta encomenda?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sim',
-        cancelButtonText: 'Não'
-      });
-    },
+        async cancelarEncomenda(encomenda) {
+  Swal.fire({
+    title: 'Tem a certeza?',
+    text: "Esta ação não pode ser desfeita!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sim, cancelar!',
+    cancelButtonText: 'Não, manter encomenda'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      encomenda.botaoVerde = false;
+      const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
+      if (encomendaCancelada) {
+        Swal.fire(
+          'Encomenda cancelada!',
+          'A encomenda foi cancelada com sucesso.',
+          'success'
+        );
+        encomendas.splice(encomendas.indexOf(encomenda), 1);
+      } else {
+        Swal.fire(
+          'Erro!',
+          'Não foi possível cancelar a encomenda.',
+          'error'
+        );
+      }
+    }
+  });
+},
+
+
     async cancelarEncomendaImpossivel() {
       const result = await Swal.fire({
         title: 'Não é possível cancelar a encomenda, já se encontra em dstribuição!',
@@ -267,6 +292,7 @@
   </script>
   
   <style scoped>
+  
   .inline {
   display: inline-block;
   vertical-align: middle; /* opcional: alinha verticalmente os elementos */
@@ -300,13 +326,14 @@
   .table thead th {
     position: sticky;
     top: 0;
-    background-color: white !important;
+    background-color:  #e9e5de  !important;
     /* Prefixos do navegador */
     position: -webkit-sticky;
     position: -moz-sticky;
     position: -ms-sticky;
     z-index: 2 ;
   }
+  
    .table {
     text-align: center;
      border-collapse: collapse;
@@ -337,11 +364,7 @@
     text-decoration: none;
    }
    
-   th {
-         background-color: #e9e5de !important;
-         font-size: 30px;
-         color: rgb(0, 0, 0);
-       }
+   
    .product-details {
     padding: 20px;
    }
@@ -404,6 +427,16 @@
     height: 100%; /* Set the height of the images to fill the container */
     object-fit: contain; /* Scale the images proportionally to fit inside the container */
    }
+   .swal2-confirm.btn-danger {
+  background-color: red !important;
+}
+
+th {
+         background-color: #e9e5de !important;
+         font-size: 30px;
+         color: rgb(0, 0, 0);
+       }
+
    @media (max-width: 768px) {
   /* regras de estilo para telas menores que 768px */
   .table-container {
@@ -413,6 +446,9 @@
     max-width: 100%;
     overflow-x: auto;
     font-size: 5px;
+  }
+  .table thead tr {
+    background-color: #692424 !important; /* substitua pela cor desejada */
   }
   
 }
