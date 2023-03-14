@@ -124,4 +124,37 @@
     position: relative;
   }
   
-</style>
+  @media (max-width: 768px) {
+  /* regras de estilo para telas menores que 768px */
+  .table-container {
+    overflow-x: auto;
+    width: 100%;
+  }
+  table {
+    width: 100%;
+    font-size: 5px;
+  }
+}
+@media only screen and (max-width: 660px) {
+    /*em telemovel remove colunas 3,4,5 */
+
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    display: none;
+  }
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    display: none;
+  }
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
+
+  header {
+    font-size: 8px;
+  }
+
+}
+   </style>
+  

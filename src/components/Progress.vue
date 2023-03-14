@@ -127,7 +127,6 @@
   height: 80px;
   border: 2px solid #bebebe;
   display: block;
-  margin: 0 auto 10px auto;
   border-radius: 50%;
   line-height: 36px;
   background-color: #fff;
@@ -190,5 +189,16 @@
     display: none;
   }
 
+}
+@media (max-width: 768px) {
+
+.container{
+       width: 90%;
+      position: absolute;
+      z-index: 1;
+      position: absolute;
+  left: 30%;
+      margin-top: 20px;
+  }
 }
   </style>
