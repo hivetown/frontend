@@ -1,8 +1,5 @@
 <template>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <div class="pagination-demo">
-      
       <div class="table-container" style="overflow: auto">
         <p class="h5 mb-2" style="color:grey"><i class="fas fa-exclamation"></i> Algumas encomendas podem se encontrar divididas devido a terem diferentes transportadores.</p>
       <table style="border: 2px " class="table" >
@@ -62,16 +59,34 @@
         </tbody>
       </table>
       </div>
+      <button id="checkout">checkout</button>
     </div>
-
- 
-
-  </template>
+</template>
   
   
   <script>
+  var stripe = Stripe("pk_test_51MhZqeHDTqePW6LHc3kVGIHMC0vifWpxLpzyQtw2fpcjA2vfVSY45sPxR3MknV53X4NLXSsmXlzCSGdO8OgRY2kq002okkihO7");
+  document.addEventListener("DOMContentLoaded", function(event) {
+  var stripe = Stripe("pk_test_51MhZqeHDTqePW6LHc3kVGIHMC0vifWpxLpzyQtw2fpcjA2vfVSY45sPxR3MknV53X4NLXSsmXlzCSGdO8OgRY2kq002okkihO7");
+  document.getElementById("checkout").addEventListener("click", function(){
+    stripe.redirectToCheckout({
+      lineItems: [
+        {
+          price: "price_1Mm2E5HDTqePW6LH0aQ2nFqF",
+          quantity: 2,
+        },
+      ],
+      mode: "subscription",
+      //para onde vai depois de pago
+      successUrl: "https://www.google.com/",
+      //para onde vai se nao deu
+      cancelUrl: "https://www.twitter.com/",
+    }).then(function(result){
+    });
+  });
+});
+
   import Swal from 'sweetalert2';
-  import '@fortawesome/fontawesome-free/css/all.css'
   import { MDBPagination, MDBPageNav, MDBPageItem } from 'mdb-vue-ui-kit';
   import { ref } from "vue";
   import { MDBCarousel } from "mdb-vue-ui-kit";
