@@ -8,6 +8,10 @@ import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 
+//adicionei
+import OrderHistory from "./views/OrderHistory.vue";
+
+
 const routes = [
     {
         path: "/",
@@ -44,6 +48,13 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
+    },
+
+    //adicionei
+    {
+        path: "/encomendas",
+        name: "OrderHistory",
+        component: OrderHistory,
     },
 ];
 
