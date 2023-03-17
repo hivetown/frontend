@@ -190,15 +190,31 @@
   }
 
 }
-@media (max-width: 768px) {
+@media (max-width: 660px) {
 
-.container{
+
+
+  .progressbar li {
+    width: 20%;
+    font-size: 12px;
+  }
+
+  .progressbar {
+    list-style: none;
+    padding-left: 0;
+  }
+  .progressbar li:before {
+    display: none;
+  }
+
+  .container{
        width: 90%;
       position: absolute;
       z-index: 1;
       position: absolute;
-  left: 30%;
       margin-top: 20px;
+      left: 12%;
   }
+
 }
   </style>

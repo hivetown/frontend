@@ -1,9 +1,9 @@
 <template>
     <div class="root">
       <div class="wrapper-mains">
-        <div class="left-align">
+        <div >
             <!-- TODO adicionar o numero da encomenda -->
-          <h2 class="bold center" >Progresso da encomenda X</h2>
+          <p class="titulo" >Progresso da encomenda X</p>
           <Progresso :length="4"></Progresso>
         </div>
       </div>
@@ -27,12 +27,11 @@
   </script>
   <style scoped>
   .wrapper-mains{
-    width: 561px;
       height: auto;
       background: white;
       text-align: center;
       margin: auto;
-      padding: 100px 47px 20px 61px;
+      padding: 20px  ;
   }
   .textarea{
       display: block;
@@ -46,8 +45,22 @@
   .resumo {
     margin-top: 20px;
     text-align: right;
-    margin-right: 70px;
+    margin-right: 90px;
   }
-
+  .titulo {
+    font-size: 30px;
+  }
+  @media (max-width: 660px) {
+    .titulo {
+    font-size: 25px;
+    text-align: center !important;
+  }
+  .resumo {
+    margin-top: 10px;
+    text-align: right;
+    margin-right: 40px;
+  }
+  }
+  
   </style>
   

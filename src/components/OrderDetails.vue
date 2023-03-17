@@ -13,6 +13,7 @@
   </thead>
   <tbody>
     <tr>
+      <!--TODO por marcas e produto como links-->
       <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td>
       <td>Iphone X</td>
       <td>MediaMarkt</td>
@@ -136,24 +137,51 @@
   }
 }
 @media only screen and (max-width: 660px) {
-    /*em telemovel remove colunas 3,4,5 */
+    /*em telemovel remove colunas,5 */
 
-  .table th:nth-child(4),
-  .table td:nth-child(4) {
-    display: none;
-  }
+  
   .table th:nth-child(5),
   .table td:nth-child(5) {
     display: none;
   }
-  .table th:nth-child(2),
-  .table td:nth-child(2) {
-    display: none;
-  }
+ 
 
   header {
     font-size: 8px;
   }
+
+
+
+header {
+  font-size: 8px;
+}
+
+
+img {
+  width: 40px;
+}
+ .table {
+  text-align: center;
+   border-collapse: collapse;
+   margin-bottom: 10px;
+   font-size: 11px;
+   border: 2px;
+ }
+ 
+ .table th,
+ .table td {
+   padding: 5px;
+   font-size: 10px;
+   text-align: left;
+   border-bottom: 1px solid #ddd;
+   
+ }
+ h4, a, p{
+  font-size: 12px !important;
+ }
+ i {
+  font-size: 18px !important;
+ }
 
 }
    </style>
