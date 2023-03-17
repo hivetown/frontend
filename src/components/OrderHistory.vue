@@ -1,7 +1,7 @@
 <template>
     <div class="pagination-demo">
       <div class="table-container" style="overflow: auto">
-        <p class="h5 mb-2" style="color:grey"><i class="fas fa-exclamation"></i> Algumas encomendas podem se encontrar divididas devido a terem diferentes transportadores.</p>
+        <p class="h5 mb-2" style="color:grey"><i class="bi bi-exclamation-circle"></i> Algumas encomendas podem se encontrar divididas devido a terem diferentes transportadores.</p>
       <table style="border: 2px " class="table" >
         <thead >
           <tr>
@@ -26,34 +26,42 @@
               <div class="carousel-container">
                 <div class="carousel">
                   <a href="#">
-                  <MDBCarousel v-model="carousels[index]" :items="items[index]" fade  />
+                  <MDBCarousel  showIndicators="false" v-model="carousels[index]" :items="items[index]" fade  />
                 </a>
                 </div>
               </div>
             </td>
-            <td><h4>{{ encomenda.total }} </h4></td>
+            <td><h4> {{ encomenda.total }} </h4></td>
             <td>
               <div v-if="encomenda.estado === 'Entregue'" class="inline"><i class="bi bi-check-all"></i></div>
               <div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>
-              <h4 class="inline">{{encomenda.estado}}</h4>
+              <!--TODO mudar o link para detalhada-->
+              <h4 class="inline">  <a class="numero" href="#">{{encomenda.estado}} </a> </h4>
 
               <div v-if=" encomenda.estado === 'Em andamento'">
-                <BButton variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
+                <BButton class="botao" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
               </div>
               <div v-if=" encomenda.estado === 'Em preparação'">
-                <BButton variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
+                <BButton class="botao" variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
             </div>
 
             </td>
             <td>
-              <h4> <a class="numero" href="#">{{ encomenda.numero }}</a></h4>
+              <!--TODO mudar o if, exemplo de quando a encomenda foi dividida-->
+              <!--TODO mudar para link de encomenda detalhada-->
+                <h4 style="display: inline-block;"> <a class="numero" href="#">{{ encomenda.numero }}</a></h4>
+                <div v-if="encomenda.estado === 'Em andamento'" class="inline" style="display: inline-block;">
+              
+                <i class="bi bi-exclamation-circle" style="font-size: 0.99em;" title="A encomenda foi dividia devido a ter diferentes transportadores"></i>
+              </div>
+
             </td>
             <td>
               <h4>{{ encomenda.data }}</h4>
             </td>
             <td>
-              <BButton variant="outline-primary" href="/">Ver detalhes</BButton> <!--TODO mudar link-->
+              <BButton class="botao" variant="outline-primary" href="/">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
@@ -308,6 +316,7 @@
   
   <style scoped>
   
+  
   .inline {
   display: inline-block;
   vertical-align: middle; /* opcional: alinha verticalmente os elementos */
@@ -451,6 +460,9 @@ th {
          font-size: 30px;
          color: rgb(0, 0, 0);
        }
+       .carousel-indicators {
+  display: none;
+}
 
    @media (max-width: 768px) {
   /* regras de estilo para telas menores que 768px */
@@ -468,11 +480,8 @@ th {
   
 }
 @media only screen and (max-width: 660px) {
-    /*em telemovel remove colunas 3,4,5 */
-    .table th:nth-child(3),
-  .table td:nth-child(3) {
-    display: none;
-  }
+ 
+    /*em telemovel remove colunas ,4,5 */
   .table th:nth-child(4),
   .table td:nth-child(4) {
     display: none;
@@ -481,10 +490,7 @@ th {
   .table td:nth-child(5) {
     display: none;
   }
-  .table th:nth-child(2),
-  .table td:nth-child(2) {
-    display: none;
-  }
+
   .carousel {
     width: 70%;
     font-size: 12px;
@@ -493,5 +499,40 @@ th {
     font-size: 8px;
   }
 
-}
+
+.carousel {
+    width: 40px !important; /* Set a fixed width for the carousel container */
+    z-index: 1;
+    max-width: 100%;
+   }
+   
+   .table {
+    text-align: center;
+     border-collapse: collapse;
+     margin-bottom: 10px;
+     font-size: 11px;
+     border: 2px;
+   }
+   
+   .table th,
+   .table td {
+     padding: 5px;
+     font-size: 10px;
+     text-align: left;
+     border-bottom: 1px solid #ddd;
+     
+   }
+   h4, a, p{
+    font-size: 12px !important;
+   }
+   i {
+    font-size: 18px !important;
+   }
+
+   .botao{
+    border: none;
+    font-size: 11px;
+   }
+  }
+  
    </style>
