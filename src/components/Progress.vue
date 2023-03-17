@@ -4,7 +4,7 @@
             <ul class="progressbar">
                 <li class="active step1">Pedido Efetuado</li>
             <li class="active step2">Enviado</li>
-            <li class="step3">Em transito</li>
+            <li class="step3">Em trânsito</li>
             <li class="step4">Recebido</li>
             </ul>
         </div>

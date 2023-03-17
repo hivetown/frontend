@@ -7,12 +7,13 @@
           <Progresso :length="4"></Progresso>
         </div>
       </div>
-    </div>
-    <div class="tabela">
+      <div class="tabela">
         <OrderDetails />
         <h2 class="resumo">Valor total: 600€</h2>
         <h4 class="resumo">2023/02/12</h4>
     </div>
+    </div>
+    
   </template>
   <script>
   import Progresso from '../components/Progress.vue';
