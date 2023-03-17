@@ -77,8 +77,8 @@ export default defineComponent({
     // A fazer antes de montar o componente
     async beforeMount() {
         // Carregar os dados do produto da BD
-        this.productSpec1 = await (await fetchProduct(1)).data.productSpec;
-        this.productSpec2 = await (await fetchProduct(2)).data.productSpec;
+        this.productSpec1 = await (await fetchProduct(1)).data;
+        this.productSpec2 = await (await fetchProduct(2)).data;
     },
     components: { ProductCard }
 });

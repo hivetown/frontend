@@ -45,38 +45,19 @@
       <CustomViews></CustomViews>
       
       <!-- TODO por isto automático -->
-      <div id="page-products">
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-        </div>
-
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
+     <div id="page-products">
+        <div v-for="(linha, indice) in 6" :key="indice">
+          <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
+            <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
+              <ProductCard :productTitle="product.name" 
+                           :productDescription="product.description"
+                           :productImage="product.images[0]"/>
+            </template>
+          </div>
         </div>
       </div>
-
+      <p>A mostrar {{ allProductsData.data.pageSize }} de {{ allProductsData.data.totalItems }} produtos</p>
+      <p>Página: {{ allProductsData.data.page }} de {{ allProductsData.data.totalPages }}</p>
     </div>
 
   </div>
@@ -123,12 +104,13 @@
   /////////////////////////////////////////////////////////////////////////////////////
 </script>
 
+<!-- TODO atualizar tipagens -->
 <script lang="ts">
 // Componentes
 // import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchProduct } from "@/api";
+import { fetchProduct, fetchAllProducts } from "@/api";
 import { Product } from "@/types";
 import { defineComponent } from "vue";
 
@@ -136,13 +118,32 @@ export default defineComponent({
   data() {
     return {
       // Dados da BD
+      allProducts : {} as Product[],
       productSpec: {} as Product,
+      allProductsData: {} as any,
     };
   },
   // A fazer antes de montar o componente
   async beforeMount() {
     // Carregar os dados do produto da BD
-    this.productSpec = await (await fetchProduct(1)).data.productSpec;
+    // this.allProducts =   fetchAllProducts().data;
+    const allProductsData = await fetchAllProducts();
+    const allProducts = allProductsData.data.items;
+
+    this.allProducts = allProducts;
+    this.allProductsData = allProductsData;
+
+    // for (let i = 0; i < allProducts.length; i++) {
+    //   const productId = allProducts[i].id;
+    //   const productData = await fetchProduct(productId);
+    //   const product = productData.data;
+
+    //   console.log(`Produto ${productId}: `, product);
+      
+    // }
+
+  //  console.log("Este é o log: " + allProductsData.data.page);
+    this.productSpec = await (await fetchProduct(1)).data;
   },
   components: { ProductCard }
 });

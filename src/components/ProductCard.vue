@@ -58,10 +58,12 @@
         cursor: pointer;
     }
 
+    /* TODO - ver como fazer com a imagem: se ocupa o cinzento ou se limitamos a imagens transparentes */
     .square-image {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ajusta a imagem para preencher todo o espaço disponível */
+        object-fit: cover;  /* Ajusta a imagem para preencher todo o espaço disponível */
+        border-radius: 1.3em !important;
     }
 
     .prod-category{
