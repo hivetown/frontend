@@ -128,7 +128,7 @@
 // import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchProduct } from "@/api";
+import { fetchAllProducts, fetchProduct } from "@/api";
 import { Product } from "@/types";
 import { defineComponent } from "vue";
 
@@ -136,13 +136,17 @@ export default defineComponent({
   data() {
     return {
       // Dados da BD
+      products: {} as Product[],
       productSpec: {} as Product,
     };
   },
   // A fazer antes de montar o componente
   async beforeMount() {
     // Carregar os dados do produto da BD
-    this.productSpec = await (await fetchProduct(1)).data.productSpec;
+    // this.products = await fetchAllProducts.data;
+    // console.log("Este é o log: " + this.products);
+    this.productSpec = await (await fetchProduct(1)).data;
+    // console.log("Este é o log: " + this.productSpec.id);
   },
   components: { ProductCard }
 });

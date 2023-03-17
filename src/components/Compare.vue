@@ -1,6 +1,6 @@
 <template>
     <!-- Div principal -->
-    <div class="parent mt-3" >
+    <div class="parent mt-3">
 
         <div class="px-3">
             <h3 class="dgreen-txt">Comparador</h3>
@@ -10,12 +10,10 @@
         <!-- TODO por automático -->
         <!-- Produtos a comparar -->
         <div class="d-flex mt-5 px-3" style="gap:20vh; border-bottom: 2px solid #eeeeee;">
-           <ProductCard :productTitle="productSpec1.name" 
-                        :productDescription="productSpec1.description"
-                         productImage="mac.png"/>
-           <ProductCard :productTitle="productSpec2.name" 
-                        :productDescription="productSpec2.description"
-                         productImage="mac.png"/>
+            <ProductCard :productTitle="productSpec1.name" :productDescription="productSpec1.description"
+               productImage="mac.png" />
+            <ProductCard :productTitle="productSpec2.name" :productDescription="productSpec2.description"
+                productImage="mac.png" />
         </div>
 
         <!-- Características dos produtos a ser comparados -->
@@ -35,7 +33,7 @@
             <div class="mt-3 d-flex align-items-center spec-category-text">
                 <h5 class="p-3">Características</h5>
             </div>
-             <!-- Dados do produto 2 -->
+            <!-- Dados do produto 2 -->
             <div class="d-flex p-2" style="gap:30vh;">
                 <CompareSpec></CompareSpec>
                 <CompareSpec></CompareSpec>
@@ -45,15 +43,15 @@
 </template>
 
 <style>
-    .spec-category-text{
-        height: 5vh;
-        background-color: #f3f3f3;
-    }
+.spec-category-text {
+    height: 5vh;
+    background-color: #f3f3f3;
+}
 </style>
 
 
 <script setup lang="ts">
-    import CompareSpec from "@/components/CompareSpec.vue";
+import CompareSpec from "@/components/CompareSpec.vue";
 </script>
 
 
@@ -77,8 +75,8 @@ export default defineComponent({
     // A fazer antes de montar o componente
     async beforeMount() {
         // Carregar os dados do produto da BD
-        this.productSpec1 = await (await fetchProduct(1)).data.productSpec;
-        this.productSpec2 = await (await fetchProduct(2)).data.productSpec;
+        this.productSpec1 = await (await fetchProduct(1)).data;
+        this.productSpec2 = await (await fetchProduct(2)).data;
     },
     components: { ProductCard }
 });
