@@ -56,10 +56,10 @@
           </div>
         </div>
       </div>
-      <p>A mostrar {{ allProductsData.data.pageSize }} de {{ allProductsData.data.totalItems }} produtos</p>
-      <p>Página: {{ allProductsData.data.page }} de {{ allProductsData.data.totalPages }}</p>
+      <!-- <p>A mostrar {{ allProductsData.data.pageSize }} de {{ allProductsData.data.totalItems }} produtos</p>
+      <p>Página: {{ allProductsData.data.page }} de {{ allProductsData.data.totalPages }}</p> -->
+      <Pagination :totalRows="allProductsData.data.totalItems" :perPage="allProductsData.data.pageSize" :currentPage="allProductsData.data.page"></Pagination>
     </div>
-
   </div>
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
@@ -74,6 +74,7 @@
   import PriceFilter from "@/components/PriceFilter.vue";
   import SupplierFilter from "@/components/SupplierFilter.vue";
   import RatingFilter from "@/components/RatingFilter.vue";
+  import Pagination from "@/components/Pagination.vue";
 
   // Componentes auxiliares
   import CustomViews from "@/components/CustomViews.vue";
