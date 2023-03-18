@@ -20,9 +20,14 @@ const routes = [
         component: About,
     },
     {
-        path: "/produtos",
+        path: "/products",
         name: "Produtos",
         component: CategoriasProdutos,
+        // props: (route) => ({
+        //     page: parseInt(route.query.page) || 1,
+        //     pageSize: parseInt(route.query.pageSize) || 24,
+        //     sort: route.query.sort || "name:asc"
+        // }),
     },
     {
         path: "/favoritos",

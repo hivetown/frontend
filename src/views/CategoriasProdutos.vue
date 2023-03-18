@@ -38,17 +38,18 @@
     </div>
 
     <!-- Espeaço à direita -->
-    <div class="" style="width: 100%">
+    <div class="" style="width: 100%; background-color:;">
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">Portáteis</h3>
       <!-- Diferentes vistas da página -->
-      <CustomViews></CustomViews>
+      <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews>
       
       <!-- TODO por isto automático -->
      <div id="page-products">
-        <div v-for="(linha, indice) in 6" :key="indice">
+        <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice">
           <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
             <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
+              <!-- <p>id: {{ product.id }} </p> -->
               <ProductCard :productTitle="product.name" 
                            :productDescription="product.description"
                            :productImage="product.images[0]"/>
@@ -59,12 +60,13 @@
       <!-- <p>A mostrar {{ allProductsData.data.pageSize }} de {{ allProductsData.data.totalItems }} produtos</p>
       <p>Página: {{ allProductsData.data.page }} de {{ allProductsData.data.totalPages }}</p> -->
       <Pagination :totalRows="allProductsData.data.totalItems" :perPage="allProductsData.data.pageSize" :currentPage="allProductsData.data.page"></Pagination>
+      <p>Total de páginas: {{ allProductsData.data.totalPages }}</p>
     </div>
   </div>
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <CompareBanner></CompareBanner>
+  <!-- <CompareBanner></CompareBanner> -->
 </template>
 
 <script setup lang="ts">
@@ -128,8 +130,15 @@ export default defineComponent({
   async beforeMount() {
     // Carregar os dados do produto da BD
     // this.allProducts =   fetchAllProducts().data;
-    const allProductsData = await fetchAllProducts();
+    // const searchTerm = "Recycled";
+    // const allProductsData = await fetchAllProducts(searchTerm);
+    const page = parseInt(this.$route.query.page) || 1;
+    const pageSize = parseInt(this.$route.query.pageSize) || 24;
+    console.log("Página do route: " + page)
+    // const allProductsData = await fetchAllProducts();
+    const allProductsData = await fetchAllProducts(page, pageSize);
     const allProducts = allProductsData.data.items;
+    
 
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;
@@ -143,9 +152,9 @@ export default defineComponent({
       
     // }
 
-  //  console.log("Este é o log: " + allProductsData.data.page);
+   console.log("Este é o log: " + allProductsData.data.pageSize);
     this.productSpec = await (await fetchProduct(1)).data;
   },
-  components: { ProductCard }
+  components: { ProductCard, Pagination, CustomViews}
 });
 </script>
