@@ -4,24 +4,32 @@
 
 			<form class="login" @submit.prevent="login">
 				<h2>Login</h2>
+				<div class="grid-item">
 				<input 
 					type="email" 
-					placeholder="Email address"
+					placeholder="Email"
 					v-model="login_form.email" />
+				</div>
+				<div class="grid-item">
 				<input 
 					type="password" 
 					placeholder="Password" 
 					v-model="login_form.password" />
+				</div>
+				
+				<div class="grid-item">
 				<input 
 					type="submit" 
 					value="Login" />
-
+				</div>
 				<!-- Create a link to the registration page -->
-				<p>Don't have an account? <router-link to="/registration">Register</router-link></p>
+				<p>Não tem uma conta? <router-link to="/registration">Registar</router-link></p>
 			</form>
 
 		</section>
 	</main>
+
+	
 </template>
 
 <script>
@@ -34,7 +42,23 @@ export default {
 	setup () {
 		const login_form = ref({});
 		const store = useStore();
-		const login = () => {
+		const login = async () => {
+			const { email, password } = login_form.value
+			// try {
+            //     await signInWithEmailAndPassword(auth, email, password)
+            // } catch (error) {
+            //     switch (error.code) {
+            //         case 'auth/user-not-found':
+            //             alert('Utilizador não encontrado')
+            //             break
+            //         case 'auth/wrong-password':
+            //             alert('Palavra-passe incorreta')
+            //             break
+            //         default:
+            //             alert('Erro ao iniciar sessão')
+            //     }
+            //     return 
+            // }
 			store.dispatch('login', login_form.value);
 		}
 		return {
@@ -52,16 +76,11 @@ export default {
 }
 form {
 	flex: 1 1 0%;
-	padding: 8rem 1rem 1rem;
+	padding: 3rem 1rem 1rem;
 }
 form.register {
 	color: rgb(0, 0, 0);
-	background-color: rgb(245, 66, 101);
-	background-image: linear-gradient(
-		to bottom right,
-		rgb(245, 66, 101) 0%,
-		rgb(189, 28, 60) 100%
-	);
+	
 }
 h2 {
 	font-size: 2rem;
@@ -92,29 +111,36 @@ input::placeholder {
 	color: inherit;
 }
 form.register input:not([type="submit"]) {
-	color: #FFF;
-	border-bottom: 2px solid #FFF;
+	color: #2c3e50;
+	border-bottom: 2px solid #2c3e50;
+	margin-bottom: 10%;
 }
 form.login input:not([type="submit"]) {
 	color: #2c3e50;
 	border-bottom: 2px solid #2c3e50;
 }
-form.login input[type="submit"] {
-	background-color: rgb(245, 66, 101);
-	color: #FFF;
+
+
+input[type="submit"] {
+	background: #2c3e50;
+	color: #fff;
+	border: 2px solid #2c3e50;
+	cursor: pointer;
+	transition: 0.4s;
 	font-weight: 700;
 	padding: 1rem 2rem;
 	border-radius: 0.5rem;
-	cursor: pointer;
 	text-transform: uppercase;
+	margin-bottom: 1rem;
+
 }
-form.register input[type="submit"] {
-	background-color: #FFF;
-	color: rgb(245, 66, 101);
-	font-weight: 700;
-	padding: 1rem 2rem;
-	border-radius: 0.5rem;
-	cursor: pointer;
-	text-transform: uppercase;
+
+
+input[type="submit"]:hover {
+	background: #fff;
+	color: #2c3e50;
 }
+
+
+
 </style>

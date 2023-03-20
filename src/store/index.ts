@@ -11,86 +11,269 @@ import { createUserWithEmailAndPassword,
 } from "firebase/auth"; 
 
 
+import { getCookie, setCookie, removeCookie } from './cookies'
+
+import firebase from 'firebase/app';
+
+// save token in local storage
+const saveToken = (token) => {
+  // delete current info in local storage
+    
+
+    localStorage.setItem('token', token)
+    console.log(token)
+}
+
+
+const saveUser = (uid) => {
+  // add new user to database
+    localStorage.setItem('uid', uid)
+    console.log(uid)
+}
+
+const saveEmail = (email) => {
+    localStorage.setItem('email', email)
+    console.log(email)
+}
+
+// export default createStore({
+//     state: {
+//         token: getCookie('token'),
+//         user: {
+//             id: 0,
+//             name: '',
+//             email: '',
+//             phone: '',
+//             vat: '',
+//             type: '',
+//         }
+//     },
+//     mutations: {
+//         SET_USER (state, user) {
+//             for (const key in user) {
+//                 state.user[key] = user[key]
+//             }   
+//         },
+//         CLEAR_USER (state, user) {
+//             for (const key in user) {
+//                 state.user[key] = null
+//             }   
+//         },
+//         SET_TOKEN (state, token) {
+//             state.token = token
+//             setCookie('token', token, 1)
+//         },
+//         CLEAR_TOKEN (state) {
+//             state.token = null
+//             removeCookie('token')
+//         }
+
+//     },
+//     actions: {
+//         async login({ commit }, details) {
+//             const { email, password } = details
+            
+//             commit('SET_USER', auth.currentUser)
+
+//             router.push('/')
+//         },
+//         async register({ commit }, details) {
+//             const { email, password } = details
+            
+//             commit('SET_USER', auth.currentUser)
+//             commit('SET_TOKEN', auth.currentUser)
+
+//             router.push('/')
+//         },
+//         async logout ({ commit }) {
+//             await signOut(auth)
+      
+//             commit('CLEAR_USER')
+//             commit('CLEAR_TOKEN')
+//             router.push('/login')
+//           },
+      
+//           fetchUser ({ commit }) {
+//             auth.onAuthStateChanged(async user => {
+//               if (user === null) {
+//                 commit('CLEAR_USER')
+//               } else {
+//                 commit('SET_USER', user)
+      
+//                 if (router.currentRoute.value.path === '/login') {
+//                   router.push('/')
+//                 }
+//               }
+//             })
+//           }
+          
+//         }
+//       })
+
+
 export default createStore({
     state: {
-        user: null,
+        token: getCookie('token'),
+        user: {
+            id: 0,
+            name: '',
+            email: '',
+            phone: '',
+            vat: '',
+            type: '',
+        }
     },
     mutations: {
-        SET_USER (state, user) {
-            state.user = user
-        },
-        CLEAR_USER (state) {
-            state.user = null
-        }
+  
+      SET_USER (state, user) {
+        state.user = user
+        for (const key in user) {
+                state.user[key] = user[key]
+            }  
+      },
+  
+      CLEAR_USER (state) {
+        state.user = null
+      },
+      SET_TOKEN (state, token) {
+        state.token = token
+        setCookie('token', token, 7)
+      },
+      REMOVE_TOKEN (state) {
+        state.token = null
+        removeCookie('token')
+      }  
     },
     actions: {
-        async login({ commit }, details) {
-            const { email, password } = details
-            try {
-                await signInWithEmailAndPassword(auth, email, password)
-            } catch (error) {
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        alert('Utilizador não encontrado')
-                        break
-                    case 'auth/wrong-password':
-                        alert('Palavra-passe incorreta')
-                        break
-                    default:
-                        alert('Erro ao iniciar sessão')
-                }
-                return 
-            }
-            commit('SET_USER', auth.currentUser)
+      async login ({ commit }, details) {
+        const { email, password } = details
+  
+        try {
+          await signInWithEmailAndPassword(auth, email, password)
+        } catch (error) {
+          switch(error.code) {
+            case 'auth/user-not-found':
+              alert("User not found")
+              break
+            case 'auth/wrong-password':
+              alert("Wrong password")
+              break
+            default:
+              alert("Something went wrong")
+          }
+  
+          return
+        }
+  
+        // commit('SET_USER', auth.currentUser)
+        // commit('SET_USER', details.user)
+        // commit('SET_TOKEN', details.token)
 
-            router.push('/')
-        },
-        async register({ commit }, details) {
-            const { email, password } = details
-            try {
-                await createUserWithEmailAndPassword(auth, email, password)
-            } catch (error) {
-                console.log("" + error.code)
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        alert('Email já em uso')
-                        break
-                    case 'auth/invalid-email':
-                        alert('Email inválido')
-                        break
-                    case 'auth/weak-password':
-                        alert('Palavra-passe fraca')
-                        break
-                    default:
-                        alert('Erro ao registar')
-                }
-                return 
-            }
-            commit('SET_USER', auth.currentUser)
 
-            router.push('/')
-        },
-        async logout ({ commit }) {
-            await signOut(auth)
-      
-            commit('CLEAR_USER')
-      
-            router.push('/login')
-          },
-      
-          fetchUser ({ commit }) {
-            auth.onAuthStateChanged(async user => {
-              if (user === null) {
-                commit('CLEAR_USER')
-              } else {
-                commit('SET_USER', user)
-      
-                if (router.currentRoute.value.path === '/login') {
-                  router.push('/')
-                }
-              }
-            })
+
+
+
+
+        // saveToken(details.token)
+        // saveUser(details.user)
+        // saveToken(auth.currentUser?.getIdTokenResult())
+        // save accessToken that is in auth.currentUser
+        // saveUser(auth.currentUser)
+        
+        // saveToken(auth.currentUser?.getIdTokenResult())
+        // saveUser(auth.currentUser?.uid)
+        // saveEmail(auth.currentUser?.email)
+
+
+        //once the Promise has resolved, you should extract the authentication token from the user object and store it in local storage as a string. This string can be used to authenticate future requests to Firebase services.
+        signInWithEmailAndPassword(auth, email, password)
+          .then(async (userCredential) => {
+            // Save the authentication token to local storage
+            const authToken = userCredential.user.getIdToken();
+            localStorage.setItem('authToken', await authToken);
+            // commit using SET_TOKEN using authToken, uid, email
+            commit('SET_TOKEN', await authToken)
+            saveUser(auth.currentUser?.uid)
+            saveEmail(auth.currentUser?.email)
+            console.log("authToken: ", authToken);
+            console.log("user" , auth.currentUser)
+          })
+          .catch((error) => {
+            // Handle errors
+            console.error(error);
+          });
+        
+        
+          commit('SET_USER', auth.currentUser?.uid)
+          
+          
+        
+        
+        
+        // auth.onIdTokenChanged((user) => {
+        //     if (user) {
+        //       // User logged in already or has just logged in.
+        //       saveUser(user.uid)
+        //     } else {
+        //       // User not logged in or has just logged out.
+        //     }
+        //   });
+        router.push('/')
+      },
+  
+      async register ({ commit}, details) {
+         const { email, password } = details
+  
+        try {
+          await createUserWithEmailAndPassword(auth, email, password)
+          
+        } catch (error) {
+          switch(error.code) {
+            case 'auth/email-already-in-use':
+              alert("Email already in use")
+              break
+            case 'auth/invalid-email':
+              alert("Invalid email")
+              break
+            case 'auth/operation-not-allowed':
+              alert("Operation not allowed")
+              break
+            case 'auth/weak-password':
+              alert("Weak password")
+              break
+            default:
+              alert("Something went wrong")
           }
           
+          return
         }
-      })
+  
+        commit('SET_USER', auth.currentUser)
+  
+        router.push('/')
+      },
+  
+      async logout ({ commit }) {
+        await signOut(auth)
+  
+        commit('CLEAR_USER')
+        commit('REMOVE_TOKEN')
+        router.push('/login')
+      },
+  
+      fetchUser ({ commit }) {
+        auth.onAuthStateChanged(async user => {
+          if (user === null) {
+            commit('CLEAR_USER')
+          } else {
+            commit('SET_USER', user)
+  
+            if (router.currentRoute.value.path === '/login') {
+              router.push('/')
+            }
+          }
+        })
+      }
+      
+    }
+  })

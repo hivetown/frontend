@@ -9,6 +9,7 @@ import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
+import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
 
 const routes = [
@@ -67,6 +68,12 @@ const routes = [
         name: "Registration",
         component: Registration,
     },
+    {
+        path: "/authconsumer",
+        name: "AuthConsumer",
+        component: AuthConsumer,
+    },
+
 ];
 
 const router = createRouter({
