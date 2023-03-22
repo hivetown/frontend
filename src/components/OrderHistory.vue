@@ -66,6 +66,7 @@
           </tr>
         </tbody>
       </table>
+      <!---->
       </div>
       <button id="checkout">checkout</button>
     </div>
