@@ -40,7 +40,7 @@
       border-radius: 5px;
   }
   .tabela{
-    margin-top: 120px;
+    margin-top: 180px;
   }
   .resumo {
     margin-top: 20px;
