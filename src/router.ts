@@ -8,6 +8,8 @@ import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Order from "./views/Order.vue";
+import AdressForm from "./views/AdressForm.vue";
+
 
 const routes = [
     {
@@ -52,6 +54,11 @@ const routes = [
         name: "Encomenda",
         component: Order,
     },
+    {
+    path: "/envio",
+    name: "AdressForm",
+    component: AdressForm,
+},
 ];
 
 const router = createRouter({
