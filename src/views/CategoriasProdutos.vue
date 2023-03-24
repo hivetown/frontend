@@ -17,7 +17,7 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <CategoryFilter></CategoryFilter>
+          <CategoryFilter :categories="categories"></CategoryFilter>
         </div>
 
         <div id="price-filter">
@@ -113,17 +113,46 @@
 // import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchProduct, fetchAllProducts } from "@/api";
-import { Product } from "@/types";
+import { fetchProduct, fetchAllProducts, fetchAllCategories} from "@/api";
+import { Product, Category } from "@/types";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   data() {
     return {
       // Dados da BD
+      // Produtos
       allProducts : {} as Product[],
       productSpec: {} as Product,
       allProductsData: {} as any,
+      // Filtros
+      allCategories: {} as Category[],
+      // APAGAR
+      // categories: [
+      //   {
+      //     name: "Categoria 1",
+      //     subCategories: [
+      //       { name: "Subcategoria 1", link: "/subcategoria1" },
+      //       { name: "Subcategoria 2", link: "/subcategoria2" },
+      //     ],
+      //     showSubCategories: false
+      //   },
+      //   {
+      //     name: "Categoria 2",
+      //     subCategories: [
+      //       { name: "Subcategoria 3", link: "/subcategoria3" },
+      //       { name: "Subcategoria 4", link: "/subcategoria4" },
+      //     ],
+      //     showSubCategories: false
+      //   },
+      //   {
+      //     name: "Categoria 3",
+      //     subCategories: [
+      //       { name: "Subcategoria 5", link: "/subcategoria5" },
+      //       { name: "Subcategoria 6", link: "/subcategoria6" },
+      //     ],
+      //     showSubCategories: false
+      //   }]
     };
   },
   // A fazer antes de montar o componente
@@ -134,14 +163,19 @@ export default defineComponent({
     // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(this.$route.query.page) || 1;
     const pageSize = parseInt(this.$route.query.pageSize) || 24;
-    console.log("Página do route: " + page)
+    // console.log("Página do route: " + page)
     // const allProductsData = await fetchAllProducts();
     const allProductsData = await fetchAllProducts(page, pageSize);
     const allProducts = allProductsData.data.items;
-    
+    const allCategoriesData =  await fetchAllCategories();
+    const allCategories = allCategoriesData.data.items;
+     console.log("Este é o log: " + JSON.stringify(allCategories));
 
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;
+    this.allCategories = allCategories;
+
+   
 
     // for (let i = 0; i < allProducts.length; i++) {
     //   const productId = allProducts[i].id;
@@ -152,8 +186,8 @@ export default defineComponent({
       
     // }
 
-   console.log("Este é o log: " + allProductsData.data.pageSize);
-    this.productSpec = await (await fetchProduct(1)).data;
+  //  console.log("Este é o log: " + allProductsData.data.pageSize);
+    // this.productSpec = await (await fetchProduct(1)).data;
   },
   components: { ProductCard, Pagination, CustomViews}
 });
