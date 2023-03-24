@@ -5,7 +5,7 @@
   <button @click="handleButtonClick">Checkout</button>
   </div>
 </template>
-
+ 
 <script>
 import { defineComponent } from 'vue';
 import { loadStripe } from '@stripe/stripe-js';
@@ -18,7 +18,7 @@ export default defineComponent({
       // Collect shipping and address information
       const { error } = await stripe.redirectToCheckout({
         mode: 'payment',
-        lineItems: [
+        lineItems: [ 
           //TODO adicionar aqui os itens das encomendas
             { price: 'price_1Mm1UTHDTqePW6LH0Fvr1LMb', quantity: 1 },
           ],
@@ -30,7 +30,7 @@ export default defineComponent({
         billingAddressCollection: 'required',
         //TODO mudar os links
         successUrl: 'https://your-website.com/success',
-        cancelUrl: 'https://your-website.com/cancel',
+        cancelUrl: 'https://your-website.com/cancel', 
       });
 
       if (error) {
@@ -40,3 +40,4 @@ export default defineComponent({
   },
 });
 </script>
+ 
