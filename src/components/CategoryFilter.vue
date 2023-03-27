@@ -30,17 +30,33 @@
   <div style="max-height: 25vh; overflow-y: auto;" class="mb-5">
     <b-navbar toggleable class=" ">
       <b-navbar-nav class="w-100">
-        <b-navbar-item v-for="(category, index) in categories" :key="index" style="border-bottom: 1px solid #f3f3f3; "
+        <b-navbar-item v-for="(category, index) in filteredCategories" :key="index" style="border-bottom: 1px solid #f3f3f3; "
           class="py-2">
-          <div class="d-flex justify-content-between cat-txt"
+          <!-- <div class="d-flex justify-content-between cat-txt"
             @click="category.showSubCategories = !category.showSubCategories">
             <span class="">{{ category.name }}</span>
             <i class="bi bi-chevron-down grey-txt"></i>
+          </div> -->
+          <div class="d-flex justify-content-between cat-txt" @click="category.showSubCategories = !category.showSubCategories">
+            <span>{{ category.id }}</span>
+            <span>{{ category.name }}</span>
+            <!-- <i :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" v-show="category.subCategories"></i> -->
+            <!-- <i style="display: block !important;" :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" v-show="category.subCategories"></i> -->
+            <i :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" @click="category.showSubCategories = !category.showSubCategories" />
           </div>
+          <!-- <b-collapse id="navbar-toggle-collapse" is-nav v-model="category.showSubCategories">
+            <b-navbar-nav class="ml-auto p-3">
+              <p>a</p>
+              <b-nav-item v-for="(subCategory, index) in category.subCategories" :key="index"> -->
+                <!-- <router-link :to="subCategory.link">{{ subCategory.name }}</router-link> -->
+                <!-- <a>{{ subCategory.name }}</a>
+              </b-nav-item>
+            </b-navbar-nav>
+          </b-collapse> -->
           <b-collapse id="navbar-toggle-collapse" is-nav v-model="category.showSubCategories">
             <b-navbar-nav class="ml-auto p-3">
-              <b-nav-item v-for="(subCategory, index) in category.subCategories" :key="index">
-                <!-- <router-link :to="subCategory.link">{{ subCategory.name }}</router-link> -->
+             <!-- TODO arranjar isto de forma a que seja verdadeiramente automático -->
+              <b-nav-item v-for="(subCategory, index) in allSubCategoriesId1" :key="index">
                 <a>{{ subCategory.name }}</a>
               </b-nav-item>
             </b-navbar-nav>
@@ -51,81 +67,52 @@
   </div>
 </template>
 
-<!-- <script>
-
-  export default {
-      data() {
-        return {
-          categories: [
-            {
-              name: "Categoria 1",
-              subCategories: [
-                { name: "Subcategoria 1", link: "/subcategoria1" },
-                { name: "Subcategoria 2", link: "/subcategoria2" },
-              ],
-              showSubCategories: false
-            },
-            {
-              name: "Categoria 2",
-              subCategories: [
-                { name: "Subcategoria 3", link: "/subcategoria3" },
-                { name: "Subcategoria 4", link: "/subcategoria4" },
-              ],
-              showSubCategories: false
-            },
-            {
-              name: "Categoria 3",
-              subCategories: [
-                { name: "Subcategoria 5", link: "/subcategoria5" },
-                { name: "Subcategoria 6", link: "/subcategoria6" },
-              ],
-              showSubCategories: false
-            },
-            {
-              name: "Categoria 4",
-              subCategories: [
-                { name: "Subcategoria 7", link: "/subcategoria7" },
-                { name: "Subcategoria 8", link: "/subcategoria8" },
-              ],
-              showSubCategories: false
-            },
-            {
-              name: "Categoria 5",
-              subCategories: [
-                { name: "Subcategoria 9", link: "/subcategoria9" },
-                { name: "Subcategoria 10", link: "/subcategoria10" },
-              ],
-              showSubCategories: false
-            }, 
-            {
-              name: "Categoria 6",
-              subCategories: [
-                { name: "Subcategoria 11", link: "/subcategoria11" },
-                { name: "Subcategoria 12", link: "/subcategoria12" },
-              ],
-              showSubCategories: false
-            },
-            {
-          name: "Categoria 6",
-          subCategories: [
-            { name: "Subcategoria 11", link: "/subcategoria11" },
-            { name: "Subcategoria 12", link: "/subcategoria12" },
-          ],
-          showSubCategories: false
-        }
-          ]
-        };
-      }
-    };
-</script> -->
 <script>
+// console.log(JSON.stringify(categories))
+import { fetchCategorySubCategories  } from "@/api";
+// import { Category } from "@/types";
+// import { defineComponent } from "vue";
 export default {
+  data() {
+    return {
+      // allCategories: {} as Category[],
+    };
+  },
   props: {
     categories: {
       type: Array,
       required: true,
     },
   },
+   computed: {
+    filteredCategories() {
+      const filtered = [];
+      for (const category of this.categories) {
+        // console.log("parent: "+ category.parent)
+        // Vê se o parent é null
+        if (!category.parent && !filtered.some((c) => c.name === category.name)) {
+        // if (!filtered.some((c) => c.name === category.name)) {
+          filtered.push(category);
+        }
+      }
+      // return filtered;
+      return filtered.sort((a, b) => a.name.localeCompare(b.name));
+      // return this.categories.filter((category) => category.parent === 1);
+    },
+
+    // toggleSubCategories(category) {
+    //   console.log("fui ativado")
+    //   category.showSubCategories = !category.showSubCategories;
+    // }
+  },
+
+  async beforeMount() {
+
+    // TODO mudar isto para depois ser automático, ainda só está para teste
+    const allSubCategoriesId1 = await fetchCategorySubCategories(1);
+    this.allSubCategoriesId1 = allSubCategoriesId1.data.items;
+  },
+  
 };
 </script>
 

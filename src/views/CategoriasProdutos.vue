@@ -17,7 +17,9 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <CategoryFilter :categories="categories"></CategoryFilter>
+          <!-- Por enquanto limitado a apenas 10 -->
+          <!-- Envia todas independemente se é pai ou não -->
+          <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter>
         </div>
 
         <div id="price-filter">
@@ -169,7 +171,9 @@ export default defineComponent({
     const allProducts = allProductsData.data.items;
     const allCategoriesData =  await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
-     console.log("Este é o log: " + JSON.stringify(allCategories));
+    // console.log("Este é o log: " + JSON.stringify(allCategories));
+    // console.log("Quantidade de cats: " + allCategories.length);
+    //  console.log("Quantidade de cats: " + allCategories.type);
 
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;

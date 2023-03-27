@@ -7,5 +7,5 @@ export const fetchAllCategories = (search?: string) =>
 // export const fetchCategory = (specId: number) => 
 //     api.get<Category[]>(`/categories/${specId}`);
 
-// export const fetchCategorySubCategories = (specId: number) => 
-//     api.get<Category[]>(`/categories/${specId}/categories`);
+export const fetchCategorySubCategories = (specId: number) => 
+    api.get<Category[]>(`/categories/${specId}/categories`);
