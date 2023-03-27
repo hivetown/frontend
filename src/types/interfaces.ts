@@ -29,5 +29,10 @@ export interface Consumer {
     email: string;
     phone: string;
     vat: string;
-    
+}
+
+export interface ApiRequest {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    data?: any;
 }
