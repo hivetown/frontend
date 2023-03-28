@@ -37,26 +37,17 @@
             <span class="">{{ category.name }}</span>
             <i class="bi bi-chevron-down grey-txt"></i>
           </div> -->
-          <div class="d-flex justify-content-between cat-txt" @click="category.showSubCategories = !category.showSubCategories">
-            <span>{{ category.id }}</span>
+          <div class="d-flex justify-content-between cat-txt" @click="category.showSubCategories = !category.showSubCategories; fetchSubCategories(category.id)">
+            <!-- <span>{{ category.id }}</span> -->
             <span>{{ category.name }}</span>
-            <!-- <i :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" v-show="category.subCategories"></i> -->
-            <!-- <i style="display: block !important;" :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" v-show="category.subCategories"></i> -->
-            <i :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" @click="category.showSubCategories = !category.showSubCategories" />
+            <i :class="{ 'bi bi-chevron-down': !category.showSubCategories, 'bi bi-chevron-up': category.showSubCategories }" @click="category.showSubCategories = !category.showSubCategories; fetchSubCategories(category.id)" />
           </div>
-          <!-- <b-collapse id="navbar-toggle-collapse" is-nav v-model="category.showSubCategories">
-            <b-navbar-nav class="ml-auto p-3">
-              <p>a</p>
-              <b-nav-item v-for="(subCategory, index) in category.subCategories" :key="index"> -->
-                <!-- <router-link :to="subCategory.link">{{ subCategory.name }}</router-link> -->
-                <!-- <a>{{ subCategory.name }}</a>
-              </b-nav-item>
-            </b-navbar-nav>
-          </b-collapse> -->
+       
           <b-collapse id="navbar-toggle-collapse" is-nav v-model="category.showSubCategories">
             <b-navbar-nav class="ml-auto p-3">
+              
              <!-- TODO arranjar isto de forma a que seja verdadeiramente automático -->
-              <b-nav-item v-for="(subCategory, index) in allSubCategoriesId1" :key="index">
+              <b-nav-item v-for="(subCategory, index) in parentSubcategories" :key="index">
                 <a>{{ subCategory.name }}</a>
               </b-nav-item>
             </b-navbar-nav>
@@ -100,17 +91,27 @@ export default {
       // return this.categories.filter((category) => category.parent === 1);
     },
 
-    // toggleSubCategories(category) {
-    //   console.log("fui ativado")
-    //   category.showSubCategories = !category.showSubCategories;
-    // }
+  },
+  // TODO Resolver o loading que só funciona quando se clica na seta uma segunda vez
+  // TODO filtrar as subcategorias também para evitar repetidos e ordenar alfabeticamente
+   methods: {
+     async fetchSubCategories(id) {
+      var fetchedSubcategories = [];
+      // fetchedSubcategories = await fetchCategorySubCategories(id);
+      // Vai apenas buscar as subcategorias que não se repetem (isto é mesmo mais eficiente ou continua a ser igual?)
+      fetchedSubcategories = (await fetchCategorySubCategories(id)).data.items.filter((subCategory, index, subCategories) => subCategories.findIndex((otherSubCategory) => otherSubCategory.name === subCategory.name) === index);
+       this.parentSubcategories = fetchedSubcategories;
+      // this.parentSubcategories = fetchedSubcategories.data.items;
+      console.log("Subcats:" + JSON.stringify(this.parentSubcategories));
+      return this.parentSubcategories;
+    },
   },
 
   async beforeMount() {
-
+    var parentSubcategories = [];
     // TODO mudar isto para depois ser automático, ainda só está para teste
-    const allSubCategoriesId1 = await fetchCategorySubCategories(1);
-    this.allSubCategoriesId1 = allSubCategoriesId1.data.items;
+    // const allSubCategoriesId1 = await fetchCategorySubCategories(1);
+    // this.allSubCategoriesId1 = allSubCategoriesId1.data.items;
   },
   
 };
