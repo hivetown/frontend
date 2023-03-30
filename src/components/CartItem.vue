@@ -66,57 +66,113 @@ export default defineComponent({
   },
   methods: {
 async handleFunction() {
-  const { product, price } = await this.handleButtonClick();
-  await this.handleButtonClick2(price);
+  //this.payment();
+ // this.check();
+ const products = await this.handleButtonClick();
+ await this.handleButtonClick2(products);
 },
+
 //adiciona os elementos do carrinho ao stripe
 async handleButtonClick() {
   const stripe = Stripe('sk_test_51MhZqeHDTqePW6LHlfCQVPTdj9maImhHRDGXhbDuk6r9CCHdHQkh9Spb2t3hbQinmnvSDArC7j4h6aYktxyXZaT200u2amKFwo');
-  const product = await stripe.products.create({
-    name: this.$refs.productName.innerText,
-    description: this.$refs.productDetails.innerText,
-    images: [this.$refs.productImage.src],
+  const products = [];
+//TODO por aqui um for que corre todos os produtos do carrinho a adicionar
+  // Adiciona o primeiro produto
+  const product1 = await stripe.products.create({
+    name: "IPHONE 3342",
+    description: "girinho",
+    images: ["https://i.imgur.com/o2fKskJ.jpg"],
     metadata: {
       maker: 'mediamarkt',
       url: 'https://google.com',
       id: '1313',
     },
   });
-  const price = await stripe.prices.create({
-    unit_amount: (parseInt(this.$refs.productPrice.innerText) * 100),
+  const price1 = await stripe.prices.create({
+    unit_amount: (100 * 100),
     currency: 'eur',
-    product: product.id,
+    product: product1.id,
+    price: product1.price,
   });
-  console.log(product, price);
-  return { product, price }; // return both product and price values
+ // console.log(product1, price1);
+  
+  // Adiciona o segundo produto
+  const product2 = await stripe.products.create({
+    name: "Iphone x",
+    description: "iphone preto muito giro",
+    images: ["https://i.imgur.com/GQnIUfs.jpg"],
+    metadata: {
+      maker: 'mediamarkt',
+      url: 'https://google.com',
+      id: '1314',
+    },
+  });
+  const price2 = await stripe.prices.create({
+    unit_amount: (145 * 100),
+    currency: 'eur',
+    product: product2.id,
+    price: product2.price,
+  });
+   // Adiciona o terceiro produto
+   const product3 = await stripe.products.create({
+    name: "Iphone x",
+    description: "iphone preto muito giro",
+    images: ["https://i.imgur.com/GQnIUfs.jpg"],
+    metadata: {
+      maker: 'mediamarkt',
+      url: 'https://google.com',
+      id: '1314',
+    },
+  });
+  const price3 = await stripe.prices.create({
+    unit_amount: (145 * 100),
+    currency: 'eur',
+    product: product2.id,
+    price: product2.price,
+  });
+ // console.log(product2, price2);
+
+  // Adiciona os produtos ao array
+  products.push({ product: product1, price: price1 });
+  products.push({ product: product2, price: price2 });
+  products.push({ product: product3, price: price3 });
+
+
+
+  console.log(products);
+
+  return products;
 },
+
+
+
 //paga a encomenda anterior
-async handleButtonClick2(price) {
+async handleButtonClick2(products) {
   const stripe = await loadStripe('pk_test_51MhZqeHDTqePW6LHc3kVGIHMC0vifWpxLpzyQtw2fpcjA2vfVSY45sPxR3MknV53X4NLXSsmXlzCSGdO8OgRY2kq002okkihO7');
+  
+  const lineItems = products.map(product => {
+    return {
+      price: product.price.id,
+      quantity: 1,
+    };
+  });
+
   const { error } = await stripe.redirectToCheckout({
     mode: "payment",
-    lineItems: [
-      {
-        price: price.id, // use the price id from handleButtonClick() function
-        quantity: parseInt(this.value),
-      },
-    ],
+    lineItems: lineItems,
     customerEmail: "customer@example.com",
     shippingAddressCollection: {
-      allowedCountries: ["US", "CA", "PT", "FR"],
+      allowedCountries: ["US", "CA", "PT", "FR", "ES"], //TODO ver mais que paises
     },
     billingAddressCollection: "required",
-    successUrl: "https://your-website.com/success",
-    cancelUrl: "https://your-website.com/cancel",
+    successUrl: "http://localhost:5173/success",
+    cancelUrl: "http://localhost:5173/carrinho",
   });
+  
   if (error) {
     console.error(error.message);
   }
 },
-
-
-
-
 
 
   },

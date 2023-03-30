@@ -9,6 +9,8 @@ import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Order from "./views/Order.vue";
 import AdressForm from "./views/AdressForm.vue";
+import Success from "./views/Success.vue";
+import Cancel from "./views/Cancel.vue";
 
 
 const routes = [
@@ -58,6 +60,16 @@ const routes = [
     path: "/envio",
     name: "AdressForm",
     component: AdressForm,
+},
+{
+    path: "/success",
+    name: "Success",
+    component: Success,
+},
+{
+    path: "/cancel",
+    name: "Cancel",
+    component: Cancel,
 },
 ];
 
