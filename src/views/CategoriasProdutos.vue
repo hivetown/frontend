@@ -20,6 +20,7 @@
           <!-- Por enquanto limitado a apenas 10 -->
           <!-- Envia todas independemente se é pai ou não -->
           <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter>
+           <!-- <CategoryFilter :categories="allCategories"></CategoryFilter> -->
         </div>
 
         <div id="price-filter">
