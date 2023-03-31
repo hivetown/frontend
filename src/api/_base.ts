@@ -5,16 +5,20 @@ import store from "../store";
 function makeApi(baseURL: string, options: ApiRequest = {}) {
     const headers = { ...options?.headers };
 
-    // Inject the token into the headers
-    const { token } = store.state;
-    if (token) {
-        headers.Authorization = `Bearer ${token}`;
-    }
-
     const api = axios.create({
         baseURL,
         ...options,
         headers,
+    });
+
+    api.interceptors.request.use((config) => {
+        // Inject the token into the headers
+        const { token } = store.state;
+        if (token) {
+            headers.Authorization = `Bearer ${token}`;
+        }
+
+        return config;
     });
 
     return api;
