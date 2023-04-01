@@ -138,12 +138,6 @@ export default {
 </script>
 
 <style>
-.login {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-}
 
 /* align loginLink with Register button */
 #loginLink {
