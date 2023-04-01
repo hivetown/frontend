@@ -113,6 +113,17 @@ export default {
   }
 }
 
+// create method checkToken() that checks if there's a token in the cookie and if it's equal to the token in store
+// if it's not equal, return false
+// if it's equal, return true
+function checkToken() {
+  const token = this.$cookies.get('token')
+  if (token === this.$store.state.token) {
+	return true
+  } else {
+	return false
+  }
+}
 
 </script>
 
