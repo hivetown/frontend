@@ -2,8 +2,8 @@
     <div>
         <b-navbar toggleable class=" ">
             <b-navbar-nav class="w-100">
-                <b-navbar-item v-for="(category, index) in filteredCategories" :key="index"
-                    style="border-bottom: 1px solid #f3f3f3; " class="py-2">
+                <b-navbar-item v-for="(category, index) in filteredCategories" :key="index" 
+                    style="border-bottom: 1px solid #f3f3f3;" class="py-2">
                     <div class="d-flex justify-content-between cat-txt" @click.stop="toggleCategory(category)">
                         <span>{{ category.id }}</span>
                         <span>{{ category.name }}</span>
@@ -13,7 +13,9 @@
                         }" @click.stop="toggleCategory(category)" />
                     </div>
                     <b-collapse v-model="category.showSubCategories">
-                        <SubCategory :sub-categories="category.subCategories" />
+						<template v-if="category.showSubCategories">
+                        	<Category :categories="category.subCategories" />
+						</template>
                     </b-collapse>
                 </b-navbar-item>
             </b-navbar-nav>
@@ -22,7 +24,6 @@
 </template>
 
 <script>
-import SubCategory from "@/components/SubCategory.vue";
 import { fetchCategorySubCategories } from "@/api";
 
 export default {
@@ -30,11 +31,7 @@ export default {
         categories: {
             type: Array,
             required: true,
-        },
-        subCategories: {
-            type: Array,
-            required: false,
-        },
+        }
     },
     data() {
         return {
@@ -44,13 +41,7 @@ export default {
     },
     computed: {
         filteredCategories() {
-            const filtered = [];
-            for (const category of this.categories) {
-                if (!category.parent && !filtered.some((c) => c.name === category.name)) {
-                    filtered.push(category);
-                }
-            }
-            return filtered.sort((a, b) => a.name.localeCompare(b.name));
+            return this.categories;
         },
     },
     methods: {
@@ -62,15 +53,13 @@ export default {
                 category.subCategories = subCategories;
             }
         },
-        toggleCategory(category) {
-            category.showSubCategories = !category.showSubCategories;
-            if (category.showSubCategories && !category.subCategories) {
-                this.fetchSubCategories(category.id);
+        async toggleCategory(category) {
+			const nextState = !category.showSubCategories;
+			if (nextState && !category.subCategories) {
+				await this.fetchSubCategories(category.id);
             }
+			category.showSubCategories = nextState
         },
-    },
-    components: {
-        SubCategory,
     },
 };
 </script>
