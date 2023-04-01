@@ -32,8 +32,21 @@
 							<router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Carrinho</router-link>
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
+						
+						<div class="d-flex" v-if="!$store.state.user">
+							<b-avatar>
+								class="nav-item" 
+								style="background-color: #f3f3f3 !important; 
+								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
+							</b-avatar>
+							<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
+							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
+						</div>
+
 					</div>
-					<div class="d-flex nav-items-right">
+
+					<div class="d-flex nav-items-right" v-if="$store.state.user">
 						<router-link to="/conta">
 							<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 									<!-- TODO badges das notificações  -->
@@ -41,7 +54,7 @@
 						</router-link>
 						<b-nav-item-dropdown right>
 							<b-dropdown-item href="#">Definições</b-dropdown-item>
-							<b-dropdown-item href="#">Terminar Sessão</b-dropdown-item>
+							<b-dropdown-item @click="$store.dispatch('logout')" href="#">Terminar Sessão</b-dropdown-item>
 						</b-nav-item-dropdown>
 					</div>
 				</b-navbar-nav>
@@ -85,6 +98,23 @@
   	</div>
 
 </template>
+
+
+
+<script>
+import { onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+export default {
+  setup() {
+    const store = useStore()
+    onBeforeMount(() => {
+      store.dispatch('fetchUser')
+    })
+  }
+}
+
+
+</script>
 
 <style>
 	#logo img{
