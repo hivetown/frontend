@@ -1,6 +1,6 @@
-import { Consumer } from "../types/interfaces";
+import { Consumer, CreateConsumer } from '../types/interfaces';
 import { api } from "./_base";
 
 // consumer is consumer or supplier
-export const postConsumer = (consumer: Consumer) => 
+export const postConsumer = (consumer: CreateConsumer) => 
     api.post("/consumers", consumer);

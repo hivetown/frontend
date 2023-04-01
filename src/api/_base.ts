@@ -14,8 +14,9 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     api.interceptors.request.use((config) => {
         // Inject the token into the headers
         const { token } = store.state;
+        console.log(token)
         if (token) {
-            headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`;
         }
 
         return config;

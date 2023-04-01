@@ -31,6 +31,15 @@ export interface Consumer {
     vat: string;
 }
 
+
+export interface CreateConsumer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
+
+
 export interface ApiRequest {
     headers?: Record<string, string>;
     params?: Record<string, string>;

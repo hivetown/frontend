@@ -13,11 +13,11 @@
             <input
                 type="text"
                 placeholder="Phone number"
-                v-model="register_form.phone_number" />
+                v-model="register_form.phone" />
             <input
                 type="text"
                 placeholder="NIF"
-                v-model="register_form.nif" />
+                v-model="register_form.vat" />
             <input
                 type="email"
                 placeholder="Email address"
@@ -28,9 +28,7 @@
                 v-model="register_form.password" />
             <input
                 type="submit"
-                value="Register"
-                method="post"
-                action="../api/consumers.ts" />
+                value="Register"/>
         </div>  
         </form>
 </template>

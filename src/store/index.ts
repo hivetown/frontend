@@ -5,6 +5,8 @@ import PrimeVue from "primevue/config";
 import router from "../router";
 import { auth } from '../components/firebase';
 
+import { postConsumer } from '../api/consumers';
+
 import { createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     signOut 
@@ -15,14 +17,6 @@ import { getCookie, setCookie, removeCookie } from './cookies'
 
 import firebase from 'firebase/app';
 
-// save token in local storage
-const saveToken = (token) => {
-  // delete current info in local storage
-    
-
-    localStorage.setItem('token', token)
-    console.log(token)
-}
 
 
 const saveUser = (uid) => {
@@ -117,10 +111,8 @@ export default createStore({
         user: {
             id: 0,
             name: '',
-            email: '',
             phone: '',
-            vat: '',
-            type: '',
+            email: '',
         }
     },
     mutations: {
@@ -221,11 +213,21 @@ export default createStore({
         router.push('/')
       },
   
-      async register ({ commit}, details) {
-         const { email, password } = details
+      async register ({ commit}, details: {name: string, password: string, email: string, phone: string, vat: string}) {
+         const { email, password, name, phone, vat } = details
+         
   
         try {
           await createUserWithEmailAndPassword(auth, email, password)
+
+               
+          
+          commit('SET_TOKEN', await auth.currentUser?.getIdToken())
+          
+
+          postConsumer({ name, phone, vat })
+          
+          
           
         } catch (error) {
           switch(error.code) {
@@ -243,6 +245,12 @@ export default createStore({
               break
             default:
               alert("Something went wrong")
+              // delete user from firebase if exists
+              //if (auth.currentUser) {
+                // auth.currentUser.delete()
+                // db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).delete();
+                //deleteUser(auth.currentUser?.uid)
+              //}
           }
           
           return
