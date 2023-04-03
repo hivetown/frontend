@@ -20,30 +20,9 @@ const routes = [
         component: About,
     },
     {
-<<<<<<< HEAD
-        path: "/produtos",
-        name: "Produtos",
-        component: CategoriasProdutos,
-    },
-    {
         path: "/products",
         name: "Products",
-        component: Testes,
-    },
-
-    {
-        path: "/testes",
-        name: "Testes",
-        component: Testes,
-=======
-        path: "/products",
-        name: "Produtos",
         component: CategoriasProdutos,
-        // props: (route) => ({
-        //     page: parseInt(route.query.page) || 1,
-        //     pageSize: parseInt(route.query.pageSize) || 24,
-        //     sort: route.query.sort || "name:asc"
-        // }),
     },
     {
         path: "/favoritos",
@@ -57,15 +36,14 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: "/produto",
-        name: "Produto",
+        path: "/products/:specid",
+        name: "ProductDetails",
         component: Product,
     },
     {
         path: "/conta",
         name: "Conta",
         component: User,
->>>>>>> HVT-11-navegar-pelos-produtos-atraves-da-hierarquia-de-categorias
     },
 ];
 

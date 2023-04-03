@@ -18,7 +18,6 @@
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
           <!-- Por enquanto limitado a apenas 10 -->
-          <!-- Envia todas independemente se é pai ou não -->
           <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter>
            <!-- <CategoryFilter :categories="allCategories"></CategoryFilter> -->
         </div>
@@ -46,23 +45,25 @@
       <h3 class="parent dgreen-txt">Portáteis</h3>
       <!-- Diferentes vistas da página -->
       <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews>
-      
-      <!-- TODO por isto automático -->
-     <div id="page-products">
+    
+      <div id="page-products">
         <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice">
           <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
             <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
               <!-- <p>id: {{ product.id }} </p> -->
+              <!-- TODO - arranjar as imagens com base na coisa nova -->
               <ProductCard :productTitle="product.name" 
                            :productDescription="product.description"
-                           :productImage="product.images[0]"/>
+                           :productImage="product.images[0]"
+                           :productId = "product.id"/>
             </template>
           </div>
         </div>
       </div>
-      <!-- <p>A mostrar {{ allProductsData.data.pageSize }} de {{ allProductsData.data.totalItems }} produtos</p>
-      <p>Página: {{ allProductsData.data.page }} de {{ allProductsData.data.totalPages }}</p> -->
-      <Pagination :totalRows="allProductsData.data.totalItems" :perPage="allProductsData.data.pageSize" :currentPage="allProductsData.data.page"></Pagination>
+      <Pagination :totalRows="allProductsData.data.totalItems" 
+                  :perPage="allProductsData.data.pageSize" 
+                  :currentPage="allProductsData.data.page">
+      </Pagination>
       <p>Total de páginas: {{ allProductsData.data.totalPages }}</p>
     </div>
   </div>
@@ -73,7 +74,6 @@
 </template>
 
 <script setup lang="ts">
-
   // Filtros
   import CategoryFilter from "@/components/CategoryFilter.vue";
   import PriceFilter from "@/components/PriceFilter.vue";
@@ -85,29 +85,6 @@
   import CustomViews from "@/components/CustomViews.vue";
   import ProductCard from "@/components/ProductCard.vue";
   import CompareBanner from "@/components/CompareBanner.vue";
-
-  /////////////////////////////////////////////////////////////////////////////////////
-
-  // Código escrito pelo Lucas que provavelmente vai ser removido depois
-
-  // import { defineComponent } from "vue";
-
-  // import { onMounted, ref, watch } from "vue";
-  // import { fetchAllProducts } from "@/api";
-  // import { Product } from "@/types/interfaces";
-
-  // const products = ref<Product[]>([]);
-
-  // const fetchProducts = async (search?: string) => {
-  //   products.value = await fetchAllProducts(search).then((ps) => ps.data);
-  // };
-
-  // onMounted(fetchProducts);
-
-  // const search = ref("");
-  // watch(search, fetchProducts);
-  
-  /////////////////////////////////////////////////////////////////////////////////////
 </script>
 
 <!-- TODO atualizar tipagens -->
@@ -130,32 +107,6 @@ export default defineComponent({
       allProductsData: {} as any,
       // Filtros
       allCategories: {} as Category[],
-      // APAGAR
-      // categories: [
-      //   {
-      //     name: "Categoria 1",
-      //     subCategories: [
-      //       { name: "Subcategoria 1", link: "/subcategoria1" },
-      //       { name: "Subcategoria 2", link: "/subcategoria2" },
-      //     ],
-      //     showSubCategories: false
-      //   },
-      //   {
-      //     name: "Categoria 2",
-      //     subCategories: [
-      //       { name: "Subcategoria 3", link: "/subcategoria3" },
-      //       { name: "Subcategoria 4", link: "/subcategoria4" },
-      //     ],
-      //     showSubCategories: false
-      //   },
-      //   {
-      //     name: "Categoria 3",
-      //     subCategories: [
-      //       { name: "Subcategoria 5", link: "/subcategoria5" },
-      //       { name: "Subcategoria 6", link: "/subcategoria6" },
-      //     ],
-      //     showSubCategories: false
-      //   }]
     };
   },
   // A fazer antes de montar o componente
@@ -175,7 +126,6 @@ export default defineComponent({
     // console.log("Este é o log: " + JSON.stringify(allCategories));
     // console.log("Quantidade de cats: " + allCategories.length);
     //  console.log("Quantidade de cats: " + allCategories.type);
-
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;
     this.allCategories = allCategories;

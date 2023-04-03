@@ -2,7 +2,7 @@
     
     <!-- TODO fazer com que os dados sejam automáticos -->
     <div class="mb-5 product">
-        <router-link to="/produto">
+       <router-link :to="'/products/' + productId">
             <b-card class="prod-card">
                 <span class="position-absolute top-0 end-0 p-3 fav">
                     <i class="bi bi-heart" style="color: #DC6942; cursor:pointer;"></i>
@@ -29,7 +29,7 @@
                             v-b-tooltip.hover title="Adicionar ao carrinho">
                             <i class="bi bi-cart"></i>
                     </button>
-                    <router-link to="/produto">
+                    <router-link :to="'/products/' + productId">
                         <button type="button" class="btn btn-outline-secondary circle-btn" 
                                 v-b-tooltip.hover title="Ver produto">
                                 <i class="bi bi-eye"></i>
@@ -85,6 +85,10 @@ export default {
         }, 
         productImage: {
             type: String,
+            required: true,
+        },
+        productId: {
+            type: Number,
             required: true,
         },
     },
