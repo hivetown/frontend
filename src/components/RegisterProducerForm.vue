@@ -5,28 +5,26 @@
         <input
             type="text"
             placeholder="Empresa"
-            v-model="register_form.business" />
+            v-model="register_form.name" />
         <input
             type="text"
-            placeholder="Phone number"
-            v-model="register_form.phone_number" />
+            placeholder="Telemóvel"
+            v-model="register_form.phone" />
         <input
             type="text"
             placeholder="NIF"
-            v-model="register_form.nif" />
+            v-model="register_form.vat" />
         <input
             type="email"
-            placeholder="Email address"
+            placeholder="Email"
             v-model="register_form.email" />
         <input
             type="password"
-            placeholder="Password"
+            placeholder="Palavra passe"
             v-model="register_form.password" />
         <input
             type="submit"
-            value="Register"
-            method="post"
-            action="../api/producers.ts" />
+            value="Registar" />
     </div>  
     </form>
 </template>

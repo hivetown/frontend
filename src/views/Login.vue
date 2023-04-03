@@ -13,7 +13,7 @@
 				<div class="grid-item">
 				<input 
 					type="password" 
-					placeholder="Password" 
+					placeholder="Palavra passe" 
 					v-model="login_form.password" />
 				</div>
 				

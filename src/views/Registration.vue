@@ -2,19 +2,16 @@
 	<main class="login">
 		<section class="forms">
 
-			<!-- <form class="register" @submit.prevent="register"> -->
-                <!-- create a radio button to choose if you are a consumer or supplier -->
-				<!-- and make post request to the backend using "../api/consumers.ts" -->
+			
                 <div class="p-field-radiobutton">
-                    <p>Are you a consumer or a supplier?</p>
+                    <p>É um Consumidor ou um Fornecedor?</p>
                       <input type="radio" id="consumer" name="consumer_supplier" checked @click="saveValue('Consumer')">
-                      <label for="consumer">Consumer</label>
+                      <label for="consumer">Consumidor</label>
                       <input type="radio" id="supplier" name="consumer_supplier" @click="saveValue('Producer')">
-                      <label for="supplier">Supplier</label>                    
+                      <label for="supplier">Fornecedor</label>                    
                    
 
-				<!-- if value returned in saveValue() is consumer, then show the consumer registration form -->
-				<!-- var a is equaal to value returned in saveValue() -->	
+				
 				
 				<div v-if="userType == 'Consumer'">
 					
@@ -101,12 +98,12 @@
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import router from '../router';
 import AuthConsumer from '../components/AuthConsumer.vue';
 import RegisterProducerForm from '../components/RegisterProducerForm.vue';
-
+import state from '../store/index';
 export default {
 	components: {
 		AuthConsumer, RegisterProducerForm
@@ -117,18 +114,35 @@ export default {
 		const register = () => {
 			store.dispatch('register', register_form.value);
 		}
+		//////////////////////////////////////
+		const tipo = computed(() => state.tipo);
+		//////////////////////////////////////
 		// create ref to save the value of the radio button
 		const userType = ref('Consumer');
 		// create function to save the value of the radio button
 		function saveValue(radioValue) {
 			// Get the value of the input field with id="supplier"
+			// userType.value = radioValue;
+			//////////////////////////////////////
+			state.tipo = radioValue;
+			//////////////////////////////////////
 			userType.value = radioValue;
+			// let type = userType.value;
+			// save the value of the radioValue in the store
+			// store.dispatch('userType', userType.value);
+			console.log("userType_registo1: ", userType.value);
 		}
+		function getUserType() {
+			console.log("userType_registo2: ", userType.value);
+      		// return userType.value;
+			return tipo.value;
+   		}
 		return {
 			register_form,
 			register,
 			userType,
-			saveValue
+			saveValue,
+			getUserType
 		}
 	}
 }

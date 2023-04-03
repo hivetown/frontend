@@ -6,6 +6,7 @@ import router from "../router";
 import { auth } from '../components/firebase';
 
 import { postConsumer } from '../api/consumers';
+import { postProducer } from '../api/producers';
 
 import { createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -17,7 +18,13 @@ import { getCookie, setCookie, removeCookie } from './cookies'
 
 import firebase from 'firebase/app';
 
+import saveValue from '../views/Registration.vue';
+import userType from '../views/Registration.vue';
+// import getUserType from '../views/Registration.vue';
 
+import Registration from '../views/Registration.vue';
+
+import { useStore } from 'vuex'
 
 const saveUser = (uid) => {
   // add new user to database
@@ -224,10 +231,25 @@ export default createStore({
           
           commit('SET_TOKEN', await auth.currentUser?.getIdToken())
           
+          
 
-          postConsumer({ name, phone, vat })
           
+
+
+          const userType = Registration.setup().getUserType();
+          console.log("userType_index: ", userType)
+
+            
           
+          if (userType == "Consumer") {
+              postConsumer({ name, phone, vat })
+              console.log("Im in Consumer")
+          }
+          // if saveValue == "Producer" then post to producer collection
+          else if (userType == "Producer") {
+              postProducer({ name, phone, vat })
+              console.log("Im in Producer")
+          }
           
         } catch (error) {
           switch(error.code) {

@@ -4,15 +4,15 @@
         <div>
             <input
                 type="text"
-                placeholder="Name"
+                placeholder="Nome"
                 v-model="register_form.name" />
             <input
                 type="text"
-                placeholder="Address"
+                placeholder="Morada"
                 v-model="register_form.address" />
             <input
                 type="text"
-                placeholder="Phone number"
+                placeholder="Telemóvel"
                 v-model="register_form.phone" />
             <input
                 type="text"
@@ -20,15 +20,15 @@
                 v-model="register_form.vat" />
             <input
                 type="email"
-                placeholder="Email address"
+                placeholder="Email"
                 v-model="register_form.email" />
             <input
                 type="password"
-                placeholder="Password"
+                placeholder="Palavra passe"
                 v-model="register_form.password" />
             <input
                 type="submit"
-                value="Register"/>
+                value="Registar"/>
         </div>  
         </form>
 </template>

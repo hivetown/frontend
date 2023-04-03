@@ -33,6 +33,10 @@
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
 						
+						<!-- <div class="d-flex" v-if="!$store.state.user || checKToken"> -->
+						<!-- if user is not logged in or token has changed based on api.interceptors.response -->
+						
+						<!-- <div class="d-flex" v-if="!$store.state.user && listenCookieChange()"> -->
 						<div class="d-flex" v-if="!$store.state.user">
 							<b-avatar>
 								class="nav-item" 
@@ -103,27 +107,38 @@
 
 <script>
 import { onBeforeMount } from 'vue'
-import { useStore } from 'vuex'
+import { mapState, useStore } from 'vuex'
+// import { listenCookieChange } from '../api/_base'
 export default {
   setup() {
     const store = useStore()
     onBeforeMount(() => {
       store.dispatch('fetchUser')
     })
-  }
+	}
 }
+  
 
-// create method checkToken() that checks if there's a token in the cookie and if it's equal to the token in store
-// if it's not equal, return false
-// if it's equal, return true
-function checkToken() {
-  const token = this.$cookies.get('token')
-  if (token === this.$store.state.token) {
-	return true
-  } else {
-	return false
-  }
-}
+// function listenCookieChange(callback, interval = 1000) {
+//   const { token } = store.state;
+//   setInterval(()=> {
+// 	// save content of cookie in variable
+// 	let cookie = document.cookie;
+//     if (cookie !== token) {
+//       try {
+// 		// the next line will throw an error if the cookie has been deleted
+//         callback({oldValue: lastCookie, newValue: cookie});
+// 		return true;
+//       } catch {
+// 		console.log("Cookie deleted");
+// 		return false;
+//       }
+//     }
+//   }, interval);
+// }
+
+
+
 
 </script>
 

@@ -38,6 +38,12 @@ export interface CreateConsumer {
     vat: string;
 }
 
+export interface CreateProducer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
 
 
 export interface ApiRequest {
