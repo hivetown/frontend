@@ -2,11 +2,16 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
+<<<<<<< HEAD
 import CategoriasProdutos from "./views/CategoriasProdutos.vue";
 import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+=======
+import Product from "./views/Product.vue";
+import Teste from "./views/Teste.vue";
+>>>>>>> HVT-5-ver-detalhes-de-produtos
 
 const routes = [
     {
