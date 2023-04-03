@@ -3,7 +3,7 @@
 		<b-navbar toggleable="lg" type="dark">
 			<div id="logo" class="d-block d-sm mx-auto text-center">
 				<img src="logo.svg">
-				<b-navbar-brand class="p-2 logo-txt" href="#">hiveTown</b-navbar-brand>
+				<b-navbar-brand class="p-2 logo-txt" to="/">hiveTown</b-navbar-brand>
 			</div>
 
 			<!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
@@ -19,7 +19,8 @@
 								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 								<i class="bi bi-heart mx-auto" style="color: #164A41" font-scale="1.5"></i>
 							</b-avatar>
-							<p class="p-2 grey-txt" style="font-weight: 500;">Favoritos</p>
+							<router-link to="/favoritos" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Favoritos</router-link>
+							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
 						</div>
 						<div class="d-flex">
 							<b-avatar 
@@ -28,13 +29,16 @@
 								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
 							</b-avatar>
-							<p class="p-2 grey-txt" style="font-weight: 500;">Carrinho</p>
+							<router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Carrinho</router-link>
+							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
 					</div>
 					<div class="d-flex nav-items-right">
-						<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								<!-- TODO badges das notificações  -->
-						</b-avatar> 
+						<router-link to="/conta">
+							<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+									<!-- TODO badges das notificações  -->
+							</b-avatar> 
+						</router-link>
 						<b-nav-item-dropdown right>
 							<b-dropdown-item href="#">Definições</b-dropdown-item>
 							<b-dropdown-item href="#">Terminar Sessão</b-dropdown-item>

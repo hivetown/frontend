@@ -22,3 +22,16 @@ export interface Producer {
     vat: string;
     products?: Product[];
 }
+
+export interface Category {
+    id: number;
+    name: string;
+    parent: number;
+}
+
+// export interface CategoryData {
+//     items: Category[];
+//     page: number;
+//     pageSize: number;
+//     totalPages: number;
+// }
