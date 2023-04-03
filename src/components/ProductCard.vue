@@ -18,7 +18,9 @@
                 <h5>{{ productTitle }}</h5>
                 <p class="grey-txt mt-3">{{productDescription}}</p>
                 <div class="d-flex gap-2">
-                    <h4 class="mb-3">{{productPrice[0]}}€ - {{ productPrice[1] }}€</h4>
+                    <h4 class="mb-3">{{ productPrice && productPrice.length > 1 ? 
+                                        productPrice[0] + '€ - ' + productPrice[1] + '€' : '' }}
+                    </h4>
                     <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
                     <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
                 </div>
@@ -75,6 +77,10 @@
 <script>
 export default {
     props: {
+        productId: {
+            type: String,
+            required: true,
+        },
         productTitle: {
             type: String,
             required: true,

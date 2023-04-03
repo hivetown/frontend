@@ -70,7 +70,7 @@
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
                <!-- {{ productSpec }} -->
-               <h3 class="">999€ {{ productSpec.minPrice }}</h3>
+               <h3 class="">{{ productSpec[0] }}€ - {{ productSpec[1] }}</h3>
                <h5 class="grey-txt text-decoration-line-through">999€</h5>
             </div>
 
@@ -298,7 +298,7 @@
          // Carregar os dados do produto da BD
          const productSpec = await fetchProduct(this.$route.params.specid);
          this.productSpec = productSpec.data;
-         console.log("dados: "+ JSON.stringify(productSpec));
+         // console.log("dados: "+ JSON.stringify(productSpec));
 
          // Carregar a imagem principal do produto
          this.selectedImage = this.productSpec.images[0].url;
