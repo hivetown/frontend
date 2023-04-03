@@ -16,9 +16,7 @@
 
       <!-- Imagens -->
       <div class="d-flex flex-row justify-content-center w-50">
-
          <div class="d-flex flex-column align-items-center w-75 h-75 rounded-3">
-            
             <!-- TODO ver se é preciso um fundo por causa das imagens -->
             <!-- Coração dos favoritos -->
             <div class="d-flex justify-content-end w-100 px-4 py-2"  style="z-index:1212;">
@@ -30,23 +28,21 @@
             </div>
 			
             <!-- Imagem grande -->
-            <img class="square-image rounded-3" :src="selectedImage" style="margin-top:-10%;">
+            <img class="square-image rounded-3" :src="selectedImage" :alt="selectedImageAlt" style="margin-top:-10%;" >
 
             <!-- Imagens alternativas -->
 				<div>
-               <!-- TODO mmelhorar a navegação das imagens -->
                <div class="d-flex justify-content-between align-items-center mt-3 gap-3" style="overflow: auto;">
                   <img class="square-image alternative-img rounded-3"
                      style="background-color: #f3f3f3;"
                      v-for="(image, index) in productSpec.images"
                      :key="index"
-                     :src="image"
+                     :src="image.url"
+                     :alt="image.alt"
                      @click="selectImage(index)" />
                </div>
-				</div>
-
+            </div>
 			</div>
-
 		</div>
 		
       <!-- Lado direito da página -->
@@ -54,6 +50,7 @@
 			<div class="w-75" style="min-height: 20vh;">
 
             <!-- Informação do produto -->
+            <!-- {{  productSpec }} -->
             <h1 class="product-title">{{ productSpec.name }}</h1>
 				<p class="grey-txt">{{ productSpec.description }}</p>
 
@@ -72,7 +69,8 @@
             <!-- TODO preço automático -->
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
-               <h3 class="">999€</h3>
+               <!-- {{ productSpec }} -->
+               <h3 class="">999€ {{ productSpec.minPrice }}</h3>
                <h5 class="grey-txt text-decoration-line-through">999€</h5>
             </div>
 
@@ -251,10 +249,8 @@
    // Componentes
    import ProductCard from "@/components/ProductCard.vue";
 
-   // API
    import { fetchProduct } from "@/api";
    import { Product } from "@/types";
-
    import { defineComponent, PropType } from 'vue';
 
    export default defineComponent({
@@ -269,15 +265,15 @@
       },
       data() {
          return {
-
             selectedImage: '', // Imagem selecionada
+            selectedImageAlt: '', // Alt da imagem selecionada
             isFavorite: false, // Se o produto está nos favoritos
-            quantity: 0, // Quantidade de produtos
+            quantity: 0, // Quantidade de produtos a comprar
             currentPage: "detalhes", // Página atual das tabs do produto
             
             // Dados da BD
             productSpec: {} as Product,
-         };
+         }; 
       },
       methods: {
          // Aumentar e diminuir a quantidade de produtos
@@ -292,17 +288,21 @@
          
          // Selecionar a imagem do produto a visualizar
          selectImage(index: number) {
-            this.selectedImage = this.productSpec.images[index];
+            this.selectedImage = this.productSpec.images[index].url;
+            this.selectedImageAlt = this.productSpec.images[index].alt;
          },
       },
 
       // A fazer antes de montar o componente
       async beforeMount() {
          // Carregar os dados do produto da BD
-         this.productSpec = await (await fetchProduct(1)).data.productSpec;
+         const productSpec = await fetchProduct(this.$route.params.specid);
+         this.productSpec = productSpec.data;
+         console.log("dados: "+ JSON.stringify(productSpec));
 
          // Carregar a imagem principal do produto
-         this.selectedImage = this.productSpec.images[0];
+         this.selectedImage = this.productSpec.images[0].url;
+         this.selectedImageAlt = this.productSpec.images[0].alt;
       },
       components: { ProductCard }
    });
