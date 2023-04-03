@@ -24,7 +24,7 @@
 
         <div id="price-filter">
           <h5 class="grey-txt mt-3">Preço</h5>
-          <PriceFilter></PriceFilter>
+          <PriceFilter :maxPrice="mostExpensiveProduct"></PriceFilter>
         </div>
 
         <div id="supplier-filter">
@@ -142,6 +142,13 @@ export default defineComponent({
 
   //  console.log("Este é o log: " + allProductsData.data.pageSize);
     // this.productSpec = await (await fetchProduct(1)).data;
+
+
+    // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
+    const maxPriceProduct = this.allProducts.reduce((prevProduct, currentProduct) => {
+      return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
+    });
+    this.mostExpensiveProduct = maxPriceProduct;
   },
   components: { ProductCard, Pagination, CustomViews}
 });
