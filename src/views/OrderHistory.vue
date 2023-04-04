@@ -2,7 +2,8 @@
   <div>
     <h1>Histórico de encomendas</h1>
     <br>
-    <OrderHistory/>
+    <!--<OrderHistory/>-->
+    <Exp/>
 <!--
     <ul>
       <li v-for="num in orders['totalItems'] " :key="num">{{ num-1 }}</li>
@@ -11,21 +12,9 @@
     </ul>
     <p>Codigo da encomenda: {{ orders['items'] && orders['items'][0] ? orders['items'][0]['id'] : '' }}</p>
   -->
-  <p>{{ orders }}</p>
-  <table>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Código da Encomenda</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="num in orders['totalItems']" :key="num">
-      <td>{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</td>
-    </tr>
-  </tbody>
-</table>
+  
 
+  
 <!--trocar o 0 pelo valor, ou seja fazer um for por cada encomenda-->
 
 
@@ -62,10 +51,12 @@
    watch(search, fetchProducts);
 </script>
 <script lang="ts">
+import Exp from "@/components/exp.vue";
 import OrderHistory from "@/components/OrderHistory.vue";
 export default{
   components: {
-  OrderHistory
+  OrderHistory,
+  Exp
   }
 }
 </script>
