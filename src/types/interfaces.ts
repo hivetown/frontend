@@ -38,7 +38,8 @@ export interface Address {
     longitude: number;
   }
   
-export interface User {
+
+export interface Consumer {
     id: number;
     name: string;
     email: string;
@@ -54,4 +55,27 @@ export interface Order {
     shippingAddress: Address;
     consumer?: User;
   }
-  
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    vat: string;
+    type: string;
+  }
+
+
+export interface CreateConsumer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
+
+
+export interface ApiRequest {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    data?: any;
+}
