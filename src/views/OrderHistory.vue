@@ -11,6 +11,7 @@
     </ul>
     <p>Codigo da encomenda: {{ orders['items'] && orders['items'][0] ? orders['items'][0]['id'] : '' }}</p>
   -->
+  <p>{{ orders }}</p>
   <table>
   <thead>
     <tr>
