@@ -9,8 +9,7 @@
       </div>
       <div class="tabela">
         <OrderDetails />
-        <h2 class="resumo">Valor total: 600€</h2>
-        <h4 class="resumo">2023/02/12</h4>
+        
     </div>
     </div>
     
@@ -42,11 +41,7 @@
   .tabela{
     margin-top: 180px;
   }
-  .resumo {
-    margin-top: 20px;
-    text-align: right;
-    margin-right: 90px;
-  }
+  
   .titulo {
     font-size: 30px;
   }

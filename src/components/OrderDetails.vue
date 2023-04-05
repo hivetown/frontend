@@ -1,5 +1,6 @@
 <template>
     <div class="table-container" style="overflow: auto">
+
     <table class="table table-striped">
   <thead>
     <tr>
@@ -8,64 +9,95 @@
       <th scope="col">Fornecedor</th>
       <th scope="col">Preço</th>
       <th scope="col">Quantidade</th>
+      <th scope="col">Status</th>
       <th scope="col">Total</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr v-for="num in orderItem['totalItems']" :key="num">
+
       <!--TODO por marcas e produto como links-->
-      <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td>
-      <td>Iphone X</td>
-      <td>MediaMarkt</td>
-      <td>550€</td>
-      <td>2</td>
-      <td>1100€</td>
+      <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> <!--TODO por imagens-->
+      <td>           
+        {{orderItem['items'][num-1]['producerProduct']['productSpec']['name'] }}
+      </td>
+      <td>
+        {{orderItem['items'][num-1]['producerProduct']['producer']['name'] }}
+      </td>
+      <td>
+        {{orderItem['items'][num-1]['price'] }}
+      </td>
+      <td>
+        {{orderItem['items'][num-1]['quantity'] }}
+      </td>
+      <td>
+        {{orderItem['items'][num-1]['status'] }}
+      </td>
+      <td>
+        {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }}
+        <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
+        
+
+      </td>
+
     </tr>
-    <tr>
-        <!--TODO trocar fotos-->
-      <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
-      <td>Capa Iphone x</td>
-      <td>Capas e companhia</td>
-      <td>10€</td>
-      <td>1</td>
-      <td>10€</td>
-    </tr>
-    <tr>
-      <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
-      <td>Água</td>
-      <td>Lidl</td>
-      <td>1€</td>
-      <td>3</td>
-      <td>3€</td>
-    </tr>
-    <tr>
-      <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
-      <td>Água</td>
-      <td>MediaMarkt</td>
-      <td>1€</td>
-      <td>3</td>
-      <td>3€</td>
-    </tr>
-    <tr>
-      <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
-      <td>Água</td>
-      <td>MediaMarkt</td>
-      <td>1€</td>
-      <td>3</td>
-      <td>3€</td>
-    </tr>
-    <tr>
-      <td><img src="https://i.imgur.com/GQnIUfs.jpg"></td>
-      <td>Água</td>
-      <td>MediaMarkt</td>
-      <td>1€</td>
-      <td>3</td>
-      <td>3€</td>
-    </tr>
+
+    
   </tbody>
 </table>
 </div>
+<br>
+<h5 class="resumo" id="data"></h5>
+<h3 class="resumo" id="totalSum"></h3>
+
 </template>
+<script setup lang="ts">
+  import Swal from 'sweetalert2';
+  import { onMounted, ref} from "vue";
+   import { fetchAllItems } from "../api";
+   import { fetchAllOrders } from "../api";
+
+   import { Order } from "../types/interfaces";
+   
+   const orderItem = ref<Order[]>([]); //array com os produtos
+    const orderItem2 = ref<Order[]>([]); //array com os produtos
+    var totalSum = 0;
+    var date = '';
+    const orders = ref<Order[]>([]);
+
+
+    const search = ref('');
+    onMounted(async () => {
+     
+   // const fetchOrders = async () => {
+   //   const ordersData = await Promise.all(
+    //    orderIds.value.map((id) => fetchAllItems(`${id}/items`))
+   //   );
+      const responseItem = await fetchAllItems('41');
+      orderItem.value=responseItem.data;
+      // do something with the orders
+      const responseItem2 = await fetchAllOrders('41');
+      orderItem2.value=responseItem.data;
+
+      const response = await fetchAllOrders('8');
+      orders.value = response.data;
+        //totalSum+=(item.id);
+     
+        for (let i = 0; i < orderItem.value.items.length; i++) {
+          totalSum += orderItem.value.items[i]['price'] * orderItem.value.items[i]['quantity'];
+        }
+        console.log(totalSum)
+        document.querySelector('#totalSum').textContent = "Total: " + totalSum + "€";
+        for (let i = 0; i < orders.value.items.length; i++) {
+          if (orders.value.items[i].id === 41) {
+            date = (orders.value.items[i].orderDate.substring(0, 10)  );
+            document.querySelector('#data').textContent =  date;
+
+          }
+        }
+
+    });
+</script>
 <style scoped>
 
   
@@ -117,8 +149,13 @@
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
     position: relative;
   }
+  .resumo {
+    margin-top: 20px;
+    text-align: right;
+    margin-right: 90px;
+  }
   .table-container {
-    max-height: 390px; /* Altura máxima da tabela */
+    max-height: 450px; /* Altura máxima da tabela */
     margin:auto;
     max-width: 90%;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
