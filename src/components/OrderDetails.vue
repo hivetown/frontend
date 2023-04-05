@@ -56,7 +56,6 @@
   import { onMounted, ref} from "vue";
    import { fetchAllItems } from "../api";
    import { fetchAllOrders } from "../api";
-
    import { Order } from "../types/interfaces";
    
    const orderItem = ref<Order[]>([]); //array com os produtos
