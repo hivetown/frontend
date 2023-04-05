@@ -8,8 +8,8 @@
       </ul>
       <p>Codigo da encomenda: {{ orders['items'] && orders['items'][0] ? orders['items'][0]['id'] : '' }}</p>
     -->
-  
-    
+ <!-- <p>{{ orderItem['items'] }}</p>
+  <h4>{{ orders }}</h4> -->
   <table style="border: 2px " class="table" >
         <thead >
           <tr>
@@ -96,25 +96,40 @@
     <p>codigo encomenda:</p>
     <p> {{ orders['items'][0] }} </p>-->
   
-  
-  
-  
-  
-  
     </div>
   </template>
 <script setup lang="ts">
   import Swal from 'sweetalert2';
   import { onMounted, ref, watch } from "vue";
    import { fetchAllOrders } from "../api";
+   import { fetchAllItems } from "../api";
    import { Order } from "../types/interfaces";
-  const orders = ref<Order[]>([]);
-  const fetchProducts = async (search?: string) => {
-     orders.value = await fetchAllOrders(search).then((ps) => ps.data);
-   };
-   onMounted(fetchProducts);
-   const search = ref("");
-   watch(search, fetchProducts);
+
+   const orders = ref<Order[]>([]);
+   const orderIds = ref<number[]>([]); //array com o id das encomendas
+   const orderItem = ref<Order[]>([]); //array com os produtos
+
+    const search = ref('');
+
+    onMounted(async () => {
+      //TODO trocar para o user logado
+      const response = await fetchAllOrders('8');
+      orders.value = response.data;
+      orders.value.items.forEach((item) => {
+        orderIds.value.push(item.id);
+      });
+   // });
+
+   // const fetchOrders = async () => {
+   //   const ordersData = await Promise.all(
+    //    orderIds.value.map((id) => fetchAllItems(`${id}/items`))
+   //   );
+
+      const responseItem = await fetchAllItems('41');
+      orderItem.value=responseItem.data;
+
+      // do something with the orders
+    });
 
 
    function cancelarEncomenda() {
@@ -150,12 +165,7 @@ function cancelarEncomendaImpossivel() {
     confirmButtonText: 'OK'
   });
 }
-
-
-
-   
 </script>
-
 
 
 
