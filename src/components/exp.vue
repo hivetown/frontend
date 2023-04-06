@@ -1,4 +1,6 @@
+
 <template>
+  <h3 v-if="orders['totalItems'] === 0"> Ainda não existem encomendas efetuadas!</h3>
       <div class="table-container" style="overflow: auto">
   <!--
       <ul>
@@ -11,13 +13,16 @@
  <!-- <p>{{ orderItem['items'] }}</p>
   <h4>{{ orders }}</h4> -->
   <!--<p>{{ orders }}</p>-->
-  <table style="border: 2px " class="table" >
+  <!--id do utlizador logado-->
+  <!--<p>{{ user['id'] }}</p>-->
+  <!--<p>{{orders['totalItems']}}</p>-->
+  <table v-if="orders['totalItems'] !== 0" style="border: 2px" class="table">
         <thead >
           <tr>
             <th></th>
             <th><h4>Encomenda</h4></th>
             <th><h4>Código da encomenda</h4></th>
-            <th><h4>Status</h4></th>
+            <th><h4>Estado</h4></th>
             <th id="coluna-data">
               <div class="data">
                 <h4>Data</h4>
@@ -95,19 +100,6 @@
       <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
   <!--trocar o 0 pelo valor, ou seja fazer um for por cada encomenda-->
   
-  
-  
-      <!--total items-->
-      <!---<p> {{ orders['totalItems'] }} </p>-->
-      <!--preco-->
-      <!--
-      <p>preco:</p>
-    <p> {{ orders['items'][1]['price'] }} </p>
-    <p>status:</p>
-    <p> {{ orders['items'][0]['status'] }} </p>
-    <p>codigo encomenda:</p>
-    <p> {{ orders['items'][0] }} </p>-->
-  
     </div>
   </template>
 <script setup lang="ts">
@@ -115,20 +107,25 @@
   import { onMounted, ref, watch } from "vue";
    import { fetchAllOrders } from "../api";
    import { fetchAllItems } from "../api";
-   import { Order } from "../types/interfaces";
+   import { fetchUser } from "../api";
+
+   import { Consumer, Order } from "../types/interfaces";
 
    const orders = ref<Order[]>([]);
    const orderIds = ref<number[]>([]); //array com o id das encomendas
    const orderItem = ref<Order[]>([]); //array com os produtos
-
-    const search = ref('');
-
+   //para ir buscar o que tem loggin
+   const user = ref<Consumer[]>([]);
+   const search = ref('');
     onMounted(async () => {
-      //TODO trocar para o user logado
-      const response = await fetchAllOrders();
+      const userItem = await fetchUser();
+      user.value=userItem.data;
+      //utilizador logado para por em fetchAllOrders (user.value.id);
+      const response = await fetchAllOrders(54);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
         orderIds.value.push(item.id);
+      
       });
    // });
 
@@ -227,6 +224,12 @@ export default {
     position: -ms-sticky;
     z-index: 2 ;
   }
+
+  h3 {
+    text-align: center;
+  margin-top: 250px; 
+margin-bottom:150px;
+}
   
   .table-container {
     max-height: 700px; /* Altura máxima da tabela */
