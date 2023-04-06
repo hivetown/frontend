@@ -50,11 +50,11 @@
         <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice">
           <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
             <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
-              <!-- {{ product }} -->
+              <!-- {{ product}} -->
               <ProductCard :productId="product.id"
                            :productTitle="product.name" 
                            :productDescription="product.description"
-                           :productImage="product.images[0]"
+                           :productImage="product.images[0]?.url"
                            :productPrice="[product.minPrice, product.maxPrice]"/>
             </template>
           </div>
