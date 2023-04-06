@@ -1,15 +1,6 @@
 <template>
-
    <!-- Caminho -->
-   <div class="parent mb-5 px-3">
-      <b-breadcrumb>
-         <b-breadcrumb-item href="#home">
-         <i class="bi bi-house-fill"></i>Home</b-breadcrumb-item>
-         <b-breadcrumb-item href="#foo">Foo</b-breadcrumb-item>
-         <b-breadcrumb-item href="#bar">Bar</b-breadcrumb-item>
-         <b-breadcrumb-item active>Baz</b-breadcrumb-item>
-      </b-breadcrumb>
-   </div>
+   <PathComponent></PathComponent>
 
    <!-- Detaçhes do produto -->
    <div class="d-flex parent">
@@ -50,7 +41,6 @@
 			<div class="w-75" style="min-height: 20vh;">
 
             <!-- Informação do produto -->
-            <!-- {{  productSpec }} -->
             <h1 class="product-title">{{ productSpec.name }}</h1>
 				<p class="grey-txt">{{ productSpec.description }}</p>
 
@@ -69,13 +59,22 @@
             <!-- TODO preço automático -->
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
-               <!-- {{ productSpec }} -->
+               <!-- TODO - arranjar o preço -->
                <h3 class="">{{ productSpec[0] }}€ - {{ productSpec[1] }}</h3>
                <h5 class="grey-txt text-decoration-line-through">999€</h5>
             </div>
+            <!-- <a href="#" class="">+{{productSpec.images.length-1}} vendedores desde 999€</a> -->
+            <div>
+               <a href="#" v-if="productSpec.images.length > 1">
+                  +{{ productSpec.images.length - 1 }} vendedores desde 999€
+               </a>
+               <a href="#" v-else-if="productSpec.images.length === 1">
+                  +{{ productSpec.images.length - 1 }} vendedor desde 999€
+               </a>
+            </div>
 
             <!-- Quantidade -->
-            <div class="d-flex align-items-center gap-4" style="margin-top: 2%;">
+            <div class="d-flex align-items-center gap-4" style="margin-top: 4%;">
 
                <!-- Botão da quantidade -->
                <div class="quantity-div d-flex justify-content-between rounded-pill">
@@ -134,6 +133,23 @@
          </div>
 		</div>
 	</div>
+
+   <!-- Outros vendedores -->
+   <!-- TODO - pôr numa página à parte? 
+             - Ver os dados que faltam e que vão ser mostrados -->
+   <div class="parent mb-5" style="background-color: red; height: 20vh">
+       <h4>Outros vendedores</h4>
+       <div class="d-flex gap-3">
+        <div v-for="(producer, index) in productSpec.images.slice(1)" :key="index">
+            <img :src="producer.url" style="height:10vh; width: 10vh">
+            <div>
+               {{ producer.name }}
+               {{ producer.producerImage }}
+            </div>
+            <button>ver mais</button>
+         </div>
+      </div>
+   </div>
 
    <!-- Informação adicional -->
    <div class="parent px-5">
@@ -248,6 +264,7 @@
 
    // Componentes
    import ProductCard from "@/components/ProductCard.vue";
+   import PathComponent from "@/components/PathComponent.vue";
 
    import { fetchProduct } from "@/api";
    import { Product } from "@/types";
@@ -304,6 +321,6 @@
          this.selectedImage = this.productSpec.images[0].url;
          this.selectedImageAlt = this.productSpec.images[0].alt;
       },
-      components: { ProductCard }
+      components: { ProductCard, PathComponent }
    });
 </script>
