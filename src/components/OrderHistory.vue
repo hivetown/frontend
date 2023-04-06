@@ -35,6 +35,7 @@
               <div v-if="encomenda.estado === 'Entregue'" class="inline"><i class="bi bi-check-all"></i></div>
               <div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>
+              <div v-if="encomenda.estado === 'Cancelada'" class="inline"><i class="bi bi-x-lg"></i></div>
               <!--TODO mudar o link para detalhada-->
               <h4 class="inline">  <a class="numero" href="#">{{encomenda.estado}} </a> </h4>
 

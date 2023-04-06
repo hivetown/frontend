@@ -10,6 +10,7 @@
     -->
  <!-- <p>{{ orderItem['items'] }}</p>
   <h4>{{ orders }}</h4> -->
+  <p>{{ orderItem }}</p>
   <table style="border: 2px " class="table" >
         <thead >
           <tr>
@@ -55,11 +56,17 @@
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'" class="inline">
                     <i class="bi bi-cash-coin"></i>               
                 </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" class="inline">
+                  <i class="bi bi-x-lg"></i>              
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'" class="inline">
+                  <i class="bi bi-truck"></i>
+                </div>
               <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
                 {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['generalStatus'] : '' }}
 
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'">
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered' || orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'">
                     <BButton class="botao" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && (orders.items[num - 1].generalStatus === 'Paid' || orders.items[num - 1].generalStatus === 'Processing')">
@@ -113,7 +120,7 @@
 
     onMounted(async () => {
       //TODO trocar para o user logado
-      const response = await fetchAllOrders('8');
+      const response = await fetchAllOrders();
       orders.value = response.data;
       orders.value.items.forEach((item) => {
         orderIds.value.push(item.id);
@@ -125,7 +132,7 @@
     //    orderIds.value.map((id) => fetchAllItems(`${id}/items`))
    //   );
 
-      const responseItem = await fetchAllItems('41');
+      const responseItem = await fetchAllItems('46');
       orderItem.value=responseItem.data;
 
       // do something with the orders
