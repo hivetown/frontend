@@ -3,7 +3,8 @@
       <div class="wrapper-mains">
         <div >
             <!-- TODO adicionar o numero da encomenda -->
-          <p class="titulo" >Progresso da encomenda X</p>
+            <p class="titulo" v-if="orderItem.order">Progresso da encomenda {{ orderItem.order.id }}</p>
+            <p v-else>Order not found</p>
           <Progresso :length="4"></Progresso>
         </div>
       </div>
@@ -14,7 +15,7 @@
     </div>
     
   </template>
-  <script>
+  <script lang="ts">
   import Progresso from '../components/Progress.vue';
   import OrderDetails from '../components/OrderDetails.vue';
   export default {
@@ -24,6 +25,17 @@
     }
   }
   </script>
+  <script setup lang="ts">
+  import { onMounted, ref} from "vue";
+   import { fetchOrder } from "../api";
+   import { Order } from "../types/interfaces";
+   const orderItem = ref<Order[]>([]); //array com os produtos
+    const search = ref('');
+    onMounted(async () => {
+      const responseItem = await fetchOrder('41');
+      orderItem.value=responseItem.data;
+   })
+</script>
   <style scoped>
   .wrapper-mains{
       height: auto;

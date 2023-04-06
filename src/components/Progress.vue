@@ -1,23 +1,29 @@
 <template>
-    <div class="root">
-       <div class="container">
-            <ul class="progressbar">
-                <li class="active step1">Pedido Efetuado</li>
-            <li class="active step2">Enviado</li>
-            <li class="step3">Em trânsito</li>
-            <li class="step4">Recebido</li>
-            </ul>
-        </div>
-    </div>
+  <div class="root">
+  <div class="container">
+    <ul class="progressbar">
+      <li :class=" orderItem['status'] === 'Processing' ||orderItem['status']=== 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Paid' || orderItem['status'] === 'Cancelled' ? 'active step1' : 'step1'">Paid</li>
+      <li :class="orderItem['status'] === 'Shipped' || orderItem['status'] === 'Delivered' || orderItem['status'] === 'Processing' || orderItem['status'] === 'Cancelled' ? 'active step2' : 'step2'">Processing</li>
+      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Cancelled' ? 'active step3' : 'step3'">Shipped</li>
+      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Cancelled' ? 'active step4' : 'step4'">Delivered</li>
+    </ul>
+  </div>
+</div>
+
+
+
   </template>
-  <script>
-  export default {
-    props:['length'],
-    data () {
-      return {
-      }
-    },
-  }
+  <script setup lang="ts">
+  import { onMounted, ref} from "vue";
+   import { fetchOrder } from "../api";
+   import { Order } from "../types/interfaces";
+   const orderItem = ref<Order[]>([]); //array com os produtos
+    const search = ref('');
+    onMounted(async () => {
+      const responseItem = await fetchOrder('41');
+      orderItem.value=responseItem.data;
+   })
+  
   </script>
   
   <style scoped>
