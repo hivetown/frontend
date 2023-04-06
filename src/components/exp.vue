@@ -10,10 +10,11 @@
     -->
  <!-- <p>{{ orderItem['items'] }}</p>
   <h4>{{ orders }}</h4> -->
-  <p>{{ orderItem }}</p>
+  <!--<p>{{ orders }}</p>-->
   <table style="border: 2px " class="table" >
         <thead >
           <tr>
+            <th></th>
             <th><h4>Encomenda</h4></th>
             <th><h4>Código da encomenda</h4></th>
             <th><h4>Status</h4></th>
@@ -29,6 +30,10 @@
         </thead>
         <tbody>
             <tr v-for="num in orders['totalItems']" :key="num">
+              <td>
+                <input id="name" type="checkbox"  style="transform: scale(1.5)" :value="orders['items'][num-1]['id']" v-model="selectedOrders[num-1]">
+                <span v-if="selectedOrders[num-1]"></span>
+              </td>
             <td>
               <div class="carousel-container">
                 <div class="carousel">
@@ -87,7 +92,7 @@
           </tr>
         </tbody>
       </table>
-  
+      <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
   <!--trocar o 0 pelo valor, ou seja fazer um for por cada encomenda-->
   
   
@@ -132,8 +137,8 @@
     //    orderIds.value.map((id) => fetchAllItems(`${id}/items`))
    //   );
 
-      const responseItem = await fetchAllItems('46');
-      orderItem.value=responseItem.data;
+     // const responseItem = await fetchAllItems('');
+    //  orderItem.value=responseItem.data;
 
       // do something with the orders
     });
@@ -172,6 +177,41 @@ function cancelarEncomendaImpossivel() {
     confirmButtonText: 'OK'
   });
 }
+</script>
+
+<script lang="ts">
+
+export default {
+
+  data() {
+    return {
+      selectedOrders: [],
+
+    };
+  },
+  computed: {
+    isExportButtonVisible() {
+    
+      return this.selectedOrders.length > 0;
+      
+
+    },
+  },
+    methods: {
+      exportSelectedOrders() {
+        let arr = [];
+        let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+        for (let i = 0 ; i < checkboxes.length; i++) {
+          arr.push(checkboxes[i].value)
+      }
+      console.log(arr);
+      return arr;
+    }
+   
+  }
+  
+};
+
 </script>
 
 
