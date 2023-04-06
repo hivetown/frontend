@@ -20,7 +20,7 @@
    const orderItem = ref<Order[]>([]); //array com os produtos
     const search = ref('');
     onMounted(async () => {
-      const responseItem = await fetchOrder('86', '548');
+      const responseItem = await fetchOrder('35', '264');
       orderItem.value=responseItem.data;
    })
   

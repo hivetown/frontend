@@ -14,9 +14,10 @@
   </thead>
   <tbody>
     <tr v-for="num in orderItem['totalItems']" :key="num">
-
+     <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
+     <td><img src="{{ orderItem['items'][num-1]['producerProduct']['productSpec']['images'][num-1]['url'] }}" /></td>
       <!--TODO por marcas e produto como links-->
-      <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> <!--TODO por imagens-->
+     <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
       <td>           
         {{orderItem['items'][num-1]['producerProduct']['productSpec']['name'] }}
       </td>
@@ -70,11 +71,11 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const responseItem = await fetchAllItems('86','548');
+      const responseItem = await fetchAllItems('35','264');
       orderItem.value=responseItem.data;
       
 
-      const response = await fetchAllOrders('86');
+      const response = await fetchAllOrders('35');
       orders.value = response.data;
         //totalSum+=(item.id);
      
