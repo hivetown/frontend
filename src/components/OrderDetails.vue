@@ -1,6 +1,5 @@
 <template>
     <div class="table-container" style="overflow: auto">
-
     <table class="table table-striped">
   <thead>
     <tr>
@@ -9,7 +8,7 @@
       <th scope="col">Fornecedor</th>
       <th scope="col">Preço</th>
       <th scope="col">Quantidade</th>
-      <th scope="col">Status</th>
+      <th scope="col">Estado</th>
       <th scope="col">Total</th>
     </tr>
   </thead>
@@ -34,7 +33,7 @@
         {{orderItem['items'][num-1]['status'] }}
       </td>
       <td>
-        {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }}
+        {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €
         <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
         
 
@@ -56,29 +55,26 @@
   import { onMounted, ref} from "vue";
    import { fetchAllItems } from "../api";
    import { fetchAllOrders } from "../api";
-   import { Order } from "../types/interfaces";
+   import { fetchUser } from "../api";
+   import { Order, Consumer } from "../types/interfaces";
    
    const orderItem = ref<Order[]>([]); //array com os produtos
-    const orderItem2 = ref<Order[]>([]); //array com os produtos
     var totalSum = 0;
     var date = '';
     const orders = ref<Order[]>([]);
 
-
+    const user = ref<Consumer[]>([]);
     const search = ref('');
     onMounted(async () => {
-     
-   // const fetchOrders = async () => {
-   //   const ordersData = await Promise.all(
-    //    orderIds.value.map((id) => fetchAllItems(`${id}/items`))
-   //   );
-      const responseItem = await fetchAllItems('41');
-      orderItem.value=responseItem.data;
-      // do something with the orders
-      const responseItem2 = await fetchAllOrders('41');
-      orderItem2.value=responseItem.data;
 
-      const response = await fetchAllOrders('8');
+      const userItem = await fetchUser();
+      user.value=userItem.data;
+      //utilizador logado para por em fetchAllOrders (user.value.id);
+      const responseItem = await fetchAllItems('86','548');
+      orderItem.value=responseItem.data;
+      
+
+      const response = await fetchAllOrders('86');
       orders.value = response.data;
         //totalSum+=(item.id);
      
@@ -88,7 +84,7 @@
         console.log(totalSum)
         document.querySelector('#totalSum').textContent = "Total: " + totalSum + "€";
         for (let i = 0; i < orders.value.items.length; i++) {
-          if (orders.value.items[i].id === 41) {
+          if (orders.value.items[i].id === 548) {
             date = (orders.value.items[i].orderDate.substring(0, 10)  );
             document.querySelector('#data').textContent =  date;
 
