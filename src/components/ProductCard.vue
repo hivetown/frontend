@@ -1,28 +1,30 @@
 <template>
-    
-    <!-- TODO fazer com que os dados sejam automáticos -->
     <div class="mb-5 product">
-       <router-link :to="'/products/' + productId">
-            <b-card class="prod-card">
-                <span class="position-absolute top-0 end-0 p-3 fav">
-                    <i class="bi bi-heart" style="color: #DC6942; cursor:pointer;"></i>
-                </span>
+        <!-- Imagem do produto -->
+        <b-card class="prod-card">
+            <span class="position-absolute fav">
+                <i v-bind:class="[isFavorite ? 'bi-heart-fill' : 'bi-heart']" 
+                    v-on:click="isFavorite = !isFavorite">
+                </i>
+            </span>
+            <router-link :to="'/products/' + productId">
                 <img :src="productImage" class="square-image">
-            </b-card>
-        </router-link>
+            </router-link>
+        </b-card>
 
+        <!-- Informação do produto -->
         <b-card-text>
             <div>
-                <!-- Dados do produto -->
+                <!-- Categoria -->
                 <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">Tecnologia</div>
+
                 <h5>{{ productTitle }}</h5>
                 <p class="grey-txt mt-3">{{productDescription}}</p>
                 <div class="d-flex gap-2">
-                    <h4 class="mb-3">{{ productPrice && productPrice.length > 1 ? 
-                                        productPrice[0] + '€ - ' + productPrice[1] + '€' : '' }}
+                    <h4 class="mb-3">
+                        {{ productPrice && productPrice.length > 1 ? 
+                           productPrice[0] + '€ - ' + productPrice[1] + '€' : '' }}
                     </h4>
-                    <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
-                    <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
                 </div>
                 
                 <!-- Botões -->
@@ -46,7 +48,6 @@
             </div>
         </b-card-text>
     </div>
-
 </template>
 
 <style>
@@ -60,12 +61,32 @@
         cursor: pointer;
     }
 
-    /* TODO - ver como fazer com a imagem: se ocupa o cinzento ou se limitamos a imagens transparentes */
+    .prod-card .card-body{
+        padding: 0 !important;
+    }
+
     .square-image {
         width: 100%;
         height: 100%;
         object-fit: cover;  /* Ajusta a imagem para preencher todo o espaço disponível */
         border-radius: 1.3em !important;
+    }
+
+    .fav {
+        right: 4%;
+        top:4%;
+        width: 3vh;
+        height: 3vh;
+        background-color: #f3f3f3;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fav i {
+        color: #DC6942;
+        cursor: pointer;
     }
 
     .prod-category{
@@ -75,28 +96,33 @@
 </style>
 
 <script>
-export default {
-    props: {
-        productId: {
-            type: String,
-            required: true,
+    export default {
+        data() {
+            return {
+                isFavorite: false, // Se o produto está nos favoritos
+            };
         },
-        productTitle: {
-            type: String,
-            required: true,
+        props: {
+            productId: {
+                type: String,
+                required: true,
+            },
+            productTitle: {
+                type: String,
+                required: true,
+            },
+            productDescription: {
+                type: String,
+                required: true,
+            }, 
+            productImage: {
+                type: String,
+                required: true,
+            },
+            productPrice: {
+                type: Array,
+                required: true,
+            },
         },
-        productDescription: {
-            type: String,
-            required: true,
-        }, 
-        productImage: {
-            type: String,
-            required: true,
-        },
-        productPrice: {
-            type: Array,
-            required: true,
-        },
-    },
-};
+    };
 </script>
