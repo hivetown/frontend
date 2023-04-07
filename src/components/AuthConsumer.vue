@@ -6,10 +6,56 @@
                 type="text"
                 placeholder="Nome"
                 v-model="register_form.name" />
+<!--  -->
             <input
                 type="text"
-                placeholder="Morada"
-                v-model="register_form.address" />
+                placeholder="Número"
+                v-model="register_form.number" />
+            <input
+                type="number"
+                placeholder="Porta"
+                v-model="register_form.door" />
+            <input
+                type="text"
+                placeholder="Andar"
+                v-model="register_form.floor" />
+            <input
+                type="text"
+                placeholder="Código Postal"
+                v-model="register_form.zip_code" />
+            <input
+                type="text"
+                placeholder="Rua"
+                v-model="register_form.street" />
+            <input
+                type="text"
+                placeholder="Freguesia"
+                v-model="register_form.parish" />
+            <input
+                type="text"
+                placeholder="Concelho"
+                v-model="register_form.county" />
+            <input
+                type="text"
+                placeholder="Distrito"
+                v-model="register_form.district" />
+            <input
+                type="text"
+                placeholder="Cidade"
+                v-model="register_form.city" />
+            <input
+                type="text"
+                placeholder="Latitude"
+                v-model="register_form.latitude" />
+            <input
+                type="text"
+                placeholder="Longitude"
+                v-model="register_form.longitude" />
+            
+
+
+
+<!--  -->
             <input
                 type="text"
                 placeholder="Telemóvel"

@@ -7,6 +7,7 @@ import { auth } from '../components/firebase';
 
 import { postConsumer } from '../api/consumers';
 import { postProducer } from '../api/producers';
+import { fetchAuth } from '../api/auth';
 
 import { createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -25,6 +26,7 @@ import userType from '../views/Registration.vue';
 import Registration from '../views/Registration.vue';
 
 import { useStore } from 'vuex'
+import { postAddressConsumer } from '../api/addressConsumer';
 
 const saveUser = (uid) => {
   // add new user to database
@@ -130,7 +132,10 @@ export default createStore({
                 state.user[key] = user[key]
             }  
       },
-  
+      
+      // SET_USER (state, user) {
+      //   state.user = user;
+      // },
       CLEAR_USER (state) {
         state.user = null
       },
@@ -220,9 +225,10 @@ export default createStore({
         router.push('/')
       },
   
-      async register ({ commit}, details: {name: string, password: string, email: string, phone: string, vat: string}) {
-         const { email, password, name, phone, vat } = details
-         
+      // async register ({ commit}, details: {name: string, password: string, email: string, phone: string, vat: string}) {
+      async register({ commit }, details: { name: string, password: string, email: string, phone: string, vat: string, number: number, door:number, floor: number, zip_code: string, street: string, parish: string, county: string, city: string, district: string, latitude: number, longitude: number }) {
+        // const { email, password, name, phone, vat } = details
+        const { email, password, name, phone, vat, number, door, floor, zip_code, street, parish, county, city, district, latitude, longitude } = details
   
         try {
           await createUserWithEmailAndPassword(auth, email, password)
@@ -243,6 +249,13 @@ export default createStore({
           
           if (userType == "Consumer") {
               postConsumer({ name, phone, vat })
+              fetchAuth().then((authArray) => {
+                const authId = authArray[0].id;
+                postAddressConsumer(authId, { number, door, floor, zip_code, street, parish, county, city, district, latitude, longitude })
+              }).catch((error) => {
+                console.log("fetchAuth error: ", error)
+              });
+              
               console.log("Im in Consumer")
           }
           // if saveValue == "Producer" then post to producer collection

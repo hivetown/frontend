@@ -108,16 +108,69 @@
 <script>
 import { onBeforeMount } from 'vue'
 import { mapState, useStore } from 'vuex'
-// import { listenCookieChange } from '../api/_base'
+
+
+
+// import { validCookie } from '../api/_base'
+
+import { computed } from 'vue';
+import { ref } from 'vue';
 export default {
   setup() {
     const store = useStore()
+	// const validCookie = computed(() => store.getters['validCookie'])
+	// console.log("validCookie: ", validCookie.value)
     onBeforeMount(() => {
       store.dispatch('fetchUser')
     })
+	// return {
+    //   validCookie
+    // }
 	}
 }
+
+
+// import api from '../api/_base'
+
+// api.get('../api/_base/auth').then(response => {
+//   console.log('response.data: ', response.data)
+// }).catch(error => {
+//   console.error(error)
+// })
+
+
+
+
+
+// export default {
+//   setup() {
+//     const store = useStore()
+// 	const validCookie = ref(true);
+
+//     listenCookieChange((newValue) => {
+//       validCookie.value = newValue;
+//     });
+//     onBeforeMount(() => {
+//       store.dispatch('fetchUser')
+//     });
+// 	console.log("validCookie: ", validCookie.value)
+// 	return {
+//       validCookie
+//     }
+// 	}
+// }
   
+// export default {
+//   setup() {
+//     const store = useStore()
+//     onBeforeMount(() => {
+//       store.dispatch('fetchUser')
+//     })
+// 	return {
+//       validCookie
+//     }
+// }
+// }
 
 // function listenCookieChange(callback, interval = 1000) {
 //   const { token } = store.state;
