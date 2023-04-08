@@ -1,4 +1,4 @@
-import type { DefineComponent from 'vue';
+// import type { DefineComponent } from 'vue';
 export interface Product {
     id: number;
     currentPrice: number;

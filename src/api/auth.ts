@@ -13,4 +13,4 @@ const VITE_API_URL = "http://localhost:3000";
 //     api.get(VITE_API_URL + "/auth", auth);
 
 export const fetchAuth = () =>
-    api.get<auth[]>(`${VITE_API_URL}/auth`);
+    api.get<auth[]>(`${api}/auth`);

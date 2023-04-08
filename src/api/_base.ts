@@ -1,5 +1,5 @@
 import { ApiRequest } from "../types/interfaces";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import store from "../store";
 import router from "../router";
 
@@ -56,6 +56,27 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     //     }
     // )
     //   );
+
+    api.interceptors.response.use(
+        (response) => response,
+        
+        (error: AxiosError) => {
+            console.log("error.response.status:", error.response.status);
+            if (error.response.status === 401) {
+                store.commit('logout')
+                // remove token from cookie
+                console.log('401 error')
+            } else if (error.response.status === 403) {
+                store.commit('logout')
+                console.log('403 error')
+            } else if (error.response.status === 404) {
+                store.commit('logout')
+                console.log('404 error')
+            } 
+            return Promise.reject(error);
+        }
+    
+      );
 
     return api;
 }
@@ -379,23 +400,3 @@ export const api = makeApi(import.meta.env.VITE_API_URL!);
 
 
 
-api.interceptors.response.use(
-    (response) => response,
-    
-    (error) => {
-        console.log("error.response.status:", error.response.status);
-        if (error.response.status === 401) {
-            // store.commit("logout");
-            // router.push("/login");
-            console.log('401 error')
-        } else if (error.response.status === 403) {
-            // router.push("/403");
-            console.log('403 error')
-        } else if (error.response.status === 404) {
-            // router.push("/404");
-            console.log('404 error')
-        } 
-        return Promise.reject(error);
-    }
-
-  );
