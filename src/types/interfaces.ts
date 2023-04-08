@@ -23,19 +23,3 @@ export interface Producer {
     products?: Product[];
 }
 
-export interface ShippingAdress {
-    id: number;
-    //number: number
-    //door: string;
-    //floor: number;
-    //zipCode: string;
-    //street: string;
-    //parish: string;
-    //county: string;
-    //city: string;
-    //district: string;
-    //latitude: number;
-    //longitude: number;
-    //consumer: number;
-
-}

@@ -106,9 +106,10 @@ import { postOrderPayment } from '../api/cart';
       goBack() {window.history.back();},
       
     async submitOrder() {
-        try {
+      try {
+    
           // await postOrderPayment(this.userId, this.shippingAddress);
-          await postOrderPayment(1, 1261);
+          await postOrderPayment('7', { shippingAddressId: 1275 });
           console.log('Pedido enviado com sucesso!');
         } catch (error) {
           console.error(error);
