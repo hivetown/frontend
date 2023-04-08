@@ -60,11 +60,13 @@
           </div>
         </div>
       </div>
-      <Pagination :totalRows="allProductsData.data.totalItems" 
-                  :perPage="allProductsData.data.pageSize" 
-                  :currentPage="allProductsData.data.page">
-      </Pagination>
-      <p>Total de páginas: {{ allProductsData.data.totalPages }}</p>
+      <div class="" style="display: flex; flex-direction: row-reverse; justify-content: center;">
+          <Pagination :totalRows="allProductsData.data.totalItems" 
+                      :perPage="allProductsData.data.pageSize" 
+                      :currentPage="allProductsData.data.page">
+          </Pagination>
+          <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+      </div>
     </div>
   </div>
   

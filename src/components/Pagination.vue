@@ -31,7 +31,7 @@ export default {
 
 <template>
     <div>
-        <b-pagination v-model="currentPage" :total-rows="totalRows" :per-page="perPage"></b-pagination>
+        <b-pagination class="pagination" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"></b-pagination>
     </div>
 </template>
 
@@ -63,3 +63,21 @@ export default {
     },
 };
 </script>
+
+
+<style>
+    .pagination .page-link{
+        color: #232323 !important;
+    }
+
+    .pagination .page-link:focus{
+        /* box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important; */
+        box-shadow: 0 0 0 0.2rem rgba(207, 207, 207, 0.25) !important;
+    }
+    
+    .pagination .page-item.active .page-link{
+        color:white !important;
+        border: 1px solid #ce9840;
+        background-color: #F1B24A !important;
+    }
+</style>

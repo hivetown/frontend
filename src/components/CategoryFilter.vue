@@ -53,7 +53,7 @@ export default {
 
   /* Google chrome */
   ::-webkit-scrollbar {
-    width: 0.4em; /* Largura da barra */
+    width: 0.8em; /* Largura da barra */
     background-color: #f3f3f3; 
   }
   ::-webkit-scrollbar-thumb {
