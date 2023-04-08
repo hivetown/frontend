@@ -23,3 +23,26 @@ export interface Producer {
     products?: Product[];
 }
 
+
+export interface Consumer {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    vat: string;
+}
+
+
+export interface CreateConsumer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
+
+
+export interface ApiRequest {
+    headers?: Record<string, string>;
+    params?: Record<string, string>;
+    data?: any;
+}

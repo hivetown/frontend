@@ -11,7 +11,7 @@
 							<img src="logo.svg">
 							<b-navbar-brand class="p-2 logo-txt" href="#">hiveTown</b-navbar-brand>
 						</div>
-						<p class="mt-3 grey-txt"> A nossa morada </p>
+						<p class="mt-3 grey-txt"> Campo Grande 016, 1749-016 Lisboa </p>
 						<b-col cols="12" md="auto" class="d-flex justify-content-center justify-content-md-start">
 							<a href="" class="me-2 text-reset">
 								<b-icon-facebook class="footer-icon"></b-icon-facebook>
@@ -29,9 +29,9 @@
 						<div>
 							<div class="d-flex">
 								<i class="bi bi-telephone yellow-txt" style="font-size: 1.5em;"></i>
-								<h4 class="p-1 grey-txt text-lg">000-000-000</h4>
+								<h4 class="p-1 grey-txt text-lg">919 236 147</h4>
 							</div>
-							<a href="#" class="text-reset footer-links" style="text-decoration: none;"><span class="grey-txt">email@email.com</span></a>
+							<a href="#" class="text-reset footer-links" style="text-decoration: none;"><span class="grey-txt">info@hivetown.pt</span></a>
 						</div>
 					</b-col>
 					<b-col md="3" lg="2" xl="2" class="mb-4">
@@ -61,47 +61,6 @@
 			</div>
 		</b-footer>
 	</div>
-
-
-
-
-
-
-
-
-
-
-
-	<!-- Produto -->
-	<!-- <div class="parent">
-		<b-breadcrumb>
-			<b-breadcrumb-item href="#home">
-				<b-icon icon="house-fill" scale="1.25" shift-v="1.25" aria-hidden="true"></b-icon>
-				Home
-			</b-breadcrumb-item>
-			<b-breadcrumb-item href="#foo">Foo</b-breadcrumb-item>
-			<b-breadcrumb-item href="#bar">Bar</b-breadcrumb-item>
-			<b-breadcrumb-item active>Baz</b-breadcrumb-item>
-		</b-breadcrumb> -->
-
-		<!-- <div class="d-flex"> -->
-			<!-- Esquerda -->
-			<!-- <div class="w-50" style="background-color: red; height: 50vh;">
-			
-			</div> -->
-
-			<!-- Direita -->
-			<!-- <div class="w-50" style="background-color: green; height: 50vh;">
-				<h1>Apple MacBook</h1>
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-					Sunt obcaecati repellendus soluta modi commodi earum 
-				</p>
-			</div>
-		</div>
-
-	</div> -->
-
-
 </template>
 
 <style>

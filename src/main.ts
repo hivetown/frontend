@@ -12,7 +12,17 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue-3/dist/bootstrap-vue-3.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
+
+import "primevue/resources/themes/lara-light-blue/theme.css";
+import "primevue/resources/primevue.min.css";
+import "primeicons/primeicons.css";
+import "primeflex/primeflex.css";
+
 const app = createApp(App);
+import store from './store'
+
+app.use(store);
+
 
 app.use(BootstrapVue3);
 app.use(BootstrapIconsPlugin);
@@ -24,3 +34,6 @@ app.component("b-carousel-slide", BCarouselSlide);
 app.use(router);
 
 app.mount("#app");
+
+
+
