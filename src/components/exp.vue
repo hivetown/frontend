@@ -52,6 +52,7 @@
             <td>
            
            {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}
+           {{ fetchAndSetOrders(num) }}
 
          </td>
              
@@ -97,10 +98,10 @@
           </tr>
         </tbody>
       </table>
-      <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
-  <!--trocar o 0 pelo valor, ou seja fazer um for por cada encomenda-->
   
     </div>
+    <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
+
   </template>
 <script setup lang="ts">
   import Swal from 'sweetalert2';
@@ -117,6 +118,15 @@
    //para ir buscar o que tem loggin
    const user = ref<Consumer[]>([]);
    const search = ref('');
+
+   //para ir buscar imagens apra o carousel
+   async function fetchAndSetOrders(num) {
+    //console.log(orders.value.items[num-1]['id'] );
+      const orderId = orders.value.items[num-1]['id'];
+      const response = await fetchAllItems(54, orderId);
+      orderItem.value = response.data;
+     // console.log(orderItem.value.items[0]['producerProduct']['productSpec']['images'][0]['url']);
+    }
     onMounted(async () => {
       const userItem = await fetchUser();
       user.value=userItem.data;
@@ -259,6 +269,11 @@ margin-bottom:150px;
    tr:hover {
          background-color: #f5f5f5;
         z-index: -2;
+   }
+
+   .botao{
+    margin-left: 80px;
+    margin-top:20px
    }
    
 </style>
