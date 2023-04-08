@@ -5,7 +5,23 @@ import router from "../router";
 
 import { ref } from 'vue'
 
+import { onBeforeMount } from 'vue'
+import {useStore } from 'vuex'
 
+
+export default {
+  setup() {
+    const store = useStore()
+	// const validCookie = computed(() => store.getters['validCookie'])
+	// console.log("validCookie: ", validCookie.value)
+    onBeforeMount(() => {
+      store.dispatch('fetchUser')
+    })
+	// return {
+    //   validCookie
+    // }
+	}
+}
 
 function makeApi(baseURL: string, options: ApiRequest = {}) {
     const headers = { ...options?.headers };
@@ -63,14 +79,14 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
         (error: AxiosError) => {
             console.log("error.response.status:", error.response.status);
             if (error.response.status === 401) {
-                store.commit('logout')
+                store.dispatch('logout')
                 // remove token from cookie
                 console.log('401 error')
             } else if (error.response.status === 403) {
-                store.commit('logout')
+                store.dispatch('logout')
                 console.log('403 error')
             } else if (error.response.status === 404) {
-                store.commit('logout')
+                store.dispatch('logout')
                 console.log('404 error')
             } 
             return Promise.reject(error);
