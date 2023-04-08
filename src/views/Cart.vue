@@ -108,7 +108,7 @@ import { postOrderPayment } from '../api/cart';
     async submitOrder() {
         try {
           // await postOrderPayment(this.userId, this.shippingAddress);
-          await postOrderPayment(170, 2021);
+          await postOrderPayment(1, 1261);
           console.log('Pedido enviado com sucesso!');
         } catch (error) {
           console.error(error);

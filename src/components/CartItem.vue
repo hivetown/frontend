@@ -46,12 +46,11 @@
   </div>
 </template>
 
-<script lang="ts">
+<script >
 
 import { loadStripe } from '@stripe/stripe-js';
 import { defineComponent } from 'vue';
 import { Stripe } from 'stripe';
-import { ShippingAddress } from '../types/interfaces'
 
 
 
@@ -59,10 +58,7 @@ export default defineComponent({
   data() {
     return {
       value: 3, // Example value from your form
-      shippingAddress: {
-          // substitua pelos dados do endereço de envio que deseja usar
-          id: 1,
-        } as ShippingAddress,
+   
     };
   },
  
@@ -71,7 +67,7 @@ export default defineComponent({
     async submitOrder() {
         try {
           // await postOrderPayment(this.userId, this.shippingAddress);
-          await postOrderPayment(170, this.shippingAddress);
+          await postOrderPayment(1, 1261);
           console.log('Pedido enviado com sucesso!');
         } catch (error) {
           console.error(error);
