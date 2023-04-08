@@ -14,8 +14,9 @@
   </thead>
   <tbody>
     <tr v-for="num in orderItem['totalItems']" :key="num">
+<!--<p>{{orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]}}</p>-->
      <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
-     <td><img src="{{ orderItem['items'][num-1]['producerProduct']['productSpec']['images'][num-1]['url'] }}" /></td>
+    <td><img :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url" style="width: 100px; height: 100px;" /></td>
       <!--TODO por marcas e produto como links-->
      <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
       <td>           
