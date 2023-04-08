@@ -42,7 +42,7 @@
                   Total: <span class="checkout">0,00€</span><br>
                 </p>
                 <div style="text-align: center;">
-                  <button type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+                  <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
                     Finalizar a compra
                   </button>
                 </div>
@@ -53,7 +53,6 @@
   </div>
   
 </template>
-
 
 
 <style>
@@ -101,9 +100,21 @@ import CartItem from "@/components/CartItem.vue";
 </script>
 
 <script lang="ts">
+import { postOrderPayment } from '../api/cart';
   export default {
   methods: {
-      goBack() {window.history.back();}
+      goBack() {window.history.back();},
+      
+    async submitOrder() {
+        try {
+          // await postOrderPayment(this.userId, this.shippingAddress);
+          await postOrderPayment(170, 2021);
+          console.log('Pedido enviado com sucesso!');
+        } catch (error) {
+          console.error(error);
+          console.log('Erro ao enviar o pedido. Por favor, tente novamente mais tarde.');
+        }
+      },
   }
   };
 </script>

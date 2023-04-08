@@ -42,137 +42,45 @@
       <b-form-spinbutton id="demo-sb" v-model="value" min="1" max="100"></b-form-spinbutton>
       <p>Value: {{ value }}</p>
     </div>
-    <button @click="handleFunction">Checkout</button>
 
   </div>
 </template>
 
-<script>
+<script lang="ts">
 
 import { loadStripe } from '@stripe/stripe-js';
 import { defineComponent } from 'vue';
 import { Stripe } from 'stripe';
+import { ShippingAddress } from '../types/interfaces'
+
 
 
 export default defineComponent({
   data() {
     return {
       value: 3, // Example value from your form
+      shippingAddress: {
+          // substitua pelos dados do endereço de envio que deseja usar
+          id: 1,
+        } as ShippingAddress,
     };
   },
-  created() {
-    // Load the Stripe script
-    this.stripePromise = loadStripe('pk_test_51MhZqeHDTqePW6LHc3kVGIHMC0vifWpxLpzyQtw2fpcjA2vfVSY45sPxR3MknV53X4NLXSsmXlzCSGdO8OgRY2kq002okkihO7');
-  },
+ 
   methods: {
-async handleFunction() {
-  //this.payment();
- // this.check();
- const products = await this.handleButtonClick();
- await this.handleButtonClick2(products);
-},
 
-//adiciona os elementos do carrinho ao stripe
-async handleButtonClick() {
-  const stripe = Stripe('sk_test_51MhZqeHDTqePW6LHlfCQVPTdj9maImhHRDGXhbDuk6r9CCHdHQkh9Spb2t3hbQinmnvSDArC7j4h6aYktxyXZaT200u2amKFwo');
-  const products = [];
-//TODO por aqui um for que corre todos os produtos do carrinho a adicionar
-  // Adiciona o primeiro produto
-  const product1 = await stripe.products.create({
-    name: "IPHONE 3342",
-    description: "girinho",
-    images: ["https://i.imgur.com/o2fKskJ.jpg"],
-    metadata: {
-      maker: 'mediamarkt',
-      url: 'https://google.com',
-      id: '1313',
-    },
-  });
-  const price1 = await stripe.prices.create({
-    unit_amount: (100 * 100),
-    currency: 'eur',
-    product: product1.id,
-    price: product1.price,
-  });
- // console.log(product1, price1);
-  
-  // Adiciona o segundo produto
-  const product2 = await stripe.products.create({
-    name: "Iphone x",
-    description: "iphone preto muito giro",
-    images: ["https://i.imgur.com/GQnIUfs.jpg"],
-    metadata: {
-      maker: 'mediamarkt',
-      url: 'https://google.com',
-      id: '1314',
-    },
-  });
-  const price2 = await stripe.prices.create({
-    unit_amount: (145 * 100),
-    currency: 'eur',
-    product: product2.id,
-    price: product2.price,
-  });
-   // Adiciona o terceiro produto
-   const product3 = await stripe.products.create({
-    name: "Iphone x",
-    description: "iphone preto muito giro",
-    images: ["https://i.imgur.com/GQnIUfs.jpg"],
-    metadata: {
-      maker: 'mediamarkt',
-      url: 'https://google.com',
-      id: '1314',
-    },
-  });
-  const price3 = await stripe.prices.create({
-    unit_amount: (145 * 100),
-    currency: 'eur',
-    product: product2.id,
-    price: product2.price,
-  });
- // console.log(product2, price2);
-
-  // Adiciona os produtos ao array
-  products.push({ product: product1, price: price1 });
-  products.push({ product: product2, price: price2 });
-  products.push({ product: product3, price: price3 });
+    async submitOrder() {
+        try {
+          // await postOrderPayment(this.userId, this.shippingAddress);
+          await postOrderPayment(170, this.shippingAddress);
+          console.log('Pedido enviado com sucesso!');
+        } catch (error) {
+          console.error(error);
+          console.log('Erro ao enviar o pedido. Por favor, tente novamente mais tarde.');
+        }
+      },
 
 
 
-  console.log(products);
-
-  return products;
-},
-
-
-
-//paga a encomenda anterior
-async handleButtonClick2(products) {
-  const stripe = await loadStripe('pk_test_51MhZqeHDTqePW6LHc3kVGIHMC0vifWpxLpzyQtw2fpcjA2vfVSY45sPxR3MknV53X4NLXSsmXlzCSGdO8OgRY2kq002okkihO7');
-  
-  const lineItems = products.map(product => {
-    return {
-      price: product.price.id,
-      quantity: 1,
-    };
-  });
-
-  const { error } = await stripe.redirectToCheckout({
-    mode: "payment",
-    lineItems: lineItems,
-    customerEmail: "customer@example.com",
-    shippingAddressCollection: {
-      allowedCountries: ["US", "CA", "PT", "FR", "ES"], //TODO ver mais que paises
-    },
-    billingAddressCollection: "required",
-    successUrl: "http://localhost:5173/success",
-    cancelUrl: "http://localhost:5173/carrinho",
-  });
-  
-  if (error) {
-    console.error(error.message);
-  }
-},
 
 
   },

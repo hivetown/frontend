@@ -37,7 +37,7 @@
     "eslint-plugin-vue": "^9.6.0",
     "mdb-vue-ui-kit": "^3.2.0",
     "sass": "^1.56.0",
-    "stripe": "^11.16.0",
+    "stripe": "^11.18.0",
     "vue": "^3.2.41",
     "vue-router": "4",
     "vue-sweetalert2": "^5.0.5"
