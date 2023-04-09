@@ -1,5 +1,9 @@
 <template>
     <div class="table-container" style="overflow: auto">
+      <!--
+        obter o user logado
+        <p>{{ user['id'] }}</p>
+      -->
     <table class="table table-striped">
   <thead>
     <tr>
@@ -37,21 +41,16 @@
       <td>
         {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €
         <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
-        
-
       </td>
-
     </tr>
-
-    
   </tbody>
 </table>
 </div>
 <br>
 <h5 class="resumo" id="data"></h5>
 <h3 class="resumo" id="totalSum"></h3>
-
 </template>
+
 <script setup lang="ts">
   import Swal from 'sweetalert2';
   import { onMounted, ref} from "vue";
@@ -60,38 +59,43 @@
    import { fetchUser } from "../api";
    import { Order, Consumer } from "../types/interfaces";
    
-   const orderItem = ref<Order[]>([]); //array com os produtos
+    const orderItem = ref<Order[]>([]); //array com os produtos
     var totalSum = 0;
     var date = '';
     const orders = ref<Order[]>([]);
 
     const user = ref<Consumer[]>([]);
     const search = ref('');
+    //obtem o id do link
+    const idO = window.location.pathname.split('/id').pop()?.toString();
     onMounted(async () => {
 
       const userItem = await fetchUser();
       user.value=userItem.data;
-      //utilizador logado para por em fetchAllOrders (user.value.id);
-      const responseItem = await fetchAllItems('35','264');
-      orderItem.value=responseItem.data;
-      
+      //user logado
+      console.log("user logado" + user.value['id']);
 
-      const response = await fetchAllOrders('35');
+      //utilizador logado para por em fetchAllOrders (user.value.id);
+      const responseItem = await fetchAllItems('1', idO);
+      orderItem.value=responseItem.data;
+
+      //trocar o 1 por (user.value['id']) que e o user logado
+      const response = await fetchAllOrders('1');
       orders.value = response.data;
-        //totalSum+=(item.id);
-     
-        for (let i = 0; i < orderItem.value.items.length; i++) {
+      //totalSum+=(item.id);
+      for (let i = 0; i < orderItem.value.items.length; i++) {
           totalSum += orderItem.value.items[i]['price'] * orderItem.value.items[i]['quantity'];
         }
         console.log(totalSum)
         document.querySelector('#totalSum').textContent = "Total: " + totalSum + "€";
         for (let i = 0; i < orders.value.items.length; i++) {
-          if (orders.value.items[i].id === 548) {
+          if (orders.value.items[i].id == idO) {
             date = (orders.value.items[i].orderDate.substring(0, 10)  );
-            document.querySelector('#data').textContent =  date;
-
+            document.querySelector('#data').textContent = "Encomenda efetuada em: " + date;
           }
         }
+     
+      
 
     });
 </script>

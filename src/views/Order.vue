@@ -1,20 +1,22 @@
 <template>
-    <div class="root">
-      <div class="wrapper-mains">
-        <div >
-            <!-- TODO adicionar o numero da encomenda -->
-            <p class="titulo" v-if="orderItem.order">Progresso da encomenda {{ orderItem.order.id }}</p>
-            <p v-else>Order not found</p>
-          <Progresso :length="4"></Progresso>
-        </div>
+  <div class="root">
+    <div class="wrapper-mains">
+      <div>
+        <!-- TODO adicionar o numero da encomenda 
+        <p>{{ orders }}</p>
+        <p>{{ orderItem }}</p> -->
+
+        <p class="titulo" v-if="orders['totalItems'] === 0">Ainda nao foi realizada nenhuma encomenda</p>
+        <p class="titulo" v-if="orders['totalItems'] !== 0">Progresso da encomenda {{ $route.params.id }}</p>
+        <Progresso :length="4" v-if="orders['totalItems'] !== 0"></Progresso>
       </div>
-      <div class="tabela">
+      <div class="tabela" v-if="orders['totalItems'] !== 0">
         <OrderDetails />
-        
+      </div>
     </div>
-    </div>
-    
-  </template>
+  </div>
+</template>
+
   <script lang="ts">
   import Progresso from '../components/Progress.vue';
   import OrderDetails from '../components/OrderDetails.vue';
@@ -27,13 +29,26 @@
   </script>
   <script setup lang="ts">
   import { onMounted, ref} from "vue";
-   import { fetchOrder } from "../api";
-   import { Order } from "../types/interfaces";
+   import { fetchAllItems, fetchAllOrders, fetchOrder } from "../api";
+   import { fetchUser } from "../api";
+   import { Order, Consumer} from "../types/interfaces";
+   const user = ref<Consumer[]>([]);
    const orderItem = ref<Order[]>([]); //array com os produtos
+   const orders = ref<Order[]>([]);
     const search = ref('');
     onMounted(async () => {
-      const responseItem = await fetchOrder('86', '548');
-      orderItem.value=responseItem.data;
+      const userItem = await fetchUser();
+      user.value=userItem.data;
+      const responseOrder = await fetchAllOrders('1');
+      //TODO trocar para este quando o user tiver encomendas
+      //const responseOrder = await fetchAllOrders(user.value['id']);
+      orders.value=responseOrder.data
+      const id = window.location.pathname.split('/id').pop()?.toString();
+      //obtem o id da encomenda
+      console.log(id);
+      //trocar o um pelo do user logado
+      //const orderId = await fetchAllItems('1', id);
+      //orderItem.value=orderId.data;
    })
 </script>
   <style scoped>

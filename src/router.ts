@@ -61,7 +61,7 @@ const routes = [
     },
     {
             // O link para a encomenda deve ter o codigo
-        path: "/encomenda",
+        path: "/encomenda/id:id",
         name: "Encomenda",
         component: Order,
     },

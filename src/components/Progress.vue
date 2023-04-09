@@ -15,12 +15,20 @@
   </template>
   <script setup lang="ts">
   import { onMounted, ref} from "vue";
-   import { fetchOrder } from "../api";
-   import { Order } from "../types/interfaces";
+   import { fetchOrder, fetchUser } from "../api";
+   import { Order, Consumer } from "../types/interfaces";
    const orderItem = ref<Order[]>([]); //array com os produtos
     const search = ref('');
+    const user = ref<Consumer[]>([]);
+
+    //obtem o id do link da encomenda atual
+    const id = window.location.pathname.split('/id').pop()?.toString();
     onMounted(async () => {
-      const responseItem = await fetchOrder('35', '264');
+      //obter user logado
+      const userItem = await fetchUser();
+      user.value=userItem.data;
+      //trocar o 1 para o user logado (user.value['id'])
+      const responseItem = await fetchOrder('1', id);
       orderItem.value=responseItem.data;
    })
   
