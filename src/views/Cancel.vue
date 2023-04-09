@@ -15,7 +15,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #E5B455;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
     'Helvetica Neue', 'Ubuntu', sans-serif;
     height: 80vh;
@@ -24,14 +23,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
   section {
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    width: 600px;
-    height: 312px;
-    border-radius: 6px;
-    justify-content: space-between;
-  }
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  width: 900px;
+  height: 512px;
+  border: 2px solid #E5B455;
+  border-radius: 6px;
+  justify-content: space-between;
+}
   .product {
     display: flex;
   }

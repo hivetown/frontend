@@ -44,7 +44,10 @@
                 <div style="text-align: center;">
                   <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
                     Finalizar a compra
-                  </button>
+                  </button><!--
+                  <button  @click="apagar" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+                    apagar carrinho
+                  </button>-->
                 </div>
             </div>
         </td>
@@ -101,6 +104,8 @@ import CartItem from "@/components/CartItem.vue";
 
 <script lang="ts">
 import { postOrderPayment } from '../api/cart';
+import { deleteCart } from '../api/cart';
+
   export default {
   methods: {
       goBack() {window.history.back();},
@@ -109,13 +114,30 @@ import { postOrderPayment } from '../api/cart';
       try {
     
           // await postOrderPayment(this.userId, this.shippingAddress);
-          await postOrderPayment('7', { shippingAddressId: 1275 });
+          //TODO trocar o 11 para o id do usar logado
+          const response = await postOrderPayment('25', { shippingAddressId: 1319 });
+          window.location.href = (response.data['checkout_url']);
           console.log('Pedido enviado com sucesso!');
+          
         } catch (error) {
           console.error(error);
           console.log('Erro ao enviar o pedido. Por favor, tente novamente mais tarde.');
         }
       },
+      async apagar() {
+        try {
+    
+    // await postOrderPayment(this.userId, this.shippingAddress);
+    //TODO trocar o 11 para o id do usar logado
+  await deleteCart('25');
+    console.log('Carrinho apagado com sucesso!');
+    
+  } catch (error) {
+    console.error(error);
+    console.log('Erro ao apagar carrinho.');
+  }
+        
+      }
   }
   };
 </script>

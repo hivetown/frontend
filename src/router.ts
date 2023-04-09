@@ -74,7 +74,7 @@ const routes = [
     component: AdressForm,
 },
 {
-    path: "/success",
+    path: "/success/:id",
     name: "Success",
     component: Success,
 },

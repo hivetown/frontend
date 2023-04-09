@@ -3,9 +3,11 @@
   <title>Thanks for your order!</title>
   <body>
   <section>
+    <h1>Pagamento efetuado com sucesso</h1>
+    <i class="bi bi-cart-check"></i>
     <p>
       We appreciate your business! If you have any questions, please email
-      <a href="email@email.com">email@email.coms</a>.
+      <a href="email@email.com">email@email.com</a>.
     </p>
   </section>
   </body>
@@ -15,7 +17,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #E5B455;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
   'Helvetica Neue', 'Ubuntu', sans-serif;
   height: 80vh;
@@ -27,8 +28,9 @@ section {
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  width: 600px;
-  height: 312px;
+  width: 800px;
+  height: 512px;
+  border: 2px solid #E5B455;
   border-radius: 6px;
   justify-content: space-between;
 }
@@ -73,6 +75,15 @@ h5 {
 }
 h5 {
   opacity: 0.5;
+}
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+i { 
+  text-align: center;
+  margin-top: 20px ;
+  font-size: 80px;
 }
 button {
   height: 36px;

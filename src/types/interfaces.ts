@@ -39,6 +39,9 @@ export interface CreateConsumer {
     vat: string;
 }
 
+export interface ShippingAdress {
+    shippingAddressId: number;
+}
 
 
 export interface ApiRequest {
