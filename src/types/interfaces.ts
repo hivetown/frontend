@@ -32,7 +32,6 @@ export interface Consumer {
     vat: string;
 }
 
-
 export interface CreateConsumer {
     name: string;
     phone: string;
@@ -44,8 +43,6 @@ export interface CreateProducer {
     phone: string;
     vat: string;
 }
-
-
 
 export interface ApiRequest {
     headers?: Record<string, string>;
@@ -64,12 +61,11 @@ export interface auth {
     type: string;
 }
 
-
 export interface AddressConsumer {
     number: number;
     door: number;
     floor: number;
-    zip_code: string;
+    zipCode: string;
     street: string;
     parish: string;
     county: string;

@@ -278,7 +278,7 @@ export default createStore({
                         number,
                         door,
                         floor,
-                        zip_code,
+                        zipCode: zip_code,
                         street,
                         parish,
                         county,
@@ -289,12 +289,15 @@ export default createStore({
                     });
 
                     console.log("Im in Consumer");
+                    commit("SET_USER", authArray);
                 }
                 // if saveValue == "Producer" then post to producer collection
                 else if (userType == "Producer") {
                     await postProducer({ name, phone, vat });
                     console.log("Im in Producer");
                 }
+
+                router.push("/");
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
@@ -318,13 +321,7 @@ export default createStore({
                     // deleteUser(auth.currentUser?.uid)
                     // }
                 }
-
-                return;
             }
-
-            commit("SET_USER", auth.currentUser);
-
-            router.push("/");
         },
 
         async logout({ commit }) {
