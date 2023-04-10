@@ -49,3 +49,18 @@ export interface ApiRequest {
     params?: Record<string, string>;
     data?: any;
 }
+
+export interface Address {
+    id: number;
+    door: string;
+    floor: string;
+    number: string;
+    zipCode: string;
+    street: string;
+    parish: string;
+    county: string;
+    city: string;
+    district: string;
+    latitude: number;
+    longitude: number;
+  }

@@ -62,7 +62,7 @@
     <input type="checkbox" v-model="showEnderecos2" @change="desmarcarCheckbox1"> Selecionar novo endereco
   </label>
 </div>
-<Enderecos v-if="showEnderecos2" />
+<Enderecos v-if="showEnderecos2" @salvarEndereco="onAddressSaved" :address="address"/>
 </div>
 <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
                     Finalizar a compra
@@ -128,31 +128,49 @@ import Enderecos from "@/components/Enderecos.vue";
 <script lang="ts">
 import { postOrderPayment } from '../api/cart';
 import { deleteCart } from '../api/cart';
+import { postNewAdress } from '../api/consumers';
+
 
   export default {
     data() {
       return {
         showEnderecos: false,
-        showEnderecos2: false
+        showEnderecos2: false,
+        Enderecos,
       }
     },
   methods: {
+    //vai buscar os dados do enderco novo e adicionar ao user
+    async onAddressSaved(address) {
+      this.address = address;
+      console.log(address);
+      try {
+        //adiciona o novo endereco
+        const respondeAddAddress = await postNewAdress(1, address);
+      } catch (error){
+        console.error(error);
+        console.log('erro ao adicionar novo endereco ao consumer')
+      }
+    },
     desmarcarCheckbox1() {
         this.showEnderecos = false;
       },
       desmarcarCheckbox2() {
         this.showEnderecos2 = false;
       },
-      goBack() {window.history.back();},
+      goBack() {
+        window.history.back();
+      },
       
     async submitOrder() {
       try {
+        //const responseAdress = await postNewAdress()
     
           // await postOrderPayment(this.userId, this.shippingAddress);
-          //TODO trocar o 11 para o id do usar logado
-          const response = await postOrderPayment('25', { shippingAddressId: 1319 });
-          window.location.href = (response.data['checkout_url']);
-          console.log('Pedido enviado com sucesso!');
+          //TODO trocar o 1 para o id do usar logado
+        const response = await postOrderPayment('1', { shippingAddressId: 1169});
+        window.location.href = (response.data['checkout_url']);
+        console.log('Pedido enviado com sucesso!');
           
         } catch (error) {
           console.error(error);
@@ -173,7 +191,9 @@ import { deleteCart } from '../api/cart';
   }
         
       }
+      
   }
+  
   };
 </script>
 
