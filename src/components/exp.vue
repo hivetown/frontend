@@ -51,7 +51,7 @@
             
             <td>
            
-           {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
            {{ fetchAndSetOrders(num) }}
 
          </td>
@@ -88,12 +88,12 @@
             </td>
 
             <td>
-                {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
             </td>
-            <td>{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</td>
+            <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
 
             <td>
-              <BButton class="botao" variant="outline-primary" href="/">Ver detalhes</BButton> <!--TODO mudar link-->
+              <BButton class="botao" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
@@ -123,7 +123,7 @@
    async function fetchAndSetOrders(num) {
     //console.log(orders.value.items[num-1]['id'] );
       const orderId = orders.value.items[num-1]['id'];
-      const response = await fetchAllItems(54, orderId);
+      const response = await fetchAllItems(1, orderId);
       orderItem.value = response.data;
      // console.log(orderItem.value.items[0]['producerProduct']['productSpec']['images'][0]['url']);
     }
@@ -131,7 +131,7 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(54);
+      const response = await fetchAllOrders(1);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
         orderIds.value.push(item.id);
