@@ -7,14 +7,12 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
-import Order from "./views/Order.vue";
 import AdressForm from "./views/AdressForm.vue";
-import Success from "./views/Success.vue";
-import Cancel from "./views/Cancel.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
+
 
 const routes = [
     {
@@ -62,27 +60,13 @@ const routes = [
             requiresAuth: true,
         }
     },
-    {
-            // O link para a encomenda deve ter o codigo
-        path: "/encomenda",
-        name: "Encomenda",
-        component: Order,
-    },
+    
     {
     path: "/envio",
     name: "AdressForm",
     component: AdressForm,
 },
-{
-    path: "/success/:id",
-    name: "Success",
-    component: Success,
-},
-{
-    path: "/cancel",
-    name: "Cancel",
-    component: Cancel,
-}, {
+ {
         path: "/login",
         name: "Login",
         component: Login,

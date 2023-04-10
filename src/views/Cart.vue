@@ -22,6 +22,7 @@
 
             <td class="right-column">
             <div>
+              
               <h3>Rever a comprar</h3>
                 <div style="height:2vh"></div>
 
@@ -37,14 +38,12 @@
                 </button>
 
                 <div style="height:10vh;"></div>
-
                 <p>
                   Total: <span class="checkout">0,00€</span><br>
                 </p>
                 <div style="text-align: center;">
-                  <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
-                    Finalizar a compra
-                  </button><!--
+
+                  <!--
                   <button  @click="apagar" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
                     apagar carrinho
                   </button>-->
@@ -52,17 +51,36 @@
             </div>
         </td>
         </tr>
+        <div>
+          <div class="input-group">
+  <label>
+    <input type="checkbox" v-model="showEnderecos" @change="desmarcarCheckbox2"> Endereco predefinido
+  </label>
+</div>
+<div class="input-group">
+  <label>
+    <input type="checkbox" v-model="showEnderecos2" @change="desmarcarCheckbox1"> Selecionar novo endereco
+  </label>
+</div>
+<Enderecos v-if="showEnderecos2" />
+</div>
+<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+                    Finalizar a compra
+                  </button>
     </table>
+
   </div>
   
 </template>
 
 
 <style>
+
 .container {
   display: flex;
 align-items: center;
 }
+
 
 table {
 border: 1px solid #aaa;
@@ -96,10 +114,15 @@ width: 25%;
 float: right;
 text-align: center;
 }
+
+
+
 </style>
 
 <script setup lang="ts"> 
 import CartItem from "@/components/CartItem.vue";
+import Enderecos from "@/components/Enderecos.vue";
+
 </script>
 
 <script lang="ts">
@@ -107,7 +130,19 @@ import { postOrderPayment } from '../api/cart';
 import { deleteCart } from '../api/cart';
 
   export default {
+    data() {
+      return {
+        showEnderecos: false,
+        showEnderecos2: false
+      }
+    },
   methods: {
+    desmarcarCheckbox1() {
+        this.showEnderecos = false;
+      },
+      desmarcarCheckbox2() {
+        this.showEnderecos2 = false;
+      },
       goBack() {window.history.back();},
       
     async submitOrder() {
