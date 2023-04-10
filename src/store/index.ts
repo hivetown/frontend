@@ -27,6 +27,7 @@ import Registration from "../views/Registration.vue";
 
 import { useStore } from "vuex";
 import { postAddressConsumer } from "../api/addressConsumer";
+import { Consumer, Producer } from "@types/interfaces";
 
 const saveUser = (uid) => {
     // add new user to database
@@ -116,18 +117,15 @@ const saveEmail = (email) => {
 export default createStore({
     state: {
         token: getCookie("token"),
-        user: {
-            id: 0,
-            name: "",
-            phone: "",
-            email: "",
-        },
-    },
+        user: null,
+    } as { token: string | null; user: Consumer | Producer | null },
     mutations: {
-        SET_USER(state, user) {
+        SET_USER(state, user: Consumer | Producer) {
             state.user = user;
             for (const key in user) {
-                state.user[key] = user[key];
+                if (Object.hasOwn(user, key)) {
+                    state.user[key] = user[key];
+                }
             }
         },
 
@@ -137,7 +135,7 @@ export default createStore({
         CLEAR_USER(state) {
             state.user = null;
         },
-        SET_TOKEN(state, token) {
+        SET_TOKEN(state, token: string) {
             state.token = token;
             setCookie("token", token, 7);
         },

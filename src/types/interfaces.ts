@@ -22,6 +22,7 @@ export interface Producer {
     phone: string;
     vat: string;
     products?: Product[];
+    type: "PRODUCER";
 }
 
 export interface Consumer {
@@ -30,6 +31,7 @@ export interface Consumer {
     email: string;
     phone: string;
     vat: string;
+    type: "CONSUMER";
 }
 
 export interface CreateConsumer {
