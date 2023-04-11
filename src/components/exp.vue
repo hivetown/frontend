@@ -187,8 +187,11 @@ function cancelarEncomendaImpossivel() {
 </script>
 
 <script lang="ts">
+import {exportOrders} from '../api';
+const orders = ref<Order[]>([]);
 
 export default {
+  
 
   data() {
     return {
@@ -205,14 +208,16 @@ export default {
     },
   },
     methods: {
-      exportSelectedOrders() {
+      async exportSelectedOrders() {
         let arr = [];
         let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
         for (let i = 0 ; i < checkboxes.length; i++) {
           arr.push(checkboxes[i].value)
       }
       console.log(arr);
-      return arr;
+      console.log(orders);
+      //TODO trocar para user logado
+      return await exportOrders('1', arr);
     }
    
   }
