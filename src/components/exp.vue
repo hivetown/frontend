@@ -21,7 +21,9 @@
           <tr>
             <th></th>
             <th><h4>Encomenda</h4></th>
-            <th><h4>Código da encomenda</h4></th>
+            <th>
+              <!--<input type="checkbox" id="reverse">-->
+              <h4>Código da encomenda</h4></th>
             <th><h4>Estado</h4></th>
             <th id="coluna-data">
               <div class="data">
@@ -80,12 +82,12 @@
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
                 {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['generalStatus'] : '' }}
 
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered' || orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'">
-                    <BButton class="botao" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
+                <div v-if=" orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'">
+                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && (orders.items[num - 1].generalStatus === 'Paid' || orders.items[num - 1].generalStatus === 'Processing')">
   <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-                    <BButton class="botao" variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
+                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
                 </div>
               
             </td>
@@ -101,7 +103,6 @@
           </tr>
         </tbody>
       </table>
-  
     </div>
     <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
 
@@ -116,6 +117,8 @@
    import { Consumer, Order } from "../types/interfaces";
 
    const orders = ref<Order[]>([]);
+    const arr = ref([]); // Use a função ref para criar uma referência reativa do array
+
    const encomendas = [];
    const encomendaId = ref([]);
    const orderIds = ref<number[]>([]); //array com o id das encomendas
@@ -148,7 +151,10 @@
       });
       for (let i = 0; i < orders.value.totalItems ; i++) { // Corrigido para "let" e "number"
         encomendas.push(orders.value.items[i].id);
+        arr.value.push(i);
     }
+    arr.value.reverse();
+
     for (let i = 0; i< encomendas.length; i++){
       //id da encomenda encomendas[i]
       const response1 = await fetchAllItems(2, encomendas[i]);
@@ -227,17 +233,27 @@ export default {
       return this.selectedOrders.length > 0;
       
 
-    },
+    }
+   
   },
     methods: {
+      async rs(totalItems){
+        let arr=[];
+        var a = 0;
+        for (let i=0; i<totalItems; i++){
+          arr.push(i);
+          a=a+1;
+        }
+        arr.reverse();
+        console.log(arr);
+      },
       async exportSelectedOrders() {
         let arr = [];
         let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
         for (let i = 0 ; i < checkboxes.length; i++) {
           arr.push(checkboxes[i].value)
       }
-      console.log(arr);
-      console.log(orders);
+      return arr;
       //TODO trocar para user logado
       return await exportOrders('2', arr);
     }
