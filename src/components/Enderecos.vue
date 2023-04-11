@@ -66,7 +66,7 @@
   </div>
 </div>
       <!-- Campos de formulário aqui -->
-      <button type="submit"  @click="handleSubmit">Salvar</button>
+      <button type="submit" class="btn btn-outline-secondary btn-sm"   @click="handleSubmit">Salvar endereço</button>
 
    
   </template>

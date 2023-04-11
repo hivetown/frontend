@@ -51,22 +51,26 @@
             </div>
         </td>
         </tr>
-        <div>
-          <div class="input-group">
-  <label>
-    <input type="checkbox" v-model="showEnderecos" @change="desmarcarCheckbox2"> Endereco predefinido
+       
+        <h3>Selecione o endereço de envio</h3>
+<div class="form-check form-check-inline">
+  <input type="checkbox" class="form-check-input" v-model="showEnderecos" @change="desmarcarCheckbox2">
+  <label class="form-check-label">
+   <h5> Endereço pré-definido </h5>
   </label>
 </div>
-<div class="input-group">
-  <label>
-    <input type="checkbox" v-model="showEnderecos2" @change="desmarcarCheckbox1"> Selecionar novo endereco
+<br>
+<div class="form-check form-check-inline">
+  <input type="checkbox" class="form-check-input" v-model="showEnderecos2" @change="desmarcarCheckbox1">
+  <label class="form-check-label">
+   <h5> Selecionar novo endereço </h5>
   </label>
 </div>
+<br>
 <Enderecos v-if="showEnderecos2" @salvarEndereco="onAddressSaved" :address="address"/>
-</div>
-<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                     Finalizar a compra
-                  </button>
+</button>
     </table>
 
   </div>
@@ -126,10 +130,10 @@ import Enderecos from "@/components/Enderecos.vue";
 </script>
 
 <script lang="ts">
-import { postOrderPayment } from '../api/cart';
+import { postOrderPayment, getAddresses } from '../api/cart';
 import { deleteCart } from '../api/cart';
 import { postNewAdress } from '../api/consumers';
-
+ var id = 0;
 
   export default {
     data() {
@@ -139,6 +143,11 @@ import { postNewAdress } from '../api/consumers';
         Enderecos,
       }
     },
+    computed: {
+    isButtonDisabled() {
+      return !(this.showEnderecos || this.showEnderecos2);
+    },
+  },
   methods: {
     //vai buscar os dados do enderco novo e adicionar ao user
     async onAddressSaved(address) {
@@ -146,10 +155,30 @@ import { postNewAdress } from '../api/consumers';
       console.log(address);
       try {
         //adiciona o novo endereco
-        const respondeAddAddress = await postNewAdress(1, address);
-      } catch (error){
+        const responseAddAddress = await postNewAdress('2', address);
+      
+        const addresses = await getAddresses('2');
+        console.log(addresses.data.items);
+        const found = addresses.data.items.find(addressX => 
+      addressX.city === address.city 
+      && addressX.door === address.door 
+      && addressX.zipCode === address.zipCode 
+      && addressX.county === address.county
+      && addressX.district === address.district
+      && addressX.floor === address.floor
+      && addressX.latitude === address.latitude
+      && addressX.parish === address.parish
+      && addressX.street === address.street
+      && addressX.longitude === address.longitude);
+      if (found) {
+      id = found.id;
+      console.log(`O id do item encontrado é ${id}.`);
+    } else {
+      console.log("Nenhum item foi encontrado.");
+    }
+      } catch (error) {
         console.error(error);
-        console.log('erro ao adicionar novo endereco ao consumer')
+        console.log('erro ao ir buscar os enderecos do consumer')
       }
     },
     desmarcarCheckbox1() {
@@ -168,7 +197,7 @@ import { postNewAdress } from '../api/consumers';
     
           // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('1', { shippingAddressId: 1169});
+        const response = await postOrderPayment('2', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
