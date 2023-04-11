@@ -6,3 +6,6 @@ export const fetchAllProducts = (page?: number, pageSize?: number, search?: stri
 
 export const fetchProduct = (specId: number) => 
     api.get<Product[]>(`/products/${specId}`);
+
+export const fetchProducerProducts = (specId: number) => 
+    api.get<Product[]>(`/products/${specId}/products`);

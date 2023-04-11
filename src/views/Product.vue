@@ -2,7 +2,7 @@
    <!-- Caminho -->
    <PathComponent></PathComponent>
 
-   <!-- Detaçhes do produto -->
+   <!-- Detalhes do produto -->
    <div class="d-flex parent">
 
       <!-- Imagens -->
@@ -60,8 +60,11 @@
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
                <!-- TODO - arranjar o preço -->
-               <h3 class="">{{ productSpec[0] }}€ - {{ productSpec[1] }}</h3>
-               <h5 class="grey-txt text-decoration-line-through">999€</h5>
+               <!-- <h3 class="">{{ productSpec[0] }}€ - {{ productSpec[1] }}</h3> -->
+
+               <!-- TODO adaptar para ver o intervalo de preços de todos (assim só vê do primeiro) -->
+               <h3>{{ producerProducts.items[0].currentPrice }}€</h3>
+               <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
             </div>
             <!-- <a href="#" class="">+{{productSpec.images.length-1}} vendedores desde 999€</a> -->
             <div>
@@ -83,8 +86,8 @@
                   <b-button class="ml-3 rounded-pill" @click="increment"><i class="bi bi-plus-lg"></i></b-button>
                </div>
 
-               <!-- TODO disponibilidade automático -->
-               <p class="mt-3 grey-txt">Disponibilidade: <span>3</span></p>
+               <!-- TODO adaptar para ver as disponibilidades de todos (assim só vê do primeiro) -->
+               <p class="mt-3 grey-txt">Disponibilidade: <span>{{ producerProducts.items[0].stock }}</span></p>
 
             </div>
 
@@ -266,7 +269,7 @@
    import ProductCard from "@/components/ProductCard.vue";
    import PathComponent from "@/components/PathComponent.vue";
 
-   import { fetchProduct } from "@/api";
+   import { fetchProduct, fetchProducerProducts } from "@/api";
    import { Product } from "@/types";
    import { defineComponent, PropType } from 'vue';
 
@@ -290,6 +293,7 @@
             
             // Dados da BD
             productSpec: {} as Product,
+            producerProducts: [] as Product[],
          }; 
       },
       methods: {
@@ -315,6 +319,10 @@
          // Carregar os dados do produto da BD
          const productSpec = await fetchProduct(this.$route.params.specid);
          this.productSpec = productSpec.data;
+
+         const producerProducts = await fetchProducerProducts(this.$route.params.specid);
+         this.producerProducts = producerProducts.data;
+         console.log("dados: " + JSON.stringify(producerProducts.data.items[0].producer));
          // console.log("dados: "+ JSON.stringify(productSpec));
 
          // Carregar a imagem principal do produto
