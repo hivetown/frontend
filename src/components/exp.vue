@@ -42,17 +42,20 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
-                  <a href="#">
-                    <p>por carousel</p>                
-                </a>
+                  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
+                    <!--      console.log(encomendaId.value[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
+-->
+                    <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
+                    <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
+      :src="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'][0]['url']" 
+      alt="Imagem da encomenda"  style="max-width: 100px;">                </a>
                 </div>
               </div>
             </td>
             
-            <td>
+            <td >
            
               <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
-           {{ fetchAndSetOrders(num) }}
 
          </td>
              
@@ -105,7 +108,7 @@
   </template>
 <script setup lang="ts">
   import Swal from 'sweetalert2';
-  import { onMounted, ref, watch } from "vue";
+  import { onMounted, ref, watch, computed } from "vue";
    import { fetchAllOrders } from "../api";
    import { fetchAllItems } from "../api";
    import { fetchUser } from "../api";
@@ -113,6 +116,8 @@
    import { Consumer, Order } from "../types/interfaces";
 
    const orders = ref<Order[]>([]);
+   const encomendas = [];
+   const encomendaId = ref([]);
    const orderIds = ref<number[]>([]); //array com o id das encomendas
    const orderItem = ref<Order[]>([]); //array com os produtos
    //para ir buscar o que tem loggin
@@ -120,24 +125,42 @@
    const search = ref('');
 
    //para ir buscar imagens apra o carousel
-   async function fetchAndSetOrders(num) {
+  
+   async function fetchAndSetOrders(num: number): Promise<void> {
     //console.log(orders.value.items[num-1]['id'] );
       const orderId = orders.value.items[num-1]['id'];
-      const response = await fetchAllItems(1, orderId);
-      orderItem.value = response.data;
+      const response = await fetchAllItems(2, orderId);
+      const newEncomenda = {[orderId]: response.data}; // Cria um novo objeto com o id e o array
+     // encomendas.push(newEncomenda); // Adiciona o novo objeto ao array "encomendas"
+      //console.log(encomendas);
+      return response;
      // console.log(orderItem.value.items[0]['producerProduct']['productSpec']['images'][0]['url']);
     }
+
     onMounted(async () => {
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(1);
+      const response = await fetchAllOrders(2);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
-        orderIds.value.push(item.id);
-      
+      orderIds.value.push(item.id);
       });
-   // });
+      for (let i = 0; i < orders.value.totalItems ; i++) { // Corrigido para "let" e "number"
+        encomendas.push(orders.value.items[i].id);
+    }
+    for (let i = 0; i< encomendas.length; i++){
+      //id da encomenda encomendas[i]
+      const response1 = await fetchAllItems(2, encomendas[i]);
+      const newEncomenda = {[encomendas[i]] : response1.data};
+      encomendaId.value.push(newEncomenda);
+      //primeiro 0 fica
+      //2 o id da encomenda 
+      //o 0 item da encoemnda
+      //0 o primerio item da encoemnda
+      console.log(encomendaId.value[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
+      //console.log(encomendaId.value);
+    }   // });
 
    // const fetchOrders = async () => {
    //   const ordersData = await Promise.all(
@@ -149,7 +172,6 @@
 
       // do something with the orders
     });
-
 
    function cancelarEncomenda() {
   // exibe uma mensagem de confirmação para o usuário
@@ -217,7 +239,7 @@ export default {
       console.log(arr);
       console.log(orders);
       //TODO trocar para user logado
-      return await exportOrders('1', arr);
+      return await exportOrders('2', arr);
     }
    
   }
@@ -229,6 +251,9 @@ export default {
 
 
 <style scoped>
+[v-cloak] {
+  display: none;
+}
 .table thead th {
     position: sticky;
     top: 0;
