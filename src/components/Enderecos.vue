@@ -67,6 +67,7 @@
 </div>
       <!-- Campos de formulário aqui -->
       <button type="submit" class="btn btn-outline-secondary btn-sm"   @click="handleSubmit">Salvar endereço</button>
+     
 
    
   </template>
@@ -83,7 +84,8 @@
   },
   data() {
     return {
-      address: {} as Address
+      address: {} as Address,
+      isChecked: false // Inicialmente o checkbox não estará selecionado
     };
   },
   methods: {

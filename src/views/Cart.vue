@@ -57,6 +57,7 @@
   <input type="checkbox" class="form-check-input" v-model="showEnderecos" @change="desmarcarCheckbox2">
   <label class="form-check-label">
    <h5> Endereço pré-definido </h5>
+   <h6>POR AQUI ENDERECO DE CONSUMER/CONSUMERID - ainda nao esta feito</h6>
   </label>
 </div>
 <br>
@@ -141,22 +142,27 @@ import { postNewAdress } from '../api/consumers';
         showEnderecos: false,
         showEnderecos2: false,
         Enderecos,
+        isLoading: false,
+
+
       }
     },
     computed: {
     isButtonDisabled() {
-      return !(this.showEnderecos || this.showEnderecos2);
+      return !(this.showEnderecos || this.isLoading );
     },
   },
   methods: {
     //vai buscar os dados do enderco novo e adicionar ao user
     async onAddressSaved(address) {
+      this.isLoading = true; // atualiza o estado para indicar que a função está em execução
+
       this.address = address;
       console.log(address);
       try {
         //adiciona o novo endereco
-        const responseAddAddress = await postNewAdress('2', address);
-      
+        const responseAddAddress = await postNewAdress(2, address);
+  
         const addresses = await getAddresses('2');
         console.log(addresses.data.items);
         const found = addresses.data.items.find(addressX => 
@@ -165,18 +171,21 @@ import { postNewAdress } from '../api/consumers';
       && addressX.zipCode === address.zipCode 
       && addressX.county === address.county
       && addressX.district === address.district
-      && addressX.floor === address.floor
+   //   && addressX.floor === address.floor
       && addressX.latitude === address.latitude
       && addressX.parish === address.parish
       && addressX.street === address.street
       && addressX.longitude === address.longitude);
       if (found) {
       id = found.id;
+      //console.log(address);
       console.log(`O id do item encontrado é ${id}.`);
+      //este e o shipping address
     } else {
       console.log("Nenhum item foi encontrado.");
     }
       } catch (error) {
+        this.isLoading = false; // atualiza o estado para indicar que a função está em execução
         console.error(error);
         console.log('erro ao ir buscar os enderecos do consumer')
       }
