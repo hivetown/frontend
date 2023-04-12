@@ -1,36 +1,72 @@
 <template>
     <form class="register" @submit.prevent="register">
       <div>
-        <input type="text" placeholder="Nome" v-model="register_form.name" />
+        <label for="name">Nome</label>
+        <input type="text" placeholder="Insira o seu nome" v-model="register_form.name" />
         <p v-if="errors.name">{{ errors.name }}</p>
-        <input type="text" placeholder="Número" v-model="register_form.number" />
+
+        <label for="number">Número</label>
+        <input type="text" placeholder="Insira o seu número" v-model="register_form.number" />
         <p v-if="errors.number">{{ errors.number }}</p>
-        <input type="number" placeholder="Porta" v-model="register_form.door" />
+
+        <label for="door">Porta</label>
+        <input type="text" placeholder="Insira o lado da porta" v-model="register_form.door" />
         <p v-if="errors.door">{{ errors.door }}</p>
+
+        <label for="floor">Andar</label>
         <input type="text" placeholder="Andar" v-model="register_form.floor" />
         <p v-if="errors.floor">{{ errors.floor }}</p>
-        <input type="text" placeholder="Código Postal" v-model="register_form.zip_code" />
-        <p v-if="errors.zip_code">{{ errors.zip_code }}</p>
+
+        <label for="zip_code">Código Postal</label>
+        <div style="display: flex">
+          <input type="text" placeholder="1234" v-model="register_form.zip_code1" style="margin-right: 10px;" />
+          <p v-if="errors.zip_code1" style="margin-right: 10px;">{{ errors.zip_code1 }}</p>
+          <p>-</p>
+          <input type="text" placeholder="567" v-model="register_form.zip_code2" style="margin-left: 10px;" />
+          <p v-if="errors.zip_code2" style="margin-left: 10px;">{{ errors.zip_code2 }}</p>
+        </div>
+
+        <label for="street">Rua</label>
         <input type="text" placeholder="Rua" v-model="register_form.street" />
         <p v-if="errors.street">{{ errors.street }}</p>
+
+        <label for="parish">Freguesia</label> 
         <input type="text" placeholder="Freguesia" v-model="register_form.parish" />
         <p v-if="errors.parish">{{ errors.parish }}</p>
+
+        <label for="county">Concelho</label>
         <input type="text" placeholder="Concelho" v-model="register_form.county" />
         <p v-if="errors.county">{{ errors.county }}</p>
+
+        <label for="district">Distrito</label>
         <input type="text" placeholder="Distrito" v-model="register_form.district" />
         <p v-if="errors.district">{{ errors.district }}</p>
+
+        <label for="city">Cidade</label>
         <input type="text" placeholder="Cidade" v-model="register_form.city" />
         <p v-if="errors.city">{{ errors.city }}</p>
+
+        <label for="latitude">Latitude</label>
         <input type="text" placeholder="Latitude" v-model="register_form.latitude" />
         <p v-if="errors.latitude">{{ errors.latitude }}</p>
+
+        <label for="longitude">Longitude</label>
         <input type="text" placeholder="Longitude" v-model="register_form.longitude" />
         <p v-if="errors.longitude">{{ errors.longitude }}</p>
+
+        <label for="phone">Telemóvel</label>
         <input type="text" placeholder="Telemóvel" v-model="register_form.phone" />
         <p v-if="errors.phone">{{ errors.phone }}</p>
+
+        <label for="vat">NIF</label>
         <input type="text" placeholder="NIF" v-model="register_form.vat" />
         <p v-if="errors.vat">{{ errors.vat }}</p>
+
+        <label for="email">Email</label>
         <input type="email" placeholder="Email" v-model="register_form.email" />
         <p v-if="errors.email">{{ errors.email }}</p>
+        
+        <label for="password">Palavra passe</label>
         <input
           type="password"
           placeholder="Palavra passe"
@@ -78,7 +114,8 @@ export default {
       let isValid = true;
       const regex = /^[a-zA-Z\s]+$/;
       const numRegex = /^[0-9]+$/;
-      const zipRegex = /^[0-9]{4}-[0-9]{3}$/;
+      const zip1Regex = /^[0-9]{4}$/;
+      const zip2Regex = /^[0-9]{3}$/;
       const phoneRegex = /^[0-9]{9}$/;
       const vatRegex = /^[0-9]{9}$/;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -99,14 +136,22 @@ export default {
         isValid = false;
       }
       console.log("number", isValid)
-      if (!register_form.zip_code) {
-        errors.value.zip_code = 'Por favor, preencha o seu código postal.';
+      if (!register_form.zip_code1) {
+        errors.value.zip_code1 = 'Por favor, preencha os 4 primeiros dígitos do seu código postal.';
         isValid = false;
-      } else if (!zipRegex.test(register_form.zip_code)) {
-        errors.value.zip_code = 'Por favor, preencha um código postal válido (XXXX-XXX).';
+      } else if (!zip1Regex.test(register_form.zip_code1)) {
+        errors.value.zip_code1 = 'Por favor, preencha um código postal válido.';
         isValid = false;
       }
-      console.log("zip_code", isValid)
+      console.log("zip_code1", isValid)
+      if (!register_form.zip_code2) {
+        errors.value.zip_code2 = 'Por favor, preencha os 3 últimos dígitos do seu código postal.';
+        isValid = false;
+      } else if (!zip2Regex.test(register_form.zip_code2)) {
+        errors.value.zip_code2 = 'Por favor, preencha um código postal válido.';
+        isValid = false;
+      }
+      console.log("zip_code2", isValid)
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
         isValid = false;
@@ -147,6 +192,7 @@ export default {
       console.log('Register function called!');
       if (validateForm()) {
         console.log('Register form is valid!');
+        register_form.zip_code = `${register_form.zip_code1}-${register_form.zip_code2}`;
         store.dispatch('register', register_form);
       }
     };

@@ -32,14 +32,19 @@
 <template>
     <form class="register" @submit.prevent="register">
       <div>
+        <label for="name">Nome</label>
         <input type="text" placeholder="Nome" v-model="register_form.name" />
         <p v-if="errors.name">{{ errors.name }}</p>
+        <label for="Telemóvel">Número</label>
         <input type="text" placeholder="Telemóvel" v-model="register_form.phone" />
         <p v-if="errors.phone">{{ errors.phone }}</p>
+        <label for="NIF">Porta</label>
         <input type="text" placeholder="NIF" v-model="register_form.vat" />
         <p v-if="errors.vat">{{ errors.vat }}</p>
+        <label for="Email">Andar</label>
         <input type="email" placeholder="Email" v-model="register_form.email" />
         <p v-if="errors.email">{{ errors.email }}</p>
+        <label for="Palavra passe">Palavra passe</label>
         <input
           type="password"
           placeholder="Palavra passe"
