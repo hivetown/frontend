@@ -19,7 +19,7 @@
   <table v-if="orders['totalItems'] !== 0" style="border: 2px" class="table">
         <thead >
           <tr>
-            <th></th>
+            <th><h4>Encomendas <br>para exportar</h4></th>
             <th><h4>Encomenda</h4></th>
             <th>
               <!--<input type="checkbox" id="reverse">-->
@@ -44,13 +44,13 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
-                  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
-                    <!--      console.log(encomendaId.value[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
+                  <p>por carosel fotos</p>
+                <!--  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
 -->
                     <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
-                    <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
+                  <!--  <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
       :src="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'][0]['url']" 
-      alt="Imagem da encomenda"  style="max-width: 100px;">                </a>
+      alt="Imagem da encomenda"  style="max-width: 100px;">                </a> -->
                 </div>
               </div>
             </td>
@@ -144,7 +144,7 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(2);
+      const response = await fetchAllOrders('2');
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -157,7 +157,7 @@
 
     for (let i = 0; i< encomendas.length; i++){
       //id da encomenda encomendas[i]
-      const response1 = await fetchAllItems(2, encomendas[i]);
+      const response1 = await fetchAllItems('2', encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       //primeiro 0 fica
@@ -253,7 +253,7 @@ export default {
         for (let i = 0 ; i < checkboxes.length; i++) {
           arr.push(checkboxes[i].value)
       }
-      return arr;
+      console.log(arr);
       //TODO trocar para user logado
       return await exportOrders('2', arr);
     }
