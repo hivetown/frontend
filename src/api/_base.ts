@@ -7,7 +7,7 @@ import { ref } from 'vue'
 
 import { onBeforeMount } from 'vue'
 import {useStore } from 'vuex'
-
+import ErrorPopup from '../components/ErrorPopup.vue'
 
 export default {
   setup() {
@@ -77,18 +77,27 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
         (response) => response,
         
         (error: AxiosError) => {
-            console.log("error.response.status:", error.response.status);
+            console.log("error.response.status:", error.response?.status);
+            console.log("cheguei aqui")
+            const errorMessage = `Error ${error.response?.status}: ${error.response?.data}`
+            const errorPopup = new ErrorPopup({ propsData: { message: errorMessage } }).$mount()
+            document.body.appendChild(errorPopup.$el)
+
+            setTimeout(() => {
+            document.body.removeChild(errorPopup.$el)
+            }, 3000)
             if (error.response.status === 401) {
-                store.dispatch('logout')
+                // store.dispatch('logout')
                 // remove token from cookie
                 console.log('401 error')
             } else if (error.response.status === 403) {
-                store.dispatch('logout')
+                // store.dispatch('logout')
                 console.log('403 error')
             } else if (error.response.status === 404) {
-                store.dispatch('logout')
+                // store.dispatch('logout')
                 console.log('404 error')
             } 
+            
             return Promise.reject(error);
         }
     

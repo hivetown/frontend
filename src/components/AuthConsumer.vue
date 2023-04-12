@@ -6,7 +6,7 @@
         <p v-if="errors.name">{{ errors.name }}</p>
 
         <label for="number">Número</label>
-        <input type="text" placeholder="Insira o seu número" v-model="register_form.number" />
+        <input type="number" placeholder="Insira o seu número" v-model="register_form.number" />
         <p v-if="errors.number">{{ errors.number }}</p>
 
         <label for="door">Porta</label>
@@ -14,15 +14,15 @@
         <p v-if="errors.door">{{ errors.door }}</p>
 
         <label for="floor">Andar</label>
-        <input type="text" placeholder="Andar" v-model="register_form.floor" />
+        <input type="number" placeholder="Andar" v-model="register_form.floor" />
         <p v-if="errors.floor">{{ errors.floor }}</p>
 
         <label for="zip_code">Código Postal</label>
         <div style="display: flex">
-          <input type="text" placeholder="1234" v-model="register_form.zip_code1" style="margin-right: 10px;" />
+          <input type="number" placeholder="1234" v-model="register_form.zip_code1" style="margin-right: 10px;" />
           <p v-if="errors.zip_code1" style="margin-right: 10px;">{{ errors.zip_code1 }}</p>
           <p>-</p>
-          <input type="text" placeholder="567" v-model="register_form.zip_code2" style="margin-left: 10px;" />
+          <input type="number" placeholder="567" v-model="register_form.zip_code2" style="margin-left: 10px;" />
           <p v-if="errors.zip_code2" style="margin-left: 10px;">{{ errors.zip_code2 }}</p>
         </div>
 
