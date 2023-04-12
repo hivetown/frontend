@@ -13,4 +13,4 @@ export const deleteCart = (userId: string) => {
 
 export const getAddresses = (userId: string) => {
   return api.get(`/consumers/${userId}/addresses`)
-}
+} 

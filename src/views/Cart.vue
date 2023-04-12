@@ -54,7 +54,7 @@
        
         <h3>Selecione o endereço de envio</h3>
 <div class="form-check form-check-inline">
-  <input type="checkbox" class="form-check-input" v-model="showEnderecos" @change="desmarcarCheckbox2">
+  <input type="checkbox" class="form-check-input" @click="obtemEnderecos" v-model="showEnderecos" @change="desmarcarCheckbox2">
   <label class="form-check-label">
    <h5> Endereço pré-definido </h5>
    <h6>POR AQUI ENDERECO DE CONSUMER/CONSUMERID - ainda nao esta feito</h6>
@@ -71,6 +71,9 @@
 <Enderecos v-if="showEnderecos2" @salvarEndereco="onAddressSaved" :address="address"/>
 <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                     Finalizar a compra
+</button>
+<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+                    Finalizar a compra222
 </button>
     </table>
 
@@ -134,7 +137,7 @@ import Enderecos from "@/components/Enderecos.vue";
 import { postOrderPayment, getAddresses } from '../api/cart';
 import { deleteCart } from '../api/cart';
 import { postNewAdress } from '../api/consumers';
- var id = 0;
+ var id = 1249;
 
   export default {
     data() {
@@ -153,6 +156,11 @@ import { postNewAdress } from '../api/consumers';
     },
   },
   methods: {
+    async obtemEnderecos(){
+     // const addresses = await getAddresses('4');
+      //console.log(addresses.data.items);
+      console.log('oi');
+    },
     //vai buscar os dados do enderco novo e adicionar ao user
     async onAddressSaved(address) {
       this.isLoading = true; // atualiza o estado para indicar que a função está em execução
@@ -161,9 +169,9 @@ import { postNewAdress } from '../api/consumers';
       console.log(address);
       try {
         //adiciona o novo endereco
-        const responseAddAddress = await postNewAdress(2, address);
+        const responseAddAddress = await postNewAdress(4, address);
   
-        const addresses = await getAddresses('2');
+        const addresses = await getAddresses('4');
         console.log(addresses.data.items);
         const found = addresses.data.items.find(addressX => 
       addressX.city === address.city 
@@ -178,6 +186,7 @@ import { postNewAdress } from '../api/consumers';
       && addressX.longitude === address.longitude);
       if (found) {
       id = found.id;
+      console.log('id');
       //console.log(address);
       console.log(`O id do item encontrado é ${id}.`);
       //este e o shipping address
@@ -204,9 +213,9 @@ import { postNewAdress } from '../api/consumers';
       try {
         //const responseAdress = await postNewAdress()
     
-          // await postOrderPayment(this.userId, this.shippingAddress);
+        // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('2', { shippingAddressId: id});
+        const response = await postOrderPayment('7', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
