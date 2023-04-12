@@ -52,19 +52,35 @@
         </td>
         </tr>
        
-        <h3>Selecione o endereço de envio</h3>
+  <h3>Selecione o endereço de envio</h3>
 <div class="form-check form-check-inline">
-  <input type="checkbox" class="form-check-input" @click="obtemEnderecos" v-model="showEnderecos" @change="desmarcarCheckbox2">
-  <label class="form-check-label">
-   <h5> Endereço pré-definido </h5>
-   <h6>POR AQUI ENDERECO DE CONSUMER/CONSUMERID - ainda nao esta feito</h6>
+ 
+   <h5> Endereços definidos </h5>
+   <div class="row">
+    <div class="col-sm-6" v-for="(num, index) in address2.totalItems" :key="index">
+      <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
+      <div class="form-check">
+  <input class="form-check-input" type="checkbox" :value="address2['items'][num-1]['id']" v-model="selectedItems" @change="checkButtonDisabled"  />
+  <label class="form-check-label" for="checkbox{{ index + 1 }}">
+    <div class="border p-3" style="width: 500px;">
+ <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
+      <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['door']}}, andar {{ address2['items'][num-1]['floor']}}</p>
+      <p>{{ address2['items'][num-1]['zipCode'] }}, {{ address2['items'][num-1]['parish'] }}</p>
+      <p>Distrito de {{ address2['items'][num-1]['district'] }}</p>
+      <p>{{ address2['items'][num-1]['latitude'] }}, {{ address2['items'][num-1]['longitude'] }}</p>
+    </div>
   </label>
+</div>
+
+    </div>
+  </div>
+ 
 </div>
 <br>
 <div class="form-check form-check-inline">
   <input type="checkbox" class="form-check-input" v-model="showEnderecos2" @change="desmarcarCheckbox1">
   <label class="form-check-label">
-   <h5> Selecionar novo endereço </h5>
+   <h5> Adicionar novo endereço </h5>
   </label>
 </div>
 <br>
@@ -72,9 +88,7 @@
 <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                     Finalizar a compra
 </button>
-<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
-                    Finalizar a compra222
-</button>
+
     </table>
 
   </div>
@@ -130,6 +144,14 @@ text-align: center;
 <script setup lang="ts"> 
 import CartItem from "@/components/CartItem.vue";
 import Enderecos from "@/components/Enderecos.vue";
+import { onMounted, ref} from "vue";
+const address2 = ref<Order[]>([]); //array com os produtos
+
+onMounted(async () => {
+const addresses = await getAddresses('1');
+console.log(addresses.data.items);
+address2.value=addresses.data;
+});
 
 </script>
 
@@ -137,7 +159,7 @@ import Enderecos from "@/components/Enderecos.vue";
 import { postOrderPayment, getAddresses } from '../api/cart';
 import { deleteCart } from '../api/cart';
 import { postNewAdress } from '../api/consumers';
- var id = 1249;
+ var id = 0;
 
   export default {
     data() {
@@ -146,16 +168,21 @@ import { postNewAdress } from '../api/consumers';
         showEnderecos2: false,
         Enderecos,
         isLoading: false,
-
+        selectedItems: [], // Variável de dados para armazenar os checkboxes selecionados
+        isButtonDisabled: true, // Variável de dados para controlar o estado do botão
+        address2: {
+        items: '' // Valor inicial vazio
+      }
 
       }
     },
-    computed: {
-    isButtonDisabled() {
-      return !(this.showEnderecos || this.isLoading );
-    },
-  },
+    
+    
   methods: {
+    checkButtonDisabled() {
+      // Verifica se algum checkbox está selecionado e atualiza o estado do botão
+      this.isButtonDisabled = this.selectedItems.length === 0;
+    },
     async obtemEnderecos(){
      // const addresses = await getAddresses('4');
       //console.log(addresses.data.items);
@@ -163,16 +190,16 @@ import { postNewAdress } from '../api/consumers';
     },
     //vai buscar os dados do enderco novo e adicionar ao user
     async onAddressSaved(address) {
-      this.isLoading = true; // atualiza o estado para indicar que a função está em execução
 
       this.address = address;
       console.log(address);
       try {
         //adiciona o novo endereco
-        const responseAddAddress = await postNewAdress(4, address);
+        const responseAddAddress = await postNewAdress(1, address);
   
-        const addresses = await getAddresses('4');
-        console.log(addresses.data.items);
+        const addresses = await getAddresses('1');
+       // console.log(addresses.data.items);
+        
         const found = addresses.data.items.find(addressX => 
       addressX.city === address.city 
       && addressX.door === address.door 
@@ -186,18 +213,26 @@ import { postNewAdress } from '../api/consumers';
       && addressX.longitude === address.longitude);
       if (found) {
       id = found.id;
-      console.log('id');
       //console.log(address);
-      console.log(`O id do item encontrado é ${id}.`);
+      console.log(`O id do item encontrado é ${id}.`)
+
       //este e o shipping address
+      onMounted(() => {
+        // Coloque o código que você deseja executar no onMounted() aqui
+        console.log('Função onMounted() foi chamada na função onAddressSaved()');
+        const addresses = getAddresses('1');
+        console.log(addresses.data.items);
+        address2.value=addresses.data;
+      });
+      
     } else {
       console.log("Nenhum item foi encontrado.");
     }
       } catch (error) {
-        this.isLoading = false; // atualiza o estado para indicar que a função está em execução
         console.error(error);
         console.log('erro ao ir buscar os enderecos do consumer')
       }
+      
     },
     desmarcarCheckbox1() {
         this.showEnderecos = false;
@@ -215,7 +250,7 @@ import { postNewAdress } from '../api/consumers';
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('7', { shippingAddressId: id});
+        const response = await postOrderPayment('82', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
