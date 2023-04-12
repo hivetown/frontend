@@ -2,7 +2,7 @@ import { Order } from "../types/interfaces";
 import { Consumer } from "../types/interfaces";
 import { api } from "./_base";
 
-export const fetchAllOrders = (userId: string, search?: string) =>
+export const fetchAllOrders = (userId: number, search?: string) =>
     api.get<Order[]>(`/consumers/${userId}/orders`, { params: { search } });
 
 export const fetchAllItems = (userId: string, orderId: string, search?: string) =>
