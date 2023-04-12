@@ -11,6 +11,7 @@ import { fetchAuth } from "../api/auth";
 
 import {
     createUserWithEmailAndPassword,
+    deleteUser,
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
@@ -227,7 +228,7 @@ export default createStore({
                 phone: string;
                 vat: string;
                 number: number;
-                door: number;
+                door: string;
                 floor: number;
                 zip_code: string;
                 street: string;
@@ -312,15 +313,13 @@ export default createStore({
                         break;
                     default:
                         alert("Something went wrong");
-                    // delete user from firebase if exists
-                    // if (auth.currentUser) {
-                    // auth.currentUser.delete()
-                    // db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).delete();
-                    // deleteUser(auth.currentUser?.uid)
-                    // }
+                        if (auth.currentUser) {
+                            deleteUser(auth.currentUser)       
+                        }
                 }
             }
         },
+
 
         async logout({ commit }) {
             await signOut(auth);

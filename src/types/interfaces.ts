@@ -65,7 +65,7 @@ export interface auth {
 
 export interface AddressConsumer {
     number: number;
-    door: number;
+    door: string;
     floor: number;
     zipCode: string;
     street: string;
