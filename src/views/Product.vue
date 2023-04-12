@@ -26,7 +26,8 @@
                <div class="d-flex justify-content-between align-items-center mt-3 gap-3" style="overflow: auto;">
                   <img class="square-image alternative-img rounded-3"
                      style="background-color: #f3f3f3;"
-                     v-for="(image, index) in productSpec.images"
+                     v-for="(image, index) in defaultProduct && defaultProduct.productSpec ? 
+                                                                defaultProduct.productSpec.images : []"
                      :key="index"
                      :src="image.url"
                      :alt="image.alt"
@@ -38,11 +39,11 @@
 		
       <!-- Lado direito da página -->
 		<div class="w-50">
-			<div class="w-75" style="min-height: 20vh;">
+			<div v-if="defaultProduct" class="w-75" style="min-height: 20vh;">
 
             <!-- Informação do produto -->
-            <h1 class="product-title">{{ productSpec.name }}</h1>
-				<p class="grey-txt">{{ productSpec.description }}</p>
+            <h1 class="product-title">{{ defaultProduct.productSpec.name }}</h1>
+				<p class="grey-txt">{{ defaultProduct.productSpec.description }}</p>
 
             <!-- TODO rating automático -->
             <!-- Rating -->
@@ -59,21 +60,15 @@
             <!-- TODO preço automático -->
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
-               <!-- TODO - arranjar o preço -->
-               <!-- <h3 class="">{{ productSpec[0] }}€ - {{ productSpec[1] }}</h3> -->
-
-               <!-- TODO adaptar para ver o intervalo de preços de todos (assim só vê do primeiro) -->
-               <h3>{{ producerProducts.items[0].currentPrice }}€</h3>
+               <h3>{{lowestPrice}}€ - {{ highestPrice }}€</h3>
                <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
             </div>
-            <!-- <a href="#" class="">+{{productSpec.images.length-1}} vendedores desde 999€</a> -->
             <div>
-               <a href="#" v-if="productSpec.images.length > 1">
-                  +{{ productSpec.images.length - 1 }} vendedores desde 999€
+               <a href="#" v-if="producers > 1">
+                  ver +{{ producers -1 }} vendedores
                </a>
-               <a href="#" v-else-if="productSpec.images.length === 1">
-                  +{{ productSpec.images.length - 1 }} vendedor desde 999€
-               </a>
+               <!-- Não há mais vendedores para além do apresentado -->
+               <a href="#" v-else-if="producers === 1"></a>
             </div>
 
             <!-- Quantidade -->
@@ -86,9 +81,7 @@
                   <b-button class="ml-3 rounded-pill" @click="increment"><i class="bi bi-plus-lg"></i></b-button>
                </div>
 
-               <!-- TODO adaptar para ver as disponibilidades de todos (assim só vê do primeiro) -->
-               <p class="mt-3 grey-txt">Disponibilidade: <span>{{ producerProducts.items[0].stock }}</span></p>
-
+               <p class="mt-3 grey-txt"><span>{{ stock }}</span> items disponíveis</p>
             </div>
 
             <!-- Botões compra -->
@@ -100,10 +93,10 @@
                           v-b-tooltip.hover title="Adicionar ao carrinho">
                           <i class="bi bi-cart"></i>
                   </button>
-                  <button type="button" class="btn btn-outline-secondary circle-btn" 
+                  <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Ver produto" >
                           <i class="bi bi-eye"></i>
-                  </button>
+                  </button> -->
                   <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Comparar produto">
                           <i class="bi bi-arrow-left-right"></i>
@@ -130,29 +123,23 @@
                       style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
             </b-avatar> 
             <div class="seller">
-               <h5>Maria Fernandes</h5>
+               <h5 v-if="defaultProduct">{{ defaultProduct.producer.name }}</h5>
                <a href="#" class="grey-txt">Sobre o vendedor</a>
             </div>
          </div>
 		</div>
 	</div>
 
-   <!-- Outros vendedores -->
-   <!-- TODO - pôr numa página à parte? 
-             - Ver os dados que faltam e que vão ser mostrados -->
-   <div class="parent mb-5" style="background-color: red; height: 20vh">
-       <h4>Outros vendedores</h4>
-       <div class="d-flex gap-3">
-        <div v-for="(producer, index) in productSpec.images.slice(1)" :key="index">
-            <img :src="producer.url" style="height:10vh; width: 10vh">
-            <div>
-               {{ producer.name }}
-               {{ producer.producerImage }}
-            </div>
-            <button>ver mais</button>
+   <!-- TODO - outros vendedores -->
+   <!-- <div style="background-color: pink; height:">
+      <div v-for="(producerProduct, index) in producerProducts.items">
+         <div class="d-flex gap-3">
+            <p>Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
+            <p>{{ producerProduct.currentPrice }}€</p>
          </div>
       </div>
-   </div>
+   </div> -->
+  
 
    <!-- Informação adicional -->
    <div class="parent px-5">
@@ -172,8 +159,66 @@
          <!-- Página dos detalhes -->
          <div class="px-4" v-if="currentPage === 'detalhes'" >
             <div class="mt-4">
-               <p>Aqui vão estar os <b>detalhes</b> do produto</p>
+               <h5 v-if="productCategories.items">
+                  Categorias do produto <span>({{ productCategories.items.length }})</span>
+               </h5>
+               
+               <div v-for="categoria in productCategories.items">
+                  <li>{{ categoria.id }} - {{ categoria.name }}</li>
+               </div>
             </div>
+            <div class="mt-4">
+               <h5>Especificações</h5>
+               <div style="background-color: #f3f3f3; height:">
+                     <table>
+                        <thead>
+                           <tr>
+                              <th>Características</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr v-for="(category, index) in productCategoriesFields" :key="index" style="border-bottom: 1px solid blue;">
+                              <tr v-for="field in category">
+                                 <div style="background-color: pink;">
+                                    <span style="font-weight: bold;">Nome:</span> {{ field.field.name }}
+                                    <span style="font-weight: bold;">Valor:</span>{{ field.value }}
+                                    <span style="font-weight: bold;">Unidade:</span> {{ field.field.unit }}
+                                 </div>
+                              </tr>
+                           </tr>
+                        </tbody>
+                        <!-- <tbody>
+                           <tr v-for="(category, index) in productCategoriesFields" :key="index">
+                              <td>{{ category[0].field.category }}</td>
+                              <td v-for="field in category">{{ field.field.name }}</td>
+                              <td v-for="field in category">{{ field.value }}</td>
+                              <td v-for="field in category">{{ field.field.unit }}</td>
+                           </tr>
+                        </tbody> -->
+                     </table>
+               </div>
+
+
+
+
+               <div>
+                  <!-- <ul> -->
+                     <!-- Para cada categoria (bola preenchida) mostra os fields (bolas vazias)-->
+                     <!-- <li v-for="(category, index) in productCategoriesFields" :key="index">
+                        <div v-for="field in category">
+                           <ul>
+                              <li>Nome:{{ field.field.name }}</li>
+                              <li>Valor:{{ field.value }}</li>
+                              <li>Unidade:{{ field.field.unit }}</li>
+                           </ul>
+                           <p>----</p>
+                        </div>
+                     </li> -->
+                  <!-- </ul> -->
+               </div>
+               <!-- {{ productCategoriesFields }} -->
+            </div>
+            
          </div>
          <!-- Página das avaliações -->
          <div class="px-4" v-if="currentPage === 'avaliacoes'">
@@ -269,7 +314,7 @@
    import ProductCard from "@/components/ProductCard.vue";
    import PathComponent from "@/components/PathComponent.vue";
 
-   import { fetchProduct, fetchProducerProducts } from "@/api";
+   import { fetchProducerProducts, fetchProductCategories, fetchProductCategoriesFields } from "@/api";
    import { Product } from "@/types";
    import { defineComponent, PropType } from 'vue';
 
@@ -290,10 +335,19 @@
             isFavorite: false, // Se o produto está nos favoritos
             quantity: 0, // Quantidade de produtos a comprar
             currentPage: "detalhes", // Página atual das tabs do produto
+            lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
             
             // Dados da BD
-            productSpec: {} as Product,
             producerProducts: [] as Product[],
+            defaultProduct: null,
+            lowestPrice: null,
+            highestPrice: null,
+            stock: null,
+            producers: 1,
+
+            productCategories: [] as Product[],
+            productCategoriesFields: [],
+            fields: []
          }; 
       },
       methods: {
@@ -306,29 +360,96 @@
                this.quantity--;
             }
          },
-         
          // Selecionar a imagem do produto a visualizar
          selectImage(index: number) {
-            this.selectedImage = this.productSpec.images[index].url;
-            this.selectedImageAlt = this.productSpec.images[index].alt;
+            this.selectedImage = this.defaultProduct.productSpec.images[index].url;
+            this.selectedImageAlt = this.defaultProduct.productSpec.images[index].alt;
          },
+
+         // Carrega a lista de campos de categorias de produtos
+         // async loadProductCategoriesFields() {
+         //    const productCategories = await fetchProductCategories(this.$route.params.specid);
+         //    this.productCategories = Object.values(productCategories.data); // Transforma o objeto em um array
+         //    for (const categoria of this.productCategories[0]) {
+         //       const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
+         //       this.productCategoriesFields.push([categoria.id, response.data.items]);
+         //    }
+         //    // console.log("productCategoriesFields: " + JSON.stringify(this.productCategoriesFields))
+         //    this.$forceUpdate(); // Atualiza o componente
+         // },
+
       },
 
       // A fazer antes de montar o componente
       async beforeMount() {
          // Carregar os dados do produto da BD
-         const productSpec = await fetchProduct(this.$route.params.specid);
-         this.productSpec = productSpec.data;
-
          const producerProducts = await fetchProducerProducts(this.$route.params.specid);
          this.producerProducts = producerProducts.data;
-         console.log("dados: " + JSON.stringify(producerProducts.data.items[0].producer));
-         // console.log("dados: "+ JSON.stringify(productSpec));
+
+         // Produto com o preço mais baixo a ser apresentado quando a página é carregada
+         this.defaultProduct =  this.producerProducts.items[this.lowestPriceIndex].productSpec
 
          // Carregar a imagem principal do produto
-         this.selectedImage = this.productSpec.images[0].url;
-         this.selectedImageAlt = this.productSpec.images[0].alt;
+         if (this.defaultProduct.images[this.lowestPriceIndex]) {
+            this.selectedImage = this.defaultProduct.images[this.lowestPriceIndex].url;
+            this.selectedImageAlt = this.defaultProduct.images[this.lowestPriceIndex].alt;
+         }
+
+         // Inicializa o menor preço, o maior e o stock
+         if (this.producerProducts.items.length > 0) {
+            this.lowestPrice = this.producerProducts.items[0].currentPrice;
+            this.highestPrice = this.producerProducts.items[0].currentPrice;
+            this.stock = this.producerProducts.items[0].stock;
+         }
+         // Percorre a lista de produtores contando-os, encontra o preço mais alto e o preço 
+         // mais baixo. Determina ainda o stock total
+         for (let i = 1; i < this.producerProducts.items.length; i++) {
+            this.producers += 1;
+            this.stock += this.producerProducts.items[i].stock;
+            
+            const currentPrice = this.producerProducts.items[i].currentPrice;
+            if (currentPrice < this.lowestPrice) {
+               this.lowestPrice = currentPrice;
+               this.lowestPriceIndex = i;
+            }
+            if (currentPrice > this.highestPrice) {
+               this.highestPrice = currentPrice;
+            }
+         }
+         this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
+
+         // Carregar as categorias do produto
+         const productCategories = await fetchProductCategories(this.$route.params.specid);
+         this.productCategories = productCategories.data;
+         
+         try{
+            for (const categoria of this.productCategories.items) {
+               const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
+               this.fields.push( response.data.items);
+            }
+         }catch(error){
+            console.log("Erro: " + error);
+         }
+
+         // // Guarda os campos de cada categoria
+         // // console.log("Antes do for: "+ this.productCategoriesFields);
+         // for (const categoria of this.productCategories.items) {
+         //    const fields = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
+         //    for (const items of fields.data.items){
+         //       // console.log("items: " + JSON.stringify(items.field));
+         //       this.productCategoriesFields.push(items.field);
+         //    }
+         //    // console.log("Dentro do for: "+ JSON.stringify(this.productCategoriesFields));
+         //    // console.log("//////////////");
+         // }
+         // // this.productCategoriesFields = productCategoriesFieldsAtual;
+         // // console.log("Depois do for: " + JSON.stringify(this.productCategoriesFields));
+      }, 
+      created() {
+      //    this.loadProductCategoriesFields();
+         this.productCategoriesFields = this.fields;
       },
-      components: { ProductCard, PathComponent }
+         components: { ProductCard, PathComponent }
+      
    });
 </script>

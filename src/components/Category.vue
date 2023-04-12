@@ -14,7 +14,7 @@
                         </div>
 
                         <div class="d-flex gap-2 justify-content-center align-items-center">
-                            <input type="checkbox">
+                            <input type="checkbox" @click="updateUrl(category.id)">
                                 <span @click.stop="toggleCategory(category)" style="cursor: pointer;">
                                 {{ category.name }}
                             </span>
@@ -88,6 +88,11 @@ export default {
             }
             category.showSubCategories = nextState;
         },
+        updateUrl(id) {
+            const currentCategory = new URL(window.location.href);
+            currentCategory.searchParams.set("categoryId", id.toString());
+            window.location.replace(currentCategory.toString());
+        }
     },
 };
 </script>

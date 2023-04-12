@@ -25,6 +25,8 @@
                         {{ productPrice && productPrice.length > 1 ? 
                            productPrice[0] + '€ - ' + productPrice[1] + '€' : '' }}
                     </h4>
+                    <!-- TODO, fazer com que seja  -->
+                    <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
                 </div>
                 
                 <!-- Botões -->
