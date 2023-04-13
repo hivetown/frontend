@@ -192,6 +192,10 @@
     cancelButtonText: 'Não, voltar'
   }).then((result) => {
     if (result.isConfirmed) {
+      try{
+        cancelOrder(1,1);
+        const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
+      
       // caso o usuário confirme, cancela a encomenda
       // TODO: implemente a lógica de cancelamento da encomenda
       Swal.fire(
@@ -199,6 +203,9 @@
         'Sua encomenda foi cancelada com sucesso.',
         'success'
       );
+      }  catch (error) {
+        console.log('erro ao cancelar encomenda')
+      }
     }
   });
 }
