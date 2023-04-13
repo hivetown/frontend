@@ -10,6 +10,7 @@ import User from "./views/User.vue";
 import AdressForm from "./views/AdressForm.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
+import AddAddress from "./views/AddAddress.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
 
@@ -81,6 +82,11 @@ const routes = [
         name: "AuthConsumer",
         component: AuthConsumer,
     },
+    {
+        path: "/addAddress",
+        name: "AddAddress",
+        component: AddAddress
+    }
 
 ];
 

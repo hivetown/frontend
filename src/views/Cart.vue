@@ -54,7 +54,11 @@
        
   <h3>Selecione o endereço de envio</h3>
 <div class="form-check form-check-inline">
- 
+  <button  type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
+    <a href="/addAddress">
+                    Adicionar novo endereco
+    </a>
+</button>
    <h5> Endereços definidos </h5>
    <div class="row">
     <div class="col-sm-6" v-for="(num, index) in address2.totalItems" :key="index">
@@ -74,20 +78,12 @@
 
     </div>
   </div>
- 
-</div>
-<br>
-<div class="form-check form-check-inline">
-  <input type="checkbox" class="form-check-input" v-model="showEnderecos2" @change="desmarcarCheckbox1">
-  <label class="form-check-label">
-   <h5> Adicionar novo endereço </h5>
-  </label>
-</div>
-<br>
-<Enderecos v-if="showEnderecos2" @salvarEndereco="onAddressSaved" :address="address"/>
-<button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
+  <button  @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                     Finalizar a compra
 </button>
+</div>
+<br>
+
 
     </table>
 
@@ -145,6 +141,7 @@ text-align: center;
 import CartItem from "@/components/CartItem.vue";
 import Enderecos from "@/components/Enderecos.vue";
 import { onMounted, ref} from "vue";
+import {getAddresses, postOrderPayment} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
 
 onMounted(async () => {
@@ -156,17 +153,15 @@ address2.value=addresses.data;
 </script>
 
 <script lang="ts">
-import { postOrderPayment, getAddresses } from '../api/cart';
-import { deleteCart } from '../api/cart';
+import { Address } from '../types/interfaces';
 import { postNewAdress } from '../api/consumers';
- var id = 0;
 
   export default {
     data() {
       return {
         showEnderecos: false,
         showEnderecos2: false,
-        Enderecos,
+
         isLoading: false,
         selectedItems: [], // Variável de dados para armazenar os checkboxes selecionados
         isButtonDisabled: true, // Variável de dados para controlar o estado do botão
@@ -182,6 +177,8 @@ import { postNewAdress } from '../api/consumers';
     checkButtonDisabled() {
       // Verifica se algum checkbox está selecionado e atualiza o estado do botão
       this.isButtonDisabled = this.selectedItems.length === 0;
+      console.log(this.selectedItems); // Exemplo de como acessar o valor selecionado
+
     },
     async obtemEnderecos(){
      // const addresses = await getAddresses('4');
@@ -189,51 +186,7 @@ import { postNewAdress } from '../api/consumers';
       console.log('oi');
     },
     //vai buscar os dados do enderco novo e adicionar ao user
-    async onAddressSaved(address) {
-
-      this.address = address;
-      console.log(address);
-      try {
-        //adiciona o novo endereco
-        const responseAddAddress = await postNewAdress(1, address);
-  
-        const addresses = await getAddresses('1');
-       // console.log(addresses.data.items);
-        
-        const found = addresses.data.items.find(addressX => 
-      addressX.city === address.city 
-      && addressX.door === address.door 
-      && addressX.zipCode === address.zipCode 
-      && addressX.county === address.county
-      && addressX.district === address.district
-   //   && addressX.floor === address.floor
-      && addressX.latitude === address.latitude
-      && addressX.parish === address.parish
-      && addressX.street === address.street
-      && addressX.longitude === address.longitude);
-      if (found) {
-      id = found.id;
-      //console.log(address);
-      console.log(`O id do item encontrado é ${id}.`)
-
-      //este e o shipping address
-      onMounted(() => {
-        // Coloque o código que você deseja executar no onMounted() aqui
-        console.log('Função onMounted() foi chamada na função onAddressSaved()');
-        const addresses = getAddresses('1');
-        console.log(addresses.data.items);
-        address2.value=addresses.data;
-      });
-      
-    } else {
-      console.log("Nenhum item foi encontrado.");
-    }
-      } catch (error) {
-        console.error(error);
-        console.log('erro ao ir buscar os enderecos do consumer')
-      }
-      
-    },
+    
     desmarcarCheckbox1() {
         this.showEnderecos = false;
       },
@@ -245,12 +198,14 @@ import { postNewAdress } from '../api/consumers';
       },
       
     async submitOrder() {
+      //var id = (this.selectedItems[0]);
+      var id=1; //TODO trocar pq nao tem endereco associado ainda, pelo de cima q e o selected
       try {
         //const responseAdress = await postNewAdress()
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('82', { shippingAddressId: id});
+        const response = await postOrderPayment('1', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
