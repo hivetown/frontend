@@ -27,7 +27,7 @@ export default {
   computed: {
     filteredCategories() {
       const filtered = [];
-      for (const category of this.categories) {
+      for (const category of Object.values(this.categories)) {
         if (!category.parent && !filtered.some((c) => c.name === category.name)) {
           filtered.push(category);
         }

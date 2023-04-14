@@ -21,8 +21,15 @@
       return {
         value: 100, // Valor do slider quando a página é carregada
         minValue: 0,
-        maxValue: this.maxPrice.maxPrice,
-        maxInputValue: this.maxPrice.maxPrice,
+        //  maxValue: 0,
+        // maxInputValue: null,
+
+        // TODO - por o preço a funcionar 
+        maxValue: this.maxPrice ? this.maxPrice.maxPrice : 0,
+        maxInputValue: this.maxPrice ? this.maxPrice.maxPrice : null,
+
+        // maxValue: this.maxPrice.maxPrice,
+        // maxInputValue: this.maxPrice.maxPrice,
       };
     },
     props: {

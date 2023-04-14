@@ -18,8 +18,8 @@
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
           <!-- Por enquanto limitado a apenas 10 -->
-          <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter>
-           <!-- <CategoryFilter :categories="allCategories"></CategoryFilter> -->
+          <!-- <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter> -->
+           <CategoryFilter :categories="allCategories"></CategoryFilter>
         </div>
 
         <div id="price-filter">
@@ -44,10 +44,17 @@
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">Portáteis</h3>
       <!-- Diferentes vistas da página -->
-      <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews>
+      <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
+      <CustomViews
+        v-if="allProductsData && allProductsData.data"
+        :items="allProductsData.data.totalItems"
+        :amount="allProductsData.data.pageSize"
+      />
     
       <div id="page-products">
-        <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice">
+        <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
+          <div v-for="(linha, indice) in Math.ceil((allProductsData?.data?.pageSize ?? 0) / 4)" :key="indice">
+
           <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
             <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
               <!-- {{ product}} -->
@@ -61,10 +68,16 @@
         </div>
       </div>
       <div class="" style="display: flex; flex-direction: row-reverse; justify-content: center;">
-          <Pagination :totalRows="allProductsData.data.totalItems" 
+          <!-- <Pagination :totalRows="allProductsData.data.totalItems" 
                       :perPage="allProductsData.data.pageSize" 
                       :currentPage="allProductsData.data.page">
+          </Pagination> -->
+          <Pagination v-if="allProductsData && allProductsData.data"
+              :totalRows="allProductsData.data.totalItems"
+              :perPage="allProductsData.data.pageSize"
+              :currentPage="allProductsData.data.page">
           </Pagination>
+
           <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
       </div>
     </div>
@@ -119,11 +132,12 @@ export default defineComponent({
     // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(this.$route.query.page) || 1;
     const pageSize = parseInt(this.$route.query.pageSize) || 24;
-    const category = parseInt(this.$route.query.categoryId) || 0;
-    console.log("categoria escolhida: "+category)
+    const categoryId = parseInt(this.$route.query.categoryId) || 1;
+    // console.log("categoria escolhida: "+category)
     // console.log("Página do route: " + page)
     // const allProductsData = await fetchAllProducts();
-    const allProductsData = await fetchAllProducts(page, pageSize);
+    // const allProductsData = await fetchAllProducts(page, pageSize, category);
+    const allProductsData = await fetchAllProducts(page, pageSize, undefined, categoryId);
     const allProducts = allProductsData.data.items;
     const allCategoriesData =  await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
@@ -150,9 +164,13 @@ export default defineComponent({
 
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
-    const maxPriceProduct = this.allProducts.reduce((prevProduct, currentProduct) => {
+    // const maxPriceProduct = this.allProducts.reduce((prevProduct, currentProduct) => {
+    //   return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
+    // });
+    const maxPriceProduct = this.allProducts.length > 0 ? this.allProducts.reduce((prevProduct, currentProduct) => {
       return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
-    });
+    }) : null;
+
     this.mostExpensiveProduct = maxPriceProduct;
   },
   components: { ProductCard, Pagination, CustomViews}
