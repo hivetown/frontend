@@ -15,7 +15,8 @@ import {
     signInWithEmailAndPassword,
     signOut,
 } from "firebase/auth";
-
+// import transaction from axios;
+import transaction from "firebase/transaction";
 import { getCookie, setCookie, removeCookie } from "./cookies";
 
 import firebase from "firebase/app";
@@ -29,6 +30,8 @@ import Registration from "../views/Registration.vue";
 import { useStore } from "vuex";
 import { postAddressConsumer } from "../api/addressConsumer";
 import { Consumer, Producer } from "@types/interfaces";
+import { api } from "../api/_base";
+import { Transaction } from 'firebase/firestore';
 
 const saveUser = (uid) => {
     // add new user to database
@@ -119,7 +122,7 @@ export default createStore({
     state: {
         token: getCookie("token"),
         user: null,
-    } as { token: string | null; user: Consumer | Producer | null },
+    } as { token: string | null; user: Consumer | Producer | null; auth: boolean },
     mutations: {
         SET_USER(state, user: Consumer | Producer) {
             state.user = user;
@@ -260,43 +263,150 @@ export default createStore({
                 longitude,
             } = details;
 
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
+            // try {
+            //     await createUserWithEmailAndPassword(auth, email, password);
 
-                commit("SET_TOKEN", await auth.currentUser?.getIdToken());
+            //     commit("SET_TOKEN", await auth.currentUser?.getIdToken());
 
-                const userType = Registration.setup().getUserType();
-                console.log("userType_index: ", userType);
+            //     const userType = Registration.setup().getUserType();
+            //     console.log("userType_index: ", userType);
 
-                if (userType == "Consumer") {
-                    await postConsumer({ name, phone, vat });
-
-                    const authArray = await fetchAuth();
-                    const { id } = authArray.data;
-                    await postAddressConsumer(id, {
-                        number,
-                        door,
-                        floor,
-                        zipCode: zip_code,
-                        street,
-                        parish,
-                        county,
-                        city,
-                        district,
-                        latitude,
-                        longitude,
-                    });
-
-                    console.log("Im in Consumer");
-                    commit("SET_USER", authArray);
-                }
-                // if saveValue == "Producer" then post to producer collection
-                else if (userType == "Producer") {
-                    await postProducer({ name, phone, vat });
-                    console.log("Im in Producer");
-                }
-
-                router.push("/");
+                // if (userType == "Consumer") {
+                //     try {
+                //         // await postConsumer({ name, phone, vat });
+                //         await postConsumer({ phone, vat });
+                
+                //         const authArray = await fetchAuth();
+                //         const { id } = authArray.data;
+                //         await postAddressConsumer(id, {
+                //             number,
+                //             door,
+                //             floor,
+                //             zipCode: zip_code,
+                //             street,
+                //             parish,
+                //             county,
+                //             city,
+                //             district,
+                //             latitude,
+                //             longitude,
+                //         });
+                
+                //         console.log("Im in Consumer");
+                //         commit("SET_USER", authArray);
+                //     } catch (error) {
+                //         console.error(error);
+                //         alert("Something went wrong while creating the consumer");
+                //     }
+                // }
+                // // if saveValue == "Producer" then post to producer collection
+                // else if (userType == "Producer") {
+                //     try {
+                //         await postProducer({ name, phone, vat });
+                //         console.log("Im in Producer");
+                //     } catch (error) {
+                //         console.error(error);
+                //         alert("Something went wrong while creating the producer");
+                //     }
+                // }
+                
+                // router.push("/");
+                try {
+                    const userType = Registration.setup().getUserType();
+                    console.log("userType_index: ", userType);
+                  
+                    if (userType == "Consumer") {
+                      try {
+                        
+                        
+                        
+                        await createUserWithEmailAndPassword(auth, email, password);
+                        commit("SET_TOKEN", await auth.currentUser?.getIdToken());
+                        await postConsumer({ name, phone, vat });
+                        
+                        const authArray = await fetchAuth();
+                        
+                        
+                        const { id } = authArray.data;
+                        await postAddressConsumer(id, {
+                          number,
+                          door,
+                          floor,
+                          zipCode: zip_code,
+                          street,
+                          parish,
+                          county,
+                          city,
+                          district,
+                          latitude,
+                          longitude,
+                        });
+                  
+                        console.log("Im in Consumer");
+                        commit("SET_USER", authArray);
+                        router.push("/");
+                  
+                    } catch (error) {
+                        switch (error.code) {
+                            case "auth/email-already-in-use":
+                                alert("Email already in use");
+                                break;
+                            case "auth/invalid-email":
+                                alert("Invalid email");
+                                break;
+                            case "auth/operation-not-allowed":
+                                alert("Operation not allowed");
+                                break;
+                            case "auth/weak-password":
+                                alert("Weak password");
+                                break;
+                            default:
+                                alert("Something went wrong");
+                                if (auth.currentUser) {
+                                    deleteUser(auth.currentUser)       
+                                }
+                        }
+                    }
+                    }
+                    // if saveValue == "Producer" then post to producer collection
+                    else if (userType == "Producer") {
+                      try {
+                        
+                        console.log("Im in Producer");
+                  
+                        // Create user after data is successfully posted
+                        await createUserWithEmailAndPassword(auth, email, password);
+                  
+                        commit("SET_TOKEN", await auth.currentUser?.getIdToken());
+                        await postProducer({ name, phone, vat });
+                        router.push("/");
+                    } catch (error) {
+                        switch (error.code) {
+                            case "auth/email-already-in-use":
+                                alert("Email already in use");
+                                break;
+                            case "auth/invalid-email":
+                                alert("Invalid email");
+                                break;
+                            case "auth/operation-not-allowed":
+                                alert("Operation not allowed");
+                                break;
+                            case "auth/weak-password":
+                                alert("Weak password");
+                                break;
+                            default:
+                                alert("Something went wrong");
+                                if (auth.currentUser) {
+                                    deleteUser(auth.currentUser)       
+                                }
+                        }
+                    }
+                    }
+                  
+                    
+                  
+                  
+                  
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
