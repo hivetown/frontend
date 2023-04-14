@@ -119,6 +119,8 @@ export default defineComponent({
     // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(this.$route.query.page) || 1;
     const pageSize = parseInt(this.$route.query.pageSize) || 24;
+    const category = parseInt(this.$route.query.categoryId) || 0;
+    console.log("categoria escolhida: "+category)
     // console.log("Página do route: " + page)
     // const allProductsData = await fetchAllProducts();
     const allProductsData = await fetchAllProducts(page, pageSize);

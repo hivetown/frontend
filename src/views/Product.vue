@@ -65,6 +65,7 @@
             </div>
             <div>
                <a href="#" v-if="producers > 1">
+                  <!-- TODO ver se é mais fácil trazer do /products/id (producerCount) -->
                   ver +{{ producers -1 }} vendedores
                </a>
                <!-- Não há mais vendedores para além do apresentado -->
@@ -164,37 +165,29 @@
                </h5>
                
                <div v-for="categoria in productCategories.items">
-                  <li>{{ categoria.id }} - {{ categoria.name }}</li>
+                  <!-- <li>{{ categoria.id }} - {{ categoria.name }}</li> -->
+                  <li class="px-3">{{ categoria.name }}</li>
                </div>
             </div>
             <div class="mt-4">
-               <h5>Especificações</h5>
-               <div style="background-color: #f3f3f3; height:">
-                     <table>
-                        <thead>
+               <h5 class="mb-4">Especificações</h5>
+               <div style="background-color: ; height: ;">
+                     <table style="background-color: ; width: 100%;">
+                        <!-- <thead>
                            <tr>
                               <th>Características</th>
                            </tr>
-                        </thead>
+                        </thead> -->
                         <tbody>
-                           <tr v-for="(category, index) in productCategoriesFields" :key="index" style="border-bottom: 1px solid blue;">
+                           <tr v-for="(category, index) in productCategoriesFields" :key="index" style="border-bottom: 2px solid #f3f3f3;">
                               <tr v-for="field in category">
-                                 <div style="background-color: pink;">
-                                    <span style="font-weight: bold;">Nome:</span> {{ field.field.name }}
-                                    <span style="font-weight: bold;">Valor:</span>{{ field.value }}
-                                    <span style="font-weight: bold;">Unidade:</span> {{ field.field.unit }}
+                                 <div class="d-flex justify-content-arround px-3" style="background-color: ; height: 5vh;">
+                                    <span style="font-weight:bold ; width: 45vh; background-color: ">{{ field.field.name }}</span> 
+                                    <span style="font-weight: ;">{{ field.value }} {{ field.field.unit }}</span>
                                  </div>
                               </tr>
                            </tr>
                         </tbody>
-                        <!-- <tbody>
-                           <tr v-for="(category, index) in productCategoriesFields" :key="index">
-                              <td>{{ category[0].field.category }}</td>
-                              <td v-for="field in category">{{ field.field.name }}</td>
-                              <td v-for="field in category">{{ field.value }}</td>
-                              <td v-for="field in category">{{ field.field.unit }}</td>
-                           </tr>
-                        </tbody> -->
                      </table>
                </div>
 
