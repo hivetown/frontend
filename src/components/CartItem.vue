@@ -11,8 +11,9 @@
        <b-card-text class="w-100" style="background-color: yellow;">
            <div>
                 <div class="d-flex gap-2"></div>
-                    <h5>Apple MacBook</h5>
-                    <p class="grey-txt">16GB RAM | 1TB | Placa gráfica</p>
+                    <p>{{ productId }}</p>
+                    <h5>{{ productTitle }}</h5>
+                    <p class="grey-txt">{{ productDescription }}</p>
                     <div class="d-flex gap-2">
                         <h4 class="mb-3">999€</h4>
                     <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
@@ -42,6 +43,29 @@ export default {
       return {
         value: 50
       }
+    },
+
+    props: {
+      productId: {
+        type: String,
+        required: true,
+      },
+      productTitle: {
+        type: String,
+        required: true,
+      },
+      productDescription: {
+        type: String,
+        required: true//,
+      }, 
+      // productImage: {
+      //   type: String,
+      //   required: true,
+      // },
+      // productPrice: {
+      //   type: Array,
+      //   required: true,
+      // },
     }
   }
 </script>

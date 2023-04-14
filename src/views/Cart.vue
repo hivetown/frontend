@@ -12,11 +12,11 @@
               <td class="left-column">
               <div>
                   X items no carrinho
+                  {{ produto }}
 
                   <div style="height:2vh"></div>
 
-                  <CartItem></CartItem>
-                  <CartItem></CartItem>
+                  <CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>
               </div>
               </td>
 
@@ -97,14 +97,36 @@ table {
 </style>
 
 <script setup lang="ts"> 
-import CartItem from "@/components/CartItem.vue";
+  import CartItem from "@/components/CartItem.vue";
 </script>
 
 <script lang="ts">
-    export default {
+  import { fetchProduct } from "@/api";
+  import { Product } from "@/types";
+  import { defineComponent } from "vue";
+
+  export default {
+
+    data(){
+      return{
+        produto:{} as Product[]
+      }
+    },
+
     methods: {
         goBack() {window.history.back();}
-    }
-    };
+    },
+
+    async beforeMount(){
+      const produto=await fetchProduct(1);
+
+      this.produto=produto.data;
+      console.log(JSON.stringify(this.produto));
+
+    },
+
+  };
+  
+
 </script>
 
