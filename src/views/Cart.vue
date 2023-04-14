@@ -139,13 +139,12 @@ text-align: center;
 
 <script setup lang="ts"> 
 import CartItem from "@/components/CartItem.vue";
-import Enderecos from "@/components/Enderecos.vue";
 import { onMounted, ref} from "vue";
 import {getAddresses, postOrderPayment} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
 
 onMounted(async () => {
-const addresses = await getAddresses('1');
+const addresses = await getAddresses('3');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -198,14 +197,14 @@ import { postNewAdress } from '../api/consumers';
       },
       
     async submitOrder() {
-      //var id = (this.selectedItems[0]);
-      var id=1; //TODO trocar pq nao tem endereco associado ainda, pelo de cima q e o selected
+      var id = (this.selectedItems[0]);
+     // var id=; //TODO trocar pq nao tem endereco associado ainda, pelo de cima q e o selected
       try {
         //const responseAdress = await postNewAdress()
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('1', { shippingAddressId: id});
+        const response = await postOrderPayment('3', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
