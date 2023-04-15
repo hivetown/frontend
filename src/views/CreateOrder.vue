@@ -26,13 +26,12 @@
 
         </div>
     </div>
+    </div>
     <div id="adiciona">
     <h3 class="titulo">Ou</h3>
-    <button  type="button" id="adiciona" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
-        <a href="/addAddress">
-                        Adicionar novo endereco
+        <a id="adc" href="/addAddress">
+                        Adicionar novo endereço
         </a>
-    </button>
     <br>
 </div>
 <div id="finalizar">
@@ -40,7 +39,6 @@
                         Finalizar a compra
     </button>
 </div>
-    </div>
     <br>
 </div>
 </template>
@@ -53,7 +51,7 @@ const address2 = ref<Order[]>([]); //array com os produtos
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('14');
+const addresses = await getAddresses('99');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -75,14 +73,14 @@ address2.value=addresses.data;
 
     },
     async submitOrder() {
-      var id = (this.selectedItems[0]);
+      var id = (this.selectedItems);
      // var id=; //TODO trocar pq nao tem endereco associado ainda, pelo de cima q e o selected
       try {
         //const responseAdress = await postNewAdress()
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('14', { shippingAddressId: id});
+        const response = await postOrderPayment('99', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
@@ -105,6 +103,11 @@ address2.value=addresses.data;
   }
 </script>
 <style scoped>
+#adc{
+    font-size: 28px;
+    color:black;
+    
+}
  .titulo {
       text-align: center;
       font-size: 35px;
