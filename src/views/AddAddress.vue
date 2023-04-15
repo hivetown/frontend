@@ -2,7 +2,7 @@
 <div class="form">
     <div class="form-group">
       <br>
-      <a style=" color:black; text-decoration: none;" href="/carrinho"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
+      <a style=" color:black; text-decoration: none;" href="/createOrder"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
       <br>
         <p class="titulo">Adicionar novo endereço de envio</p>
         <br>
@@ -132,7 +132,7 @@ console.log(this.$refs.door.value);
   
 
 
-        postNewAdress(1, this.address)
+        postNewAdress(14, this.address)
         .then((response) => {
           Swal.fire({
           title: 'Endereço salvo!',
@@ -146,7 +146,7 @@ console.log(this.$refs.door.value);
         }).then((result) => {
           if (result.isConfirmed) {
             try {
-              window.location.href = '/carrinho';
+              window.location.href = '/createOrder';
               // Lógica adicional após confirmação
             } catch (error) {
               console.log('erro ao redirecionar para o carrinho');

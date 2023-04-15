@@ -14,6 +14,7 @@ import AddAddress from "./views/AddAddress.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import Success from "./views/Success.vue";
 import Cancel from "./views/Cancel.vue";
+import CreateOrder from "./views/CreateOrder.vue";
 import { auth } from "./components/firebase";
 
 
@@ -99,6 +100,11 @@ const routes = [
         path: "/cancel",
         name: "Cancel",
         component: Cancel,
+    },
+    {
+        path: "/createOrder",
+        name: "CreateOrder",
+        component: CreateOrder,
     },
 
 ];
