@@ -9,6 +9,7 @@ import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Product from "./views/Product.vue";
 import Teste from "./views/Teste.vue";
+import SupplierInfo from "./views/SupplierInfo.vue";
 
 const routes = [
     {
@@ -46,6 +47,9 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
+        path: "/fornecedor",
+        name: "Fornecedor",
+        component: SupplierInfo,
     },
 ];
 
