@@ -68,7 +68,7 @@
   <label class="form-check-label" for="checkbox{{ index + 1 }}">
     <div class="border p-3" style="width: 500px;">
  <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
-      <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['door']}}, andar {{ address2['items'][num-1]['floor']}}</p>
+      <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['number']}} {{ address2['items'][num-1]['door']}}, andar {{ address2['items'][num-1]['floor']}}</p>
       <p>{{ address2['items'][num-1]['zipCode'] }}, {{ address2['items'][num-1]['parish'] }}</p>
       <p>Distrito de {{ address2['items'][num-1]['district'] }}</p>
       <p>{{ address2['items'][num-1]['latitude'] }}, {{ address2['items'][num-1]['longitude'] }}</p>
