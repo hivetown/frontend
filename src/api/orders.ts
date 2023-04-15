@@ -9,7 +9,7 @@ export const fetchAllItems = (userId: string, orderId: string, search?: string) 
     api.get<Order[]>(`/consumers/${userId}/orders/${orderId}/items`, { params: { search } });
 
 export const cancelOrder = (userId: number, orderId: number) =>
-    api.delete<Order[]>(`/consumers/${userId}/orders/${orderId}`, { params: { search }});
+    api.delete(`/consumers/${userId}/orders/${orderId}`);
   
 export const fetchUser = (search?: string) =>
     api.get<Consumer[]>(`/auth`, { params: { search } });

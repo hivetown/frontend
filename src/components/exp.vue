@@ -45,12 +45,13 @@
               <div class="carousel-container">
                 <div class="carousel">
                   <p>por carosel fotos</p>
-                <!--  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
--->
+                 <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
+                <!--  <p>encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images']</p>-->
                     <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
-                  <!--  <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
-      :src="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'][0]['url']" 
-      alt="Imagem da encomenda"  style="max-width: 100px;">                </a> -->
+                  <!-- <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
+                  :src="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'][0]['url']" 
+                  alt="Imagem da encomenda"  style="max-width: 100px;">  -->             
+                </a> 
                 </div>
               </div>
             </td>
@@ -87,7 +88,7 @@
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && (orders.items[num - 1].generalStatus === 'Paid' || orders.items[num - 1].generalStatus === 'Processing')">
   <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
+                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomenda(num)">Cancelar encomenda</BButton>
                 </div>
               
             </td>
@@ -110,9 +111,10 @@
 <script setup lang="ts">
   import Swal from 'sweetalert2';
   import { onMounted, ref, watch, computed } from "vue";
-   import { fetchAllOrders } from "../api";
+   import { fetchAllOrders, cancelOrder } from "../api";
    import { fetchAllItems } from "../api";
    import { fetchUser } from "../api";
+
 
    import { Consumer, Order } from "../types/interfaces";
 
@@ -132,7 +134,7 @@
    async function fetchAndSetOrders(num: number): Promise<void> {
     //console.log(orders.value.items[num-1]['id'] );
       const orderId = orders.value.items[num-1]['id'];
-      const response = await fetchAllItems(2, orderId);
+      const response = await fetchAllItems(1, orderId);
       const newEncomenda = {[orderId]: response.data}; // Cria um novo objeto com o id e o array
      // encomendas.push(newEncomenda); // Adiciona o novo objeto ao array "encomendas"
       //console.log(encomendas);
@@ -144,7 +146,7 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(2);
+      const response = await fetchAllOrders(1);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -157,7 +159,7 @@
 
     for (let i = 0; i< encomendas.length; i++){
       //id da encomenda encomendas[i]
-      const response1 = await fetchAllItems('2', encomendas[i]);
+      const response1 = await fetchAllItems('1', encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       //primeiro 0 fica
@@ -179,7 +181,7 @@
       // do something with the orders
     });
 
-   function cancelarEncomenda() {
+   function cancelarEncomenda(num) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
     title: 'Deseja cancelar a encomenda?',
@@ -193,8 +195,27 @@
   }).then((result) => {
     if (result.isConfirmed) {
       try{
-        cancelOrder(1,1);
-        const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
+        //console.log(valorAssociado);
+       // var encomendaCancelar = (orders.value['items'][num-1]['id']);
+        //TODO trocar para o user logado
+        console.log(orders.value['items'][num-1]['id']);
+        cancelOrder(1, orders.value['items'][num-1]['id'])
+        .then((response) => {console.log('cancelou')}).catch(error => {
+  if (error.response && error.response.status === 400) {
+    console.log('entrou');
+    Swal.fire({
+    icon: 'error',
+    title: 'Não é possível cancelar esta encomenda',
+    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+    confirmButtonText: 'OK'
+  });
+
+
+
+
+  } else {
+     
+        //const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
       
       // caso o usuário confirme, cancela a encomenda
       // TODO: implemente a lógica de cancelamento da encomenda
@@ -202,8 +223,10 @@
         'Encomenda cancelada!',
         'Sua encomenda foi cancelada com sucesso.',
         'success'
-      );
-      }  catch (error) {
+      );  }});
+      }  catch (error: any) {
+       
+        console.log(error);
         console.log('erro ao cancelar encomenda')
       }
     }
@@ -215,7 +238,7 @@ function cancelarEncomendaImpossivel() {
   Swal.fire({
     icon: 'error',
     title: 'Não é possível cancelar esta encomenda',
-    text: 'Esta encomenda já está em processo de envio ou já foi entregue.',
+    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
     confirmButtonText: 'OK'
   });
 }
