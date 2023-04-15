@@ -12,6 +12,8 @@ import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
 import AddAddress from "./views/AddAddress.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
+import Success from "./views/Success.vue";
+import Cancel from "./views/Cancel.vue";
 import { auth } from "./components/firebase";
 
 
@@ -86,7 +88,18 @@ const routes = [
         path: "/addAddress",
         name: "AddAddress",
         component: AddAddress
-    }
+    },
+    {
+        //TODO por user logado
+    path: "/success",
+    name: "Success",
+    component: Success,
+    },
+    {
+        path: "/cancel",
+        name: "Cancel",
+        component: Cancel,
+    },
 
 ];
 

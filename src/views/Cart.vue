@@ -64,8 +64,8 @@
     <div class="col-sm-6" v-for="(num, index) in address2.totalItems" :key="index">
       <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
       <div class="form-check">
-  <input class="form-check-input" type="checkbox" :value="address2['items'][num-1]['id']" v-model="selectedItems" @change="checkButtonDisabled"  />
-  <label class="form-check-label" for="checkbox{{ index + 1 }}">
+  <input class="form-check-input" type="radio" :value="address2['items'][num-1]['id']" v-model="selectedItems" @change="checkButtonDisabled"  />
+  <label class="form-check-label" for="radio{{ index + 1 }}">
     <div class="border p-3" style="width: 500px;">
  <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
       <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['number']}} {{ address2['items'][num-1]['door']}}, andar {{ address2['items'][num-1]['floor']}}</p>
@@ -144,7 +144,8 @@ import {getAddresses, postOrderPayment} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
 
 onMounted(async () => {
-const addresses = await getAddresses('3');
+  //TODO trocar pelo id do user logado
+const addresses = await getAddresses('14');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -152,6 +153,7 @@ address2.value=addresses.data;
 </script>
 
 <script lang="ts">
+import Swal from 'sweetalert2';
 import { Address } from '../types/interfaces';
 import { postNewAdress } from '../api/consumers';
 
@@ -204,12 +206,22 @@ import { postNewAdress } from '../api/consumers';
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('3', { shippingAddressId: id});
+        const response = await postOrderPayment('14', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
         } catch (error) {
-          console.error(error);
+          if (error.response.status === 400){
+            console.log('p');
+            Swal.fire({
+          title: 'Oops... Falta de stock!',
+          text: 'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
+          icon: 'error',
+          confirmButtonColor: '#797dc3',
+          confirmButtonText: 'Ok',
+        })
+      }
+          //console.error(error);
           console.log('Erro ao enviar o pedido. Por favor, tente novamente mais tarde.');
         }
       },
