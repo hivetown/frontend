@@ -89,22 +89,39 @@ import { reactive } from 'vue';
 export default {
   setup () {
     const register_form = reactive({
-      name: '',
-      number: '',
-      door: '',
-      floor: '',
-      zip_code: '',
-      street: '',
-      parish: '',
-      county: '',
-      district: '',
-      city: '',
-      latitude: '',
-      longitude: '',
-      phone: '',
-      vat: '',
-      email: '',
-      password: ''
+      // name: '',
+      // number: '',
+      // door: '',
+      // floor: '',
+      // zip_code: '',
+      // street: '',
+      // parish: '',
+      // county: '',
+      // district: '',
+      // city: '',
+      // latitude: '',
+      // longitude: '',
+      // phone: '',
+      // vat: '',
+      // email: '',
+      // password: ''
+      name: 'ss',
+      number: '1',
+      door: '1',
+      floor: '1',
+      zip_code1: '1111',
+      zip_code2: '111',
+      street: 's',
+      parish: 's',
+      county: 's',
+      district: 's',
+      city: 's',
+      latitude: '11.11',
+      longitude: '11.11',
+      phone: '111222121',
+      vat: '111222121',
+      email: 'ss@gmail.com',
+      password: 'ss1234'
     });
     const store = useStore();
     const errors = ref({});
@@ -116,6 +133,9 @@ export default {
       const numRegex = /^[0-9]+$/;
       const zip1Regex = /^[0-9]{4}$/;
       const zip2Regex = /^[0-9]{3}$/;
+      const stringRegex = /^[a-zA-Z\s]+$/;
+      const latitudeRegex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}$/;
+      const longitudeRegex = /^-?((1[0-7]|[1-9])?\d(\.\d{1,6})?|180(\.0{1,6})?)$/;
       const phoneRegex = /^[0-9]{9}$/;
       const vatRegex = /^[0-9]{9}$/;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -152,6 +172,33 @@ export default {
         isValid = false;
       }
       console.log("zip_code2", isValid)
+
+      if (!register_form.county) {
+        errors.value.county = 'Por favor, preencha o seu concelho.';
+        isValid = false;
+      } else if (!stringRegex.test(register_form.county)) {
+        errors.value.county = 'Por favor, preencha um concelho válido.';
+        isValid = false;
+      }
+      
+      console.log("county", isValid)
+      if (!register_form.district) {
+        errors.value.district = 'Por favor, preencha o seu distrito.';
+        isValid = false;
+      } else if (!stringRegex.test(register_form.district)) {
+        errors.value.district = 'Por favor, preencha um distrito válido.';
+        isValid = false;
+      }
+      console.log("district", isValid)
+      if (!register_form.city) {
+        errors.value.city = 'Por favor, preencha a sua cidade.';
+        isValid = false;
+      } else if (!stringRegex.test(register_form.city)) {
+        errors.value.city = 'Por favor, preencha uma cidade válida.';
+        isValid = false;
+      }
+      console.log("city", isValid)
+
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
         isValid = false;
@@ -160,6 +207,22 @@ export default {
         isValid = false;
       }
       console.log("phone", isValid)
+      if (!register_form.latitude) {
+        errors.value.latitude = 'Por favor, preencha a sua latitude.';
+        isValid = false;
+      } else if (!latitudeRegex.test(register_form.latitude)) {
+        errors.value.latitude = 'Por favor, preencha uma latitude válida.';
+        isValid = false;
+      }
+      console.log("latitude", isValid)
+      if (!register_form.longitude) {
+        errors.value.longitude = 'Por favor, preencha a sua longitude.';
+        isValid = false;
+      } else if (!longitudeRegex.test(register_form.longitude)) {
+        errors.value.longitude = 'Por favor, preencha uma longitude válida.';
+        isValid = false;
+      }
+
       if (!register_form.vat) {
         errors.value.vat = 'Por favor, preencha o seu NIF.';
         isValid = false;
@@ -193,7 +256,9 @@ export default {
       if (validateForm()) {
         console.log('Register form is valid!');
         register_form.zip_code = `${register_form.zip_code1}-${register_form.zip_code2}`;
-        store.dispatch('register', register_form);
+        register_form.type = "Consumer"
+        console.log("register_form.type consumer", register_form.type)
+        store.dispatch('register', register_form, register_form.type);
       }
     };
 

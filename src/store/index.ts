@@ -14,6 +14,7 @@ import {
     deleteUser,
     signInWithEmailAndPassword,
     signOut,
+    updateProfile,
 } from "firebase/auth";
 // import transaction from axios;
 import transaction from "firebase/transaction";
@@ -124,6 +125,7 @@ export default createStore({
         user: null,
     } as { token: string | null; user: Consumer | Producer | null; auth: boolean },
     mutations: {
+        /*
         SET_USER(state, user: Consumer | Producer) {
             state.user = user;
             for (const key in user) {
@@ -132,10 +134,10 @@ export default createStore({
                 }
             }
         },
-
-        // SET_USER (state, user) {
-        //   state.user = user;
-        // },
+*/
+        SET_USER (state, user: Consumer | Producer) {
+          state.user = user;          
+        },
         CLEAR_USER(state) {
             state.user = null;
         },
@@ -149,6 +151,7 @@ export default createStore({
         },
     },
     actions: {
+
         async login({ commit }, details) {
             const { email, password } = details;
 
@@ -169,21 +172,7 @@ export default createStore({
                 return;
             }
 
-            // commit('SET_USER', auth.currentUser)
-            // commit('SET_USER', details.user)
-            // commit('SET_TOKEN', details.token)
-
-            // saveToken(details.token)
-            // saveUser(details.user)
-            // saveToken(auth.currentUser?.getIdTokenResult())
-            // save accessToken that is in auth.currentUser
-            // saveUser(auth.currentUser)
-
-            // saveToken(auth.currentUser?.getIdTokenResult())
-            // saveUser(auth.currentUser?.uid)
-            // saveEmail(auth.currentUser?.email)
-
-            // once the Promise has resolved, you should extract the authentication token from the user object and store it in local storage as a string. This string can be used to authenticate future requests to Firebase services.
+            
             try {
                 const userCredential = await signInWithEmailAndPassword(
                     auth,
@@ -221,6 +210,8 @@ export default createStore({
             router.push("/");
         },
 
+
+  
         // async register ({ commit}, details: {name: string, password: string, email: string, phone: string, vat: string}) {
         async register(
             { commit },
@@ -241,7 +232,8 @@ export default createStore({
                 district: string;
                 latitude: number;
                 longitude: number;
-            }
+                type: string;
+            },
         ) {
             // const { email, password, name, phone, vat } = details
             const {
@@ -261,6 +253,7 @@ export default createStore({
                 district,
                 latitude,
                 longitude,
+                type,
             } = details;
 
             // try {
@@ -432,10 +425,11 @@ export default createStore({
         // },
 ////////////////////////
 try {
-    const userType = Registration.setup().getUserType();
-    console.log("userType_index: ", userType);
+    // const userType = Registration.setup().getUserType();
+
+    console.log("userType_index: ", type);
                     
-    if (userType == "Consumer") {
+    if (type == "Consumer") {
       try {
         // Post consumer address
         const authArray = await fetchAuth();
@@ -476,7 +470,7 @@ try {
       }
     }
     // if saveValue == "Producer" then post to producer collection
-    else if (userType == "Producer") {
+    else if (type == "Producer") {
       try {
         console.log("Im in Producer");
   

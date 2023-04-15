@@ -104,11 +104,11 @@ import store from '../store';
 export default {
   setup () {
     const register_form = reactive({
-        name: '',
-        phone: '',
-        vat: '',
-        email: '',
-        password: ''
+        name: 'll',
+        phone: '887765567',
+        vat: '887765567',
+        email: 'll@gmail.com',
+        password: 'll1234'
         });
     const store = useStore();
     const errors = ref({});
@@ -172,7 +172,9 @@ export default {
       console.log('Register function called!');
       if (validateForm()) {
         console.log('Register form is valid!');
-        store.dispatch('register', register_form);
+        register_form.type = 'Producer';
+        console.log("register_form.type producer", register_form.type)
+        store.dispatch('register', register_form, register_form.type);
       }
     };
 
