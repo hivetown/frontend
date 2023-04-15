@@ -216,7 +216,15 @@
          <!-- Página das avaliações -->
          <div class="px-4" v-if="currentPage === 'avaliacoes'">
             <div class="mt-4">
-               <p>Aqui vão estar as <b>avaliações</b> do produto</p>
+               <!-- <p>Aqui vão estar as <b>avaliações</b> do produto</p> -->
+               <div style="background-color: pink; height:">
+                  <div v-for="(producerProduct, index) in producerProducts.items">
+                     <div class="d-flex gap-3">
+                        <p>Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
+                        <p>{{ producerProduct.currentPrice }}€</p>
+                     </div>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
@@ -414,7 +422,7 @@
          // Carregar as categorias do produto
          const productCategories = await fetchProductCategories(this.$route.params.specid);
          this.productCategories = productCategories.data;
-         
+
          try{
             for (const categoria of this.productCategories.items) {
                const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);

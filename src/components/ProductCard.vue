@@ -16,7 +16,8 @@
         <b-card-text>
             <div>
                 <!-- Categoria -->
-                <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">Tecnologia</div>
+                <!-- <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ productCategory.name}}</div> -->
+                <div v-if="productCategory && productCategory.name" class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ productCategory.name }}</div>
 
                 <h5>{{ productTitle }}</h5>
                 <p class="grey-txt mt-3">{{productDescription}}</p>
@@ -97,16 +98,20 @@
     }
 </style>
 
-<script>
+<script lang="ts">
+import { fetchProductCategories } from "@/api";
+// import { Product, Category } from "@/types";
+
     export default {
         data() {
             return {
                 isFavorite: false, // Se o produto está nos favoritos
+                productCategory: null, // Categoria do produto
             };
         },
         props: {
             productId: {
-                type: String,
+                type: Number,
                 required: true,
             },
             productTitle: {
@@ -126,5 +131,13 @@
                 required: true,
             },
         },
+        async beforeMount(){
+            if(this.productId != undefined){
+                const productCategory = await fetchProductCategories(this.productId);
+                this.productCategory = productCategory.data.items[0];
+            }
+            // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
+
+        }
     };
 </script>

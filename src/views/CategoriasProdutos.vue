@@ -50,8 +50,12 @@
         :items="allProductsData.data.totalItems"
         :amount="allProductsData.data.pageSize"
       />
+
+      <div v-if="allProductsData?.data?.totalItems === 0" class="parent">
+        <p>Não foram encontrados produtos para a categoria especificada</p>
+      </div>
     
-      <div id="page-products">
+      <div v-else id="page-products">
         <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
           <div v-for="(linha, indice) in Math.ceil((allProductsData?.data?.pageSize ?? 0) / 4)" :key="indice">
 

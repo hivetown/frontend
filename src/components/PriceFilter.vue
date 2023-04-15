@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
   export default {
     data() {
       return {
@@ -27,7 +27,6 @@
         // TODO - por o preço a funcionar 
         maxValue: this.maxPrice ? this.maxPrice.maxPrice : 0,
         maxInputValue: this.maxPrice ? this.maxPrice.maxPrice : null,
-
         // maxValue: this.maxPrice.maxPrice,
         // maxInputValue: this.maxPrice.maxPrice,
       };
@@ -72,6 +71,8 @@
     },
   };
 </script>
+
+
 
 <style>
   /* Bolinha do preço ////////////////////////////////////// */
