@@ -1,28 +1,17 @@
 <template>
-	<!-- MUDAR O NOME DA CLASSE DO SCROLL-TOP -->
+  <!-- Botão de pesquisa -->
 	<div>
-    <!-- <b-button @click="scrollToTop" class="scroll-top-btn" variant="primary"> -->
-	<!-- <b-button @click="showSearch = !showSearch" class="scroll-top-btn"> -->
-	<b-button @click="showModal" class="scroll-top-btn d-none d-lg-block">
-		<i class="bi bi-search"></i>
+    <b-button @click="showModal" class="show-search-btn d-none d-lg-block">
+      <i class="bi bi-search"></i>
     </b-button>
-    <!-- Restante do seu conteúdo aqui -->
-	<b-collapse v-model="showSearch">
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
-        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
-      </form>
-    </b-collapse>
   </div>
 
+  <!-- Conteúdo do modal -->
   <div>
-    <!-- <b-button variant="primary" @click="showModal">Launch demo modal</b-button> -->
     <b-modal v-model="show" centered>
-      <div class="d-block">
-		<p>O que procura?</p>
+      <div class="d-block parent">
+		    <p>O que procura?</p>
         <input class="form-control me-2 rounded-pill" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
-        <!-- <button class="btn btn-outline-success" type="submit">Pesquisar</button> -->
-        <!-- <b-button variant="primary" class="mt-3" @click="closeModal">Pesquisar</b-button> -->
       </div>
     </b-modal>
   </div>
@@ -30,96 +19,101 @@
 </template>
 
 <style>
-.scroll-top-btn {
-  position: fixed !important;
-  background-color: #5A5A5A !important;
-  bottom: 1rem;
-  right: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 100% !important;
-  border: none !important;
-  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; */
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  transition: opacity 0.3s ease-in-out;
-  opacity: 0;
-  z-index: 9999;
-  color: #f1f1f1 !important;
-}
+  .show-search-btn {
+    position: fixed !important;
+    background-color: #5A5A5A !important;
+    bottom: 1rem;
+    right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 100% !important;
+    border: none !important;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+    z-index: 9999;
+    color: #f1f1f1 !important;
+  }
 
-.show-scroll-top-btn .scroll-top-btn {
-  opacity: 1;
-}
+  .show-show-search-btn .show-search-btn {
+    opacity: 1;
+  }
 
-.modal .btn-secondary{
-	background-color:#DC6942 !important;
-	border: solid 1px #DC6942 !important;
-}
+  .modal .btn-secondary{
+    background-color:#DC6942 !important;
+    border: solid 1px #DC6942 !important;
+    border-radius: 1.3em;
+    width: 9vh;
+  }
 
-.modal .btn-primary{
-	background-color: #4D774E !important;
-	border: solid 1px  #4D774E !important;
-}
+  .modal .btn-primary{
+    background-color: #4D774E !important;
+    border: solid 1px  #4D774E !important;
+    border-radius: 1.3em;
+    width: 9vh;
+  }
 
+  .modal-header{
+  border-bottom: none !important;
+  }
+
+  .modal-footer{
+  border-top: none !important;
+  }
+
+  input[type="search"]:focus{
+    border: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
+  }
 </style>
 
 <script>
-import { defineComponent, ref, watch } from 'vue';
 
-export default defineComponent({
-  name: 'showSearch',
-  setup() {
-    const showScrollTopBtn = ref(false);
+  import { defineComponent, ref, watch } from 'vue';
 
-    const checkScrollPosition = () => {
-      showScrollTopBtn.value = window.pageYOffset > 0;
-    };
+  export default defineComponent({
+    name: 'showSearch',
+    
+    setup() {
+      const showSearchBtn = ref(false);
+      const showSearch = ref(false);
+      const show = ref(false);
+      const checkScrollPosition = () => {
+        showSearchBtn.value = window.pageYOffset > 0;
+      };
 
-	const showSearch = ref(false);
+      watch(showSearchBtn, (newValue) => {
+        if (newValue) {
+          document.body.classList.add('show-show-search-btn');
+        } else {
+          document.body.classList.remove('show-show-search-btn');
+        }
+      });
 
-    watch(showScrollTopBtn, (newValue) => {
-      if (newValue) {
-        document.body.classList.add('show-scroll-top-btn');
-      } else {
-        document.body.classList.remove('show-scroll-top-btn');
+      function showModal() {
+        show.value = true;
       }
-    });
 
-    // const scrollToTop = () => {
-    //   window.scrollTo({ top: 0, behavior: 'smooth' });
-    // };
+      function closeModal() {
+        show.value = false;
+      }
 
+      window.addEventListener('scroll', checkScrollPosition);
 
-	const show = ref(false);
-
-    function showModal() {
-      show.value = true;
-    }
-
-    function closeModal() {
-      show.value = false;
-    }
-
-    window.addEventListener('scroll', checkScrollPosition);
-
-    return {
-      showScrollTopBtn,
-    //   scrollToTop,
-	showSearch,
-
-
-	show,
-	showModal,
-	closeModal,
-    };
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.checkScrollPosition);
-  },
-
-});
-
+      return {
+        showSearchBtn,
+        showSearch,
+        show,
+        showModal,
+        closeModal,
+      };
+    },
+  
+    beforeUnmount() {
+      window.removeEventListener('scroll', this.checkScrollPosition);
+    },
+  });
 </script>

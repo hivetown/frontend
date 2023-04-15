@@ -17,6 +17,7 @@ import Footer from "@/components/Footer.vue";
 * {
   /* font-family: 'Roboto', sans-serif; */
   /* font-family: 'DM Serif Display', serif; */
+  color:#232323;
   font-family: "Inter", sans-serif;
 }
 
@@ -69,4 +70,11 @@ button a:hover{
   text-decoration: none !important;
 }
 
+.separator-top{
+  border-top: 1px solid #f3f3f3;
+}
+
+.separator-bottom{
+  border-bottom: 1px solid #f3f3f3;
+}
 </style>

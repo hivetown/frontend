@@ -17,12 +17,14 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <CategoryFilter></CategoryFilter>
+          <!-- Por enquanto limitado a apenas 10 -->
+          <!-- <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter> -->
+           <CategoryFilter :categories="allCategories"></CategoryFilter>
         </div>
 
         <div id="price-filter">
           <h5 class="grey-txt mt-3">Preço</h5>
-          <PriceFilter></PriceFilter>
+          <PriceFilter :maxPrice="mostExpensiveProduct"></PriceFilter>
         </div>
 
         <div id="supplier-filter">
@@ -38,116 +40,144 @@
     </div>
 
     <!-- Espeaço à direita -->
-    <div class="" style="width: 100%">
+    <div class="" style="width: 100%; background-color:;">
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">Portáteis</h3>
       <!-- Diferentes vistas da página -->
-      <CustomViews></CustomViews>
-      
-      <!-- TODO por isto automático -->
-      <div id="page-products">
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-        </div>
+      <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
+      <CustomViews
+        v-if="allProductsData && allProductsData.data"
+        :items="allProductsData.data.totalItems"
+        :amount="allProductsData.data.pageSize"
+      />
 
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
-          <ProductCard :productTitle="productSpec.name" 
-                       :productDescription="productSpec.description"
-                        productImage="mac.png"/>
+      <div v-if="allProductsData?.data?.totalItems === 0" class="parent">
+        <p>Não foram encontrados produtos para a categoria especificada</p>
+      </div>
+    
+      <div v-else id="page-products">
+        <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
+          <div v-for="(linha, indice) in Math.ceil((allProductsData?.data?.pageSize ?? 0) / 4)" :key="indice">
+
+          <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
+            <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
+              <!-- {{ product}} -->
+              <ProductCard :productId="product.id"
+                           :productTitle="product.name" 
+                           :productDescription="product.description"
+                           :productImage="product.images[0]?.url"
+                           :productPrice="[product.minPrice, product.maxPrice]"/>
+            </template>
+          </div>
         </div>
       </div>
+      <div class="" style="display: flex; flex-direction: row-reverse; justify-content: center;">
+          <!-- <Pagination :totalRows="allProductsData.data.totalItems" 
+                      :perPage="allProductsData.data.pageSize" 
+                      :currentPage="allProductsData.data.page">
+          </Pagination> -->
+          <Pagination v-if="allProductsData && allProductsData.data"
+              :totalRows="allProductsData.data.totalItems"
+              :perPage="allProductsData.data.pageSize"
+              :currentPage="allProductsData.data.page">
+          </Pagination>
 
+          <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+      </div>
     </div>
-
   </div>
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <CompareBanner></CompareBanner>
+  <!-- <CompareBanner></CompareBanner> -->
 </template>
 
 <script setup lang="ts">
-
   // Filtros
   import CategoryFilter from "@/components/CategoryFilter.vue";
   import PriceFilter from "@/components/PriceFilter.vue";
   import SupplierFilter from "@/components/SupplierFilter.vue";
   import RatingFilter from "@/components/RatingFilter.vue";
+  import Pagination from "@/components/Pagination.vue";
 
   // Componentes auxiliares
   import CustomViews from "@/components/CustomViews.vue";
   import ProductCard from "@/components/ProductCard.vue";
   import CompareBanner from "@/components/CompareBanner.vue";
-
-  /////////////////////////////////////////////////////////////////////////////////////
-
-  // Código escrito pelo Lucas que provavelmente vai ser removido depois
-
-  // import { defineComponent } from "vue";
-
-  // import { onMounted, ref, watch } from "vue";
-  // import { fetchAllProducts } from "@/api";
-  // import { Product } from "@/types/interfaces";
-
-  // const products = ref<Product[]>([]);
-
-  // const fetchProducts = async (search?: string) => {
-  //   products.value = await fetchAllProducts(search).then((ps) => ps.data);
-  // };
-
-  // onMounted(fetchProducts);
-
-  // const search = ref("");
-  // watch(search, fetchProducts);
-  
-  /////////////////////////////////////////////////////////////////////////////////////
 </script>
 
+<!-- TODO atualizar tipagens -->
 <script lang="ts">
 // Componentes
 // import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchAllProducts, fetchProduct } from "@/api";
-import { Product } from "@/types";
+import { fetchProduct, fetchAllProducts, fetchAllCategories} from "@/api";
+import { Product, Category } from "@/types";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   data() {
     return {
       // Dados da BD
-      products: {} as Product[],
+      // Produtos
+      allProducts : {} as Product[],
       productSpec: {} as Product,
+      allProductsData: {} as any,
+      // Filtros
+      allCategories: {} as Category[],
     };
   },
   // A fazer antes de montar o componente
   async beforeMount() {
     // Carregar os dados do produto da BD
-    // this.products = await fetchAllProducts.data;
-    // console.log("Este é o log: " + this.products);
-    this.productSpec = await (await fetchProduct(1)).data;
-    // console.log("Este é o log: " + this.productSpec.id);
+    // this.allProducts =   fetchAllProducts().data;
+    // const searchTerm = "Recycled";
+    // const allProductsData = await fetchAllProducts(searchTerm);
+    const page = parseInt(this.$route.query.page) || 1;
+    const pageSize = parseInt(this.$route.query.pageSize) || 24;
+    const categoryId = parseInt(this.$route.query.categoryId) || 1;
+    // console.log("categoria escolhida: "+category)
+    // console.log("Página do route: " + page)
+    // const allProductsData = await fetchAllProducts();
+    // const allProductsData = await fetchAllProducts(page, pageSize, category);
+    const allProductsData = await fetchAllProducts(page, pageSize, undefined, categoryId);
+    const allProducts = allProductsData.data.items;
+    const allCategoriesData =  await fetchAllCategories();
+    const allCategories = allCategoriesData.data.items;
+    // console.log("Este é o log: " + JSON.stringify(allCategories));
+    // console.log("Quantidade de cats: " + allCategories.length);
+    //  console.log("Quantidade de cats: " + allCategories.type);
+    this.allProducts = allProducts;
+    this.allProductsData = allProductsData;
+    this.allCategories = allCategories;
+
+   
+
+    // for (let i = 0; i < allProducts.length; i++) {
+    //   const productId = allProducts[i].id;
+    //   const productData = await fetchProduct(productId);
+    //   const product = productData.data;
+
+    //   console.log(`Produto ${productId}: `, product);
+      
+    // }
+
+  //  console.log("Este é o log: " + allProductsData.data.pageSize);
+    // this.productSpec = await (await fetchProduct(1)).data;
+
+
+    // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
+    // const maxPriceProduct = this.allProducts.reduce((prevProduct, currentProduct) => {
+    //   return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
+    // });
+    const maxPriceProduct = this.allProducts.length > 0 ? this.allProducts.reduce((prevProduct, currentProduct) => {
+      return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
+    }) : null;
+
+    this.mostExpensiveProduct = maxPriceProduct;
+>>>>>>> HVT-4-ver-lista-de-produtos-e-respetivos-fornecedores
   },
-  components: { ProductCard }
+  components: { ProductCard, Pagination, CustomViews}
 });
 </script>

@@ -7,6 +7,9 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+import Product from "./views/Product.vue";
+import Teste from "./views/Teste.vue";
+import SupplierInfo from "./views/SupplierInfo.vue";
 
 const routes = [
     {
@@ -20,8 +23,8 @@ const routes = [
         component: About,
     },
     {
-        path: "/produtos",
-        name: "Produtos",
+        path: "/products",
+        name: "Products",
         component: CategoriasProdutos,
     },
     {
@@ -36,14 +39,19 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: "/produto",
-        name: "Produto",
+        path: "/products/:specid",
+        name: "ProductDetails",
         component: Product,
     },
     {
         path: "/conta",
         name: "Conta",
         component: User,
+    },
+    {
+        path: "/producer/:id",
+        name: "Producer",
+        component: SupplierInfo,
     },
 ];
 

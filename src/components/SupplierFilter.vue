@@ -30,6 +30,9 @@
       color:#5A5A5A;
   }
 
+  .light-search:focus{
+    box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
+  }
 </style>
 
 <script>

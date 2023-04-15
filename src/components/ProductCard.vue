@@ -1,26 +1,33 @@
 <template>
-    
-    <!-- TODO fazer com que os dados sejam automáticos -->
     <div class="mb-5 product">
-        <router-link to="/produto">
-            <b-card class="prod-card">
-                <span class="position-absolute top-0 end-0 p-3 fav">
-                    <i class="bi bi-heart" style="color: #DC6942; cursor:pointer;"></i>
-                </span>
+        <!-- Imagem do produto -->
+        <b-card class="prod-card">
+            <span class="position-absolute fav">
+                <i v-bind:class="[isFavorite ? 'bi-heart-fill' : 'bi-heart']" 
+                    v-on:click="isFavorite = !isFavorite">
+                </i>
+            </span>
+            <router-link :to="'/products/' + productId">
                 <img :src="productImage" class="square-image">
-            </b-card>
-        </router-link>
+            </router-link>
+        </b-card>
 
+        <!-- Informação do produto -->
         <b-card-text>
             <div>
-                <!-- Dados do produto -->
-                <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">Tecnologia</div>
+                <!-- Categoria -->
+                <!-- <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ productCategory.name}}</div> -->
+                <div v-if="productCategory && productCategory.name" class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ productCategory.name }}</div>
+
                 <h5>{{ productTitle }}</h5>
                 <p class="grey-txt mt-3">{{productDescription}}</p>
                 <div class="d-flex gap-2">
-                    <h4 class="mb-3">999€</h4>
-                    <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
-                    <p class="mt-1 grey-txt text-decoration-line-through">1025€</p>
+                    <h4 class="mb-3">
+                        {{ productPrice && productPrice.length > 1 ? 
+                           productPrice[0] + '€ - ' + productPrice[1] + '€' : '' }}
+                    </h4>
+                    <!-- TODO, fazer com que seja  -->
+                    <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
                 </div>
                 
                 <!-- Botões -->
@@ -29,7 +36,7 @@
                             v-b-tooltip.hover title="Adicionar ao carrinho">
                             <i class="bi bi-cart"></i>
                     </button>
-                    <router-link to="/produto">
+                    <router-link :to="'/products/' + productId">
                         <button type="button" class="btn btn-outline-secondary circle-btn" 
                                 v-b-tooltip.hover title="Ver produto">
                                 <i class="bi bi-eye"></i>
@@ -44,7 +51,6 @@
             </div>
         </b-card-text>
     </div>
-
 </template>
 
 <style>
@@ -58,10 +64,32 @@
         cursor: pointer;
     }
 
+    .prod-card .card-body{
+        padding: 0 !important;
+    }
+
     .square-image {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Ajusta a imagem para preencher todo o espaço disponível */
+        object-fit: cover;  /* Ajusta a imagem para preencher todo o espaço disponível */
+        border-radius: 1.3em !important;
+    }
+
+    .fav {
+        right: 4%;
+        top:4%;
+        width: 3vh;
+        height: 3vh;
+        background-color: #f3f3f3;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .fav i {
+        color: #DC6942;
+        cursor: pointer;
     }
 
     .prod-category{
@@ -70,21 +98,46 @@
     }
 </style>
 
-<script>
-export default {
-    props: {
-        productTitle: {
-            type: String,
-            required: true,
+<script lang="ts">
+import { fetchProductCategories } from "@/api";
+// import { Product, Category } from "@/types";
+
+    export default {
+        data() {
+            return {
+                isFavorite: false, // Se o produto está nos favoritos
+                productCategory: null, // Categoria do produto
+            };
         },
-        productDescription: {
-            type: String,
-            required: true,
-        }, 
-        productImage: {
-            type: String,
-            required: true,
+        props: {
+            productId: {
+                type: Number,
+                required: true,
+            },
+            productTitle: {
+                type: String,
+                required: true,
+            },
+            productDescription: {
+                type: String,
+                required: true,
+            }, 
+            productImage: {
+                type: String,
+                required: true,
+            },
+            productPrice: {
+                type: Array,
+                required: true,
+            },
         },
-    },
-};
+        async beforeMount(){
+            if(this.productId != undefined){
+                const productCategory = await fetchProductCategories(this.productId);
+                this.productCategory = productCategory.data.items[0];
+            }
+            // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
+
+        }
+    };
 </script>
