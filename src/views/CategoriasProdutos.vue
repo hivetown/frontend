@@ -61,7 +61,7 @@
 
           <div class="parent d-flex justify-content-center mt-5" style="gap:12vh;">
             <template v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)">
-              <!-- {{ product}} -->
+              <!-- {{ product.id}} -->
               <ProductCard :productId="product.id"
                            :productTitle="product.name" 
                            :productDescription="product.description"
@@ -89,7 +89,7 @@
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <!-- <CompareBanner></CompareBanner> -->
+  <CompareBanner @send-id="handleId($event)"></CompareBanner> 
 </template>
 
 <script setup lang="ts">
@@ -127,6 +127,12 @@ export default defineComponent({
       // Filtros
       allCategories: {} as Category[],
     };
+  },
+  methods: {
+    handleId(id) {
+      console.log(`Received product ID ${id} from child component`);
+      // faça algo com o ID recebido aqui
+    }
   },
   // A fazer antes de montar o componente
   async beforeMount() {
@@ -176,7 +182,6 @@ export default defineComponent({
     }) : null;
 
     this.mostExpensiveProduct = maxPriceProduct;
->>>>>>> HVT-4-ver-lista-de-produtos-e-respetivos-fornecedores
   },
   components: { ProductCard, Pagination, CustomViews}
 });

@@ -43,7 +43,8 @@
                         </button>
                     </router-link>
                     <button type="button" class="btn btn-outline-secondary circle-btn" 
-                            v-b-tooltip.hover title="Comparar produto">
+                            v-b-tooltip.hover title="Comparar produto"
+                            @click="addToCompare(productId)">
                             <i class="bi bi-arrow-left-right"></i>
                     </button>
                 </div>
@@ -51,6 +52,9 @@
             </div>
         </b-card-text>
     </div>
+
+    <!-- <CompareBanner :product-id="selectedId"></CompareBanner>  -->
+
 </template>
 
 <style>
@@ -100,6 +104,7 @@
 
 <script lang="ts">
 import { fetchProductCategories } from "@/api";
+import CompareBanner from "@/components/CompareBanner.vue";
 // import { Product, Category } from "@/types";
 
     export default {
@@ -107,6 +112,7 @@ import { fetchProductCategories } from "@/api";
             return {
                 isFavorite: false, // Se o produto está nos favoritos
                 productCategory: null, // Categoria do produto
+                selectedId: null, // Id do produto selecionado
             };
         },
         props: {
@@ -129,6 +135,14 @@ import { fetchProductCategories } from "@/api";
             productPrice: {
                 type: Array,
                 required: true,
+            },
+        },
+        methods: {
+            addToCompare(id) {
+                this.selectedId = id;
+                console.log("id: " + id);
+                // TODO corrigir o emit para mandar o id para o categorias produto
+                this.$emit('send-id', id);
             },
         },
         async beforeMount(){

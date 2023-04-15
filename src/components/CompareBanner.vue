@@ -73,16 +73,43 @@
 
 </style>
   
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 
-  import { ref } from 'vue';
-  import Compare from "@/components/Compare.vue";
-  
-  const showModal = ref(false);
-  
-  const openModal = () => {
+import { ref } from 'vue';
+import Compare from "@/components/Compare.vue";
+
+const showModal = ref(false);
+
+const openModal = () => {
     showModal.value = true;
-  };
+};
+</script> -->
+<script lang="ts">
 
+import { ref } from 'vue';
+import Compare from "@/components/Compare.vue";
+
+const showModal = ref(false);
+
+const openModal = () => {
+    showModal.value = true;
+};
+
+export default {
+    // props: {
+    //     productId: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    // },
+    components: {
+        Compare,
+    },
+    setup() {
+        return {
+            showModal,
+            openModal,
+        };
+    },
+};
 </script>
-  
