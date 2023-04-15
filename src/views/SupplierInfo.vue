@@ -160,6 +160,12 @@ export default {
         mapImage: 1,
     };
   },
+  props: {
+    producerId: {
+      type: Number,
+      required: true,
+    },
+  },
   methods: {
     updateImage(number) {
       this.mapImage = number;

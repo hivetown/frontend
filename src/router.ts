@@ -16,8 +16,8 @@ const routes = [
         component: About,
     },
     {
-        path: "/fornecedor",
-        name: "Fornecedor",
+        path: "/producer/:id",
+        name: "Producer",
         component: SupplierInfo,
     },
 ];
