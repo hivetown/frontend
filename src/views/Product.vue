@@ -125,7 +125,9 @@
             </b-avatar> 
             <div class="seller">
                <h5 v-if="defaultProduct">{{ defaultProduct.producer.name }}</h5>
-               <a href="#" class="grey-txt">Sobre o vendedor</a>
+               <router-link :to="'/producer/' + defaultProduct.producer.id">
+                  <a href="#" class="grey-txt">Sobre o vendedor</a>
+               </router-link>
             </div>
          </div>
 		</div>
@@ -217,10 +219,10 @@
          <div class="px-4" v-if="currentPage === 'avaliacoes'">
             <div class="mt-4">
                <!-- <p>Aqui vão estar as <b>avaliações</b> do produto</p> -->
-               <div style="background-color: pink; height:">
+               <div style="background-color: ; height:">
                   <div v-for="(producerProduct, index) in producerProducts.items">
                      <div class="d-flex gap-3">
-                        <p>Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
+                        <p style="background-color: ; width: 60vh">Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
                         <p>{{ producerProduct.currentPrice }}€</p>
                      </div>
                   </div>

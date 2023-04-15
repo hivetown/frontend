@@ -47,8 +47,10 @@ const routes = [
         path: "/conta",
         name: "Conta",
         component: User,
-        path: "/fornecedor",
-        name: "Fornecedor",
+    },
+    {
+        path: "/producer/:id",
+        name: "Producer",
         component: SupplierInfo,
     },
 ];
