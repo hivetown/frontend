@@ -37,7 +37,7 @@
 						<!-- if user is not logged in or token has changed based on api.interceptors.response -->
 						
 						<!-- <div class="d-flex" v-if="!$store.state.user && listenCookieChange()"> -->
-							<div class="d-flex" v-if="!$store.state.user">
+							<div class="d-flex" v-if="user.name === '' || user.image === ''">
 								<b-avatar>
 									class="nav-item" 
 									style="background-color: #f3f3f3 !important; 
@@ -50,15 +50,15 @@
 	
 						</div>
 	
-						<div class="d-flex nav-items-right" v-if="$store.state.user">
+						<div class="d-flex nav-items-right" v-if="user.name !== '' && user.image !== ''">
 							<router-link to="/conta">
-								<b-avatar class="nav-item" :src="user.image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								  <span>{{ user.name }}</span>
-								</b-avatar>
-							  </router-link>
+							  <b-avatar class="nav-item" :src="user.image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+								<span>{{ user.name }}</span>
+							  </b-avatar>
+							</router-link>
 							<b-nav-item-dropdown right>
 							  <b-dropdown-item href="#">Definições</b-dropdown-item>
-							  <b-dropdown-item @click="$store.dispatch('logout')" href="#">Terminar Sessão</b-dropdown-item>
+							  <b-dropdown-item @click="logout" href="#">Terminar Sessão</b-dropdown-item>
 							</b-nav-item-dropdown>
 						  </div>
 				</b-navbar-nav>
@@ -114,8 +114,8 @@ import { mapState, useStore } from 'vuex'
 // import { validCookie } from '../api/_base'
 
 import { computed } from 'vue';
-import { ref } from 'vue';
-import axios from 'axios'
+import { ref, watch } from 'vue';
+
 /*
 export default {
   setup() {
@@ -131,6 +131,8 @@ export default {
 	}
 }
 */
+import { fetchAuth } from '../api/auth'
+/*
 export default {
   setup() {
     const store = useStore()
@@ -138,7 +140,7 @@ export default {
 
     async function fetchUser() {
       try {
-        const response = await axios.get('/auth')
+        const response = await fetchAuth()
         console.log(response.data)
         user.value = response.data
       } catch (error) {
@@ -153,7 +155,8 @@ export default {
     function logout() {
       store.dispatch('logout')
     }
-
+	console.log("user: ", user)
+	console.log("image", user.image)
     return {
       user,
       logout
@@ -188,7 +191,44 @@ export default {
   }
 }
 */
+export default {
+  setup() {
+    const store = useStore()
+    const user = ref({ name: '', image: '' })
+
+    async function fetchUser() {
+      try {
+        const response = await fetchAuth()
+        console.log(response.data)
+        user.value = response.data
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    watch(() => store.state.user, (newValue, oldValue) => {
+      if (newValue) {
+        fetchUser()
+      } else {
+        user.value = { name: '', image: '' }
+      }
+    }, { immediate: true })
+
+    function logout() {
+      store.dispatch('logout')
+    }
+
+    return {
+      user,
+      logout
+    }
+  }
+}
+
+
+
 // import api from '../api/_base'
+
 
 // api.get('../api/_base/auth').then(response => {
 //   console.log('response.data: ', response.data)
