@@ -89,7 +89,7 @@
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <CompareBanner @send-id="handleId($event)"></CompareBanner> 
+  <CompareBanner @send-id="handleId"></CompareBanner> 
 </template>
 
 <script setup lang="ts">
@@ -130,8 +130,8 @@ export default defineComponent({
   },
   methods: {
     handleId(id) {
-      console.log(`Received product ID ${id} from child component`);
-      // faça algo com o ID recebido aqui
+      console.log("Deu")
+      console.log(id);
     }
   },
   // A fazer antes de montar o componente
@@ -183,6 +183,6 @@ export default defineComponent({
 
     this.mostExpensiveProduct = maxPriceProduct;
   },
-  components: { ProductCard, Pagination, CustomViews}
+  components: { ProductCard, Pagination, CustomViews, CompareBanner },
 });
 </script>

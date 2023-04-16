@@ -11,12 +11,17 @@
             </div>
 
             <div class="d-flex gap-4 ">
+                <!-- {{ product1.images[0].url }} -->
                 <div class="prod-container d-flex justify-content-center align-items-center">
                     <!-- <i class="bi bi-x-lg"></i> -->
+                    <img class="square-image" :src="prod1Img.url" :alt="prod1Img.alt">
                 </div>
+                <!-- {{ product1.name }} -->
                 <div class="prod-container d-flex justify-content-center align-items-center">
                     <!-- <i class="bi bi-x-lg"></i> -->
+                    <img class="square-image" :src="prod2Img.url" :alt="prod2Img.alt">
                 </div>
+                <!-- {{ product2.name }} -->
             </div>
 
             <div class="d-flex flex-column justify-content-center align-items-center">
@@ -88,6 +93,8 @@ const openModal = () => {
 
 import { ref } from 'vue';
 import Compare from "@/components/Compare.vue";
+import { Product } from "@/types";
+import { fetchProduct } from "@/api";
 
 const showModal = ref(false);
 
@@ -96,6 +103,14 @@ const openModal = () => {
 };
 
 export default {
+    data() {
+        return {
+            product1: {} as Product[],
+            product2: {} as Product[],
+            prod1Img: "",
+            prod2Img: "",
+        };
+    },
     // props: {
     //     productId: {
     //         type: Number,
@@ -110,6 +125,19 @@ export default {
             showModal,
             openModal,
         };
+    },
+    async beforeMount() {
+        // Primeiro produto
+        const product1 = await fetchProduct(1);
+        this.product1 = product1.data;
+        this.prod1Img = this.product1.images[0];
+        // console.log("Produto 1: " + JSON.stringify(this.product1))
+
+        // Segundo produto
+        const product2 = await fetchProduct(2);
+        this.product2 = product2.data;
+        this.prod2Img = this.product2.images[0];
+        // console.log("Produto 2: " + JSON.stringify(this.product2))
     },
 };
 </script>

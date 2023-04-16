@@ -47,6 +47,7 @@
                             @click="addToCompare(productId)">
                             <i class="bi bi-arrow-left-right"></i>
                     </button>
+                    <!-- <button @click="sendId">Enviar ID</button> -->
                 </div>
             
             </div>
@@ -144,6 +145,9 @@ import CompareBanner from "@/components/CompareBanner.vue";
                 // TODO corrigir o emit para mandar o id para o categorias produto
                 this.$emit('send-id', id);
             },
+            // sendId(){
+            //     this.$emit('send-id', this.productId);
+            // }
         },
         async beforeMount(){
             if(this.productId != undefined){
