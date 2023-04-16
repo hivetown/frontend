@@ -45,3 +45,32 @@ export interface ApiRequest {
     params?: Record<string, string>;
     data?: any;
 }
+
+
+export interface ConsumerCart {
+    items: {
+        producerProduct?: ProducerProduct;
+        consumer: Consumer;
+        quantity: number;
+    }[] //Para indicar que é um array destas vars
+}
+
+export interface ProducerProduct {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    producer?: Producer; //Meto o ? para referir outra interface
+    productionUnit?: ProductionUnit;
+}
+
+export interface ProductionUnit {
+    id: number;
+    name: string;
+    address?: Address;
+    producer?: Producer;
+}
+
+export interface Address {
+    // TODO
+}
