@@ -132,7 +132,7 @@ console.log(this.$refs.door.value);
   
 
 
-        postNewAdress(14, this.address)
+        postNewAdress(1, this.address)
         .then((response) => {
           Swal.fire({
           title: 'Endereço salvo!',
