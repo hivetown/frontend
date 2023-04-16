@@ -114,7 +114,7 @@ import { mapState, useStore } from 'vuex'
 // import { validCookie } from '../api/_base'
 
 import { computed } from 'vue';
-import { defineComponent, ref, watchEffect  } from 'vue';
+import { defineComponent, ref, watchEffect, onMounted, watch  } from 'vue';
 
 /*
 export default {
@@ -226,7 +226,38 @@ export default {
 // }
 
 
-export default defineComponent({
+// export default defineComponent({
+//   setup() {
+//     const store = useStore()
+//     const user = ref({ name: '', image: '' })
+
+//     async function fetchUser() {
+//       try {
+//         const response = await fetchAuth()
+//         console.log(response.data)
+//         user.value = response.data
+//       } catch (error) {
+//         console.error(error)
+//       }
+//     }
+
+//     watchEffect(async () => {
+//       if (!user.value.name && store.state.token) {
+//         await fetchUser()
+//       }
+//     })
+
+//     function logout() {
+//       store.dispatch('logout')
+//     }
+
+//     return {
+//       user,
+//       logout
+//     }
+//   }
+// })
+export default {
   setup() {
     const store = useStore()
     const user = ref({ name: '', image: '' })
@@ -234,21 +265,27 @@ export default defineComponent({
     async function fetchUser() {
       try {
         const response = await fetchAuth()
-        console.log(response.data)
         user.value = response.data
       } catch (error) {
         console.error(error)
       }
     }
 
-    watchEffect(async () => {
-      if (!user.value.name && store.state.token) {
-        await fetchUser()
-      }
+    onMounted(async () => {
+      await fetchUser()
     })
+
+    watch(() => store.state.user, (newValue, oldValue) => {
+      if (newValue) {
+        fetchUser()
+      } else {
+        user.value = { name: '', image: '' }
+      }
+    }, { immediate: true })
 
     function logout() {
       store.dispatch('logout')
+      user.value = { name: '', image: '' }
     }
 
     return {
@@ -256,8 +293,7 @@ export default defineComponent({
       logout
     }
   }
-})
-
+}
 // import api from '../api/_base'
 
 
