@@ -7,21 +7,12 @@ import { ref } from 'vue'
 
 import { onBeforeMount } from 'vue'
 import {useStore } from 'vuex'
-import ErrorPopup from '../components/ErrorPopup.vue'
+// import ErrorPopup from '../components/ErrorPopup.vue'
+import ErrorPopup from '@/components/ErrorPopup.vue'
+import SET_AUTH from '../store/mutations'
+import { createApp } from 'vue'
 
-export default {
-  setup() {
-    const store = useStore()
-	// const validCookie = computed(() => store.getters['validCookie'])
-	// console.log("validCookie: ", validCookie.value)
-    onBeforeMount(() => {
-      store.dispatch('fetchUser')
-    })
-	// return {
-    //   validCookie
-    // }
-	}
-}
+
 
 function makeApi(baseURL: string, options: ApiRequest = {}) {
     const headers = { ...options?.headers };
@@ -42,50 +33,35 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
 
         return config;
     });
-    // listenCookieChange(({ newValue }) => {
-    //     // if the cookie is removed or changed, we need to redirect the user to the login page and return false
-    //     if (!newValue) {
-    //         router.push('/login');
-    //         return false;
-    //     }
-    //     return true;
-    // });
-
-    // api.interceptors.response.use(
-    //     (response) => response,
-    //     console.log('interceptor called'),
-    //     (
-    //     (error) => {
-    //         console.log("error.response.status:", error.response.status);
-    //         if (error.response.status === 401) {
-    //             // store.commit("logout");
-    //             // router.push("/login");
-    //             console.log('401 error')
-    //         } else if (error.response.status === 403) {
-    //             // router.push("/403");
-    //             console.log('403 error')
-    //         } else if (error.response.status === 404) {
-    //             // router.push("/404");
-    //             console.log('404 error')
-    //         } 
-    //         return Promise.reject(error);
-    //     }
-    // )
-    //   );
+    
 
     api.interceptors.response.use(
         (response) => response,
         
         (error: AxiosError) => {
-            console.log("error.response.status:", error.response?.status);
-            console.log("cheguei aqui")
-            const errorMessage = `Error ${error.response?.status}: ${error.response?.data}`
-            const errorPopup = new ErrorPopup({ propsData: { message: errorMessage } }).$mount()
-            document.body.appendChild(errorPopup.$el)
+                        
+            try {
 
-            setTimeout(() => {
-            document.body.removeChild(errorPopup.$el)
-            }, 3000)
+                const { response } = error
+
+                if (!response || !response.status || !response.data) {
+                  // Handle the error without a message
+                  return Promise.reject(error)
+                }
+            
+                const errorMessage = `Erro ${response.status}`
+                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage })
+                const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
+            
+                document.body.appendChild(errorPopupInstance.$el)
+            
+                setTimeout(() => {
+                  document.body.removeChild(errorPopupInstance.$el)
+                }, 3000)
+            
+              } catch (error) {
+                console.log("Error creating ErrorPopup:", error);
+              }
             if (error.response.status === 401) {
                 // store.dispatch('logout')
                 // remove token from cookie

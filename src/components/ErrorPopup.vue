@@ -10,7 +10,7 @@ import { defineComponent, PropType } from 'vue'
 export default defineComponent({
   props: {
     message: {
-      type: String as PropType<string>,
+      type: String,
       required: true
     }
   }
