@@ -37,30 +37,30 @@
 						<!-- if user is not logged in or token has changed based on api.interceptors.response -->
 						
 						<!-- <div class="d-flex" v-if="!$store.state.user && listenCookieChange()"> -->
-						<div class="d-flex" v-if="!$store.state.user">
-							<b-avatar>
-								class="nav-item" 
-								style="background-color: #f3f3f3 !important; 
-								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
-							</b-avatar>
-							<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
-							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
+							<div class="d-flex" v-if="!$store.state.user">
+								<b-avatar>
+									class="nav-item" 
+									style="background-color: #f3f3f3 !important; 
+									box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+									<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
+								</b-avatar>
+								<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
+								<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
+							</div>
+	
 						</div>
-
-					</div>
-
-					<div class="d-flex nav-items-right" v-if="$store.state.user">
-						<router-link to="/conta">
-							<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-									<!-- TODO badges das notificações  -->
-							</b-avatar> 
-						</router-link>
-						<b-nav-item-dropdown right>
-							<b-dropdown-item href="#">Definições</b-dropdown-item>
-							<b-dropdown-item @click="$store.dispatch('logout')" href="#">Terminar Sessão</b-dropdown-item>
-						</b-nav-item-dropdown>
-					</div>
+	
+						<div class="d-flex nav-items-right" v-if="$store.state.user">
+							<router-link to="/conta">
+								<b-avatar class="nav-item" :src="user.image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+								  <span>{{ user.name }}</span>
+								</b-avatar>
+							  </router-link>
+							<b-nav-item-dropdown right>
+							  <b-dropdown-item href="#">Definições</b-dropdown-item>
+							  <b-dropdown-item @click="$store.dispatch('logout')" href="#">Terminar Sessão</b-dropdown-item>
+							</b-nav-item-dropdown>
+						  </div>
 				</b-navbar-nav>
 			</b-collapse>
 		</b-navbar>
@@ -115,6 +115,8 @@ import { mapState, useStore } from 'vuex'
 
 import { computed } from 'vue';
 import { ref } from 'vue';
+import axios from 'axios'
+/*
 export default {
   setup() {
     const store = useStore()
@@ -123,13 +125,69 @@ export default {
     onBeforeMount(() => {
       store.dispatch('fetchUser')
     })
-	// return {
-    //   validCookie
-    // }
+	return {
+      user: store.state.user
+    	}
 	}
 }
+*/
+export default {
+  setup() {
+    const store = useStore()
+    const user = ref(null)
 
+    async function fetchUser() {
+      try {
+        const response = await axios.get('/auth')
+        console.log(response.data)
+        user.value = response.data
+      } catch (error) {
+        console.error(error)
+      }
+    }
 
+    onBeforeMount(() => {
+      fetchUser()
+    })
+
+    function logout() {
+      store.dispatch('logout')
+    }
+
+    return {
+      user,
+      logout
+    }
+  }
+}
+/*
+export default {
+  setup() {
+    const store = useStore()
+    const user = ref(null)
+
+    async function fetchUser() {
+      try {
+        const response = await axios.get('/auth')
+        console.log(response.data)
+        const user = response.data
+        store.commit('SET_USER', user)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    onBeforeMount(async () => {
+      await fetchUser()
+      user.value = store.getters.user
+    })
+
+    return {
+      user
+    }
+  }
+}
+*/
 // import api from '../api/_base'
 
 // api.get('../api/_base/auth').then(response => {
