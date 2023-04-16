@@ -50,7 +50,7 @@
 	
 						</div>
 	
-						<div class="d-flex nav-items-right" v-if="user.name !== '' && user.image !== ''">
+						<div class="d-flex nav-items-right" v-if="(user.name !== '' && user.image !== '') || $store.state.user">
 							<router-link to="/conta">
 							  <b-avatar class="nav-item" :src="user.image" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
 								<span>{{ user.name }}</span>
@@ -114,7 +114,7 @@ import { mapState, useStore } from 'vuex'
 // import { validCookie } from '../api/_base'
 
 import { computed } from 'vue';
-import { ref, watch } from 'vue';
+import { defineComponent, ref, watchEffect  } from 'vue';
 
 /*
 export default {
@@ -191,7 +191,42 @@ export default {
   }
 }
 */
-export default {
+// export default {
+//   setup() {
+//     const store = useStore()
+//     const user = ref({ name: '', image: '' })
+
+//     async function fetchUser() {
+//       try {
+//         const response = await fetchAuth()
+//         console.log(response.data)
+//         user.value = response.data
+//       } catch (error) {
+//         console.error(error)
+//       }
+//     }
+
+//     watch(() => store.state.user, (newValue, oldValue) => {
+//       if (newValue) {
+//         fetchUser()
+//       } else {
+//         user.value = { name: '', image: '' }
+//       }
+//     }, { immediate: true })
+
+//     function logout() {
+//       store.dispatch('logout')
+//     }
+
+//     return {
+//       user,
+//       logout
+//     }
+//   }
+// }
+
+
+export default defineComponent({
   setup() {
     const store = useStore()
     const user = ref({ name: '', image: '' })
@@ -206,13 +241,11 @@ export default {
       }
     }
 
-    watch(() => store.state.user, (newValue, oldValue) => {
-      if (newValue) {
-        fetchUser()
-      } else {
-        user.value = { name: '', image: '' }
+    watchEffect(async () => {
+      if (!user.value.name && store.state.token) {
+        await fetchUser()
       }
-    }, { immediate: true })
+    })
 
     function logout() {
       store.dispatch('logout')
@@ -223,9 +256,7 @@ export default {
       logout
     }
   }
-}
-
-
+})
 
 // import api from '../api/_base'
 
