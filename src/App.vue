@@ -11,6 +11,10 @@
 import Navbar from "@/components/Navbar.vue";
 import Search from "@/components/Search.vue";
 import Footer from "@/components/Footer.vue";
+import InputText from "primevue/inputtext";
+
+
+
 </script>
 
 <style>
