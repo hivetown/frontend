@@ -7,6 +7,8 @@
           </button>
       </div>
       
+      <h1>Carrinho</h1>
+
       <table class="table table-responsive-md">
           <tr>
               <td class="left-column">
@@ -32,11 +34,20 @@
 
                   <div style="height:5vh;"></div>
 
-                  <button type="button" class="btn btn-outline-secondary btn-sm checkout" >
+                  <b-row>
+                    <b-col col lg="8">
+                    <div>
+                    <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
+                    </div>
+                    </b-col>
+                    <b-col>
+                    <button type="button" class="btn btn-outline-secondary btn-sm checkout" >
                     Aplicar
-                  </button>
+                    </button>
+                    </b-col>
+                  </b-row>
 
-                  <div style="height:10vh;"></div>
+                  <div style="height:5vh;"></div>
 
                   <p>
                     Total: <span class="checkout">0,00€</span><br>
@@ -109,7 +120,16 @@ table {
 
     data(){
       return{
-        produto:{} as Product[]
+        produto:{} as Product[],
+
+        selected: null,
+        options: [
+          { value: null, text: '--Escolha o local de recolha--', disabled: true},
+          { value: 1, text: 'Morada nº1' },
+          { value: 2, text: 'Morada nº2' },
+          { value: 3, text: 'Ponto de Recolha' },
+          { value: 4, text: 'Loja' },
+        ]
       }
     },
 
