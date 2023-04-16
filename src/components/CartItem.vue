@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { CartItem } from "../types/interfaces";
+
 export default {
     data() {
         return {
@@ -59,26 +61,10 @@ export default {
       },
 
     props: {
-      productId: {
-        type: String,
+      cartItem: {
+        type: CartItem,
         required: true,
       },
-      productTitle: {
-        type: String,
-        required: true,
-      },
-      productDescription: {
-        type: String,
-        required: true//,
-      }, 
-      // productImage: {
-      //   type: String,
-      //   required: true,
-      // },
-      // productPrice: {
-      //   type: Array,
-      //   required: true,
-      // },
     }
   }
 </script>

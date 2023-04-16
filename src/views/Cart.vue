@@ -14,11 +14,20 @@
               <td class="left-column">
               <div>
                   X items no carrinho
-                  {{ produto }}
+                  <div style="height:2vh"></div>
+
+                  {{ itensCarrinho }}
 
                   <div style="height:2vh"></div>
 
-                  <CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>
+                  {{ itensCarrinho.items[0].producerProduct }}
+
+
+                  <div style="height:2vh"></div>
+
+                  <CartItem v-for="cartItem in itensCarrinho.items" :key="cartItem.producerProduct.id" :cartItem="cartItem"></CartItem>
+
+                  <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
               </div>
               </td>
 
@@ -112,15 +121,16 @@ table {
 </script>
 
 <script lang="ts">
-  import { fetchProduct } from "@/api";
+  import { fetchCartItems } from "../api/consumers"
   import { Product } from "@/types";
   import { defineComponent } from "vue";
+  import { Cart } from '@types/interfaces';
 
   export default {
 
     data(){
       return{
-        produto:{} as Product[],
+        itensCarrinho:{} as Cart,
 
         selected: null,
         options: [
@@ -138,10 +148,10 @@ table {
     },
 
     async beforeMount(){
-      const produto=await fetchProduct(1);
+      const itensCarrinho=await fetchCartItems(1);
 
-      this.produto=produto.data;
-      console.log(JSON.stringify(this.produto));
+      this.itensCarrinho=itensCarrinho.data;
+      console.log(JSON.stringify(this.itensCarrinho));
 
     },
 

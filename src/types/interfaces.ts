@@ -51,13 +51,12 @@ export interface BaseItems<T> {
     pageSize: number;
 }
 
+export interface Cart extends BaseItems<CartItem> {}
 
-export interface ConsumerCart {
-    items: {
-        producerProduct?: ProducerProduct;
-        consumer: Consumer;
-        quantity: number;
-    }[] //Para indicar que é um array destas vars
+export interface CartItem {
+    producerProduct?: ProducerProduct;
+    consumer: Consumer;
+    quantity: number;
 }
 
 export interface ProducerProduct {
