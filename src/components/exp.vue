@@ -44,10 +44,7 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
-                  <vue-carousel :perPage="1" :autoplay="true">
-                <!-- Loop pelos URLs do array -->
-                <img v-for="(url, index) in encomendasImage[num]" :key="index" v-if="url" :src="url" alt="Imagem" class="carousel-image">
-              </vue-carousel>
+                
                  <!-- <p>{{ encomendasImage[num] }}</p>
                   <p>por carosel fotos</p>-->
                   <mdb-carousel v-model="activeItem" :controls="true" :indicators="false" :interval="5000" :slides-visible="1">
@@ -399,5 +396,7 @@ margin-bottom:150px;
     margin-left: 80px;
     margin-top:20px
    }
+
+   
    
 </style>
