@@ -44,7 +44,18 @@
             <td>
               <div class="carousel-container">
                 <div class="carousel">
-                  <p>por carosel fotos</p>
+                  <vue-carousel :perPage="1" :autoplay="true">
+                <!-- Loop pelos URLs do array -->
+                <img v-for="(url, index) in encomendasImage[num]" :key="index" v-if="url" :src="url" alt="Imagem" class="carousel-image">
+              </vue-carousel>
+                 <!-- <p>{{ encomendasImage[num] }}</p>
+                  <p>por carosel fotos</p>-->
+                  <mdb-carousel v-model="activeItem" :controls="true" :indicators="false" :interval="5000" :slides-visible="1">
+                    <mdb-carousel-item v-for="(image, index) in encomendasImage[num]" :key="index">
+                      <img :src="image" alt="Imagem de encomenda" style="width: 90px;" />
+                    </mdb-carousel-item>
+                  </mdb-carousel>
+
                  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
                 <!--  <p>encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images']</p>-->
                     <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
@@ -108,6 +119,8 @@
     <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
 
   </template>
+
+
 <script setup lang="ts">
   import Swal from 'sweetalert2';
   import { onMounted, ref, watch, computed } from "vue";
@@ -122,6 +135,7 @@
     const arr = ref([]); // Use a função ref para criar uma referência reativa do array
 
    const encomendas = [];
+   const encomendasImage =  ref<Array>([]);
    const encomendaId = ref([]);
    const orderIds = ref<number[]>([]); //array com o id das encomendas
    const orderItem = ref<Order[]>([]); //array com os produtos
@@ -159,17 +173,46 @@
 
     for (let i = 0; i< encomendas.length; i++){
       //id da encomenda encomendas[i]
-      console.log(encomendas)
+      //console.log(encomendas);
+      //console.log(i);
       const response1 = await fetchAllItems(8, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
+      console.log(encomendas);
+      const encomendaX = [];
+      for (let j=0; j<encomendaId.value[i][encomendas[i]]['items'].length-1; j++){
+         encomendaX.push(encomendaId.value[i][encomendas[i]] 
+         && encomendaId.value[i][encomendas[i]]['items'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0]['url'] ? encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0]['url'] : null);
+      }
+      encomendasImage.value.push(encomendaX)
+
+     
       //primeiro 0 fica
       //2 o id da encomenda 
       //o 0 item da encoemnda
       //0 o primerio item da encoemnda
-      console.log(encomendaId.value[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
+      //console.log(encomendaId.value[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
       //console.log(encomendaId.value);
-    }   // });
+    }   // }); 
+    //primeira encomenda
+    //produto x, 1, 2 etc, n produtos na encomenda
+    //imagem 0 -primeira imagem associada ao produto
+    //obtem a primeira imagem da primeira encomenda do primeiro produto
+  //  console.log(encomendaId.value[0]['67']['items'][0]['producerProduct']['productSpec']['images'][0]['url']);
+    console.log(encomendaId.value[0]['67']['items'].length);
+    //percorre todos os items da encomenda
+
+    //for (let j=0; j<encomendaId.value[0]['67']['items'].length-1; j++){
+    //  encomendasImage.push(encomendaId.value[0]['67'] && encomendaId.value[0]['67']['items'] && encomendaId.value[0]['67']['items'][j] && encomendaId.value[0]['67']['items'][j]['producerProduct'] && encomendaId.value[0]['67']['items'][j]['producerProduct']['productSpec'] && encomendaId.value[0]['67']['items'][j]['producerProduct']['productSpec']['images'] && encomendaId.value[0]['67']['items'][j]['producerProduct']['productSpec']['images'][0] && encomendaId.value[0]['67']['items'][j]['producerProduct']['productSpec']['images'][0]['url'] ? encomendaId.value[0]['67']['items'][j]['producerProduct']['productSpec']['images'][0]['url'] : null);
+    //}
+    console.log(encomendasImage);
+
 
    // const fetchOrders = async () => {
    //   const ordersData = await Promise.all(
@@ -248,10 +291,13 @@ function cancelarEncomendaImpossivel() {
 
 <script lang="ts">
 import {exportOrders} from '../api';
+import { MDBCarousel } from "mdb-vue-ui-kit";
+
 const orders = ref<Order[]>([]);
 
 export default {
-  
+  components:{      MDBCarousel,
+},
 
   data() {
     return {
