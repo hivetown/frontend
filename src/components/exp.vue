@@ -287,7 +287,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders(2, arr);
+      return await exportOrders(8, arr);
     }
    
   }
