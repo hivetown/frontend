@@ -134,11 +134,11 @@
    async function fetchAndSetOrders(num: number): Promise<void> {
     //console.log(orders.value.items[num-1]['id'] );
       const orderId = orders.value.items[num-1]['id'];
-      const response = await fetchAllItems(1, orderId);
-      const newEncomenda = {[orderId]: response.data}; // Cria um novo objeto com o id e o array
+     // const response = await fetchAllItems(2, orderId);
+      //const newEncomenda = {[orderId]: response.data}; // Cria um novo objeto com o id e o array
      // encomendas.push(newEncomenda); // Adiciona o novo objeto ao array "encomendas"
       //console.log(encomendas);
-      return response;
+     // return response;
      // console.log(orderItem.value.items[0]['producerProduct']['productSpec']['images'][0]['url']);
     }
 
@@ -146,7 +146,7 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(1);
+      const response = await fetchAllOrders(8);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -159,7 +159,8 @@
 
     for (let i = 0; i< encomendas.length; i++){
       //id da encomenda encomendas[i]
-      const response1 = await fetchAllItems('1', encomendas[i]);
+      console.log(encomendas)
+      const response1 = await fetchAllItems(8, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       //primeiro 0 fica
@@ -182,56 +183,57 @@
     });
 
    function cancelarEncomenda(num) {
-  // exibe uma mensagem de confirmação para o usuário
-  Swal.fire({
-    title: 'Deseja cancelar a encomenda?',
-    text: 'Esta ação não poderá ser desfeita',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Sim, cancelar',
-    cancelButtonText: 'Não, voltar'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      try{
-        //console.log(valorAssociado);
-       // var encomendaCancelar = (orders.value['items'][num-1]['id']);
-        //TODO trocar para o user logado
-        console.log(orders.value['items'][num-1]['id']);
-        cancelOrder(1, orders.value['items'][num-1]['id'])
-        .then((response) => {console.log('cancelou')}).catch(error => {
-  if (error.response && error.response.status === 400) {
-    console.log('entrou');
-    Swal.fire({
-    icon: 'error',
-    title: 'Não é possível cancelar esta encomenda',
-    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
-    confirmButtonText: 'OK'
-  });
-
-
-
-
-  } else {
-     
-        //const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
-      
-      // caso o usuário confirme, cancela a encomenda
+    // exibe uma mensagem de confirmação para o usuário
+Swal.fire({
+  title: 'Deseja cancelar a encomenda?',
+  text: 'Esta ação não poderá ser desfeita',
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Sim, cancelar',
+  cancelButtonText: 'Não, voltar'
+}).then((result) => {
+  if (result.isConfirmed) {
+    try {
       // TODO: implemente a lógica de cancelamento da encomenda
-      Swal.fire(
-        'Encomenda cancelada!',
-        'Sua encomenda foi cancelada com sucesso.',
-        'success'
-      );  }});
-      }  catch (error: any) {
-       
-        console.log(error);
-        console.log('erro ao cancelar encomenda')
-      }
+      cancelOrder(8, orders.value['items'][num-1]['id'])
+        .then((response) => {
+          console.log('cancelou');
+          // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
+          Swal.fire({
+            title: 'Encomenda cancelada!',
+            text: 'Sua encomenda foi cancelada com sucesso.',
+            icon: 'success'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Redirecionar para a página desejada
+              window.location.href = '/encomendas'; // Substitua com a URL da página desejada
+            }
+          });
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 400) {
+            console.log('entrou');
+            Swal.fire({
+              icon: 'error',
+              title: 'Não é possível cancelar esta encomenda',
+              text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+              confirmButtonText: 'OK'
+            });
+          } else {
+            console.log(error);
+            console.log('erro ao cancelar encomenda');
+          }
+        });
+    } catch (error: any) {
+      console.log(error);
+      console.log('erro ao cancelar encomenda');
     }
-  });
-}
+  }
+});
+
+   }
 
 function cancelarEncomendaImpossivel() {
   // exibe uma mensagem de alerta para o usuário
@@ -285,7 +287,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders('2', arr);
+      return await exportOrders(2, arr);
     }
    
   }

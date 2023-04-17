@@ -5,16 +5,16 @@ import { api } from "./_base";
 export const fetchAllOrders = (userId: number, search?: string) =>
     api.get<Order[]>(`/consumers/${userId}/orders`, { params: { search } });
 
-export const fetchAllItems = (userId: string, orderId: string, search?: string) =>
+export const fetchAllItems = (userId: number, orderId: string, search?: string) =>
     api.get<Order[]>(`/consumers/${userId}/orders/${orderId}/items`, { params: { search } });
 
-export const cancelOrder = (userId: number, orderId: number) =>
-    api.delete(`/consumers/${userId}/orders/${orderId}`);
+export const cancelOrder = (userId: number, orderId: number, search?: string) =>
+    api.delete(`/consumers/${userId}/orders/${orderId}`, { params: { search } });
   
 export const fetchUser = (search?: string) =>
     api.get<Consumer[]>(`/auth`, { params: { search } });
 
-    export const exportOrders = async (userId: string, orders: string[]) => {
+    export const exportOrders = async (userId: number, orders: string[]) => {
         // Transforma o array de orders em uma string de query parameter
         const ordersQueryParam = orders.map(order => `id[]=${order}`).join('&');
       
