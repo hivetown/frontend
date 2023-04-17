@@ -5,13 +5,26 @@
     <section>
       <h1>Pagamento efetuado com sucesso</h1>
       <i class="bi bi-cart-check"></i>
+      <br>
+      <p>A encomenda <a :href="`${endereco}`" >{{ orderId }} </a> encontra-se paga. </p>
+      <p>Acompanhe o <a href="/encomendas"> progresso das suas encomendas</a>. </p>
       <p>
-        We appreciate your business! If you have any questions, please email
-        <a href="email@email.com">email@email.com</a>.
+        Obrigado pela sua compra. 
       </p>
     </section>
     </body>
   </template>
+
+<script setup>
+let currentUrl = window.location.href;
+const pathSegments = currentUrl.split('/');
+const orderId = pathSegments[4];
+
+console.log(orderId); // 4228
+var endereco = "/encomenda/"+orderId;
+
+</script>
+
   <style scoped>
   body {
     display: flex;
@@ -51,8 +64,7 @@
     color: #242d60;
     height: 100%;
     width: 100%;
-    padding: 0 20px;
-    display: flex;
+    text-align: center;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;

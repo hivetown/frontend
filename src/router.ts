@@ -92,12 +92,12 @@ const routes = [
     },
     {
         //TODO por user logado
-    path: "/success",
+    path: "/orders/:orderId/success",
     name: "Success",
     component: Success,
     },
     {
-        path: "/cancel",
+        path: "/orders/:orderId/cancel",
         name: "Cancel",
         component: Cancel,
     },
