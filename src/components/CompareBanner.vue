@@ -24,11 +24,13 @@
                 <!-- {{ product2.name }} -->
             </div>
 
+            <!-- TODO ser possível carregar apenas quando estão os 2 produtos selecionados -->
+            <!-- TODO passar os ids para que carreguem no modal ou então logo os dados -->
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <button type="button" 
                         class="btn btn-secondary rounded-pill" 
                         v-b-tooltip.hover title="Comparar produto"
-                        @click="openModal">
+                        @click="openModal(product1.id, product2.id)">
                     <i class="bi bi-arrow-left-right"></i> Comparar
                 </button>
                 <a href="#">Limpar tudo</a>
@@ -42,7 +44,7 @@
     <div>
         <!-- TODO corrigir botões do modal -->
         <b-modal v-model="showModal" size="xl" id="modal-center" centered scrollable>
-            <Compare/>
+            <Compare :product1Id="id1" :product2Id="id2"/> 
         </b-modal>
     </div>
 
@@ -97,9 +99,12 @@ import { Product } from "@/types";
 import { fetchProduct } from "@/api";
 
 const showModal = ref(false);
-
-const openModal = () => {
+const openModal = (id1: number, id2: number) => {
+    // this.id1 = id1;
+    // this.id2 = id2;
     showModal.value = true;
+    console.log("Produto 1: " + id1);
+    console.log("Produto 2: " + id2);
 };
 
 export default {
@@ -109,6 +114,9 @@ export default {
             product2: {} as Product[],
             prod1Img: "",
             prod2Img: "",
+
+            id1: null,
+            id2: null,
         };
     },
     // props: {

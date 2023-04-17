@@ -89,7 +89,7 @@
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <CompareBanner @send-id="handleId"></CompareBanner> 
+  <CompareBanner @send-id="handleId"></CompareBanner>
 </template>
 
 <script setup lang="ts">
@@ -132,7 +132,8 @@ export default defineComponent({
     handleId(id) {
       console.log("Deu")
       console.log(id);
-    }
+      console.log("Refs: " + JSON.stringify(this.$refs))
+    },
   },
   // A fazer antes de montar o componente
   async beforeMount() {
@@ -142,7 +143,7 @@ export default defineComponent({
     // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(this.$route.query.page) || 1;
     const pageSize = parseInt(this.$route.query.pageSize) || 24;
-    const categoryId = parseInt(this.$route.query.categoryId) || 1;
+    const categoryId = parseInt(this.$route.query.categoryId) || undefined;
     // console.log("categoria escolhida: "+category)
     // console.log("Página do route: " + page)
     // const allProductsData = await fetchAllProducts();
@@ -157,7 +158,6 @@ export default defineComponent({
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;
     this.allCategories = allCategories;
-
    
 
     // for (let i = 0; i < allProducts.length; i++) {
@@ -183,6 +183,6 @@ export default defineComponent({
 
     this.mostExpensiveProduct = maxPriceProduct;
   },
-  components: { ProductCard, Pagination, CustomViews, CompareBanner },
+  components: { ProductCard, Pagination, CustomViews, CompareBanner, CategoryFilter, PriceFilter, SupplierFilter, RatingFilter },
 });
 </script>

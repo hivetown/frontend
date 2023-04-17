@@ -144,6 +144,7 @@ import CompareBanner from "@/components/CompareBanner.vue";
                 console.log("id: " + id);
                 // TODO corrigir o emit para mandar o id para o categorias produto
                 this.$emit('send-id', id);
+                // console.log("Evento send-id emitido com sucesso!");
             },
             // sendId(){
             //     this.$emit('send-id', this.productId);
