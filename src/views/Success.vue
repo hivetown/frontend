@@ -15,7 +15,7 @@
     </body>
   </template>
 
-<script setup>
+<script lang="ts" setup>
 let currentUrl = window.location.href;
 const pathSegments = currentUrl.split('/');
 const orderId = pathSegments[4];

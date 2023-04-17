@@ -8,3 +8,5 @@ export const postConsumer = (consumer: CreateConsumer) =>
 export const postNewAdress = (consumerId: number, address: Address) =>
     api.post(`/consumers/${consumerId}/addresses`, address);
 
+export const cancelPayment = (consumerId: number, sessionId: string) =>
+    api.post(`/consumers/${consumerId}/orders/${sessionId}`);
