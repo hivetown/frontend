@@ -1,5 +1,6 @@
 
 <template>
+ 
   <h3 v-if="orders['totalItems'] === 0"> Ainda não existem encomendas efetuadas!</h3>
       <div class="table-container" style="overflow: auto">
   <!--
@@ -16,10 +17,13 @@
   <!--id do utlizador logado-->
   <!--<p>{{ user['id'] }}</p>-->
   <!--<p>{{orders['totalItems']}}</p>-->
+  <div>
+   
+  </div>
   <table v-if="orders['totalItems'] !== 0" style="border: 2px" class="table">
         <thead >
           <tr>
-            <th><h4>Encomendas <br>para exportar</h4></th>
+            <th><h4>Exportar dados</h4></th>
             <th><h4>Encomenda</h4></th>
             <th>
               <!--<input type="checkbox" id="reverse">-->
@@ -42,16 +46,31 @@
                 <span v-if="selectedOrders[num-1]"></span>
               </td>
             <td>
+
               <div class="carousel-container">
                 <div class="carousel">
-                
-                 <!-- <p>{{ encomendasImage[num] }}</p>
-                  <p>por carosel fotos</p>-->
-                  <mdb-carousel v-model="activeItem" :controls="true" :indicators="false" :interval="5000" :slides-visible="1">
-                    <mdb-carousel-item v-for="(image, index) in encomendasImage[num]" :key="index">
-                      <img :src="image" alt="Imagem de encomenda" style="width: 90px;" />
-                    </mdb-carousel-item>
-                  </mdb-carousel>
+                  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              <ol class="carousel-indicators">
+              <li v-for="(image, index) in encomendasImage[num]" :key="index"   :class="{'active': index === 0}"></li>
+            </ol>
+
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+                      <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0" class="item active">
+                      <p>Sem imagens</p>
+                    </div>
+                    <div v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'item': true, 'active': index === 0}">
+                      <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <img style="width: 95px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+                    <p v-else>Produto sem <br>imagem</p> </a>
+                  </div>
+
+                  </div>
+
+                  </div>
+
+
 
                  <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
                 <!--  <p>encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images']</p>-->
@@ -72,24 +91,29 @@
              
               <!--TODO mudar o link para detalhada-->
               <td>
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'" class="inline">
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'"  style="display: inline-flex">
                     <i class="bi bi-check-all"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p>Entregue</p></a>
                 </div>
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Processing'" class="inline">
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Processing'"  style="display: inline-flex">
                     <i class="bi bi-box-seam"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p>Em processamento</p></a>
                 </div>
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'" class="inline">
-                    <i class="bi bi-cash-coin"></i>               
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'"  style="display: inline-flex">
+                    <i class="bi bi-cash-coin"></i>  
+                    <p>Pago</p>             
                 </div>
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" class="inline">
-                  <i class="bi bi-x-lg"></i>              
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" style="display: inline-flex">
+                  <i class="bi bi-x-lg"></i>    
+                  <p>Cancelada</p>          
                 </div>
-                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'" class="inline">
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'"  style="display: inline-flex">
                   <i class="bi bi-truck"></i>
+                  <p>Em andamento</p>
                 </div>
               <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
-                {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['generalStatus'] : '' }}
+              <!-- {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['generalStatus'] : '' }} -->
 
                 <div v-if=" orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'">
                     <BButton class="botao2" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
@@ -107,7 +131,7 @@
             <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
 
             <td>
-              <BButton class="botao" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
+              <BButton class="botao2" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
@@ -289,11 +313,13 @@ function cancelarEncomendaImpossivel() {
 <script lang="ts">
 import {exportOrders} from '../api';
 import { MDBCarousel } from "mdb-vue-ui-kit";
-
+import { Component, Vue } from 'vue-property-decorator';
+import { Carousel, Slide } from 'vue-carousel';
 const orders = ref<Order[]>([]);
 
 export default {
-  components:{      MDBCarousel,
+  components:{      MDBCarousel,Carousel,
+    Slide,
 },
 
   data() {
@@ -342,6 +368,11 @@ export default {
 
 
 <style scoped>
+.carousel-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 [v-cloak] {
   display: none;
 }
@@ -393,6 +424,7 @@ margin-bottom:150px;
    }
 
    .botao{
+    width: 190px;
     margin-left: 80px;
     margin-top:20px
    }
