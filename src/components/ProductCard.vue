@@ -44,7 +44,7 @@
                     </router-link>
                     <button type="button" class="btn btn-outline-secondary circle-btn" 
                             v-b-tooltip.hover title="Comparar produto"
-                            @click="addToCompare(productId)">
+                            @click="setupCompare(productId)">
                             <i class="bi bi-arrow-left-right"></i>
                     </button>
                     <!-- <button @click="sendId">Enviar ID</button> -->
@@ -139,13 +139,22 @@ import CompareBanner from "@/components/CompareBanner.vue";
             },
         },
         methods: {
-            addToCompare(id) {
-                this.selectedId = id;
+            setupCompare(id){
                 console.log("id: " + id);
-                // TODO corrigir o emit para mandar o id para o categorias produto
-                this.$emit('send-id', id);
-                // console.log("Evento send-id emitido com sucesso!");
-            },
+                // localStorage.setItem("compareOpen", "true");
+                if(localStorage.getItem("compareItem1Id") == "null"){
+                    localStorage.setItem("compareItem1Id", id);
+                } else if(localStorage.getItem("compareItem2Id") == "null"){
+                    localStorage.setItem("compareItem2Id", id);
+                }
+            }
+            // addToCompare(id) {
+            //     this.selectedId = id;
+            //     console.log("id: " + id);
+            //     // TODO corrigir o emit para mandar o id para o categorias produto
+            //     this.$emit('send-id', id);
+            //     // console.log("Evento send-id emitido com sucesso!");
+            // },
             // sendId(){
             //     this.$emit('send-id', this.productId);
             // }

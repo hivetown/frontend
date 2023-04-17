@@ -12,16 +12,24 @@
 
             <div class="d-flex gap-4 ">
                 <!-- {{ product1.images[0].url }} -->
-                <div class="prod-container d-flex justify-content-center align-items-center">
-                    <!-- <i class="bi bi-x-lg"></i> -->
-                    <img class="square-image" :src="prod1Img.url" :alt="prod1Img.alt">
+                <!-- <div class="prod-container d-flex justify-content-center align-items-center">
+                    <i class="bi bi-x-lg"></i>
+                    <img v-if="productsLoadedAmount===1" class="square-image" :src="prod1Img.url" :alt="prod1Img.alt">
+                </div> -->
+                <div>
+                    <div style="position: relative;" class="prod-container d-flex justify-content-center align-items-center">
+                        <i id="img1" class="bi bi-x-lg" style="position: absolute; color:red;" @click="removeItem($event.target.id)"></i>
+                        <img v-if="product1Loaded" class="square-image" :src="prod1Img.url" :alt="prod1Img.alt">
+                    </div>
+                    <!-- <p>{{ product1.name }}</p> -->
                 </div>
-                <!-- {{ product1.name }} -->
-                <div class="prod-container d-flex justify-content-center align-items-center">
-                    <!-- <i class="bi bi-x-lg"></i> -->
-                    <img class="square-image" :src="prod2Img.url" :alt="prod2Img.alt">
+                <div>
+                    <div class="prod-container d-flex justify-content-center align-items-center">
+                        <i id="img2" class="bi bi-x-lg" style="position: absolute; color:red;" @click="removeItem($event.target.id)"></i>
+                        <img v-if="product2Loaded" class="square-image" :src="prod2Img.url" :alt="prod2Img.alt">
+                    </div>
+                    <!-- <p>{{ product2.name }}</p> -->
                 </div>
-                <!-- {{ product2.name }} -->
             </div>
 
             <!-- TODO ser possível carregar apenas quando estão os 2 produtos selecionados -->
@@ -107,9 +115,20 @@ const openModal = (id1: number, id2: number) => {
     console.log("Produto 2: " + id2);
 };
 
+// window.addEventListener('storage', (event) => {
+//     if (event.key === 'compareItem1Id') {
+//         console.log('Valor do compareItem1Id foi alterado para:', event.newValue);
+//         // Aqui você pode chamar a função que deseja executar quando a variável for alterada
+//     }
+// });
+
+
 export default {
     data() {
         return {
+            productsLoadedAmount: 0,
+            product1Loaded: false,
+            product2Loaded: false,
             product1: {} as Product[],
             product2: {} as Product[],
             prod1Img: "",
@@ -134,11 +153,26 @@ export default {
             openModal,
         };
     },
+    methods: {
+        removeItem(elemento) {
+            document.getElementById(elemento).style.display = "none";
+            if (elemento === "img1") {
+                this.product1Loaded = false;
+                localStorage.setItem("compareItem1Id", null);
+            } else {
+                this.product2Loaded = false;
+                localStorage.setItem("compareItem2Id", null);
+            }
+        },
+    },
     async beforeMount() {
         // Primeiro produto
+        // const prod1Id = localStorage.getItem("compareItem1Id");
         const product1 = await fetchProduct(1);
         this.product1 = product1.data;
         this.prod1Img = this.product1.images[0];
+        this.productsLoadedAmount++;
+        this.product1Loaded = true;	
         // console.log("Produto 1: " + JSON.stringify(this.product1))
 
         // Segundo produto
@@ -146,6 +180,8 @@ export default {
         this.product2 = product2.data;
         this.prod2Img = this.product2.images[0];
         // console.log("Produto 2: " + JSON.stringify(this.product2))
+        this.productsLoadedAmount++;
+        this.product2Loaded = true;
     },
 };
 </script>

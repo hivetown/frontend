@@ -89,7 +89,9 @@
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <CompareBanner @send-id="handleId"></CompareBanner>
+  <!-- <CompareBanner v-if="CompareBannerStatus === 'true'"></CompareBanner> -->
+    <CompareBanner></CompareBanner>
+
 </template>
 
 <script setup lang="ts">
@@ -119,6 +121,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   data() {
     return {
+      CompareBannerStatus: localStorage.getItem('compareOpen'),
       // Dados da BD
       // Produtos
       allProducts : {} as Product[],
@@ -137,6 +140,10 @@ export default defineComponent({
   },
   // A fazer antes de montar o componente
   async beforeMount() {
+    // localStorage.setItem('compareOpen', null);
+     localStorage.setItem("compareItem1Id", null);
+     localStorage.setItem("compareItem2Id", null);
+
     // Carregar os dados do produto da BD
     // this.allProducts =   fetchAllProducts().data;
     // const searchTerm = "Recycled";
