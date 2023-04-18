@@ -66,7 +66,9 @@
                            :productTitle="product.name" 
                            :productDescription="product.description"
                            :productImage="product.images[0]?.url"
-                           :productPrice="[product.minPrice, product.maxPrice]"/>
+                           :productPrice="[product.minPrice, product.maxPrice]"
+                            @send-id="handleId"             
+              />
             </template>
           </div>
         </div>
@@ -89,8 +91,8 @@
   
   <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <!-- <CompareBanner v-if="CompareBannerStatus === 'true'"></CompareBanner> -->
-    <CompareBanner></CompareBanner>
+  <!-- <CompareBanner v-if="compareBannerState === 'open'"></CompareBanner> -->
+  <CompareBanner v-if="selectedProductId" :product1Id="prod1Id" :product2Id="prod2Id"></CompareBanner>
 
 </template>
 
@@ -121,7 +123,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
   data() {
     return {
-      CompareBannerStatus: localStorage.getItem('compareOpen'),
+      compareBannerState: localStorage.getItem('compareBannerState'),
       // Dados da BD
       // Produtos
       allProducts : {} as Product[],
@@ -129,13 +131,26 @@ export default defineComponent({
       allProductsData: {} as any,
       // Filtros
       allCategories: {} as Category[],
+
+      selectedProductId: null,
+      prod1Id: null,
+      prod2Id: null,
     };
   },
   methods: {
     handleId(id) {
-      console.log("Deu")
-      console.log(id);
-      console.log("Refs: " + JSON.stringify(this.$refs))
+      this.selectedProductId = id;
+
+      if(this.prod1Id === null) {
+        console.log("Prod1Id é null");
+        this.prod1Id = id;
+        console.log("Prod1Id é " + this.prod1Id);
+      } else {
+        console.log("Prod2Id é null");
+        this.prod2Id = id;
+        console.log("Prod2Id é " + this.prod2Id);
+      }
+      console.log("Selecionado: " + this.selectedProductId);
     },
   },
   // A fazer antes de montar o componente
@@ -143,6 +158,11 @@ export default defineComponent({
     // localStorage.setItem('compareOpen', null);
      localStorage.setItem("compareItem1Id", null);
      localStorage.setItem("compareItem2Id", null);
+
+     if(localStorage.getItem('compareItem1Id') === "null" || localStorage.getItem('compareItem2Id') === "null") {
+      // console.log("O banner está fechado")  
+      localStorage.setItem("compareBannerState", "closed");
+     }
 
     // Carregar os dados do produto da BD
     // this.allProducts =   fetchAllProducts().data;

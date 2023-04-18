@@ -6,6 +6,8 @@
         <div class="parent d-flex justify-content-center align-items-center gap-4">
             
             <div class="d-flex flex-column">
+                <!-- {{ product1 }} -->
+                <!-- {{ product2 }} -->
                 <h5 class="dgreen-txt">Comparador <span>(2)</span></h5>
                 <p class="grey-txt">Ainda podes adicionar <span>1</span> produto</p>
             </div>
@@ -101,7 +103,7 @@ const openModal = () => {
 </script> -->
 <script lang="ts">
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Compare from "@/components/Compare.vue";
 import { Product } from "@/types";
 import { fetchProduct } from "@/api";
@@ -138,12 +140,16 @@ export default {
             id2: null,
         };
     },
-    // props: {
-    //     productId: {
-    //         type: Number,
-    //         required: true,
-    //     },
-    // },
+    props: {
+        product1Id: {
+            type: Number,
+            required: true,
+        },
+        product2Id: {
+            type: Number,
+            required: true,
+        },
+    },
     components: {
         Compare,
     },
@@ -165,23 +171,50 @@ export default {
             }
         },
     },
+
+     watch: {
+        product1Id: async function (newId: number) {
+            if (newId) {
+                const product1 = await fetchProduct(newId);
+                this.product1 = product1.data;
+                this.prod1Img = this.product1.images[0];
+                this.productsLoadedAmount++;
+                this.product1Loaded = true;
+                console.log("Produto 1: " + JSON.stringify(this.product1))
+            }
+        },
+        product2Id: async function (newId: number) {
+            if (newId) {
+                const product2 = await fetchProduct(newId);
+                this.product2 = product2.data;
+                this.prod2Img = this.product2.images[0];
+                this.productsLoadedAmount++;
+                this.product2Loaded = true;
+                console.log("Produto 2: " + JSON.stringify(this.product2))
+            }
+        },
+    },
+
     async beforeMount() {
         // Primeiro produto
-        // const prod1Id = localStorage.getItem("compareItem1Id");
-        const product1 = await fetchProduct(1);
+        const prod1Id = localStorage.getItem("compareItem1Id");
+        const product1 = await fetchProduct(this.product1Id);
         this.product1 = product1.data;
         this.prod1Img = this.product1.images[0];
         this.productsLoadedAmount++;
         this.product1Loaded = true;	
-        // console.log("Produto 1: " + JSON.stringify(this.product1))
+        console.log("Produto 1: " + JSON.stringify(this.product1))
 
-        // Segundo produto
-        const product2 = await fetchProduct(2);
-        this.product2 = product2.data;
-        this.prod2Img = this.product2.images[0];
-        // console.log("Produto 2: " + JSON.stringify(this.product2))
-        this.productsLoadedAmount++;
-        this.product2Loaded = true;
+        // if(this.product2Id){
+        //     // Segundo produto
+        //     const product2 = await fetchProduct(this.product2Id);
+        //     this.product2 = product2.data;
+        //     this.prod2Img = this.product2.images[0];
+        //     // console.log("Produto 2: " + JSON.stringify(this.product2))
+        //     this.productsLoadedAmount++;
+        //     this.product2Loaded = true;
+        //     console.log("Produto 2: " + JSON.stringify(this.product2))
+        // }
     },
 };
 </script>

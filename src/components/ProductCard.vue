@@ -138,16 +138,26 @@ import CompareBanner from "@/components/CompareBanner.vue";
                 required: true,
             },
         },
+        created() {
+            window.addEventListener("storage", this.handleLocalStorageChange);
+        },
         methods: {
             setupCompare(id){
                 console.log("id: " + id);
-                // localStorage.setItem("compareOpen", "true");
+                localStorage.setItem("compareBannerState", "open");
                 if(localStorage.getItem("compareItem1Id") == "null"){
                     localStorage.setItem("compareItem1Id", id);
                 } else if(localStorage.getItem("compareItem2Id") == "null"){
                     localStorage.setItem("compareItem2Id", id);
                 }
-            }
+
+                this.$emit('send-id', id);
+            },
+            // handleLocalStorageChange(event) {
+            //     if (event.key === "compareBannerState") {
+            //         console.log("compareBannerState changed");
+            //     }
+            // }
             // addToCompare(id) {
             //     this.selectedId = id;
             //     console.log("id: " + id);
