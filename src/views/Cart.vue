@@ -13,14 +13,14 @@
           <tr>
               <td class="left-column">
               <div>
-                  X items no carrinho
+                  <h5>Você atualmente possui {{ nElementos }} produtos <strong><u>distintos</u></strong> no seu carrinho:</h5>
                   <div style="height:2vh"></div>
 
-                  {{ itensCarrinho }}
+                  <!--{{ itensCarrinho }}-->
 
                   <div style="height:2vh"></div>
 
-                  {{ itensCarrinho.items[0].producerProduct }}
+                  <!--{{ itensCarrinho.items[0].producerProduct }}-->
 
 
                   <div style="height:2vh"></div>
@@ -37,6 +37,7 @@
                   <div style="height:2vh"></div>
 
                   <p style="text-align: justify;">
+                    Total de items: <span class="checkout">Muitos</span><br>
                     Sub-total: <span class="checkout">0,00€</span><br>
                     Entrega: <span class="checkout">0,00€</span><br>
                   </p>
@@ -125,12 +126,13 @@ table {
   import { Product } from "@/types";
   import { defineComponent } from "vue";
   import { Cart } from '@types/interfaces';
+  import { getSystemErrorMap } from "util";
 
   export default {
 
     data(){
-      return{
-        itensCarrinho:{} as Cart,
+      return {
+        itensCarrinho: {} as Cart,
 
         selected: null,
         options: [
@@ -139,20 +141,25 @@ table {
           { value: 2, text: 'Morada nº2' },
           { value: 3, text: 'Ponto de Recolha' },
           { value: 4, text: 'Loja' },
-        ]
-      }
+        ],
+
+        nElementos: 0
+      };
     },
 
+    // Botão "Voltar"
     methods: {
         goBack() {window.history.back();}
     },
-
+    
+    // Buscar Info do Carrinho
     async beforeMount(){
       const itensCarrinho=await fetchCartItems(1);
 
       this.itensCarrinho=itensCarrinho.data;
       console.log(JSON.stringify(this.itensCarrinho));
 
+      this.nElementos = this.itensCarrinho["items"].length;
     },
 
   };

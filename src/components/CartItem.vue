@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { CartItem } from "../types/interfaces";
+//import { CartItem } from '@types/interfaces';
 
 export default {
     data() {
@@ -60,11 +60,11 @@ export default {
         }
       },
 
-    props: {
-      cartItem: {
-        type: CartItem,
-        required: true,
-      },
-    }
+//    props: {
+//      cartItem: {
+//        type: CartItem,
+//        required: true,
+//      },
+//    }
   }
 </script>
