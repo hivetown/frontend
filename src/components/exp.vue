@@ -1,7 +1,8 @@
 
 <template>
  
-  <h3 v-if="orders['totalItems'] === 0"> Ainda não existem encomendas efetuadas!</h3>
+  <h3 class="semencoemndas" v-if="orders['totalItems'] === 0"> <i id="icon" class="bi bi-emoji-frown"></i><br>Ainda não foram efetuadas encomendas.</h3>
+
       <div class="table-container" style="overflow: auto">
   <!--
       <ul>
@@ -24,11 +25,14 @@
         <thead >
           <tr>
             <th><h4>Exportar dados</h4></th>
-            <th><h4>Encomenda</h4></th>
+
+            <th><h4>Artigos</h4></th>
             <th>
               <!--<input type="checkbox" id="reverse">-->
-              <h4>Código da encomenda</h4></th>
+              <h4>Código</h4></th>
             <th><h4>Estado</h4></th>
+            <th><h4>Morada de entrega</h4></th>
+
             <th id="coluna-data">
               <div class="data">
                 <h4>Data</h4>
@@ -42,37 +46,42 @@
         <tbody>
             <tr v-for="num in orders['totalItems']" :key="num">
               <td>
-                <input id="name" type="checkbox"  style="transform: scale(1.5)" :value="orders['items'][num-1]['id']" v-model="selectedOrders[num-1]">
+                <input id="name" type="checkbox"  style="transform: scale(1.2)" @change="onCheckboxChange()" :value="orders['items'][num-1]['id']" v-model="selectedOrders[num-1]">
                 <span v-if="selectedOrders[num-1]"></span>
               </td>
+            
             <td>
 
               <div class="carousel-container">
                 <div class="carousel">
                   <div id="myCarousel" class="carousel slide" data-ride="carousel">
               <!-- Indicators -->
-              <ol class="carousel-indicators">
-              <li v-for="(image, index) in encomendasImage[num]" :key="index"   :class="{'active': index === 0}"></li>
-            </ol>
+              
 
+              <div>
+    <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0">
+      <p id="texto">Produto sem imagem</p>
+    </div>
+    <div v-else>
+      <ol v-if="encomendasImage[num].length > 1" class="carousel-indicators">
+        <li v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'active': index === 0}"></li>
+      </ol>
 
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner" role="listbox">
-                      <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0" class="item active">
-                      <p>Sem imagens</p>
-                    </div>
-                    <div v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'item': true, 'active': index === 0}">
-                      <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <img style="width: 95px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
-                    <p v-else>Produto sem <br>imagem</p> </a>
+      <div class="carousel-inner" role="listbox">
+        <div v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'item': true, 'active': index === 0}">
+          <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
+            <img style="width: 75px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+            <p id="texto" v-else>Produto sem <br>imagem</p> 
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
                   </div>
 
-                  </div>
-
-                  </div>
 
 
-
-                 <a :href="`/encomenda/id${orders['items'][num-1]['id']}`">
+                 <a  :href="`/encomenda/id${orders['items'][num-1]['id']}`">
                 <!--  <p>encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images']</p>-->
                     <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
                   <!-- <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
@@ -85,31 +94,31 @@
             
             <td >
            
-              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
+              <a id="texto" :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
 
          </td>
              
               <!--TODO mudar o link para detalhada-->
               <td>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'"  style="display: inline-flex">
-                    <i class="bi bi-check-all"></i>
-                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p>Entregue</p></a>
+                    <i id="texto" class="bi bi-check-all"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Entregue</p></a>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Processing'"  style="display: inline-flex">
-                    <i class="bi bi-box-seam"></i>
-                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p>Em processamento</p></a>
+                    <i id="texto" class="bi bi-box-seam"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Em processamento</p></a>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'"  style="display: inline-flex">
-                    <i class="bi bi-cash-coin"></i>  
-                    <p>Pago</p>             
+                    <i id="texto" class="bi bi-cash-coin"></i>  
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Pago</p>  </a>           
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" style="display: inline-flex">
-                  <i class="bi bi-x-lg"></i>    
-                  <p>Cancelada</p>          
+                  <i id="texto" class="bi bi-x-lg"></i>    
+                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Cancelada</p></a>       
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'"  style="display: inline-flex">
-                  <i class="bi bi-truck"></i>
-                  <p>Em andamento</p>
+                  <i id="texto" class="bi bi-truck"></i>
+                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Em andamento</p></a>
                 </div>
               <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
@@ -124,11 +133,18 @@
                 </div>
               
             </td>
+            <td>
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">Rua{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
+                
+                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['zipCode']}}, {{orders['items'][num-1]['shippingAddress']['city']}}</p></a>
+                
+                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['latitude']}}, {{orders['items'][num-1]['shippingAddress']['longitude']}}</p></a>
+              </td>
 
             <td>
-              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
             </td>
-            <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
+            <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
 
             <td>
               <BButton class="botao2" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
@@ -181,7 +197,7 @@
       const userItem = await fetchUser();
       user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(8);
+      const response = await fetchAllOrders(1);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -196,7 +212,7 @@
       //id da encomenda encomendas[i]
       //console.log(encomendas);
       //console.log(i);
-      const response1 = await fetchAllItems(8, encomendas[i]);
+      const response1 = await fetchAllItems(1, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       console.log(encomendas);
@@ -261,7 +277,7 @@ Swal.fire({
   if (result.isConfirmed) {
     try {
       // TODO: implemente a lógica de cancelamento da encomenda
-      cancelOrder(8, orders.value['items'][num-1]['id'])
+      cancelOrder(1, orders.value['items'][num-1]['id'])
         .then((response) => {
           console.log('cancelou');
           // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
@@ -316,6 +332,7 @@ import { MDBCarousel } from "mdb-vue-ui-kit";
 import { Component, Vue } from 'vue-property-decorator';
 import { Carousel, Slide } from 'vue-carousel';
 const orders = ref<Order[]>([]);
+const novo = ref<number[]>([]);
 
 export default {
   components:{      MDBCarousel,Carousel,
@@ -338,6 +355,17 @@ export default {
    
   },
     methods: {
+      onCheckboxChange() {
+        let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+        if(checkboxes.length == 0){
+          var button = document.getElementById("botao");
+          button.style.display = "none";
+        } else {
+          var button = document.getElementById("botao");
+          button.style.display = "block";
+        }
+      
+    },
       async rs(totalItems){
         let arr=[];
         var a = 0;
@@ -356,7 +384,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders(8, arr);
+      return await exportOrders(1, arr);
     }
    
   }
@@ -368,9 +396,19 @@ export default {
 
 
 <style scoped>
+
+#morada2{
+  font-size: 11px;
+}
+#texto, #morada {
+  font-size: 13px;
+}
 .carousel-container {
   display: flex;
   flex-wrap: wrap;
+}
+.semEncomendas, #icon{
+  font-size: 110px !important;
 }
 
 [v-cloak] {
@@ -389,12 +427,12 @@ export default {
 
   h3 {
     text-align: center;
-  margin-top: 250px; 
+  margin-top: 150px; 
 margin-bottom:150px;
 }
   
   .table-container {
-    max-height: 700px; /* Altura máxima da tabela */
+    max-height: 450px; /* Altura máxima da tabela */
     max-width: 1600px;
     margin:auto;
     max-width: 92%;
