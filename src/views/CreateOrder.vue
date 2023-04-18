@@ -1,13 +1,10 @@
 <template>
     <div class="form-address">
-        <br>
-      <a id="voltar" style=" color:black; text-decoration: none;" href="/carrinho"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
-      <br>
-        <br>
-    <h3 class="titulo">Selecione o endereço de envio</h3>
+        
+    <h4 class="titulo">Selecione o endereço de envio</h4>
     <div class="form-check form-check-inline">
 <br>
-    <h4> Endereços definidos </h4>
+    <h5> Endereços guardados</h5>
 <div class="row" v-if="address2.totalItems > 0">
         <div class="col-sm-6" v-for="(num, index) in address2.totalItems" :key="index">
         <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
@@ -31,7 +28,7 @@
 
     </div>
     <div id="adiciona">
-    <h3 class="titulo">Ou</h3>
+    <h4 class="titulo">Ou</h4>
         <a id="adc" href="/addAddress">
                         Adicionar novo endereço
         </a>
@@ -60,7 +57,7 @@ const address2 = ref<Order[]>([]); //array com os produtos
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('2');
+const addresses = await getAddresses('68');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -95,7 +92,7 @@ address2.value=addresses.data;
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('2', { shippingAddressId: id});
+        const response = await postOrderPayment('68', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
@@ -119,7 +116,7 @@ address2.value=addresses.data;
 </script>
 <style scoped>
 #adc{
-    font-size: 28px;
+    font-size: 20px;
     color:black;
     
 }
@@ -142,7 +139,6 @@ address2.value=addresses.data;
       margin-left: 100px;
       margin-right: 100px;
       background-color: beige;
-      height: 850px;
       border-radius: 10px;
     }
 #finalizar {
@@ -150,16 +146,16 @@ address2.value=addresses.data;
     text-align: right;
 }
 #voltar {
-      font-size: 30px;
+      font-size: 20px;
       font-style: bold;
 }
 #btn {
     font-size: 20px;
 }
 input[type="radio"]{
-  width: 30px;
+  width: 20px;
   margin-right: 5px;
-  height: 30px;
+  height: 20px;
 }
 @media (max-width: 768px) { /* Substitua 768px pelo valor desejado para a largura de tela */
         .form-address {
@@ -167,9 +163,17 @@ input[type="radio"]{
             margin-right: 10px; /* Ajuste a margem direita para telas menores */
             height: auto; /* Ajuste a altura para telas menores */
         }
+        #caixa {
+            width: 310px !important;
+        }
+        .form-address {
+      margin-left: 10px;
+      margin-right: 10px;
+      background-color: beige;
+      border-radius: 10px;
+    }
         
     }
-    #caixa {
-    width: 300px;
-}
+    
+
 </style>

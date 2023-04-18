@@ -3,7 +3,7 @@
     <title>Thanks for your order!</title>
     <body>
     <section>
-      <h1>Pagamento efetuado com sucesso</h1>
+      <h1>Pagamento efetuado</h1>
       <i class="bi bi-cart-check"></i>
       <br>
       <p>A encomenda <a :href="`${endereco}`" >{{ orderId }} </a> encontra-se paga. </p>
@@ -16,16 +16,27 @@
   </template>
 
 <script lang="ts" setup>
+import Swal from 'sweetalert2';
 let currentUrl = window.location.href;
 const pathSegments = currentUrl.split('/');
 const orderId = pathSegments[4];
 
 console.log(orderId); // 4228
 var endereco = "/encomenda/"+orderId;
+Swal.fire({
+  position: 'top-end',
+  icon: 'success',
+  title: 'Pagamento efetuado com sucesso',
+  showConfirmButton: false,
+  timer: 1500
+})
 
 </script>
 
   <style scoped>
+  h1 {
+    font-family: "DM Serif Display";
+  }
   body {
     display: flex;
     justify-content: center;

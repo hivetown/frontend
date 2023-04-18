@@ -1,9 +1,7 @@
 <template> 
 <div class="form">
     <div class="form-group">
-      <br>
-      <a style=" color:black; text-decoration: none;" href="/createOrder"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
-      <br>
+      
         <p class="titulo">Adicionar novo endereço de envio</p>
         <br>
       <label for="name"><p>Nome:</p></label>
@@ -13,7 +11,7 @@
     <div class="form-group row">
       <div class="col-md-4">
         <label for="numero"><p>Número:</p></label>
-        <input type="text" class="form-control" id="longitude" placeholder="Digite o número da casa" ref="number" required>
+        <input type="text" class="form-control" id="numero" placeholder="Digite o número da casa" ref="number" required>
       </div>
       <div class="col-md-4">
         <label for="porta"><p>Porta:</p></label>
@@ -132,7 +130,7 @@ console.log(this.$refs.door.value);
   
 
 
-        postNewAdress(1, this.address)
+        postNewAdress(4, this.address)
         .then((response) => {
           Swal.fire({
           title: 'Endereço salvo!',
@@ -141,7 +139,7 @@ console.log(this.$refs.door.value);
           showCancelButton: true,
           confirmButtonColor: '#797dc3',
           cancelButtonColor: '#797dc3',
-          confirmButtonText: 'Voltar para o carrinho',
+          confirmButtonText: 'Continuar a compra',
           cancelButtonText: 'Adicionar outro endereço'
         }).then((result) => {
           if (result.isConfirmed) {
@@ -182,16 +180,19 @@ console.log(this.$refs.door.value);
       margin-right: 15px;
       margin-left: 15px;
     }
+    #andar, #cidade, #longitude {
+      width: 100%;
+      max-width: 350px;
+    }
     .titulo {
       text-align: center;
       font-size: 35px;
       font-family: "DM Serif Display";
     }
     .form {
-      margin-left: 100px;
-      margin-right: 100px;
+      margin-left: 50px;
+      margin-right: 50px;
       background-color: beige;
-      height: 750px;
       border-radius: 10px;
     }
     a {
@@ -207,6 +208,9 @@ console.log(this.$refs.door.value);
             margin-left: 10px; /* Ajuste a margem esquerda para telas menores */
             margin-right: 10px; /* Ajuste a margem direita para telas menores */
             height: auto; /* Ajuste a altura para telas menores */
+        }
+        #andar, #porta, #cidade, #rua, #distrito, #numero, #codigo_postal, #concelho, #distrito, #longitude, #latitude, #name, #freguesia {
+          max-width: 300px;
         }
         input {
             width: 90%; /* Ajuste a largura do input para preencher a largura do elemento pai */
