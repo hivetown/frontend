@@ -7,7 +7,7 @@
     <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col">Item</th>
+      <th scope="col">Artigo</th>
       <th scope="col">Nome</th>
       <th scope="col">Fornecedor</th>
       <th scope="col">Preço</th>
@@ -20,10 +20,10 @@
     <tr v-for="num in orderItem['totalItems']" :key="num">
 <!--<p>{{orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]}}</p>-->
      <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
-     <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url" style="width: 100px; height: 100px;" /></a></td>
+     <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" style="width: 100px; height: 100px;" /><p v-else>Produto <br> sem imagem</p></a></td>
       <!--TODO por marcas e produto como links-->
      <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
-      <td>           
+      <td>   
         <a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id">{{orderItem['items'][num-1]['producerProduct']['productSpec']['name'] }}</a>
       </td>
       <td>
@@ -36,8 +36,29 @@
         {{orderItem['items'][num-1]['quantity'] }}
       </td>
       <td>
-        {{orderItem['items'][num-1]['status'] }}
+    
+        <div v-if="orderItem['items'][num-1]['status'] === 'Delivered'"  style="display: inline-flex">
+                    <i class="bi bi-check-all"></i>
+                 <p>Entregue</p>
+                </div>
+                <div v-if="orderItem['items'][num-1]['status'] === 'Processing'"  style="display: inline-flex">
+                    <i class="bi bi-box-seam"></i>
+                     <p>Em processamento</p>
+                </div>
+                <div v-if="orderItem['items'][num-1]['status'] === 'Paid'"  style="display: inline-flex">
+                    <i class="bi bi-cash-coin"></i>  
+                    <p>Pago</p>             
+                </div>
+                <div v-if="orderItem['items'][num-1]['status'] === 'Canceled'" style="display: inline-flex">
+                  <i class="bi bi-x-lg"></i>    
+                  <p>Cancelada</p>          
+                </div>
+                <div v-if="orderItem['items'][num-1]['status'] === 'Shipped'"  style="display: inline-flex">
+                  <i class="bi bi-truck"></i>
+                  <p>Em andamento</p>
+                </div>
       </td>
+
       <td>
         {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €
         <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
