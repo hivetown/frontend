@@ -13,7 +13,7 @@
     <label class="form-check-label" for="radio{{ index + 1 }}">
         <div class="border p-3" id="caixa">
     <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
-        <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['number']}} {{ address2['items'][num-1]['door']}}, andar {{ address2['items'][num-1]['floor']}}</p>
+        <p>{{ address2['items'][num-1]['street'] }}, numero {{ address2['items'][num-1]['number']}}, andar {{ address2['items'][num-1]['floor']}}</p>
         <p>{{ address2['items'][num-1]['zipCode'] }}, {{ address2['items'][num-1]['parish'] }}</p>
         <p>Distrito de {{ address2['items'][num-1]['district'] }}</p>
         <p>{{ address2['items'][num-1]['latitude'] }}, {{ address2['items'][num-1]['longitude'] }}</p>
@@ -27,11 +27,19 @@
     <p v-else>Ainda não existem endereços salvos!</p>
 
     </div>
-    <div id="adiciona">
-    <h4 class="titulo">Ou</h4>
-        <a id="adc" href="/addAddress">
+    <div >
+      <!--
+    <h5 id ="titulo2">Ou</h5>
+       <a  id="adc" href="/addAddress">
                         Adicionar novo endereço
-        </a>
+        </a> -->
+        <div>
+    <button id="btnExtende" class="btn btn-outline-secondary btn-sm" @click="collapsed = !collapsed">{{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}</button>
+    <div v-if="!collapsed">
+      <!-- Your content here -->
+      <AddAddress />
+    </div>
+  </div>
     <br>
     
 </div>
@@ -40,7 +48,7 @@
     <button  id="btn" @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                         Finalizar a compra
     </button>
-    <div id="aviso" v-if="isButtonDisabled">*Selecione pelo menos um endereço para finalizar a encomenda</div>
+<div id="aviso" v-if="isButtonDisabled">*Selecione pelo menos um endereço para finalizar a encomenda</div>
 
     
 </div>
@@ -54,18 +62,22 @@ import CartItem from "@/components/CartItem.vue";
 import { onMounted, ref} from "vue";
 import {getAddresses, postOrderPayment} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
+const collapsed = ref(true);
+
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('68');
+const addresses = await getAddresses('4');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
 
 </script>
-<script lang="ts">
 
+<script lang="ts">
+import AddAddress from '../components/AddAddress.vue'
   export default {
+    components:  {AddAddress},
     data() {
       return {
         selectedItems: [], // Variável de dados para armazenar os checkboxes selecionados
@@ -92,7 +104,7 @@ address2.value=addresses.data;
     
         // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('68', { shippingAddressId: id});
+        const response = await postOrderPayment('4', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
@@ -123,10 +135,20 @@ address2.value=addresses.data;
 #aviso{
   color: rgb(110, 102, 102);
 }
+
+#btnExtende{
+  margin-left: 50px;
+}
  .titulo {
       text-align: center;
       font-size: 35px;
       margin-top: 20px;
+      font-family: "DM Serif Display";
+    }
+    .titulo2 {
+      font-size: 25px;
+      margin-top: 20px;
+      margin-left: 10px;
       font-family: "DM Serif Display";
     }
 #caixa {
@@ -151,6 +173,7 @@ address2.value=addresses.data;
 }
 #btn {
     font-size: 20px;
+    margin-right: 5px;
 }
 input[type="radio"]{
   width: 20px;

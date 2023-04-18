@@ -24,12 +24,11 @@ const orderId = pathSegments[4];
 console.log(orderId); // 4228
 var endereco = "/encomenda/"+orderId;
 Swal.fire({
-  position: 'top-end',
   icon: 'success',
-  title: 'Pagamento efetuado com sucesso',
   showConfirmButton: false,
   timer: 1500
 })
+
 
 </script>
 
@@ -49,7 +48,7 @@ Swal.fire({
     -moz-osx-font-smoothing: grayscale;
   }
   section {
-    background: #ffffff;
+    background: beige;
     display: flex;
     flex-direction: column;
     width: 800px;
