@@ -25,8 +25,8 @@
     const id = window.location.pathname.split('/id').pop()?.toString();
     onMounted(async () => {
       //obter user logado
-      const userItem = await fetchUser();
-      user.value=userItem.data;
+      //const userItem = await fetchUser();
+      //user.value=userItem.data;
       //trocar o 1 para o user logado (user.value['id'])
       const responseItem = await fetchOrder('1', id);
       orderItem.value=responseItem.data;

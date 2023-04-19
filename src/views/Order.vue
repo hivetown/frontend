@@ -39,14 +39,18 @@
    const orders = ref<Order[]>([]);
     const search = ref('');
     onMounted(async () => {
-      const userItem = await fetchUser();
-      user.value=userItem.data;
+      //const userItem = await fetchUser();
+      //user.value=userItem.data;
       const responseOrder = await fetchAllOrders('1');
       //TODO trocar para este quando o user tiver encomendas
+      //const responseOrder = await fetchAllOrders(user.value['id']);
       orders.value=responseOrder.data
       const id = window.location.pathname.split('/id').pop()?.toString();
       //obtem o id da encomenda
       console.log(id);
+      //trocar o um pelo do user logado
+      //const orderId = await fetchAllItems('1', id);
+      //orderItem.value=orderId.data;
       //trocar o 1 para o user logado (user.value['id'])
       const responseItem = await fetchOrder('1', id);
       orderItem.value=responseItem.data;
