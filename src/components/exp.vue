@@ -197,7 +197,7 @@
       //const userItem = await fetchUser();
       //user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(1);
+      const response = await fetchAllOrders(3);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -212,7 +212,7 @@
       //id da encomenda encomendas[i]
       //console.log(encomendas);
       //console.log(i);
-      const response1 = await fetchAllItems(1, encomendas[i]);
+      const response1 = await fetchAllItems(3, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       console.log(encomendas);
@@ -384,7 +384,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders(1, arr);
+      return await exportOrders(3, arr);
     }
    
   }
