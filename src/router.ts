@@ -7,6 +7,7 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+import Order from "./views/Order.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
@@ -58,6 +59,12 @@ const routes = [
         meta: {
             requiresAuth: true,
         },
+    },
+    {
+            // O link para a encomenda deve ter o codigo
+        path: "/encomenda/id:id",
+        name: "Encomenda",
+        component: Order,
     },
     {
         path: "/login",
