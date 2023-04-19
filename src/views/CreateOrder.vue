@@ -53,7 +53,7 @@ const collapsed = ref(true);
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('1');
+const addresses = await getAddresses('2');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -86,7 +86,7 @@ import AddAddress from '../components/AddAddress.vue'
       var id = (this.selectedItems);
       try {
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('1', { shippingAddressId: id});
+        const response = await postOrderPayment('2', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
