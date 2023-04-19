@@ -138,19 +138,59 @@ export default defineComponent({
     };
   },
   methods: {
+    // handleId(id) {
+    //   this.selectedProductId = id;
+    //   // Se não houver produto 1 selecionado
+    //   if(this.prod1Id === null) {
+    //     this.prod1Id = id;
+    //     console.log("Prod1Id é " + this.prod1Id);
+    //   } else {
+    //     if(this.prod2Id === null) {
+    //       if(id != this.prod1Id){
+    //         // console.log("Os produtos são diferentes");
+    //         this.prod2Id = id;
+    //       }else{
+    //         console.log("Os produtos são iguais");
+    //       }
+    //       console.log("Prod2Id é " + this.prod2Id);
+    //     }
+    //   }
     handleId(id) {
       this.selectedProductId = id;
-
-      if(this.prod1Id === null) {
-        console.log("Prod1Id é null");
+      if (this.prod1Id === null) {
         this.prod1Id = id;
         console.log("Prod1Id é " + this.prod1Id);
+      } else if (this.prod2Id === null || this.prod1Id === null) {
+        if (id != this.prod1Id) {
+          console.log("Os produtos são diferentes");
+          this.prod2Id = id;
+          console.log("Prod2Id é " + this.prod2Id);
+        } else {
+          // console.log("Os produtos são iguais");
+          alert("O produto já está selecionado");
+        }
       } else {
-        console.log("Prod2Id é null");
-        this.prod2Id = id;
-        console.log("Prod2Id é " + this.prod2Id);
+        this.prod1Id = id;
+        this.prod2Id = null;
+        console.log("Prod1Id é " + this.prod1Id);
       }
-      console.log("Selecionado: " + this.selectedProductId);
+
+      // if(this.prod1Id === null) {
+      //   // console.log("Prod1Id é null");
+      //   this.prod1Id = id;
+      //   console.log("Prod1Id é " + this.prod1Id);
+      // } else {
+      //   if(!this.prod2Id === id) {
+      //     console.log("prod2: "+ this.prod2Id + "id: " + id);
+      //     console.log("Prod2Id é " + this.prod2Id);
+      //     this.prod2Id = id;
+      //   }
+      //   else{
+      //     console.error("O produto já está selecionado");
+      //   }
+      //   console.log("Prod2Id é " + this.prod2Id);
+      // }
+      // console.log("Selecionado: " + this.selectedProductId);
     },
   },
   // A fazer antes de montar o componente

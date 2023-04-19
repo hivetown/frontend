@@ -6,10 +6,20 @@
         <div class="parent d-flex justify-content-center align-items-center gap-4">
             
             <div class="d-flex flex-column">
-                <!-- {{ product1 }} -->
-                <!-- {{ product2 }} -->
-                <h5 class="dgreen-txt">Comparador <span>(2)</span></h5>
-                <p class="grey-txt">Ainda podes adicionar <span>1</span> produto</p>
+
+                <!-- {{ productsLoadedAmount }} -->
+                <h5 class="dgreen-txt">Comparador
+                    <span v-show="productsLoadedAmount === 1" class="badge bg-secondary" style="border-radius: 100%;">1</span>
+                    <span v-show="productsLoadedAmount === 2" class="badge bg-secondary" >2</span>
+                </h5>
+                <p v-show="productsLoadedAmount < 2" class="grey-txt">Ainda pode adicionar 
+                    <span v-show="productsLoadedAmount === 0">2 produtos</span> 
+                    <span v-show="productsLoadedAmount === 1">1 produto</span> 
+                </p>
+                <p v-show="productsLoadedAmount === 2">
+                    Selecionou o máximo de produtos
+                </p>
+
             </div>
 
             <div class="d-flex gap-4 ">
@@ -34,10 +44,15 @@
                 </div>
             </div>
 
-            <!-- TODO ser possível carregar apenas quando estão os 2 produtos selecionados -->
             <!-- TODO passar os ids para que carreguem no modal ou então logo os dados -->
             <div class="d-flex flex-column justify-content-center align-items-center">
-                <button type="button" 
+                <!-- <button v-if="productsLoadedAmount < 2" type="button" 
+                        class="btn btn-secondary rounded-pill" 
+                        v-b-tooltip.hover title="Comparar produto"
+                        style="background-color: transparent; color: grey;">
+                        <i class="bi bi-arrow-left-right" style="color: grey;"></i> Comparar
+                </button> -->
+                <button v-if="productsLoadedAmount === 2" type="button" 
                         class="btn btn-secondary rounded-pill" 
                         v-b-tooltip.hover title="Comparar produto"
                         @click="openModal(product1.id, product2.id)">
@@ -54,7 +69,7 @@
     <div>
         <!-- TODO corrigir botões do modal -->
         <b-modal v-model="showModal" size="xl" id="modal-center" centered scrollable>
-            <Compare :product1Id="id1" :product2Id="id2"/> 
+            <Compare :product1Id="product1.id" :product2Id="product2.id"  :key="showModal"/> 
         </b-modal>
     </div>
 
@@ -169,28 +184,38 @@ export default {
                 this.product2Loaded = false;
                 localStorage.setItem("compareItem2Id", null);
             }
+            this.productsLoadedAmount--;
         },
     },
-
+    // TODO - melhorar o display de produtos quando se selecionam e desselecionam
+    // porque ainda não está a funcionar bem 
      watch: {
         product1Id: async function (newId: number) {
             if (newId) {
+                document.getElementById("img1").style.display = "block";
                 const product1 = await fetchProduct(newId);
                 this.product1 = product1.data;
                 this.prod1Img = this.product1.images[0];
-                this.productsLoadedAmount++;
+                if(this.productsLoadedAmount <= 2 ){
+                    this.productsLoadedAmount++;
+                }
+                // this.productsLoadedAmount++;
                 this.product1Loaded = true;
-                console.log("Produto 1: " + JSON.stringify(this.product1))
+                // console.log("Produto 1: " + JSON.stringify(this.product1))
             }
         },
         product2Id: async function (newId: number) {
             if (newId) {
+                document.getElementById("img2").style.display = "block";
                 const product2 = await fetchProduct(newId);
                 this.product2 = product2.data;
                 this.prod2Img = this.product2.images[0];
-                this.productsLoadedAmount++;
+                if (this.productsLoadedAmount <= 2) {
+                    this.productsLoadedAmount++;
+                }
+                // this.productsLoadedAmount++;
                 this.product2Loaded = true;
-                console.log("Produto 2: " + JSON.stringify(this.product2))
+                // console.log("Produto 2: " + JSON.stringify(this.product2))
             }
         },
     },
@@ -201,9 +226,12 @@ export default {
         const product1 = await fetchProduct(this.product1Id);
         this.product1 = product1.data;
         this.prod1Img = this.product1.images[0];
-        this.productsLoadedAmount++;
+         if (this.productsLoadedAmount <= 2) {
+            this.productsLoadedAmount++;
+        }
+        // this.productsLoadedAmount++;
         this.product1Loaded = true;	
-        console.log("Produto 1: " + JSON.stringify(this.product1))
+        // console.log("Produto 1: " + JSON.stringify(this.product1))
 
         // if(this.product2Id){
         //     // Segundo produto
@@ -215,6 +243,8 @@ export default {
         //     this.product2Loaded = true;
         //     console.log("Produto 2: " + JSON.stringify(this.product2))
         // }
+
+        document.getElementById("img2").style.display = "none";
     },
 };
 </script>

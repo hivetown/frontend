@@ -99,13 +99,13 @@ export default defineComponent({
     // TODO ver porque é que os dados não estão a ser carregados como deve ser (só quando há uma mudança)
     // A fazer antes de montar o componente
     async beforeMount() {
-
-        // const productSpec1 = await fetchProduct(this.product1Id);
-        // this.productSpec1 = productSpec1.data;
-        // this.product1Img = productSpec1.data.images[0];
-        // const productSpec2 = await fetchProduct(this.product2Id);
-        // this.productSpec2 = productSpec2.data;
-        // this.product2Img = productSpec2.data.images[0];
+        console.log("foi recarregado")
+        const productSpec1 = await fetchProduct(this.product1Id);
+        this.productSpec1 = productSpec1.data;
+        this.product1Img = productSpec1.data.images[0];
+        const productSpec2 = await fetchProduct(this.product2Id);
+        this.productSpec2 = productSpec2.data;
+        this.product2Img = productSpec2.data.images[0];
     },
     components: { ProductCard }
 });

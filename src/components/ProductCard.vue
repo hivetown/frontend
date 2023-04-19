@@ -143,7 +143,7 @@ import CompareBanner from "@/components/CompareBanner.vue";
         },
         methods: {
             setupCompare(id){
-                console.log("id: " + id);
+                // console.log("id: " + id);
                 localStorage.setItem("compareBannerState", "open");
                 if(localStorage.getItem("compareItem1Id") == "null"){
                     localStorage.setItem("compareItem1Id", id);
