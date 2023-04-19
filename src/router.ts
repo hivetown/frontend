@@ -10,7 +10,7 @@ import User from "./views/User.vue";
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
-import OrderInfo from "./views/Orderinfo.vue";
+import OrderSupplier from "./views/OrderSupplier.vue";
 import { auth } from "./components/firebase";
 
 const routes = [
@@ -35,7 +35,7 @@ const routes = [
         component: Favourites,
         meta: {
             requiresAuth: true,
-        }
+        },
     },
     {
         path: "/carrinho",
@@ -43,7 +43,7 @@ const routes = [
         component: Cart,
         meta: {
             requiresAuth: true,
-        }
+        },
     },
     // O link para o produto deveria ter o seu nome ou id
     {
@@ -57,7 +57,7 @@ const routes = [
         component: User,
         meta: {
             requiresAuth: true,
-        }
+        },
     },
     {
         path: "/login",
@@ -75,9 +75,9 @@ const routes = [
         component: AuthConsumer,
     },
     {
-        path: "/encomenda",
-        name: "Encomenda",
-        component: OrderInfo,
+        path: "/encomendafornecedor",
+        name: "EncomendaFornecedor",
+        component: OrderSupplier,
     },
 
 ];
