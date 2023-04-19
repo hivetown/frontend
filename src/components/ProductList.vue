@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import ProductCardVue from "./ProductCard_old.vue";
 import { Product } from "../types/interfaces";
 

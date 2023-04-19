@@ -33,10 +33,7 @@
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
 						</div>
 						
-						<!-- <div class="d-flex" v-if="!$store.state.user || checKToken"> -->
-						<!-- if user is not logged in or token has changed based on api.interceptors.response -->
-						
-						<!-- <div class="d-flex" v-if="!$store.state.user && listenCookieChange()"> -->
+
 							<div class="d-flex" v-if="user.name === '' || user.image === ''">
 								<b-avatar>
 									class="nav-item" 
@@ -45,7 +42,7 @@
 									<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
 								</b-avatar>
 								<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
-								<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
+
 							</div>
 	
 						</div>
@@ -116,147 +113,9 @@ import { mapState, useStore } from 'vuex'
 import { computed } from 'vue';
 import { defineComponent, ref, watchEffect, onMounted, watch  } from 'vue';
 
-/*
-export default {
-  setup() {
-    const store = useStore()
-	// const validCookie = computed(() => store.getters['validCookie'])
-	// console.log("validCookie: ", validCookie.value)
-    onBeforeMount(() => {
-      store.dispatch('fetchUser')
-    })
-	return {
-      user: store.state.user
-    	}
-	}
-}
-*/
+
 import { fetchAuth } from '../api/auth'
-/*
-export default {
-  setup() {
-    const store = useStore()
-    const user = ref(null)
 
-    async function fetchUser() {
-      try {
-        const response = await fetchAuth()
-        console.log(response.data)
-        user.value = response.data
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    onBeforeMount(() => {
-      fetchUser()
-    })
-
-    function logout() {
-      store.dispatch('logout')
-    }
-	console.log("user: ", user)
-	console.log("image", user.image)
-    return {
-      user,
-      logout
-    }
-  }
-}
-/*
-export default {
-  setup() {
-    const store = useStore()
-    const user = ref(null)
-
-    async function fetchUser() {
-      try {
-        const response = await axios.get('/auth')
-        console.log(response.data)
-        const user = response.data
-        store.commit('SET_USER', user)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    onBeforeMount(async () => {
-      await fetchUser()
-      user.value = store.getters.user
-    })
-
-    return {
-      user
-    }
-  }
-}
-*/
-// export default {
-//   setup() {
-//     const store = useStore()
-//     const user = ref({ name: '', image: '' })
-
-//     async function fetchUser() {
-//       try {
-//         const response = await fetchAuth()
-//         console.log(response.data)
-//         user.value = response.data
-//       } catch (error) {
-//         console.error(error)
-//       }
-//     }
-
-//     watch(() => store.state.user, (newValue, oldValue) => {
-//       if (newValue) {
-//         fetchUser()
-//       } else {
-//         user.value = { name: '', image: '' }
-//       }
-//     }, { immediate: true })
-
-//     function logout() {
-//       store.dispatch('logout')
-//     }
-
-//     return {
-//       user,
-//       logout
-//     }
-//   }
-// }
-
-
-// export default defineComponent({
-//   setup() {
-//     const store = useStore()
-//     const user = ref({ name: '', image: '' })
-
-//     async function fetchUser() {
-//       try {
-//         const response = await fetchAuth()
-//         console.log(response.data)
-//         user.value = response.data
-//       } catch (error) {
-//         console.error(error)
-//       }
-//     }
-
-//     watchEffect(async () => {
-//       if (!user.value.name && store.state.token) {
-//         await fetchUser()
-//       }
-//     })
-
-//     function logout() {
-//       store.dispatch('logout')
-//     }
-
-//     return {
-//       user,
-//       logout
-//     }
-//   }
-// })
 export default {
   setup() {
     const store = useStore()
@@ -270,7 +129,7 @@ export default {
         console.error(error)
       }
     }
-
+	
     onMounted(async () => {
       await fetchUser()
     })
@@ -294,66 +153,7 @@ export default {
     }
   }
 }
-// import api from '../api/_base'
 
-
-// api.get('../api/_base/auth').then(response => {
-//   console.log('response.data: ', response.data)
-// }).catch(error => {
-//   console.error(error)
-// })
-
-
-
-
-
-// export default {
-//   setup() {
-//     const store = useStore()
-// 	const validCookie = ref(true);
-
-//     listenCookieChange((newValue) => {
-//       validCookie.value = newValue;
-//     });
-//     onBeforeMount(() => {
-//       store.dispatch('fetchUser')
-//     });
-// 	console.log("validCookie: ", validCookie.value)
-// 	return {
-//       validCookie
-//     }
-// 	}
-// }
-  
-// export default {
-//   setup() {
-//     const store = useStore()
-//     onBeforeMount(() => {
-//       store.dispatch('fetchUser')
-//     })
-// 	return {
-//       validCookie
-//     }
-// }
-// }
-
-// function listenCookieChange(callback, interval = 1000) {
-//   const { token } = store.state;
-//   setInterval(()=> {
-// 	// save content of cookie in variable
-// 	let cookie = document.cookie;
-//     if (cookie !== token) {
-//       try {
-// 		// the next line will throw an error if the cookie has been deleted
-//         callback({oldValue: lastCookie, newValue: cookie});
-// 		return true;
-//       } catch {
-// 		console.log("Cookie deleted");
-// 		return false;
-//       }
-//     }
-//   }, interval);
-// }
 
 
 

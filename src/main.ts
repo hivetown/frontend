@@ -18,6 +18,8 @@ import "primevue/resources/primevue.min.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 
+
+
 const app = createApp(App);
 import store from './store'
 
@@ -34,6 +36,5 @@ app.component("b-carousel-slide", BCarouselSlide);
 app.use(router);
 
 app.mount("#app");
-
 
 

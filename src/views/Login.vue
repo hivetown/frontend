@@ -22,7 +22,7 @@
 					type="submit" 
 					value="Login" />
 				</div>
-				<!-- Create a link to the registration page -->
+				
 				<p>Não tem uma conta? <router-link to="/registration">Registar</router-link></p>
 			</form>
 
@@ -44,21 +44,7 @@ export default {
 		const store = useStore();
 		const login = async () => {
 			const { email, password } = login_form.value
-			// try {
-            //     await signInWithEmailAndPassword(auth, email, password)
-            // } catch (error) {
-            //     switch (error.code) {
-            //         case 'auth/user-not-found':
-            //             alert('Utilizador não encontrado')
-            //             break
-            //         case 'auth/wrong-password':
-            //             alert('Palavra-passe incorreta')
-            //             break
-            //         default:
-            //             alert('Erro ao iniciar sessão')
-            //     }
-            //     return 
-            // }
+
 			store.dispatch('login', login_form.value);
 		}
 		return {

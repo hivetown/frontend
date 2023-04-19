@@ -89,39 +89,23 @@ import { reactive } from 'vue';
 export default {
   setup () {
     const register_form = reactive({
-      // name: '',
-      // number: '',
-      // door: '',
-      // floor: '',
-      // zip_code: '',
-      // street: '',
-      // parish: '',
-      // county: '',
-      // district: '',
-      // city: '',
-      // latitude: '',
-      // longitude: '',
-      // phone: '',
-      // vat: '',
-      // email: '',
-      // password: ''
-      name: 'ss',
-      number: '1',
-      door: '1',
-      floor: '1',
-      zip_code1: '1111',
-      zip_code2: '111',
-      street: 's',
-      parish: 's',
-      county: 's',
-      district: 's',
-      city: 's',
-      latitude: '11.11',
-      longitude: '11.11',
-      phone: '111222121',
-      vat: '111222121',
-      email: 'ss@gmail.com',
-      password: 'ss1234'
+      name: '',
+      number: '',
+      door: '',
+      floor: '',
+      zip_code: '',
+      street: '',
+      parish: '',
+      county: '',
+      district: '',
+      city: '',
+      latitude: '',
+      longitude: '',
+      phone: '',
+      vat: '',
+      email: '',
+      password: ''
+
     });
     const store = useStore();
     const errors = ref({});

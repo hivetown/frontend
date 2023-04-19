@@ -121,16 +121,9 @@ export default {
 		const userType = ref('Consumer');
 		// create function to save the value of the radio button
 		function saveValue(radioValue) {
-			// Get the value of the input field with id="supplier"
-			// userType.value = radioValue;
-			//////////////////////////////////////
-			state.tipo = radioValue;
-			//////////////////////////////////////
+			
 			userType.value = radioValue;
-			// let type = userType.value;
-			// save the value of the radioValue in the store
-			// store.dispatch('userType', userType.value);
-			console.log("userType_registo1: ", userType.value);
+			
 		}
 		function getUserType() {
 			console.log("userType_registo2: ", userType.value);

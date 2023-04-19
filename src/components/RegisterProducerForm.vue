@@ -1,34 +1,3 @@
-<!-- This is the component that will be rendered when the user selects the consumer option in the registration form -->
-<!-- <template>
-    <form class="register" @submit.prevent="register">
-    <div>
-        <input
-            type="text"
-            placeholder="Empresa"
-            v-model="register_form.name" />
-        <input
-            type="text"
-            placeholder="Telemóvel"
-            v-model="register_form.phone" />
-        <input
-            type="text"
-            placeholder="NIF"
-            v-model="register_form.vat" />
-        <input
-            type="email"
-            placeholder="Email"
-            v-model="register_form.email" />
-        <input
-            type="password"
-            placeholder="Palavra passe"
-            v-model="register_form.password" />
-        <input
-            type="submit"
-            value="Registar" />
-    </div>  
-    </form>
-</template> -->
-
 <template>
     <form class="register" @submit.prevent="register">
       <div>
@@ -38,10 +7,10 @@
         <label for="Telemóvel">Número</label>
         <input type="text" placeholder="Telemóvel" v-model="register_form.phone" />
         <p v-if="errors.phone">{{ errors.phone }}</p>
-        <label for="NIF">Porta</label>
+        <label for="NIF">NIF</label>
         <input type="text" placeholder="NIF" v-model="register_form.vat" />
         <p v-if="errors.vat">{{ errors.vat }}</p>
-        <label for="Email">Andar</label>
+        <label for="Email">Email</label>
         <input type="email" placeholder="Email" v-model="register_form.email" />
         <p v-if="errors.email">{{ errors.email }}</p>
         <label for="Palavra passe">Palavra passe</label>
@@ -57,44 +26,7 @@
   </template>
 
 <script>
-// import { ref } from 'vue'
-// import { useStore } from 'vuex'
 
-
-// export default {
-// setup () {
-//     const register_form = ref({});
-//     const store = useStore();
-//     const register = async () => {
-//         // const { email, password } = login_form.value
-//         // try {
-//         //     await createUserWithEmailAndPassword(auth, email, password)
-//         //     } catch (error) {
-//         //         console.log("" + error.code)
-//         //         switch (error.code) {
-//         //             case 'auth/email-already-in-use':
-//         //                 alert('Email já em uso')
-//         //                 break
-//         //             case 'auth/invalid-email':
-//         //                 alert('Email inválido')
-//         //                 break
-//         //             case 'auth/weak-password':
-//         //                 alert('Palavra-passe fraca')
-//         //                 break
-//         //             default:
-//         //                 alert('Erro ao registar')
-//         //         }
-//         //         return 
-//         //     }
-            
-//         store.dispatch('register', register_form.value);
-//     }
-//     return {
-//         register_form,
-//         register
-//     }
-// }
-// }
 
 
 import { ref } from 'vue'
@@ -105,10 +37,10 @@ export default {
   setup () {
     const register_form = reactive({
         name: 'll',
-        phone: '887765567',
-        vat: '887765567',
-        email: 'll@gmail.com',
-        password: 'll1234'
+        phone: '',
+        vat: '',
+        email: '',
+        password: ''
         });
     const store = useStore();
     const errors = ref({});
