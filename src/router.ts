@@ -82,7 +82,7 @@ const routes = [
         component: AuthConsumer,
     },
     {
-        path: "/encomendafornecedor",
+        path: "/encomendaforn/id:id",
         name: "EncomendaFornecedor",
         component: OrderSupplier,
     },
