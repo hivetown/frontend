@@ -1,4 +1,4 @@
-<template>
+a<template>
     <div class="table-container" style="overflow: auto">
       <!--
         obter o user logado
@@ -7,60 +7,60 @@
     <table class="table table-striped">
   <thead>
     <tr>
-      <th scope="col">Artigo</th>
-      <th scope="col">Nome</th>
-      <th scope="col">Fornecedor</th>
-      <th scope="col">Preço</th>
-      <th scope="col">Quantidade</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Total</th>
+      <th id="col" scope="col">Artigo</th>
+      <th id="col" scope="col">Nome</th>
+      <th id="col" scope="col">Fornecedor</th>
+      <th id="col" scope="col">Preço</th>
+      <th id="col" scope="col">Quantidade</th>
+      <th id="col" scope="col">Estado</th>
+      <th id="col" scope="col">Total</th>
     </tr>
   </thead>
   <tbody>
     <tr v-for="num in orderItem['totalItems']" :key="num">
 <!--<p>{{orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]}}</p>-->
      <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
-     <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" style="width: 100px; height: 100px;" /><p v-else>Produto <br> sem imagem</p></a></td>
+     <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" style="width: 50px; height: 50px;" /><p id="texto" v-else>Produto <br> sem imagem</p></a></td>
       <!--TODO por marcas e produto como links-->
      <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
       <td>   
-        <a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id">{{orderItem['items'][num-1]['producerProduct']['productSpec']['name'] }}</a>
+        <a id="texto" :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id">{{orderItem['items'][num-1]['producerProduct']['productSpec']['name'] }}</a>
       </td>
       <td>
-        {{orderItem['items'][num-1]['producerProduct']['producer']['name'] }}
+        <a id="texto" :href="'/producer/'"><p id="texto">{{orderItem['items'][num-1]['producerProduct']['producer']['name'] }}</p></a>
       </td>
       <td>
-        {{orderItem['items'][num-1]['price'] }}
+        <p id="texto">{{orderItem['items'][num-1]['price'] }}</p>
       </td>
       <td>
-        {{orderItem['items'][num-1]['quantity'] }}
+        <p id="texto">{{orderItem['items'][num-1]['quantity'] }}</p>
       </td>
       <td>
     
         <div v-if="orderItem['items'][num-1]['status'] === 'Delivered'"  style="display: inline-flex">
                     <i class="bi bi-check-all"></i>
-                 <p>Entregue</p>
+                 <p id="texto"> Entregue</p>
                 </div>
                 <div v-if="orderItem['items'][num-1]['status'] === 'Processing'"  style="display: inline-flex">
-                    <i class="bi bi-box-seam"></i>
-                     <p>Em processamento</p>
+                  <i  class="bi bi-arrow-repeat"></i>
+                    <p id="texto">Em processamento</p>
                 </div>
                 <div v-if="orderItem['items'][num-1]['status'] === 'Paid'"  style="display: inline-flex">
                     <i class="bi bi-cash-coin"></i>  
-                    <p>Pago</p>             
+                    <p id="texto"> Pago</p>             
                 </div>
                 <div v-if="orderItem['items'][num-1]['status'] === 'Canceled'" style="display: inline-flex">
                   <i class="bi bi-x-lg"></i>    
-                  <p>Cancelada</p>          
+                  <p id="texto"> Cancelada</p>          
                 </div>
                 <div v-if="orderItem['items'][num-1]['status'] === 'Shipped'"  style="display: inline-flex">
                   <i class="bi bi-truck"></i>
-                  <p>Em andamento</p>
+                  <p id="texto"> Em andamento</p>
                 </div>
       </td>
 
       <td>
-        {{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €
+       <p id="texto">{{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €</p> 
         <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
       </td>
     </tr>
@@ -73,6 +73,8 @@
 </template>
 
 <script setup lang="ts">
+import '@fortawesome/fontawesome-free/css/all.css';
+
   import Swal from 'sweetalert2';
   import { onMounted, ref} from "vue";
    import { fetchAllItems } from "../api";
@@ -119,10 +121,40 @@
       
 
     });
+    
 </script>
 <style scoped>
+.bi-truck {
+  animation: fade 2s ease-in-out infinite alternate;
+}
 
-  
+@keyframes fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+/*
+.bi-arrow-repeat {
+  animation: spin 2s linear infinite;
+  transform-origin: center !important;
+
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+*/
+.bi-box-seam {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+  #texto {
+    font-size: 13px;
+  }
 
   .table thead th {
     position: sticky;
@@ -135,7 +167,6 @@
   }
 
 
-  
   
    .table th,
    .table td {
@@ -173,16 +204,21 @@
   }
   .resumo {
     margin-top: 20px;
+    font-size: 15px;
     text-align: right;
     margin-right: 90px;
   }
   .table-container {
     max-height: 450px; /* Altura máxima da tabela */
     margin:auto;
+    margin-top: 0px;
     max-width: 90%;
     overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
     position: relative;
   }
+  #col{
+  font-size: 15px !important;
+}
   
   @media (max-width: 768px) {
   /* regras de estilo para telas menores que 768px */
@@ -203,7 +239,15 @@
   .table td:nth-child(5) {
     display: none;
   }
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    display: none;
+  }
  
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
 
   header {
     font-size: 8px;
@@ -239,9 +283,14 @@ img {
   font-size: 12px !important;
  }
  i {
-  font-size: 18px !important;
+  font-size: 13px !important;
  }
-
+ .resumo {
+    margin-top: 10px;
+    font-size: 15px;
+    text-align: right;
+    margin-right: 30px;
+  }
 }
    </style>
   

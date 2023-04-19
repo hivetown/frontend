@@ -1,14 +1,14 @@
 <template>
   <div class="root">
     <div class="wrapper-mains">
-      <div>
+      <div id = "principal">
         <!-- TODO adicionar o numero da encomenda 
         <p>{{ orders }}</p>
         <p>{{ orderItem }}</p> -->
-
-        <p class="titulo" v-if="orders['totalItems'] === 0">Ainda nao foi realizada nenhuma encomenda</p>
-        <p class="titulo" v-if="orders['totalItems'] !== 0">Progresso da encomenda {{ $route.params.id }}</p>
-        <Progresso :length="4" v-if="orders['totalItems'] !== 0"></Progresso>
+        <p class="titulo" v-if="orders['totalItems'] === 0">Ainda nao foi realizada nenhuma encomenda</p> 
+        <p class="titulo" v-if="orders['totalItems'] !== 0">Estado da encomenda {{ $route.params.id }}</p>
+        <Progresso :length="4" v-if="orders['totalItems'] !== 0 && orderItem['status'] !== 'Canceled'"></Progresso>
+        <i v-if="orderItem['status'] === 'Canceled'" class="bi bi-x-circle">Encomenda cancelada</i>
       </div>
       <div class="tabela" v-if="orders['totalItems'] !== 0">
         <OrderDetails />
@@ -32,6 +32,8 @@
    import { fetchAllItems, fetchAllOrders, fetchOrder } from "../api";
    import { fetchUser } from "../api";
    import { Order, Consumer} from "../types/interfaces";
+
+
    const user = ref<Consumer[]>([]);
    const orderItem = ref<Order[]>([]); //array com os produtos
    const orders = ref<Order[]>([]);
@@ -49,6 +51,9 @@
       //trocar o um pelo do user logado
       //const orderId = await fetchAllItems('1', id);
       //orderItem.value=orderId.data;
+      //trocar o 1 para o user logado (user.value['id'])
+      const responseItem = await fetchOrder('1', id);
+      orderItem.value=responseItem.data;
    })
 </script>
   <style scoped>
@@ -68,9 +73,8 @@
   .tabela{
     margin-top: 180px;
   }
-  
   .titulo {
-    font-size: 30px;
+    font-size: 20px;
   }
   @media (max-width: 660px) {
     .titulo {

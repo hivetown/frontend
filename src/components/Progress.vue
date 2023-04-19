@@ -2,10 +2,10 @@
   <div class="root">
   <div class="container">
     <ul class="progressbar">
-      <li :class=" orderItem['status'] === 'Processing' ||orderItem['status']=== 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Paid' || orderItem['status'] === 'Cancelled' ? 'active step1' : 'step1'">Paid</li>
-      <li :class="orderItem['status'] === 'Shipped' || orderItem['status'] === 'Delivered' || orderItem['status'] === 'Processing' || orderItem['status'] === 'Cancelled' ? 'active step2' : 'step2'">Processing</li>
-      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Cancelled' ? 'active step3' : 'step3'">Shipped</li>
-      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Cancelled' ? 'active step4' : 'step4'">Delivered</li>
+      <li :class=" orderItem['status'] === 'Processing' ||orderItem['status']=== 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Paid' || orderItem['status'] === 'Cancelled' ? 'active step1' : 'step1'">Pago</li>
+      <li :class="orderItem['status'] === 'Shipped' || orderItem['status'] === 'Delivered' || orderItem['status'] === 'Processing' || orderItem['status'] === 'Cancelled' ? 'active step2' : 'step2'">Em processamento</li>
+      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Shipped' || orderItem['status'] === 'Cancelled' ? 'active step3' : 'step3'">Em transporte</li>
+      <li :class="orderItem['status'] === 'Delivered' || orderItem['status'] === 'Cancelled' ? 'active step4' : 'step4'">Entregue</li>
     </ul>
   </div>
 </div>
@@ -37,8 +37,8 @@
   <style scoped>
       .progressbar li.step1:before {
   content: "";
-  width: 60px;
-  height: 60px;
+  width: 35px;
+  height: 35px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -47,13 +47,13 @@
   background-color: #fff;
   text-align: center;
   font-weight: bold;
-  background-image: url('/progress/folha.png');
+  background-image: url('/progress/euro.png');
   background-size: contain;
 }
       .progressbar li.step2:before {
   content: "";
-  width: 60px;
-  height: 60px;
+  width: 35px;
+  height: 35px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -67,8 +67,8 @@
 }
     .progressbar li.step3:before {
   content: "";
-  width: 60px;
-  height: 60px;
+  width: 35px;
+  height: 35px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -84,8 +84,8 @@
 
   .progressbar li.step4:before {
   content: "";
-  width: 60px;
-  height: 60px;
+  width: 35px;
+  height: 35px;
   border: 2px solid #bebebe;
   display: block;
   margin: 0 auto 10px auto;
@@ -103,15 +103,11 @@
   background-size: cover;
   z-index: 2;
 }
+li{
+  list-style-type: none;
+}
 
-  .container{
-       width: 90%;
-      position: absolute;
-      z-index: 1;
-      position: absolute;
-  left: 30%;
-      margin-top: 20px;
-  }
+
   .progressbar{
     counter-reset: step;
     height: 10px; /* altura da barra de progresso */
@@ -169,7 +165,7 @@
   }
   
 .progressbar li.step1:before {
-  background-image: url('/progress/folha.png');
+  background-image: url('/progress/euro.png');
   background-size: cover ;
 }
 
@@ -185,9 +181,26 @@
   background-image: url('/progress/casa.png');
   background-size: cover ;
 }
+.container {
+  position: absolute;
+  z-index: 1;
+  margin-top: 20px;
+  margin-left: 310px;
+  text-align: center !important;
+}
+
 @media (max-width: 768px) {
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    display: none;
+  }
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    display: none;
+  }
   .container {
     width: 90%;
+    margin-left: 25px;
   }
 
   .progressbar li {
