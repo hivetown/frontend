@@ -1,330 +1,357 @@
+
 <template>
-    <div class="pagination-demo">
+  <h3 class="semencoemndas" v-if="orders['totalItems'] === 0"> <i id="icon" class="bi bi-emoji-frown"></i><br>Ainda não foram efetuadas encomendas.</h3>
       <div class="table-container" style="overflow: auto">
-      <table style="border: 2px " class="table" >
+  <div>
+  </div>
+  <table v-if="orders['totalItems'] !== 0" style="border: 2px" class="table">
         <thead >
           <tr>
-            <th><h4>Encomenda</h4></th>
-            <th><h4>Total</h4></th>
-            <th><h4>Status</h4></th>
-            <th><h4>Código da encomenda</h4></th>
+            <th><h4>Exportar dados</h4></th>
+
+            <th><h4>Artigos</h4></th>
+            <th>
+              <!--<input type="checkbox" id="reverse">-->
+              <h4>Código</h4></th>
+            <th><h4>Estado</h4></th>
+            <th><h4>Morada de entrega</h4></th>
+
             <th id="coluna-data">
               <div class="data">
                 <h4>Data</h4>
-                <button @click="ordenarPorData" style=" background-color: transparent;">
-                  <i class="bi bi-arrow-down-up"></i>
-                </button>
               </div>
               </th>
+              <th><h4>Total</h4></th>
+
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(encomenda, index) in encomendas" :key="index">
+            <tr v-for="num in orders['totalItems']" :key="num">
+              <td>
+                <input id="name" type="checkbox"  style="transform: scale(1.2)" @change="onCheckboxChange()" :value="orders['items'][num-1]['id']" v-model="selectedOrders[num-1]">
+                <span v-if="selectedOrders[num-1]"></span>
+              </td>
+            
             <td>
+
               <div class="carousel-container">
                 <div class="carousel">
-                  <a href="#">
-                  <MDBCarousel  showIndicators="false" v-model="carousels[index]" :items="items[index]" fade  />
-                </a>
+                  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              
+
+              <div>
+    <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0">
+      <p id="texto">Produto sem imagem</p>
+    </div>
+    <div v-else>
+      <ol v-if="encomendasImage[num].length > 1" class="carousel-indicators">
+        <li v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'active': index === 0}"></li>
+      </ol>
+
+      <div class="carousel-inner" role="listbox">
+        <div v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'item': true, 'active': index === 0}">
+          <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
+            <img style="width: 75px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+            <p id="texto" v-else>Produto sem <br>imagem</p> 
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+                 <a  :href="`/encomenda/id${orders['items'][num-1]['id']}`"></a> 
                 </div>
               </div>
             </td>
-            <td><h4> {{ encomenda.total }} </h4></td>
-            <td>
-              <div v-if="encomenda.estado === 'Entregue'" class="inline"><i class="bi bi-check-all"></i></div>
-              <div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
-              <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>
-              <div v-if="encomenda.estado === 'Cancelada'" class="inline"><i class="bi bi-x-lg"></i></div>
+            
+            <td >
+           
+              <a id="texto" :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
+
+         </td>
+             
               <!--TODO mudar o link para detalhada-->
-              <h4 class="inline">  <a class="numero" href="#">{{encomenda.estado}} </a> </h4>
-
-              <div v-if=" encomenda.estado === 'Em andamento'">
-                <BButton class="botao" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
-              </div>
-              <div v-if=" encomenda.estado === 'Em preparação'">
-                <BButton class="botao" variant="outline-primary" @click="cancelarEncomenda()">Cancelar encomenda</BButton>
-            </div>
-
+              <td>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'"  style="display: inline-flex">
+                    <i id="texto" class="bi bi-check-all"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Entregue</p></a>
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Processing'"  style="display: inline-flex">
+                    <i id="texto" class="bi bi-box-seam"></i>
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Em processamento</p></a>
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'"  style="display: inline-flex">
+                    <i id="texto" class="bi bi-cash-coin"></i>  
+                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Pago</p>  </a>           
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" style="display: inline-flex">
+                  <i id="texto" class="bi bi-x-lg"></i>    
+                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Cancelada</p></a>       
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'"  style="display: inline-flex">
+                  <i id="texto" class="bi bi-truck"></i>
+                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Em andamento</p></a>
+                </div>
+                <div v-if=" orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'">
+                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomendaImpossivel()">Cancelar encomenda</BButton>
+                </div>
+                <div v-if="orders.items && orders.items[num - 1] && (orders.items[num - 1].generalStatus === 'Paid' || orders.items[num - 1].generalStatus === 'Processing')">
+  <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
+                    <BButton class="botao2" variant="outline-primary" @click="cancelarEncomenda(num)">Cancelar encomenda</BButton>
+                </div>
+              
             </td>
             <td>
-              <!--TODO mudar o if, exemplo de quando a encomenda foi dividida-->
-              <!--TODO mudar para link de encomenda detalhada-->
-                <h4 style="display: inline-block;"> <a class="numero" href="#">{{ encomenda.numero }}</a></h4>
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">Rua{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
                 
+                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['zipCode']}}, {{orders['items'][num-1]['shippingAddress']['city']}}</p></a>
+                
+                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['latitude']}}, {{orders['items'][num-1]['shippingAddress']['longitude']}}</p></a>
+              </td>
 
-            </td>
             <td>
-              <h4>{{ encomenda.data }}</h4>
+              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
             </td>
+            <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
+
             <td>
-              <BButton class="botao" variant="outline-primary" href="/">Ver detalhes</BButton> <!--TODO mudar link-->
+              <BButton class="botao2" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
       </table>
-      <!---->
-      </div>
     </div>
-</template>
-  
-  
-  <script>
-  
+    <BButton id="botao" class="botao" variant="outline-primary" v-if="isExportButtonVisible" @click="exportSelectedOrders">Exportar dados</BButton>
+
+  </template>
+
+
+<script setup lang="ts">
   import Swal from 'sweetalert2';
-  import { MDBPagination, MDBPageNav, MDBPageItem } from 'mdb-vue-ui-kit';
-  import { ref } from "vue";
-  import { MDBCarousel } from "mdb-vue-ui-kit";
-  const nEncomendas = 8; //TODO mudar para o numero de encomendas
-  const ordenacaoCrescente = ref(true);
-   // definir os dados de encomenda
-   const encomendas = [
-        {
-          numero: "sahwdqeod",
-          total: "1234,43€",
-          data: "07/03/2023",
-          estado: "Entregue"
-        },
-        {
-          numero: "ahdua8",
-          total: "456,8€",
-          data: "02/03/2016",
-          estado: "Em preparação"
-        },
-        {
-          numero: "anajdi",
-          total: "456,8€",
-          data: "07/06/2016",
-          estado: "Em andamento"
+  import { onMounted, ref, watch, computed } from "vue";
+   import { fetchAllOrders, cancelOrder } from "../api";
+   import { fetchAllItems } from "../api";
+   import { fetchUser } from "../api";
+
+
+   import { Consumer, Order } from "../types/interfaces";
+
+   const orders = ref<Order[]>([]);
+    const arr = ref([]); // Use a função ref para criar uma referência reativa do array
+
+   const encomendas = [];
+   const encomendasImage =  ref<Array>([]);
+   const encomendaId = ref([]);
+   const orderIds = ref<number[]>([]); //array com o id das encomendas
+   const orderItem = ref<Order[]>([]); //array com os produtos
+   //para ir buscar o que tem loggin
+   const user = ref<Consumer[]>([]);
+   const search = ref('');
+
+   //para ir buscar imagens apra o carousel
   
-        },
-        {
-          numero: "atyyyua8",
-          total: "1456,8€",
-          data: "05/10/2018",
-          estado: "Entregue"
-  
-        },
-        {
-          numero: "anajdi",
-          total: "456,8€",
-          data: "07/01/2016",
-          estado: "Em andamento"
-  
-        },
-        {
-          numero: "anajdi",
-          total: "456,8€",
-          data: "07/01/2016",
-          estado: "Entregue"
-  
-        },
-        {
-          numero: "anajdi",
-          total: "456,8€",
-          data: "07/01/2016",
-          estado: "Em andamento"
-  
-        },
-        {
-          numero: "anajdi",
-          total: "456,8€",
-          data: "07/01/2016",
-          estado: "Em preparação"
-  
-        },
-  
-        
-      ];
-  
-  export default {
-    components: {
-      MDBPagination,
-      MDBPageNav,
-      MDBPageItem,
-      MDBCarousel,
+   async function fetchAndSetOrders(num: number): Promise<void> {
+    //console.log(orders.value.items[num-1]['id'] );
+      const orderId = orders.value.items[num-1]['id'];
+    }
+
+    onMounted(async () => {
+      const userItem = await fetchUser();
+      user.value=userItem.data;
+      //utilizador logado para por em fetchAllOrders (user.value.id);
+      const response = await fetchAllOrders(1);
+      orders.value = response.data;
+      orders.value.items.forEach((item) => {
+      orderIds.value.push(item.id);
+      });
+      for (let i = 0; i < orders.value.totalItems ; i++) { // Corrigido para "let" e "number"
+        encomendas.push(orders.value.items[i].id);
+        arr.value.push(i);
+    }
+    arr.value.reverse();
+
+    for (let i = 0; i< encomendas.length; i++){
+      //TODO mudar para user logado
+      const response1 = await fetchAllItems(1, encomendas[i]);
+      const newEncomenda = {[encomendas[i]] : response1.data};
+      encomendaId.value.push(newEncomenda);
+      console.log(encomendas);
+      const encomendaX = [];
+      for (let j=0; j<encomendaId.value[i][encomendas[i]]['items'].length-1; j++){
+         encomendaX.push(encomendaId.value[i][encomendas[i]] 
+         && encomendaId.value[i][encomendas[i]]['items'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0] 
+         && encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0]['url'] ? encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct']['productSpec']['images'][0]['url'] : null);
+      }
+      encomendasImage.value.push(encomendaX)
+
+    } 
+   // console.log(encomendaId.value[0]['67']['items'].length);
+
+   // console.log(encomendasImage);
+
+
+    });
+
+   function cancelarEncomenda(num) {
+    // exibe uma mensagem de confirmação para o usuário
+Swal.fire({
+  title: 'Deseja cancelar a encomenda?',
+  text: 'Esta ação não poderá ser desfeita',
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Sim, cancelar',
+  cancelButtonText: 'Não, voltar'
+}).then((result) => {
+  if (result.isConfirmed) {
+    try {
+      // TODO: implemente a lógica de cancelamento da encomenda
+      cancelOrder(1, orders.value['items'][num-1]['id'])
+        .then((response) => {
+          console.log('cancelou');
+          // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
+          Swal.fire({
+            title: 'Encomenda cancelada!',
+            text: 'Sua encomenda foi cancelada com sucesso.',
+            icon: 'success'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Redirecionar para a página desejada
+              window.location.href = '/encomendas'; // Substitua com a URL da página desejada
+            }
+          });
+        })
+        .catch(error => {
+          if (error.response && error.response.status === 400) {
+            console.log('entrou');
+            Swal.fire({
+              icon: 'error',
+              title: 'Não é possível cancelar esta encomenda',
+              text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+              confirmButtonText: 'OK'
+            });
+          } else {
+            console.log(error);
+            console.log('erro ao cancelar encomenda');
+          }
+        });
+    } catch (error: any) {
+      console.log(error);
+      console.log('erro ao cancelar encomenda');
+    }
+  }
+});
+
+   }
+
+function cancelarEncomendaImpossivel() {
+  // exibe uma mensagem de alerta para o usuário
+  Swal.fire({
+    icon: 'error',
+    title: 'Não é possível cancelar esta encomenda',
+    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+    confirmButtonText: 'OK'
+  });
+}
+</script>
+
+<script lang="ts">
+import {exportOrders} from '../api';
+import { MDBCarousel } from "mdb-vue-ui-kit";
+import { Component, Vue } from 'vue-property-decorator';
+import { Carousel, Slide } from 'vue-carousel';
+const orders = ref<Order[]>([]);
+const novo = ref<number[]>([]);
+
+export default {
+  components:{      MDBCarousel,Carousel,
+    Slide,
+},
+
+  data() {
+    return {
+      selectedOrders: [],
+
+    };
+  },
+  computed: {
+    isExportButtonVisible() {
+    
+      return this.selectedOrders.length > 0;
+      
+
+    }
+   
+  },
+    methods: {
+      onCheckboxChange() {
+        let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+        if(checkboxes.length == 0){
+          var button = document.getElementById("botao");
+          button.style.display = "none";
+        } else {
+          var button = document.getElementById("botao");
+          button.style.display = "block";
+        }
       
     },
-    setup() {
-      const showModal = ref(false);
-      const items = [ //as fotos dos artigos
-      //encomenda 1
-        [
-          { src:"mac.png" },
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-        ],
-        //encomenda 2
-        [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-        ],
-        //encomenda 3 ..
-        [
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-        ],
-        [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-        ],
-       [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-        ],
-        [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-        ],
-        [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-        ],
-        [
-          { src: "https://i.imgur.com/o2fKskJ.jpg" },
-          { src: "https://i.imgur.com/GQnIUfs.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-          { src: "https://i.imgur.com/Tja5H1c.jpg" },
-        ],
-      ];
-  
-      const carousels = ref(Array(nEncomendas).fill(0));  
-     
-  
-  
-      // fazemos um por cada encomenda que exista const items3 = [...];
-      return {
-        items,
-        carousels,
-        encomendas,
-        ordenacaoCrescente,
-        showPopup: false, // inicialmente, o pop-up não é exibido
-
-      };
-    },
-    methods: {
-      showAlert() {
-          this.dismissCountDown = this.dismissSecs;
-        },
-     
-        async cancelarEncomenda(encomenda) {
-  Swal.fire({
-    title: 'Tem a certeza?',
-    text: "Esta ação não pode ser desfeita!",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Sim, cancelar!',
-    cancelButtonText: 'Não, manter encomenda'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      encomenda.botaoVerde = false;
-      const encomendaCancelada = true; // TODO implementar lógica para cancelar a encomenda
-      if (encomendaCancelada) {
-        Swal.fire(
-          'Encomenda cancelada!',
-          'A encomenda foi cancelada com sucesso.',
-          'success'
-        );
-        encomendas.splice(encomendas.indexOf(encomenda), 1);
-      } else {
-        Swal.fire(
-          'Erro!',
-          'Não foi possível cancelar a encomenda.',
-          'error'
-        );
+      async rs(totalItems){
+        let arr=[];
+        var a = 0;
+        for (let i=0; i<totalItems; i++){
+          arr.push(i);
+          a=a+1;
+        }
+        arr.reverse();
+        console.log(arr);
+      },
+      async exportSelectedOrders() {
+        let arr = [];
+        let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
+        for (let i = 0 ; i < checkboxes.length; i++) {
+          arr.push(checkboxes[i].value)
       }
+      console.log(arr);
+      //TODO trocar para user logado
+      return await exportOrders(1, arr);
     }
-  });
-},
-
-
-    async cancelarEncomendaImpossivel() {
-      const result = await Swal.fire({
-        title: 'Não é possível cancelar a encomenda, já se encontra em dstribuição!',
-        icon: 'warning',
-        showCancelButton: false,
- 
-      });
-    },
-    showModal() {
-        this.$refs['my-modal'].show()
-      },
-      hideModal() {
-        this.$refs['my-modal'].hide()
-      },
-      toggleModal() {
-        // We pass the ID of the button that we want to return focus to
-        // when the modal has hidden
-        this.$refs['my-modal'].toggle('#toggle-btn')
-      }
-    ,
-  
-    async ordenarPorData() {
-  // Define uma função que retorna uma Promise que resolve após um certo tempo
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-  // Aguarda 100ms antes de começar a ordenação
-  await sleep(100);
-
-  if (this.ordenacaoCrescente) {
-    this.encomendas.sort((a, b) => new Date(a.data) - new Date(b.data));
-  } else {
-    this.encomendas.sort((a, b) => new Date(b.data) - new Date(a.data));
+   
   }
-  this.ordenacaoCrescente = !this.ordenacaoCrescente;
-},
+  
+};
 
-  
-  
-  
-    }
-  };
-  </script>
-  
-  <style scoped>
-  
-  
-  .inline {
-  display: inline-block;
-  vertical-align: middle; /* opcional: alinha verticalmente os elementos */
+</script>
+
+
+
+<style scoped>
+
+#morada2{
+  font-size: 11px;
 }
-  tr:nth-child(even) {
-    background:#cfc9be25;
-    z-index: 0;
-  }
-  
-  button {
-    margin-left: 10px;
-    border: none;
-  }
-  .data {
-    display: flex;
-    align-items: center; /* Centralizar os itens verticalmente */
-  }
+#texto, #morada {
+  font-size: 13px;
+}
+.carousel-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+.semEncomendas, #icon{
+  font-size: 110px !important;
+}
 
-  i{
-    font-size: 30px;
-  }
-  
-  .table-container {
-    max-height: 700px; /* Altura máxima da tabela */
-    max-width: 1600px;
-    margin:auto;
-    max-width: 92%;
-    overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
-    position: relative;
-  }
-  .table thead th {
+[v-cloak] {
+  display: none;
+}
+.table thead th {
     position: sticky;
     top: 0;
     background-color:  #e9e5de  !important;
@@ -334,7 +361,21 @@
     position: -ms-sticky;
     z-index: 2 ;
   }
+
+  h3 {
+    text-align: center;
+  margin-top: 150px; 
+margin-bottom:150px;
+}
   
+  .table-container {
+    max-height: 450px; /* Altura máxima da tabela */
+    max-width: 1600px;
+    margin:auto;
+    max-width: 92%;
+    overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
+    position: relative;
+  }
    .table {
     text-align: center;
      border-collapse: collapse;
@@ -356,160 +397,13 @@
          background-color: #f5f5f5;
         z-index: -2;
    }
-   
-   span {
-     color: black;
-   }
-   .numero {
-    color: black;
-    text-decoration: none;
-   }
-   
-   
-   .product-details {
-    padding: 20px;
-   }
-   
-   .link{
-    float: right;
-    margin-left: 980px;
-   }
-   
-   h2 {
-    margin-top: 25px;
-    margin-bottom: 20px;
-   }
-   
-   .mdb-carousel {
-    overflow: hidden;
-    position: relative;
-   }
-   .mdb-carousel .mdb-carousel-item {
-    position: absolute;
-    top: 0;
-   }
-   .carousel-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-   }
-   .carousel-text {
-    margin-left: 290px;
-   }
-   .carousel-text1 {
-    margin-left: 350px;
-   }
-   .carousel-info {
-    text-align: right;
-   }
-  
- 
-   .bar {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, .5);
-    border-radius: 10px;
-    animation: scale-up4 1s linear infinite;
-   }
-   .bar:nth-child(2) {
-    margin: 0 5px;
-    animation-delay: .25s;
-   }
-   .bar:nth-child(3) {
-    animation-delay: .5s;
-   }
-   .carousel {
-    width: 90px; /* Set a fixed width for the carousel container */
-    z-index: 1;
-    max-width: 100%;
-   }
-   .carousel img {
-    width: 100%; /* Set the width of the images to fill the container */
-    height: 100%; /* Set the height of the images to fill the container */
-    object-fit: contain; /* Scale the images proportionally to fit inside the container */
-   }
-   .swal2-confirm.btn-danger {
-  background-color: red !important;
-}
-
-th {
-         background-color: #e9e5de !important;
-         font-size: 30px;
-         color: rgb(0, 0, 0);
-       }
-       .carousel-indicators {
-  display: none;
-}
-
-   @media (max-width: 768px) {
-  /* regras de estilo para telas menores que 768px */
-  .table-container {
-    overflow-x: auto;
-  }
-  table {
-    max-width: 100%;
-    overflow-x: auto;
-    font-size: 5px;
-  }
-  .table thead tr {
-    background-color: #692424 !important; /* substitua pela cor desejada */
-  }
-  
-}
-@media only screen and (max-width: 660px) {
- 
-    /*em telemovel remove colunas ,4,5 */
-  .table th:nth-child(4),
-  .table td:nth-child(4) {
-    display: none;
-  }
-  .table th:nth-child(5),
-  .table td:nth-child(5) {
-    display: none;
-  }
-
-  .carousel {
-    width: 70%;
-    font-size: 12px;
-  }
-  header {
-    font-size: 8px;
-  }
-
-
-.carousel {
-    width: 40px !important; /* Set a fixed width for the carousel container */
-    z-index: 1;
-    max-width: 100%;
-   }
-   
-   .table {
-    text-align: center;
-     border-collapse: collapse;
-     margin-bottom: 10px;
-     font-size: 11px;
-     border: 2px;
-   }
-   
-   .table th,
-   .table td {
-     padding: 5px;
-     font-size: 10px;
-     text-align: left;
-     border-bottom: 1px solid #ddd;
-     
-   }
-   h4, a, p{
-    font-size: 12px !important;
-   }
-   i {
-    font-size: 18px !important;
-   }
 
    .botao{
-    border: none;
-    font-size: 11px;
+    width: 190px;
+    margin-left: 80px;
+    margin-top:20px
    }
-  }
-  
-   </style>
+
+   
+   
+</style>

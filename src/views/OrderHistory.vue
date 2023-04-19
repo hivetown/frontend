@@ -2,39 +2,7 @@
   <div>
     <h1>Histórico de encomendas</h1>
     <br>
-    <!--<OrderHistory/>-->
-    <Exp/>
-<!--
-    <ul>
-      <li v-for="num in orders['totalItems'] " :key="num">{{ num-1 }}</li>
-      <p>Codigo da encomenda: {{ orders['items'] && orders['items'][0] ? orders['items'][0]['id'] : '' }}</p>
-
-    </ul>
-    <p>Codigo da encomenda: {{ orders['items'] && orders['items'][0] ? orders['items'][0]['id'] : '' }}</p>
-  -->
-  
-
-  
-<!--trocar o 0 pelo valor, ou seja fazer um for por cada encomenda-->
-
-
-
-    <!--total items-->
-    <!---<p> {{ orders['totalItems'] }} </p>-->
-    <!--preco-->
-    <!--
-    <p>preco:</p>
-  <p> {{ orders['items'][1]['price'] }} </p>
-  <p>status:</p>
-  <p> {{ orders['items'][0]['status'] }} </p>
-  <p>codigo encomenda:</p>
-  <p> {{ orders['items'][0] }} </p>-->
-
-
-
-
-
-
+    <OrderHistory/>
   </div>
 </template>
 
@@ -56,7 +24,6 @@ import OrderHistory from "@/components/OrderHistory.vue";
 export default{
   components: {
   OrderHistory,
-  Exp
   }
 }
 </script>
