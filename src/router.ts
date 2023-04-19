@@ -85,11 +85,7 @@ const routes = [
         name: "AuthConsumer",
         component: AuthConsumer,
     },
-    {
-        path: "/addAddress",
-        name: "AddAddress",
-        component: AddAddress
-    },
+   
     {
         //TODO por user logado
     path: "/orders/:orderId/success",

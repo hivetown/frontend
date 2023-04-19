@@ -1,13 +1,11 @@
 <template> 
     <div class="form">
         <div class="form-group">
-          
             <p class="titulo">Adicionar novo endereço de envio</p>
             <br>
           <label for="name"><p>Nome:</p></label>
           <input type="text" class="form-control" id="name" placeholder="Digite o seu nome" >
         </div>
-        
         <div class="form-group row">
           <div class="col-md-4">
             <label for="numero"><p>Número:</p></label>
@@ -26,12 +24,10 @@
             <input type="text" class="form-control" id="codigo_postal" placeholder="Digite o código postal" ref="zipCode" required>
           </div>
         </div>
-        
         <div class="col-md-4">
           <label for="rua"><p>Rua:</p></label>
           <input type="text" class="form-control" id="rua" placeholder="Digite a rua" ref="street" required>
         </div>
-        
         <div class="form-group row">
           <div class="col-md-4">
             <label for="freguesia"><p>Freguesia:</p></label>
@@ -45,9 +41,7 @@
             <label for="distrito"><p>Cidade:</p></label>
             <input type="text" class="form-control" id="cidade" placeholder="Digite a cidade " ref="city" required>
           </div>
-          
         </div>
-        
         <div class="form-group row">
           <div class="col-md-4">
             <label for="distrito"><p>Distrito:</p></label>
@@ -61,26 +55,21 @@
             <label for="longitude"><p>Longitude:</p></label>
             <input type="text" class="form-control" id="longitude" placeholder="Digite a longitude" ref="longitude" required>
           </div>
-        </div>
-        
+        </div>    
     <br>
     <br>
-              <div id="error-container"></div>
-    
-              <!-- Campos de formulário aqui -->
-    
-              <button type="submit" class="btn btn-outline-secondary btn-sm" @click="handleSubmit">Guardar endereço</button>
-             
-        
-            </div>  
-          </template>
+    <div id="error-container"></div>
+        <!-- Campos de formulário aqui -->
+        <button type="submit" class="btn btn-outline-secondary btn-sm" @click="handleSubmit">Guardar endereço</button>
+    </div>  
+</template>
           
-          <script lang="ts">
-          import { postNewAdress } from '../api/consumers';
-          import Swal from 'sweetalert2';
-          import { Address } from '../types/interfaces';
+<script lang="ts">
+  import { postNewAdress } from '../api/consumers';
+  import Swal from 'sweetalert2';
+  import { Address } from '../types/interfaces';
         
-          export default {
+  export default {
             props: {
             endereco: {
               type: Object,
@@ -127,7 +116,7 @@
             console.log(this.address);
             //adiciona o novo endereco
             //TODO trocar para user logado
-            postNewAdress(4, this.address)
+            postNewAdress(1, this.address)
             .then((response) => {
               Swal.fire({
               title: 'Endereço salvo!',
@@ -159,20 +148,16 @@
               // Adicionar a div ao DOM
               const errorContainer = document.getElementById('error-container'); // substitua pelo ID do elemento onde deseja exibir a mensagem de erro
               errorContainer.appendChild(errorDiv);
-    
               // Lançar uma exceção para interromper a execução do código
               throw new Error("Erro de requisição: dados inválidos");
       }
     });
-             
-            
-          
-          }
-        }
-      }
+    }
+  }
+}
         
-          </script>
-    <style scoped>
+</script>
+<style scoped>
         label, input, button, a{
           margin-right: 15px;
           margin-left: 15px;
@@ -215,4 +200,4 @@
             }
         }
     
-    </style>
+</style>

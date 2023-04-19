@@ -1,9 +1,8 @@
 <template>
     <div class="form-address">
-        
     <h4 class="titulo">Selecione o endereço de envio</h4>
     <div class="form-check form-check-inline">
-<br>
+    <br>
     <h5> Endereços guardados</h5>
 <div class="row" v-if="address2.totalItems > 0">
         <div class="col-sm-6" v-for="(num, index) in address2.totalItems" :key="index">
@@ -20,19 +19,11 @@
         </div>
     </label>
     </div>
-
-        </div>
-        
+  </div>  
     </div>
     <p v-else>Ainda não existem endereços salvos!</p>
-
     </div>
     <div >
-      <!--
-    <h5 id ="titulo2">Ou</h5>
-       <a  id="adc" href="/addAddress">
-                        Adicionar novo endereço
-        </a> -->
         <div>
     <button id="btnExtende" class="btn btn-outline-secondary btn-sm" @click="collapsed = !collapsed">{{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}</button>
     <div v-if="!collapsed">
@@ -40,22 +31,18 @@
       <AddAddress />
     </div>
   </div>
-    <br>
-    
+    <br>  
 </div>
-
 <div id="finalizar">
     <button  id="btn" @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                         Finalizar a compra
     </button>
 <div id="aviso" v-if="isButtonDisabled">*Selecione pelo menos um endereço para finalizar a encomenda</div>
-
-    
 </div>
-
-    <br>
+<br>
 </div>
 </template>
+
 <script setup lang="ts"> 
 import Swal from 'sweetalert2';
 import CartItem from "@/components/CartItem.vue";
@@ -64,10 +51,9 @@ import {getAddresses, postOrderPayment} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
 const collapsed = ref(true);
 
-
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('4');
+const addresses = await getAddresses('1');
 console.log(addresses.data.items);
 address2.value=addresses.data;
 });
@@ -98,19 +84,14 @@ import AddAddress from '../components/AddAddress.vue'
         alert("O botão está desabilitado!");
       } 
       var id = (this.selectedItems);
-     // var id=; //TODO trocar pq nao tem endereco associado ainda, pelo de cima q e o selected
       try {
-        //const responseAdress = await postNewAdress()
-    
-        // await postOrderPayment(this.userId, this.shippingAddress);
           //TODO trocar o 1 para o id do usar logado
-        const response = await postOrderPayment('4', { shippingAddressId: id});
+        const response = await postOrderPayment('1', { shippingAddressId: id});
         window.location.href = (response.data['checkout_url']);
         console.log('Pedido enviado com sucesso!');
           
         } catch (error) {
           if (error.response.status === 400){
-            console.log('p');
             Swal.fire({
           title: 'Oops... Falta de stock!',
           text: 'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
@@ -197,6 +178,4 @@ input[type="radio"]{
     }
         
     }
-    
-
 </style>
