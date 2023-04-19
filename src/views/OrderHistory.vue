@@ -1,11 +1,11 @@
 <template>
-  <div>
+    <div>
     <h1>Histórico de encomendas</h1>
     <br>
-    <OrderHistory/>
-  </div>
+    <!--<OrderHistory/>-->
+    <Exp/>
+    </div>
 </template>
-
 <script setup lang="ts">
   import { onMounted, ref, watch } from "vue";
    import { fetchAllOrders } from "../api";
@@ -19,11 +19,12 @@
    watch(search, fetchProducts);
 </script>
 <script lang="ts">
-import Exp from "@/components/exp.vue";
 import OrderHistory from "@/components/OrderHistory.vue";
+import Exp from "@/components/exp.vue";
+
 export default{
   components: {
-  OrderHistory,
+  Exp
   }
 }
 </script>
