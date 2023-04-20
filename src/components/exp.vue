@@ -60,7 +60,18 @@
 
               <div>
     <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0">
-      <p id="texto">Produto sem imagem</p>
+      <ol v-if="encomendasImage[num-1].length > 1" class="carousel-indicators">
+        <li v-for="(image, index) in encomendasImage[num-1]" :key="index" :class="{'active': index === 0}"></li>
+      </ol>
+
+      <div class="carousel-inner" role="listbox">
+        <div v-for="(image, index) in encomendasImage[num-1]" :key="index" :class="{'item': true, 'active': index === 0}">
+          <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
+            <img style="width: 75px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+            <p id="texto" v-else>Produto sem <br>imagem</p> 
+          </a>
+        </div>
+      </div>
     </div>
     <div v-else>
       <ol v-if="encomendasImage[num].length > 1" class="carousel-indicators">
@@ -134,7 +145,7 @@
               
             </td>
             <td>
-              <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">Rua{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
+              <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
                 
                 <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['zipCode']}}, {{orders['items'][num-1]['shippingAddress']['city']}}</p></a>
                 
@@ -197,7 +208,8 @@
       //const userItem = await fetchUser();
       //user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(4);
+      //TODO por user logado
+      const response = await fetchAllOrders(1);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -212,7 +224,8 @@
       //id da encomenda encomendas[i]
       //console.log(encomendas);
       //console.log(i);
-      const response1 = await fetchAllItems(4, encomendas[i]);
+      //TODO por user logado
+      const response1 = await fetchAllItems(1, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       console.log(encomendas);
@@ -278,7 +291,7 @@ Swal.fire({
     try {
       // TODO: implemente a lógica de cancelamento da encomenda
       //TODO trocar p user logado
-      cancelOrder(4, orders.value['items'][num-1]['id'])
+      cancelOrder(1, orders.value['items'][num-1]['id'])
         .then((response) => {
           console.log('cancelou');
           // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
@@ -385,7 +398,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders(4, arr);
+      return await exportOrders(1, arr);
     }
    
   }
