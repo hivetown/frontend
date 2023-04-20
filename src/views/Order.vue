@@ -11,7 +11,7 @@
         <Progresso :length="4" v-if="orders['totalItems'] !== 0 && orderItem['status'] !== 'Canceled'"></Progresso>
         <i v-if="orderItem['status'] === 'Canceled'" class="bi bi-x-circle">Encomenda cancelada</i>
       </div>
-      <div class="tabela" v-if="orders['totalItems'] !== 0">
+      <div class="tabela" v-if="orders['totalItems'] !== 0" v-bind:style="{ marginTop: orderItem['status'] === 'Canceled' ? '20px' : '' }">
         <OrderDetails />
       </div>
     </div>
