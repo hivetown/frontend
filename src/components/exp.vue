@@ -277,7 +277,8 @@ Swal.fire({
   if (result.isConfirmed) {
     try {
       // TODO: implemente a lógica de cancelamento da encomenda
-      cancelOrder(1, orders.value['items'][num-1]['id'])
+      //TODO trocar p user logado
+      cancelOrder(3, orders.value['items'][num-1]['id'])
         .then((response) => {
           console.log('cancelou');
           // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
