@@ -87,7 +87,6 @@ const routes = [
     },
    
     {
-        //TODO por user logado
     path: "/orders/:orderId/success",
     name: "Success",
     component: Success,

@@ -22,7 +22,7 @@ const pathSegments = currentUrl.split('/');
 const orderId = pathSegments[4];
 
 console.log(orderId); // 4228
-var endereco = "/encomenda/"+orderId;
+var endereco = "/encomenda/id"+orderId;
 Swal.fire({
   icon: 'success',
   showConfirmButton: false,
