@@ -19,7 +19,7 @@
    watch(search, fetchProducts);
 </script>
 <script lang="ts">
-import OrderHistory from "@/components/OrderHistory.vue";
+import OrderHistory from "@components/oh.vue";
 import Exp from "@/components/exp.vue";
 
 export default{
