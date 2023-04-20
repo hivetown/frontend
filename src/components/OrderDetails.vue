@@ -30,7 +30,7 @@ a<template>
       <a id="texto" :href="'/producer/'"><p id="texto">{{orderItem['items'][num-1]['producerProduct']['producer']['name'] }}</p></a>
     </td>
     <td>
-      <p id="texto">{{orderItem['items'][num-1]['price'] }}</p>
+      <p id="texto">{{orderItem['items'][num-1]['price'] }} €</p>
     </td>
     <td>
       <p id="texto">{{orderItem['items'][num-1]['quantity'] }}</p>
