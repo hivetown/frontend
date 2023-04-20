@@ -42,6 +42,7 @@
     onMounted(async () => {
       //const userItem = await fetchUser();
       //user.value=userItem.data;
+      //TODO por user logado
       const responseOrder = await fetchAllOrders('1');
       //TODO trocar para este quando o user tiver encomendas
       //const responseOrder = await fetchAllOrders(user.value['id']);
@@ -53,7 +54,8 @@
       //const orderId = await fetchAllItems('1', id);
       //orderItem.value=orderId.data;
       //TODO trocar o 1 para o user logado (user.value['id'])
-      const responseItem = await fetchOrder('4', id);
+      //TODO por user logado
+      const responseItem = await fetchOrder('1', id);
       orderItem.value=responseItem.data;
    })
 </script>

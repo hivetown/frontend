@@ -98,11 +98,13 @@ import { onMounted, ref} from "vue";
     //console.log("user logado" + user.value['id']);
 
     //utilizador logado para por em fetchAllOrders (user.value.id);
-    const responseItem = await fetchAllItems('4', idO);
+    //TODO por user logado
+    const responseItem = await fetchAllItems('1', idO);
     orderItem.value=responseItem.data;
 
     //trocar o 1 por (user.value['id']) que e o user logado
-    const response = await fetchAllOrders('4');
+    //TODO por user logado
+    const response = await fetchAllOrders('1');
     orders.value = response.data;
     //totalSum+=(item.id);
     for (let i = 0; i < orderItem.value.items.length; i++) {

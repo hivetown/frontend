@@ -28,7 +28,9 @@
       //const userItem = await fetchUser();
       //user.value=userItem.data;
       //trocar o 1 para o user logado (user.value['id'])
-      const responseItem = await fetchOrder('4', id);
+      //TODO por user logado
+      const responseItem = await fetchOrder('1', id);
+      console.log(id);
       orderItem.value=responseItem.data;
    })
   
