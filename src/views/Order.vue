@@ -2,6 +2,7 @@
   <div class="root">
     <div class="wrapper-mains">
       <div id = "principal">
+
         <!-- TODO adicionar o numero da encomenda 
         <p>{{ orders }}</p>
         <p>{{ orderItem }}</p> -->
@@ -51,8 +52,8 @@
       //trocar o um pelo do user logado
       //const orderId = await fetchAllItems('1', id);
       //orderItem.value=orderId.data;
-      //trocar o 1 para o user logado (user.value['id'])
-      const responseItem = await fetchOrder('1', id);
+      //TODO trocar o 1 para o user logado (user.value['id'])
+      const responseItem = await fetchOrder('4', id);
       orderItem.value=responseItem.data;
    })
 </script>
