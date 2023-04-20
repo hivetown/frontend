@@ -116,7 +116,7 @@
             console.log(this.address);
             //adiciona o novo endereco
             //TODO trocar para user logado
-            postNewAdress(2, this.address)
+            postNewAdress(4, this.address)
             .then((response) => {
               Swal.fire({
               title: 'Endereço salvo!',
