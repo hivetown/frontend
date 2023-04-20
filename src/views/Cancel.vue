@@ -17,7 +17,7 @@
     const sessionId = pathSegments[5];
     console.log(sessionId);
     //TODO trocar para user logado
-    cancelPayment(9, sessionId);
+    cancelPayment(1, sessionId);
     Swal.fire({
       icon: 'error',
       title: 'Pagamento cancelado',
