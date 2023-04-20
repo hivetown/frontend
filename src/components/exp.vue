@@ -69,7 +69,7 @@
 
       <div class="carousel-inner" role="listbox">
         <div v-for="(image, index) in encomendasImage[num]" :key="index" :class="{'item': true, 'active': index === 0}">
-          <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
+          <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
             <img style="width: 75px;" :src="image" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
             <p id="texto" v-else>Produto sem <br>imagem</p> 
           </a>
@@ -94,7 +94,7 @@
             
             <td >
            
-              <a id="texto" :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
+              <a id="texto" :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['id'] : '' }}</a>
 
          </td>
              
@@ -102,23 +102,23 @@
               <td>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Delivered'"  style="display: inline-flex">
                     <i id="texto" class="bi bi-check-all"></i>
-                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Entregue</p></a>
+                    <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Entregue</p></a>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Processing'"  style="display: inline-flex">
                     <i id="texto" class="bi bi-box-seam"></i>
-                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Em processamento</p></a>
+                    <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> <p id="texto">Em processamento</p></a>
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Paid'"  style="display: inline-flex">
                     <i id="texto" class="bi bi-cash-coin"></i>  
-                    <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Pago</p>  </a>           
+                    <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Pago</p>  </a>           
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Canceled'" style="display: inline-flex">
                   <i id="texto" class="bi bi-x-lg"></i>    
-                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Cancelada</p></a>       
+                  <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Cancelada</p></a>       
                 </div>
                 <div v-if="orders.items && orders.items[num - 1] && orders.items[num - 1].generalStatus === 'Shipped'"  style="display: inline-flex">
                   <i id="texto" class="bi bi-truck"></i>
-                  <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Em andamento</p></a>
+                  <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="texto">Em andamento</p></a>
                 </div>
               <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
               <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
@@ -134,20 +134,20 @@
               
             </td>
             <td>
-              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">Rua{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
+              <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">Rua{{orders['items'][num-1]['shippingAddress']['street']}}, nº{{ orders['items'][num-1]['shippingAddress']['number'] }}, andar {{orders['items'][num-1]['shippingAddress']['floor']}}</p></a>
                 
-                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['zipCode']}}, {{orders['items'][num-1]['shippingAddress']['city']}}</p></a>
+                <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['zipCode']}}, {{orders['items'][num-1]['shippingAddress']['city']}}</p></a>
                 
-                <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['latitude']}}, {{orders['items'][num-1]['shippingAddress']['longitude']}}</p></a>
+                <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"><p id="morada2">{{orders['items'][num-1]['shippingAddress']['latitude']}}, {{orders['items'][num-1]['shippingAddress']['longitude']}}</p></a>
               </td>
 
             <td>
-              <a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
+              <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['orderDate'].substring(0, 10) : '' }}</a>
             </td>
-            <td><a :href="'/encomenda/' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
+            <td><a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black" id="texto">{{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['totalPrice'] : '' }}€</a></td>
 
             <td>
-              <BButton class="botao2" variant="outline-primary" :href="'/encomenda/' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
+              <BButton class="botao2" variant="outline-primary" :href="'/encomenda/id' + (orders.items[num-1]?.id )">Ver detalhes</BButton> <!--TODO mudar link-->
             </td>
           </tr>
         </tbody>
