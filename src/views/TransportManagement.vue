@@ -9,44 +9,82 @@
 			<br />
 
 			<b-row>
+
+
 				<b-col>
-					<h5 class="parent dgreen-txt">Em espera por ordem</h5>
+					<h5 class="parent dgreen-txt">Veículos em Espera</h5>
 					<hr />
-                    <!-- Barra de Pesquisa -->
+					<!-- Barra de Pesquisa -->
 					<div>
-							<b-input-group size="sm">
-								<b-form-input id="search-input" v-model="searchTerm" type="text" placeholder="Type your search term here..."></b-form-input>
-								<b-input-group-append>
-									<b-button variant="primary" @click="search">Search</b-button>
-								</b-input-group-append>
-							</b-input-group>
+						<b-input-group size="sm">
+							<b-form-input id="search-input" v-model="searchTerm" type="text" placeholder="Procurar veículo em espera..."></b-form-input>
+							<b-input-group-append>
+								<b-button variant="primary" @click="search">Search</b-button>
+							</b-input-group-append>
+						</b-input-group>
 					</div>
-                    <!-- Lista de Encomendas -->
+					<!-- Lista de Transportes -->
 					<b-list-group>
-						<b-list-group-item href="#some-link">ID 27535ABC</b-list-group-item>
-						<b-list-group-item href="#" active>ID 68794VCS</b-list-group-item>
-						<b-list-group-item href="#">ID 98461DEF</b-list-group-item>
-						<b-list-group-item href="#foobar" disabled>ID 2753535TABC</b-list-group-item>
+						<b-list-group-item href="#some-link">      27535ABC</b-list-group-item>
+						<b-list-group-item href="#" active>        68794VCS</b-list-group-item>
+						<b-list-group-item href="#">               98461DEF</b-list-group-item>
+						<b-list-group-item href="#foobar" disabled>64578TKL</b-list-group-item>
 					</b-list-group>
 				</b-col>
+
+
 				<b-col>
-					<h5 class="parent dgreen-txt">Pedidos por entregar</h5>
+					<h5 class="parent dgreen-txt">Encomendas em Espera</h5>
 					<hr />
+					<!-- Barra de Pesquisa -->
+					<div>
+						<b-input-group size="sm">
+							<b-form-input id="search-input" v-model="searchTerm" type="text" placeholder="Procurar encomendas em espera..."></b-form-input>
+							<b-input-group-append>
+								<b-button variant="primary" @click="search">Search</b-button>
+							</b-input-group-append>
+						</b-input-group>
+					</div>
+					<!-- Lista de Transportes -->
+					<b-list-group>
+						<b-list-group-item href="#some-link">      9846513879</b-list-group-item>
+						<b-list-group-item href="#" active>        1856123218</b-list-group-item>
+						<b-list-group-item href="#">               1689871661</b-list-group-item>
+						<b-list-group-item href="#foobar" disabled>2168941960</b-list-group-item>
+                        <b-list-group-item href="#">               2056910687</b-list-group-item>
+                        <b-list-group-item href="#">               3060569848</b-list-group-item>
+					</b-list-group>
 				</b-col>
+
+
 				<b-col>
-					<h5 class="parent dgreen-txt">A entregar</h5>
+					<h5 class="parent dgreen-txt">Veículos em Deslocação</h5>
 					<hr />
+					<!-- Barra de Pesquisa -->
+					<div>
+						<b-input-group size="sm">
+							<b-form-input id="search-input" v-model="searchTerm" type="text" placeholder="Procurar veículo em deslocação..."></b-form-input>
+							<b-input-group-append>
+								<b-button variant="primary" @click="search">Search</b-button>
+							</b-input-group-append>
+						</b-input-group>
+					</div>
+					<!-- Lista de Transportes -->
+					<b-list-group>
+						<b-list-group-item href="#some-link">      64589SFC</b-list-group-item>
+						<b-list-group-item href="#" active>        98412GTS</b-list-group-item>
+						<b-list-group-item href="#">               01457FFS</b-list-group-item>
+					</b-list-group>
 				</b-col>
+
+
 			</b-row>
-			<br />
 
 			<!--TODO: Ver como fazer um espacamento aqui-->
 
 			<hr />
-
+            <br />
 			<h3 class="parent dgreen-txt">Adicionar Novo Transporte</h3>
-
-			<div class="d-flex justify-content-between mt-3">
 				<!--Faltam os v-model="form.name" dentro dos b-form-input-->
 				<b-form>
 					<!--@submit="onSubmit" @reset="onReset" v-if="show">-->
@@ -72,7 +110,6 @@
 						<b-button type="reset" variant="danger">Recomeçar</b-button>
 					</div>
 				</b-form>
-			</div>
 
 			<hr />
 
@@ -95,11 +132,29 @@
 	<!------------------------------------------------------------------------------>
 </template>
 
-<script setup lang="ts">
-	// Este componente é inútil para esta página. O seu conteúdo vai dar jeito para
-	//fazer a página com as informações de cada camião
-	import TransportInfo from "@/components/TransportInfo.vue";
+<script lang="ts">
+
+    export default {
+            data() {
+                return {
+                searchTerm: "",
+                };
+            },
+            methods: {
+                search() {
+                // Do your search logic here
+                console.log("Searching for:", this.searchTerm);
+                },
+            },
+        };
 </script>
+
+<script setup lang="ts">
+    // Este componente é inútil para esta página. O seu conteúdo vai dar jeito para
+    //fazer a página com as informações de cada camião
+    import TransportInfo from "@/components/TransportInfo.vue";
+</script>
+
 <style scoped>
 	.wrapper-mains{
 	    height: auto;
