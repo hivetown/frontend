@@ -12,7 +12,7 @@
            <div>
                 <div class="d-flex gap-2"></div>
                     <!--<p>{{ productId }}</p>-->
-                    <h5>{{ productTitle }}</h5>
+                    <h5>{{ C }}</h5>
                     <p class="grey-txt">{{ productDescription }}</p>
                     <div class="d-flex gap-2">
                         <h4 class="mb-3">999€</h4>
@@ -22,7 +22,7 @@
                     <div class="d-flex ms-auto justify-content-center">
                       <div class="mt-3">Quantidade: </div>
                       <b-col col lg="5">
-                        <b-form-select v-model="selected" :options="options" size="sm" class="mt-3"></b-form-select>
+                        <b-form-select v-model="selected" :options="options" size="sm" class="mt-3" @change=""></b-form-select>
                       </b-col>
                     </div>
 
@@ -38,8 +38,8 @@
 
 </template>
 
-<script>
-//import { CartItem } from '@types/interfaces';
+<script lang="ts">
+import { CartItem } from '@types/interfaces';
 
 export default {
     data() {
@@ -56,15 +56,17 @@ export default {
             { value: 8, text: '8' },
             { value: 9, text: '9' },
             { value: 10, text: '10' },
-          ]
+          ],
         }
       },
 
-//    props: {
-//      cartItem: {
-//        type: CartItem,
-//        required: true,
-//      },
-//    }
+
+//      props: {
+//        cartItem: {
+//          type: CartItem,
+//          required: true
+//        }
+//      }
+
   }
 </script>

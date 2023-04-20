@@ -1,31 +1,26 @@
 <template >
-  
-    <div class="parent">
-      <div style="text-align: center;">
-          <button @click="goBack" type="button" class="btn btn-outline-secondary btn-sm" style="float:">
+    <div class="root">
+      <button @click="goBack" type="button" class="btn btn-outline-secondary btn-sm" style="float:">
             Voltar
           </button>
-      </div>
+      <div class="wrapper-mains">
+
+      
       
       <h1>Carrinho</h1>
+      <h5>Aqui poderá consultar os itens que estão atualmente no seu carrinho:</h5>
 
       <table class="table table-responsive-md">
           <tr>
               <td class="left-column">
               <div>
-                  <h5>Você atualmente possui {{ nElementos }} produtos <strong><u>distintos</u></strong> no seu carrinho:</h5>
-                  <div style="height:2vh"></div>
 
                   <!--{{ itensCarrinho }}-->
 
-                  <div style="height:2vh"></div>
+                  <!--{{ itensCarrinho }}-->
 
-                  <!--{{ itensCarrinho.items[0].producerProduct }}-->
-
-
-                  <div style="height:2vh"></div>
-
-                  <CartItem v-for="cartItem in itensCarrinho.items" :key="cartItem.producerProduct.id" :cartItem="cartItem"></CartItem>
+                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem"></CartItem><!--   -->
+                  <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
 
                   <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
               </div>
@@ -37,12 +32,10 @@
                   <div style="height:2vh"></div>
 
                   <p style="text-align: justify;">
-                    Total de items: <span class="checkout">Muitos</span><br>
-                    Sub-total: <span class="checkout">0,00€</span><br>
+                    Total de items: <span class="checkout">{{ nElementos }}</span><br>
+                    Sub-total: <span class="checkout">{{ precoTotal }}€</span><br>
                     Entrega: <span class="checkout">0,00€</span><br>
                   </p>
-
-                  <div style="height:5vh;"></div>
 
                   <b-row>
                     <b-col col lg="8">
@@ -59,8 +52,8 @@
 
                   <div style="height:5vh;"></div>
 
-                  <p>
-                    Total: <span class="checkout">0,00€</span><br>
+                  <p style="text-align: justify;">
+                    Total: <span class="checkout">{{ precoTotal }}€</span><br>
                   </p>
                   <div style="text-align: center;">
                     <button type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
@@ -71,6 +64,7 @@
           </td>
           </tr>
       </table>
+    </div>
     </div>
     
 </template>
@@ -143,27 +137,78 @@ table {
           { value: 4, text: 'Loja' },
         ],
 
-        nElementos: 0
+        nElementos: 0,
+
+        precoTotal: 0.0,
       };
     },
 
     // Botão "Voltar"
     methods: {
-        goBack() {window.history.back();}
+        goBack() {window.history.back();},
     },
     
     // Buscar Info do Carrinho
     async beforeMount(){
       const itensCarrinho=await fetchCartItems(1);
-
       this.itensCarrinho=itensCarrinho.data;
-      console.log(JSON.stringify(this.itensCarrinho));
+      //console.log(JSON.stringify(this.itensCarrinho));
 
-      this.nElementos = this.itensCarrinho["items"].length;
+      let totalQtd = 0;
+      for (let i=0; i < this.itensCarrinho["items"].length; i++) {
+        totalQtd += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity));
+      }
+      this.nElementos = totalQtd;
+
+      //console.log(this.nElementos);
+
+      //console.log(this.listaQuantidade)
+
+      //console.log(JSON.stringify(this.itensCarrinho.items[0].quantity));
+      //console.log(Object.values(this.itensCarrinho["items"][0].producerProduct));
+      //console.log(JSON.stringify(this.itensCarrinho["items"][0].producerProduct?.currentPrice));
+
+      let totalSum = 0;
+      for (let i=0; i < this.itensCarrinho["items"].length; i++) {
+        totalSum += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice));
+      }
+      //console.log(totalSum);
+      this.precoTotal=totalSum.toFixed(2);
     },
-
   };
   
 
 </script>
+<style scoped>
+.wrapper-mains{
+  height: auto;
+  background: white;
+  text-align: center;
+  margin: auto;
+  padding: 20px  ;
+}
+.textarea{
+  display: block;
+  width: 100%;
+  height: 70px;
+  border-radius: 5px;
+}
+.tabela{
+  margin-top: 180px;
+}
+.titulo {
+  font-size: 20px;
+}
+@media (max-width: 660px) {
+  .titulo {
+  font-size: 25px;
+  text-align: center !important;
+}
+.resumo {
+  margin-top: 10px;
+  text-align: right;
+  margin-right: 40px;
+}
+}
 
+</style>
