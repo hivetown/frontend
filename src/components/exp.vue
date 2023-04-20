@@ -197,7 +197,7 @@
       //const userItem = await fetchUser();
       //user.value=userItem.data;
       //utilizador logado para por em fetchAllOrders (user.value.id);
-      const response = await fetchAllOrders(3);
+      const response = await fetchAllOrders(4);
       orders.value = response.data;
       orders.value.items.forEach((item) => {
       orderIds.value.push(item.id);
@@ -212,7 +212,7 @@
       //id da encomenda encomendas[i]
       //console.log(encomendas);
       //console.log(i);
-      const response1 = await fetchAllItems(3, encomendas[i]);
+      const response1 = await fetchAllItems(4, encomendas[i]);
       const newEncomenda = {[encomendas[i]] : response1.data};
       encomendaId.value.push(newEncomenda);
       console.log(encomendas);
@@ -278,7 +278,7 @@ Swal.fire({
     try {
       // TODO: implemente a lógica de cancelamento da encomenda
       //TODO trocar p user logado
-      cancelOrder(3, orders.value['items'][num-1]['id'])
+      cancelOrder(4, orders.value['items'][num-1]['id'])
         .then((response) => {
           console.log('cancelou');
           // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
@@ -385,7 +385,7 @@ export default {
       }
       console.log(arr);
       //TODO trocar para user logado
-      return await exportOrders(3, arr);
+      return await exportOrders(4, arr);
     }
    
   }
