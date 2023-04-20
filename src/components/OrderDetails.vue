@@ -51,7 +51,7 @@ a<template>
               </div>
               <div v-if="orderItem['items'][num-1]['status'] === 'Canceled'" style="display: inline-flex">
                 <i class="bi bi-x-lg"></i>    
-                <p id="texto"> Cancelada</p>          
+                <p id="texto"> Cancelado</p>          
               </div>
               <div v-if="orderItem['items'][num-1]['status'] === 'Shipped'"  style="display: inline-flex">
                 <i class="bi bi-truck"></i>
