@@ -8,7 +8,7 @@ a<template>
 <thead>
   <tr>
     <th id="col" scope="col">Artigo</th>
-    <th id="col" scope="col">Nome</th>
+    <th id="col" scope="col">Nome do artigo</th>
     <th id="col" scope="col">Fornecedor</th>
     <th id="col" scope="col">Preço</th>
     <th id="col" scope="col">Quantidade</th>
