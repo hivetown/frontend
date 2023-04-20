@@ -20,7 +20,7 @@ a<template>
   <tr v-for="num in orderItem['totalItems']" :key="num">
 <!--<p>{{orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]}}</p>-->
    <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
-   <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" style="width: 50px; height: 50px;" /><p id="texto" v-else>Produto <br> sem imagem</p></a></td>
+   <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" :alt="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.alt"  style="width: 50px; height: 50px;" /><p id="texto" v-else>Produto <br> sem imagem</p></a></td>
     <!--TODO por marcas e produto como links-->
    <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
     <td>   
