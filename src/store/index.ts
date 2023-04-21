@@ -432,7 +432,32 @@ try {
     if (type == "Consumer") {
       try {
         // Post consumer address
+        // const authArray = await fetchAuth();
+        // const { id } = authArray.data;
+        // await postAddressConsumer(id, {
+        //   number,
+        //   door,
+        //   floor,
+        //   zipCode: zip_code,
+        //   street,
+        //   parish,
+        //   county,
+        //   city,
+        //   district,
+        //   latitude,
+        //   longitude,
+        // });
+        
+        // Create user after address is successfully posted
+        await createUserWithEmailAndPassword(auth, email, password);
+        commit("SET_TOKEN", await auth.currentUser?.getIdToken());
+        
+        
+        // Post consumer data
+        await postConsumer({ name, phone, vat });
         const authArray = await fetchAuth();
+        console.log("Im in Consumer");
+        commit("SET_USER", authArray);
         const { id } = authArray.data;
         await postAddressConsumer(id, {
           number,
@@ -447,15 +472,6 @@ try {
           latitude,
           longitude,
         });
-        
-        // Create user after address is successfully posted
-        await createUserWithEmailAndPassword(auth, email, password);
-        commit("SET_TOKEN", await auth.currentUser?.getIdToken());
-  
-        // Post consumer data
-        await postConsumer({ name, phone, vat });
-        console.log("Im in Consumer");
-        commit("SET_USER", authArray);
         router.push("/");
       } catch (error) {
         // Handle error for address or user creation
@@ -464,7 +480,7 @@ try {
           default:
             alert("Something went wrong");
             if (auth.currentUser) {
-              deleteUser(auth.currentUser)       
+              await deleteUser(auth.currentUser)       
             }
         }
       }
