@@ -63,7 +63,9 @@
     <div v-if="encomendasImage[num] === undefined || encomendasImage[num] === null || encomendasImage[num].length === 0">
       <div class="carousel-inner" role="listbox">
           <a :href="'/encomenda/id' + orders?.items[num-1]?.id" style="text-decoration: none; color:black"> 
-            <img style="width: 75px;" :src="encomendasImage[0][1]" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+            <img style="width: 75px;" :src="encomendasImage[1]" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+            <!--            <img style="width: 75px;" :src="encomendasImage[0][1]" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
+-->
             <p id="texto" v-else>Produto sem <br>imagem</p> 
           </a>
       </div>
