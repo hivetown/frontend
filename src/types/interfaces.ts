@@ -2,11 +2,11 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpecification;
+    specification?: ProductSpec;
     producer?: Producer;
 }
 
-export interface ProductSpecification {
+export interface ProductSpec {
     id: number;
     name: string;
     description: string;
@@ -51,6 +51,7 @@ export interface BaseItems<T> {
     pageSize: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Cart extends BaseItems<CartItem> {}
 
 export interface CartItem {
@@ -66,6 +67,7 @@ export interface ProducerProduct {
     stock: number;
     producer?: Producer; //Meto o ? para referir outra interface
     productionUnit?: ProductionUnit;
+    productSpec?: ProductSpec;
 }
 
 export interface ProductionUnit {
