@@ -8,7 +8,7 @@ import { auth } from "../components/firebase";
 import { postConsumer } from "../api/consumers";
 import { postProducer } from "../api/producers";
 import { fetchAuth } from "../api/auth";
-
+import ErrorPopup from '@/components/ErrorPopup.vue'
 import {
     createUserWithEmailAndPassword,
     deleteUser,
@@ -33,6 +33,7 @@ import { postAddressConsumer } from "../api/addressConsumer";
 import { Consumer, Producer } from "@types/interfaces";
 import { api } from "../api/_base";
 import { Transaction } from 'firebase/firestore';
+// import type { DefineComponent from 'vue';
 
 const saveUser = (uid) => {
     // add new user to database
@@ -431,24 +432,7 @@ try {
                     
     if (type == "Consumer") {
       try {
-        // Post consumer address
-        // const authArray = await fetchAuth();
-        // const { id } = authArray.data;
-        // await postAddressConsumer(id, {
-        //   number,
-        //   door,
-        //   floor,
-        //   zipCode: zip_code,
-        //   street,
-        //   parish,
-        //   county,
-        //   city,
-        //   district,
-        //   latitude,
-        //   longitude,
-        // });
         
-        // Create user after address is successfully posted
         await createUserWithEmailAndPassword(auth, email, password);
         commit("SET_TOKEN", await auth.currentUser?.getIdToken());
         
@@ -475,14 +459,29 @@ try {
         router.push("/");
       } catch (error) {
         // Handle error for address or user creation
-        switch (error.code) {
-          // Handle different error codes as needed
-          default:
-            alert("Something went wrong");
-            if (auth.currentUser) {
-              await deleteUser(auth.currentUser)       
-            }
-        }
+        // switch (error.code) {
+        //   // Handle different error codes as needed
+        //     case "auth/email-already-in-use":
+        //         alert("Email already in use");
+        //         break;
+        //     case "auth/invalid-email":
+        //         alert("Invalid email");
+        //         break;
+        //     case "auth/operation-not-allowed":
+        //         alert("Operation not allowed");
+        //         break;
+        //     case "auth/weak-password":
+        //         alert("Weak password");
+        //         break;
+        //     default:
+        //         alert("Something went wrong");
+        //         if (auth.currentUser) {
+        //             await deleteUser(auth.currentUser)       
+        //         }
+        // }
+        // call handleAuthError(error) function
+        handleAuthError(error.code);
+        
       }
     }
     // if saveValue == "Producer" then post to producer collection
@@ -545,3 +544,37 @@ try {
         },
     },
 });
+
+
+async function handleAuthError(error) {
+    switch (error) {
+      case "auth/email-already-in-use":
+        createPopup("Email already in use", "warning");
+        break;
+      case "auth/invalid-email":
+        createPopup("Invalid email", "warning");
+        break;
+      case "auth/operation-not-allowed":
+        createPopup("Operation not allowed", "warning");
+        break;
+      case "auth/weak-password":
+        createPopup("Weak password", "warning");
+        break;
+      default:
+        createPopup("Something went wrong", "error");
+        if (auth.currentUser) {
+          await deleteUser(auth.currentUser)       
+        }
+    }
+  }
+
+  function createPopup(message, type) {
+    const WarningPopupComponent = createApp(ErrorPopup, { message, type })
+    const warningPopupInstance = WarningPopupComponent.mount(document.createElement('div'))
+  
+    document.body.appendChild(warningPopupInstance.$el)
+  
+    setTimeout(() => {
+      document.body.removeChild(warningPopupInstance.$el)
+    }, 3000)
+  }

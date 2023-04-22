@@ -68,9 +68,9 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
                   // Handle the error without a message
                   return Promise.reject(error)
                 }
-            
+                let type = 'error'
                 const errorMessage = `Erro ${response.status}`
-                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage })
+                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage, type })
                 const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
             
                 document.body.appendChild(errorPopupInstance.$el)

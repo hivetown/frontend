@@ -1,5 +1,5 @@
 <template>
-  <div class="error-popup">
+  <div :class="['error-popup', type === 'error' ? 'error' : 'warning']">
     {{ message }}
   </div>
 </template>
@@ -12,6 +12,11 @@ export default defineComponent({
     message: {
       type: String,
       required: true
+    },
+    type: {
+      type: String,
+      default: 'error',
+      validator: (value: string) => ['error', 'warning'].includes(value)
     }
   }
 })
@@ -23,9 +28,16 @@ export default defineComponent({
   top: 20px;
   right: 20px;
   padding: 10px 20px;
-  background-color: #ff0000;
-  color: #fff;
+  color: rgb(0, 0, 0);
   font-size: 16px;
   border-radius: 4px;
+}
+
+.error {
+  background-color: #ff0000;
+}
+
+.warning {
+  background-color: #ffcc00;
 }
 </style>

@@ -75,6 +75,7 @@ export interface AddressConsumer {
     district: string;
     latitude: number;
     longitude: number;
+}
 export interface BaseItems<T> {
     items: T[];
     totalItems: number;
