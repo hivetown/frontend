@@ -70,11 +70,11 @@ const items= ref<Order[]>([]);
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses(2);
+const addresses = await getAddresses(1);
 console.log(addresses.data.items);
 address2.value=addresses.data;
 //TODO trocar para user logado
-const gCart = await getCart(2);
+const gCart = await getCart(1);
 cart.value= gCart.data;
 for (let i = 0; i < cart.value.items.length; i++) {
   item.value.push(cart.value.items[i].producerProduct.productSpec);
