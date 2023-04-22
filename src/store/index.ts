@@ -159,17 +159,17 @@ export default createStore({
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
-                switch (error.code) {
-                    case "auth/user-not-found":
-                        alert("User not found");
-                        break;
-                    case "auth/wrong-password":
-                        alert("Wrong password");
-                        break;
-                    default:
-                        alert("Something went wrong");
-                }
-
+                // switch (error.code) {
+                //     case "auth/user-not-found":
+                //         alert("User not found");
+                //         break;
+                //     case "auth/wrong-password":
+                //         alert("Wrong password");
+                //         break;
+                //     default:
+                //         alert("Something went wrong");
+                // }
+                handleAuthError(error.code);
                 return;
             }
 
@@ -501,19 +501,20 @@ try {
         switch (error.code) {
           // Handle different error codes as needed
           default:
-            alert("Something went wrong");
+            handleAuthError(error.code);
             if (auth.currentUser) {
               deleteUser(auth.currentUser)       
             }
         }
       }
     }
-  } catch (error) {
+  } 
+  catch (error) {
     // Handle error for getting user type
     switch (error.code) {
       // Handle different error codes as needed
       default:
-        alert("Something went wrong");
+        handleAuthError(error.code);
         if (auth.currentUser) {
           deleteUser(auth.currentUser)       
         }
@@ -548,17 +549,23 @@ try {
 
 async function handleAuthError(error) {
     switch (error) {
+      case "auth/user-not-found":
+        createPopup("Utilizador não encontrado", "warning");
+        break;
+      case "auth/wrong-password":
+        createPopup("Password incorreta", "warning");
+        break;
       case "auth/email-already-in-use":
-        createPopup("Email already in use", "warning");
+        createPopup("Já existe um utilizador com este email", "warning");
         break;
       case "auth/invalid-email":
-        createPopup("Invalid email", "warning");
+        createPopup("Email inválido", "warning");
         break;
       case "auth/operation-not-allowed":
-        createPopup("Operation not allowed", "warning");
+        createPopup("Operação não autorizada", "error");
         break;
       case "auth/weak-password":
-        createPopup("Weak password", "warning");
+        createPopup("Password fraca", "warning");
         break;
       default:
         createPopup("Something went wrong", "error");
