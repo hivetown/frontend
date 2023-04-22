@@ -1,5 +1,6 @@
 <template>
     <div class="form-address">
+     
     <h4 class="titulo">Selecione o endereço de envio</h4>
     <div class="form-check form-check-inline">
     <br>
@@ -33,6 +34,18 @@
   </div>
     <br>  
 </div>
+<div>
+  <h4 class="titulo">Resumo do carrinho</h4>
+  <div class="border p-3" id="caixa2">
+    <div  v-for="(num, index) in cart.totalItems" :key="index" style="white-space: nowrap;">
+  <a href="/carrinho">
+    <div style="display: inline-block;">
+      <span>{{cart['items'][num-1]['quantity']}}X {{items[num-1]['data']['items'][0]['productSpec']['name']}}</span>
+    </div>
+  </a>
+</div>
+  </div>
+</div>
 <div id="finalizar">
     <button  id="btn" @click="submitOrder" type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;" :disabled="isButtonDisabled">
                         Finalizar a compra
@@ -47,15 +60,32 @@
 import Swal from 'sweetalert2';
 import CartItem from "@/components/CartItem.vue";
 import { onMounted, ref} from "vue";
-import {getAddresses, postOrderPayment} from "../api/cart.ts";
+import {getAddresses, postOrderPayment, getCart, getProduct} from "../api/cart.ts";
 const address2 = ref<Order[]>([]); //array com os produtos
 const collapsed = ref(true);
+const cart = ref<Order[]>([]); //array com os produtos
+const item = ref<Order[]>([]);
+const items= ref<Order[]>([]);
+
 
 onMounted(async () => {
   //TODO trocar pelo id do user logado
-const addresses = await getAddresses('1');
+const addresses = await getAddresses(2);
 console.log(addresses.data.items);
 address2.value=addresses.data;
+//TODO trocar para user logado
+const gCart = await getCart(2);
+cart.value= gCart.data;
+for (let i = 0; i < cart.value.items.length; i++) {
+  item.value.push(cart.value.items[i].producerProduct.productSpec);
+
+} 
+for (let i = 0; i < item.value.length; i++) {
+  items.value.push(await getProduct(item.value[i]));
+}
+console.log(items.value)
+//item.value.push()
+
 });
 
 </script>
@@ -135,6 +165,10 @@ import AddAddress from '../components/AddAddress.vue'
 #caixa {
     width: 500px !important;
 }
+#caixa2 {
+  margin-left: 40px;
+  width: 400px !important;
+}
 #adiciona {
     text-align: center;
 }
@@ -168,6 +202,10 @@ input[type="radio"]{
             height: auto; /* Ajuste a altura para telas menores */
         }
         #caixa {
+            width: 310px !important;
+        }
+        #caixa2 {
+          margin-left: 10px;
             width: 310px !important;
         }
         .form-address {

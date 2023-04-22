@@ -3,56 +3,62 @@
         <div class="form-group">
             <p class="titulo">Adicionar novo endereço de envio</p>
             <br>
-          <label for="name"><p>Nome:</p></label>
-          <input type="text" class="form-control" id="name" placeholder="Digite o seu nome" >
+          <label  for="name">Nome:</label>
+          <input  type="text" class="form-control" id="name" placeholder="Digite o seu nome" >
         </div>
+        <br>
         <div class="form-group row">
           <div class="col-md-4">
-            <label for="numero"><p>Número:</p></label>
+            <label   for="numero">Número:</label>
             <input type="text" class="form-control" id="numero" placeholder="Digite o número da casa" ref="number" required>
           </div>
           <div class="col-md-4">
-            <label for="porta"><p>Porta:</p></label>
-            <input type="text" class="form-control" id="porta" placeholder="Digite a porta" ref="door" required>
+            <label  for="porta">Porta:</label>
+            <input type="text" id="porta"  class="form-control" placeholder="Digite a porta" ref="door" required>
           </div>
           <div class="col-md-4">
-            <label for="andar"><p>Andar:</p></label>
+            <label  for="andar">Andar:</label>
             <input type="text" class="form-control" id="andar" placeholder="Digite o andar" ref="floor" required>
           </div>
+          <br>
           <div class="col-md-4">
-            <label for="codigo_postal"><p>Código Postal:</p></label>
-            <input type="text" class="form-control" id="codigo_postal" placeholder="Digite o código postal" ref="zipCode" required>
+            <br>
+            <label  for="codigo_postal">Código Postal:</label>
+            <input   type="text" class="form-control" id="codigo_postal" placeholder="Digite o código postal" ref="zipCode" required>
           </div>
         </div>
+        <br>
         <div class="col-md-4">
-          <label for="rua"><p>Rua:</p></label>
+          <label for="rua">Rua:</label>
           <input type="text" class="form-control" id="rua" placeholder="Digite a rua" ref="street" required>
         </div>
+        <br>
         <div class="form-group row">
           <div class="col-md-4">
-            <label for="freguesia"><p>Freguesia:</p></label>
+            <label for="freguesia">Freguesia:</label>
             <input type="text" class="form-control" id="freguesia" placeholder="Digite a freguesia" ref="parish" required>
           </div>
           <div class="col-md-4">
-            <label for="concelho"><p>Concelho:</p></label>
+            <label for="concelho">Concelho:</label>
             <input type="text" class="form-control" id="concelho" placeholder="Digite o concelho" ref="county" required>
           </div>
           <div class="col-md-4">
-            <label for="distrito"><p>Cidade:</p></label>
+            <label for="distrito">Cidade:</label>
             <input type="text" class="form-control" id="cidade" placeholder="Digite a cidade " ref="city" required>
           </div>
         </div>
+        <br>
         <div class="form-group row">
           <div class="col-md-4">
-            <label for="distrito"><p>Distrito:</p></label>
+            <label for="distrito">Distrito:</label>
             <input type="text" class="form-control" id="distrito" placeholder="Digite o distrito" ref="district" required>
           </div>
           <div class="col-md-4">
-            <label for="latitude"><p>Latitude:</p></label>
+            <label for="latitude">Latitude:</label>
             <input type="text" class="form-control" id="latitude" placeholder="Digite a latitude" ref="latitude" required>
           </div>
           <div class="col-md-4">
-            <label for="longitude"><p>Longitude:</p></label>
+            <label for="longitude">Longitude:</label>
             <input type="text" class="form-control" id="longitude" placeholder="Digite a longitude" ref="longitude" required>
           </div>
         </div>    
@@ -158,8 +164,13 @@
         
 </script>
 <style scoped>
+.label, input {
+  margin-top: 0px !important;
+}
         label, input, button, a{
           margin-right: 15px;
+          margin-top: 0px;
+          margin-bottom: 0px;
           margin-left: 15px;
         }
         #andar, #cidade, #longitude {
