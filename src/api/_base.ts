@@ -36,100 +36,19 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
         
         (error: AxiosError) => {
                         
-            // try {
-
-            //     const { response } = error
-
-            //     if (!response || !response.status || !response.data) {
-            //       // Handle the error without a message
-            //       return Promise.reject(error)
-            //     }
             
-            //     const errorMessage = `Erro ${response.status}`
-            //     const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage })
-            //     const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
-            
-            //     document.body.appendChild(errorPopupInstance.$el)
-            
-            //     setTimeout(() => {
-            //       document.body.removeChild(errorPopupInstance.$el)
-            //     }, 3000)
-            
-            //   } catch (error) {
-            //     console.log("Error creating ErrorPopup:", error);
-            //   }
-            if (error.response.status === 401 && router.currentRoute.value.meta.requiresAuth) {
-              console.log('router', router.currentRoute.value)
-              try {
-
-                const { response } = error
-
-                if (!response || !response.status || !response.data) {
-                  // Handle the error without a message
-                  return Promise.reject(error)
-                }
-                let type = 'error'
-                const errorMessage = `Erro ${response.status}`
-                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage, type })
-                const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
-            
-                document.body.appendChild(errorPopupInstance.$el)
-            
-                setTimeout(() => {
-                  document.body.removeChild(errorPopupInstance.$el)
-                }, 3000)
-            
-              } catch (error) {
-                console.log("Error creating ErrorPopup:", error);
-              }
-                console.log('401 error')
-            } else if (error.response.status === 403) {
-              try {
-
-                const { response } = error
-
-                if (!response || !response.status || !response.data) {
-                  // Handle the error without a message
-                  return Promise.reject(error)
-                }
-            
-                const errorMessage = `Erro ${response.status}`
-                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage })
-                const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
-            
-                document.body.appendChild(errorPopupInstance.$el)
-            
-                setTimeout(() => {
-                  document.body.removeChild(errorPopupInstance.$el)
-                }, 3000)
-            
-              } catch (error) {
-                console.log("Error creating ErrorPopup:", error);
-              }
-            } else if (error.response.status === 404) {
-              try {
-
-                const { response } = error
-
-                if (!response || !response.status || !response.data) {
-                  // Handle the error without a message
-                  return Promise.reject(error)
-                }
-            
-                const errorMessage = `Erro ${response.status}`
-                const ErrorPopupComponent = createApp(ErrorPopup, { message: errorMessage })
-                const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
-            
-                document.body.appendChild(errorPopupInstance.$el)
-            
-                setTimeout(() => {
-                  document.body.removeChild(errorPopupInstance.$el)
-                }, 3000)
-            
-              } catch (error) {
-                console.log("Error creating ErrorPopup:", error);
-              }
-            } 
+          if (error.response.status === 401 && router.currentRoute.value.meta.requiresAuth) {
+            console.log('router', router.currentRoute.value)
+            showErrorPopup(`Erro ${error.response.status}`, 'error')
+            console.log('401 error')
+          } else if (error.response.status === 403) {
+            showErrorPopup(`Erro ${error.response.status}`, 'error')
+          } else if (error.response.status === 404) {
+            showErrorPopup(`Erro ${error.response.status}`, 'warning')
+          } else {
+            // Handle other error codes as needed
+            console.log("Error:", error);
+          }
             
             return Promise.reject(error);
         }
@@ -141,5 +60,15 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
 
 export const api = makeApi(import.meta.env.VITE_API_URL!);
 
+function showErrorPopup(message: string, type: string) {
+  const ErrorPopupComponent = createApp(ErrorPopup, { message, type })
+  const errorPopupInstance = ErrorPopupComponent.mount(document.createElement('div'))
+
+  document.body.appendChild(errorPopupInstance.$el)
+
+  setTimeout(() => {
+    document.body.removeChild(errorPopupInstance.$el)
+  }, 3000)
+}
 
 

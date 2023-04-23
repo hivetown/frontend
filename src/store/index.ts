@@ -568,14 +568,14 @@ async function handleAuthError(error) {
         createPopup("Password fraca", "warning");
         break;
       default:
-        createPopup("Something went wrong", "error");
+        createPopup("Problema na autenticação", "error");
         if (auth.currentUser) {
           await deleteUser(auth.currentUser)       
         }
     }
   }
 
-  function createPopup(message, type) {
+  function createPopup(message: string, type: string) {
     const WarningPopupComponent = createApp(ErrorPopup, { message, type })
     const warningPopupInstance = WarningPopupComponent.mount(document.createElement('div'))
   

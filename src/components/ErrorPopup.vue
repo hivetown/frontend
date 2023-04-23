@@ -34,10 +34,10 @@ export default defineComponent({
 }
 
 .error {
-  background-color: #ff0000;
+  background-color: #ed1c1c;
 }
 
 .warning {
-  background-color: #ffcc00;
+  background-color: #ecbc00;
 }
 </style>
