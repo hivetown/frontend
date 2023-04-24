@@ -12,6 +12,17 @@
 				<b-navbar-nav class="ms-auto mt-4 mb-3">
 					
 					<div class="d-flex nav-items-left">
+						<div class="d-flex"><!--todo por se user logado-->
+							<b-avatar class="nav-item position-relative" 
+							style="background-color: #f3f3f3 !important; 
+							box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+
+								<i class="bi bi-bell" style="color: #164A41" font-scale="1.5"></i>
+							</b-avatar>
+							<b-badge variant="danger" class="rounded-circle position-absolute" style=" top: 30px; right: 496px; width:20px; height: 20px; border-radius: 50%;">9</b-badge>
+							<router-link to="/notifications" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Notificações</router-link>
+							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+						</div>
 						<div class="d-flex">
 							<b-avatar 
 								class="nav-item" 
@@ -102,6 +113,7 @@
 
 
 <script>
+
 import { onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 export default {
