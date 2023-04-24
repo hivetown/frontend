@@ -8,7 +8,9 @@ import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Login from "./views/Login.vue";
+import Admin from "./views/Admin.vue";
 import Registration from "./views/Registration.vue";
+import Consumer from "./views/Consumer.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
 
@@ -72,6 +74,16 @@ const routes = [
         path: "/authconsumer",
         name: "AuthConsumer",
         component: AuthConsumer,
+    },
+    {
+        path: "/admin",
+        name: "Admin",
+        component: Admin,
+    },
+    {
+        path: "/consumer/:id",
+        name: "Consumer",
+        component: Consumer,
     },
 
 ];
