@@ -52,7 +52,7 @@ export default {
         const phoneRegex = /^[0-9]{9}$/;
         const vatRegex = /^[0-9]{9}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
 
 
 
@@ -85,15 +85,15 @@ export default {
         errors.value.email = 'Por favor, preencha o seu email.';
         isValid = false;
       } else if (!emailRegex.test(register_form.email)) {
-        errors.value.email = 'Por favor, preencha um email válido.';
+        errors.value.email = 'Por favor, preencha um email válido do tipo: nome@mail.com';
         isValid = false;
       }
       console.log("email", isValid)
       if (!register_form.password) {
         errors.value.password = 'Por favor, preencha a sua palavra-passe.';
         isValid = false;
-      } else if (register_form.password.length < 6) {
-        errors.value.password = 'A sua palavra-passe deve ter pelo menos 6 caracteres.';
+      } else if (!passwordRegex.test(register_form.password)) {
+        errors.value.password = 'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
         isValid = false;
       }
       console.log("password", isValid)
