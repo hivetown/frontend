@@ -3,7 +3,7 @@
     <h1>Histórico de encomendas</h1>
     <br>
     <!--<OrderHistory/>-->
-    <Exp/>
+    <OrderHistory/>
     </div>
 </template>
 <script setup lang="ts">
@@ -19,12 +19,11 @@
    watch(search, fetchProducts);
 </script>
 <script lang="ts">
-import OrderHistory from "@components/oh.vue";
-import Exp from "@/components/exp.vue";
+import OrderHistory from "../components/OrderHistory.vue";
 
 export default{
   components: {
-  Exp
+  OrderHistory
   }
 }
 </script>
