@@ -4,62 +4,62 @@
             <p class="titulo">Adicionar novo endereço de envio</p>
             <br>
           <label  for="name">Nome:</label>
-          <input  type="text" class="form-control" id="name" placeholder="Digite o seu nome" >
+          <input  type="text" class="form-control" id="name" placeholder="Digite o seu nome" v-model="name">
         </div>
         <br>
         <div class="form-group row">
           <div class="col-md-4">
             <label   for="numero">Número:</label>
-            <input type="text" class="form-control" id="numero" placeholder="Digite o número da casa" ref="number" required>
+            <input type="text" class="form-control" id="numero" placeholder="Digite o número da casa" ref="number" required v-model="num">
           </div>
           <div class="col-md-4">
             <label  for="porta">Porta:</label>
-            <input type="text" id="porta"  class="form-control" placeholder="Digite a porta" ref="door" required>
+            <input type="text" id="porta"  class="form-control" placeholder="Digite a porta (direita, esquerda, frente)" ref="door" required v-model="door">
           </div>
           <div class="col-md-4">
             <label  for="andar">Andar:</label>
-            <input type="text" class="form-control" id="andar" placeholder="Digite o andar" ref="floor" required>
+            <input type="text" class="form-control" id="andar" placeholder="Digite o andar" ref="floor" required v-model="andar">
           </div>
           <br>
           <div class="col-md-4">
             <br>
             <label  for="codigo_postal">Código Postal:</label>
-            <input   type="text" class="form-control" id="codigo_postal" placeholder="Digite o código postal" ref="zipCode" required>
+            <input   type="text" class="form-control" id="codigo_postal" placeholder="Digite o código postal" ref="zipCode" required v-model="zip">
           </div>
         </div>
         <br>
         <div class="col-md-4">
           <label for="rua">Rua:</label>
-          <input type="text" class="form-control" id="rua" placeholder="Digite a rua" ref="street" required>
+          <input type="text" class="form-control" id="rua" placeholder="Digite a rua" ref="street" required v-model="rua">
         </div>
         <br>
         <div class="form-group row">
           <div class="col-md-4">
             <label for="freguesia">Freguesia:</label>
-            <input type="text" class="form-control" id="freguesia" placeholder="Digite a freguesia" ref="parish" required>
+            <input type="text" class="form-control" id="freguesia" placeholder="Digite a freguesia" ref="parish" required v-model="freguesia">
           </div>
           <div class="col-md-4">
             <label for="concelho">Concelho:</label>
-            <input type="text" class="form-control" id="concelho" placeholder="Digite o concelho" ref="county" required>
+            <input type="text" class="form-control" id="concelho" placeholder="Digite o concelho" ref="county" required v-model="concelho">
           </div>
           <div class="col-md-4">
             <label for="distrito">Cidade:</label>
-            <input type="text" class="form-control" id="cidade" placeholder="Digite a cidade " ref="city" required>
+            <input type="text" class="form-control" id="cidade" placeholder="Digite a cidade " ref="city" required v-model="cidade">
           </div>
         </div>
         <br>
         <div class="form-group row">
           <div class="col-md-4">
             <label for="distrito">Distrito:</label>
-            <input type="text" class="form-control" id="distrito" placeholder="Digite o distrito" ref="district" required>
+            <input type="text" class="form-control" id="distrito" placeholder="Digite o distrito" ref="district" required v-model="distrito">
           </div>
           <div class="col-md-4">
             <label for="latitude">Latitude:</label>
-            <input type="text" class="form-control" id="latitude" placeholder="Digite a latitude" ref="latitude" required>
+            <input type="text" class="form-control" id="latitude" placeholder="Digite a latitude" ref="latitude" required v-model="latitude">
           </div>
           <div class="col-md-4">
             <label for="longitude">Longitude:</label>
-            <input type="text" class="form-control" id="longitude" placeholder="Digite a longitude" ref="longitude" required>
+            <input type="text" class="form-control" id="longitude" placeholder="Digite a longitude" ref="longitude" required v-model="longitude">
           </div>
         </div>    
     <br>
@@ -85,7 +85,19 @@
           data() {
             return {
               address: {} as Address,
-              isChecked: false // Inicialmente o checkbox não estará selecionado
+              isChecked: false, // Inicialmente o checkbox não estará selecionado
+              name: '', // Propriedade para validar o campo "Nome"
+              door: '',
+              num: '',
+              andar: '',
+              zip: '',
+              rua: '',
+              freguesia: '',
+              concelho: '',
+              cidade: '',
+              distrito: '',
+              longitude: '',
+              latitude: ''
             };
           },
           methods: {
@@ -120,6 +132,84 @@
             };
             
             console.log(this.address);
+            if (!this.name) {
+              this.showError('Por favor, preencha o campo "Nome".');
+              return;
+            }
+            if (!["frente", "direita", "esquerda"].includes(this.door.toLowerCase())) {
+              this.showError('Por favor, preencha o campo "Porta" com uma das opções: "frente", "direita" ou "esquerda".');
+              return;
+            }
+            if (!Number.isInteger(Number(this.num)) || !this.num) {
+              this.showError('Por favor, preencha o numero da casa com um valor inteiro.');
+              return;
+            }
+            if ( !this.andar) {
+              this.showError('Por favor, preencha o andar.');
+              return;
+            }
+            if (!Number.isInteger(Number(this.andar)) ) {
+              this.showError('Por favor, preencha o andar com um número inteiro.');
+              return;
+            }
+            if (!this.zip) {
+              this.showError('Por favor, preencha o campo "Código Postal".');
+              return;
+            }
+            if (!this.rua) {
+              this.showError('Por favor, preencha o campo "Rua".');
+              return;
+            }
+            if (Number.isInteger(Number(this.rua))) {
+              this.showError('Por favor, preencha o campo "Rua" com valores válidos, não deve conter números.');
+              return;
+            }
+            if (!this.freguesia) {
+              this.showError('Por favor, preencha o campo "Freguesia".');
+              return;
+            }
+            if (Number.isInteger(Number(this.freguesia))) {
+              this.showError('Por favor, preencha o campo "Freguesia" com valores válidos, não deve conter números.');
+              return;
+            }
+            if (!this.concelho) {
+              this.showError('Por favor, preencha o campo "Concelho".');
+              return;
+            }
+            if (Number.isInteger(Number(this.concelho))) {
+              this.showError('Por favor, preencha o campo "Concelho" com valores válidos, não deve conter números.');
+              return;
+            }
+            if (!this.cidade) {
+              this.showError('Por favor, preencha o campo "Cidade".');
+              return;
+            }
+            if (Number.isInteger(Number(this.cidade))) {
+              this.showError('Por favor, preencha o campo "Cidade" com valores válidos, não deve conter números.');
+              return;
+            }
+            if (!this.distrito) {
+              this.showError('Por favor, preencha o campo "Distrito".');
+              return;
+            }
+            if (Number.isInteger(Number(this.distrito))) {
+              this.showError('Por favor, preencha o campo "Distrito" com valores válidos, não deve conter números.');
+              return;
+            }
+            if (!this.latitude) {
+              this.showError('Por favor, preencha o campo "Latitude".');
+              return;
+            }
+            const latitudeRegex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}$/;
+            if (!latitudeRegex.test(this.latitude)) {
+              this.showError('Por favor, preencha o campo "Latitude" com valores válidos. Ex(-9.1234).');
+            }
+            const longitudeRegex = /^-?((1[0-7]|[1-9])?\d(\.\d{1,6})?|180(\.0{1,6})?)$/;
+            if (!this.longitude) {
+              this.showError('Por favor, preencha o campo "Longitude".');
+              return;
+            }
+            
             //adiciona o novo endereco
             //TODO trocar para user logado
             postNewAdress(1, this.address)
@@ -158,7 +248,15 @@
               throw new Error("Erro de requisição: dados inválidos");
       }
     });
-    }
+    },
+    showError(message: string) {
+      const errorContainer = document.getElementById('error-container');
+      errorContainer.innerHTML = '';
+      const alert = document.createElement('div');
+      alert.classList.add('alert', 'alert-danger');
+      alert.innerHTML = message;
+      errorContainer.appendChild(alert);
+    },
   }
 }
         
