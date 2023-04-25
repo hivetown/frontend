@@ -14,7 +14,7 @@
           </div>
           <div class="col-md-4">
             <label  for="porta">Porta:</label>
-            <input type="text" id="porta"  class="form-control" placeholder="Digite a porta (direita, esquerda, frente)" ref="door" required v-model="door">
+            <input type="text" id="porta"  class="form-control" placeholder="Digite a porta" ref="door" required v-model="door">
           </div>
           <div class="col-md-4">
             <label  for="andar">Andar:</label>
@@ -136,12 +136,12 @@
               this.showError('Por favor, preencha o campo "Nome".');
               return;
             }
-            if (!["frente", "direita", "esquerda"].includes(this.door.toLowerCase())) {
-              this.showError('Por favor, preencha o campo "Porta" com uma das opções: "frente", "direita" ou "esquerda".');
-              return;
-            }
             if (!Number.isInteger(Number(this.num)) || !this.num) {
               this.showError('Por favor, preencha o numero da casa com um valor inteiro.');
+              return;
+            }
+            if (!["frente", "direita", "esquerda", "a", "b", "c", "d"].includes(this.door.toLowerCase())) {
+              this.showError('Por favor, preencha o campo "Porta" com uma das opções: "frente", "direita", "esquerda", "A", "B", "C", "D".');
               return;
             }
             if ( !this.andar) {
