@@ -76,7 +76,7 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, onBeforeUnmount, ref, watch } from 'vue';
 
 export default defineComponent({
   name: 'ShowSearch',
@@ -113,6 +113,10 @@ export default defineComponent({
 
     window.addEventListener('scroll', checkScrollPosition);
 
+    onBeforeUnmount(() => {
+      window.removeEventListener('scroll', checkScrollPosition);
+    });
+
     return {
       showScrollTopBtn,
       //   scrollToTop,
@@ -122,9 +126,6 @@ export default defineComponent({
       showModal,
       closeModal,
     };
-  },
-  beforeUnmount() {
-    window.removeEventListener('scroll', this.checkScrollPosition);
   },
 });
 </script>
