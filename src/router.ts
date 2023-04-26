@@ -7,8 +7,15 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
+<<<<<<< HEAD
 import ProductsProducer from "./views/ProductsProducer.vue";
 import Testes from "./views/Testes.vue";
+=======
+import Login from "./views/Login.vue";
+import Registration from "./views/Registration.vue";
+import AuthConsumer from "./components/AuthConsumer.vue";
+import { auth } from "./components/firebase";
+>>>>>>> HVT-12-criar-conta-no-sistema
 
 const routes = [
     {
@@ -30,6 +37,9 @@ const routes = [
         path: "/favoritos",
         name: "Favoritos",
         component: Favourites,
+        meta: {
+            requiresAuth: true,
+        }
     },
     {
         path: "/carrinho",
@@ -60,12 +70,45 @@ const routes = [
         path: "/produtos",
         name: "Produtos",
         component: ProductsProducer,
+        meta: {
+            requiresAuth: true,
+        }
     },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login,
+    },
+    {
+        path: "/registration",
+        name: "Registration",
+        component: Registration,
+    },
+    {
+        path: "/authconsumer",
+        name: "AuthConsumer",
+        component: AuthConsumer,
+    },
+
 ];
 
 const router = createRouter({
     history: createWebHistory(),
-    routes,
-});
-
-export default router;
+    routes
+  })
+  
+  router.beforeEach((to, from, next) => {
+    if (to.path === '/login' && auth.currentUser) {
+      next('/')
+      return;
+    }
+  
+    if (to.matched.some(record => record.meta.requiresAuth) && !auth.currentUser) {
+      next('/login')
+      return;
+    }
+  
+    next();
+  })
+  
+  export default router

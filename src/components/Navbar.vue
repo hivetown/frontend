@@ -2,7 +2,7 @@
   <div class="parent">
     <b-navbar toggleable="lg" type="dark">
       <div id="logo" class="d-block d-sm mx-auto text-center">
-        <img src="/logo.svg" />
+        <img src="logo.svg" />
         <b-navbar-brand class="p-2 logo-txt" to="/">hiveTown</b-navbar-brand>
       </div>
 
@@ -55,20 +55,44 @@
               >
               <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
+
+            <div class="d-flex" v-if="user.name === '' || user.image === ''">
+              <b-avatar>
+                class="nav-item" style="background-color: #f3f3f3 !important;
+                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                <i
+                  class="bi bi-cart"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <router-link
+                to="/login"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+                >Login</router-link
+              >
+            </div>
           </div>
-          <div class="d-flex nav-items-right">
+
+          <div
+            class="d-flex nav-items-right"
+            v-if="(user.name !== '' && user.image !== '') || $store.state.user"
+          >
             <router-link to="/conta">
               <b-avatar
                 class="nav-item"
-                src="https://placekitten.com/320/320"
+                :src="user.image"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
-                <!-- TODO badges das notificações  -->
+                <span>{{ user.name }}</span>
               </b-avatar>
             </router-link>
             <b-nav-item-dropdown right>
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item href="#">Terminar Sessão</b-dropdown-item>
+              <b-dropdown-item @click="logout" href="#"
+                >Terminar Sessão</b-dropdown-item
+              >
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -78,7 +102,7 @@
 
   <!-- Nav inferior no modo telemovel -->
   <!-- TODO melhorar isto e o modo telemóvel no geral
-	     evitar repetir código como está aqui -->
+		   evitar repetir código como está aqui -->
   <div>
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
@@ -139,6 +163,57 @@
     </b-nav>
   </div>
 </template>
+
+<script lang="ts">
+import { useStore } from 'vuex';
+
+import { ref, onMounted, watch } from 'vue';
+
+import { fetchAuth } from '../api/auth';
+
+export default {
+  setup() {
+    const store = useStore();
+    const user = ref({ name: '', image: '' });
+
+    async function fetchUser() {
+      try {
+        const response = await fetchAuth();
+        user.value = response.data;
+        console.log('Fetched user:', user.value);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    onMounted(async () => {
+      await fetchUser();
+    });
+
+    watch(
+      () => store.state.user,
+      (newValue) => {
+        if (newValue) {
+          fetchUser();
+        } else {
+          user.value = { name: '', image: '' };
+        }
+      },
+      { immediate: true }
+    );
+
+    function logout() {
+      store.dispatch('logout');
+      user.value = { name: '', image: '' };
+    }
+
+    return {
+      user,
+      logout,
+    };
+  },
+};
+</script>
 
 <style>
 #logo img {
