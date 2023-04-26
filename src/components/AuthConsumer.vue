@@ -202,7 +202,6 @@ setup () {
       errors.value.parish = 'A freguesia deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("parish", isValid)
 
     if (!register_form.county) {
       errors.value.county = 'Por favor, preencha o seu concelho.';
