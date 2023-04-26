@@ -71,7 +71,6 @@ export default {
         errors.value.phone = 'Por favor, preencha um número de telemóvel válido.';
         isValid = false;
       }
-      console.log("phone", isValid)
       if (!register_form.vat) {
         errors.value.vat = 'Por favor, preencha o seu NIF.';
         isValid = false;
