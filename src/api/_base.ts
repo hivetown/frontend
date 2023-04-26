@@ -41,7 +41,6 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
             showErrorPopup(`Erro ${error.response.status}`, 'warning')
           } else {
             // Handle other error codes as needed
-            console.log("Error:", error);
           }
             
             return Promise.reject(error);
