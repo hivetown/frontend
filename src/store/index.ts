@@ -122,7 +122,6 @@ export default createStore({
                 type: string;
             },
         ) {
-            // const { email, password, name, phone, vat } = details
             const {
                 email,
                 password,
