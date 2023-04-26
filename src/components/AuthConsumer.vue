@@ -240,7 +240,6 @@ setup () {
       errors.value.latitude = 'Por favor, preencha uma latitude válida do tipo: 38.123456';
       isValid = false;
     }
-    console.log("latitude", isValid)
     if (!register_form.longitude) {
       errors.value.longitude = 'Por favor, preencha a sua longitude.';
       isValid = false;
