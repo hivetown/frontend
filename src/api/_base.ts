@@ -34,9 +34,7 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
                         
             
           if (error.response.status === 401 && router.currentRoute.value.meta.requiresAuth) {
-            console.log('router', router.currentRoute.value)
             showErrorPopup(`Erro ${error.response.status}`, 'error')
-            console.log('401 error')
           } else if (error.response.status === 403) {
             showErrorPopup(`Erro ${error.response.status}`, 'error')
           } else if (error.response.status === 404) {
