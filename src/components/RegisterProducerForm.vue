@@ -85,7 +85,6 @@ export default {
         errors.value.email = 'Por favor, preencha um email válido do tipo: nome@mail.com';
         isValid = false;
       }
-      console.log("email", isValid)
       if (!register_form.password) {
         errors.value.password = 'Por favor, preencha a sua palavra-passe.';
         isValid = false;
