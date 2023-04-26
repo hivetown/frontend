@@ -82,7 +82,6 @@ export default createStore({
                     email,
                     password
                 );
-                // .then(async (userCredential) => {
                 // Save the authentication token to local storage
                 const authToken = userCredential.user.getIdToken();
                 localStorage.setItem("authToken", await authToken);
@@ -90,9 +89,6 @@ export default createStore({
                 commit("SET_TOKEN", await authToken);
                 saveUser(auth.currentUser?.uid);
                 saveEmail(auth.currentUser?.email);
-                console.log("authToken: ", authToken);
-                console.log("user", auth.currentUser);
-                // })
             } catch (error) {
                 // .catch((error) => {
                 // Handle errors
