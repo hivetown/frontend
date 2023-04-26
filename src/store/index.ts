@@ -23,7 +23,6 @@ import firebase from "firebase/app";
 
 import saveValue from "../views/Registration.vue";
 import userType from "../views/Registration.vue";
-// import getUserType from '../views/Registration.vue';
 
 import Registration from "../views/Registration.vue";
 
