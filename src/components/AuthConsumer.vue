@@ -233,7 +233,6 @@ setup () {
       errors.value.phone = 'Por favor, preencha um número de telemóvel válido do tipo: 912345678';
       isValid = false;
     }
-    console.log("phone", isValid)
     if (!register_form.latitude) {
       errors.value.latitude = 'Por favor, preencha a sua latitude.';
       isValid = false;
