@@ -100,7 +100,6 @@ export default createStore({
 
 
   
-        // async register ({ commit}, details: {name: string, password: string, email: string, phone: string, vat: string}) {
         async register(
             { commit },
             details: {
