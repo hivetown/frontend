@@ -153,7 +153,6 @@ try {
         // Post consumer data
         await postConsumer({ name, phone, vat });
         const authArray = await fetchAuth();
-        console.log("Im in Consumer");
         commit("SET_USER", authArray);
         const { id } = authArray.data;
         await postAddressConsumer(id, {
