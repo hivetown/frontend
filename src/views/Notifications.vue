@@ -7,9 +7,10 @@
     
 <script lang="ts">
 import Notifications from '../components/Notifications.vue'
+
 export default {
     components: {
-        Notifications
+        Notifications,
     }
 }
 </script>
