@@ -35,7 +35,6 @@ import { Transaction } from 'firebase/firestore';
 const saveUser = (uid) => {
     // add new user to database
     localStorage.setItem("uid", uid);
-    console.log(uid);
 };
 
 const saveEmail = (email) => {
