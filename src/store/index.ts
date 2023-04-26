@@ -71,16 +71,6 @@ export default createStore({
             try {
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
-                // switch (error.code) {
-                //     case "auth/user-not-found":
-                //         alert("User not found");
-                //         break;
-                //     case "auth/wrong-password":
-                //         alert("Wrong password");
-                //         break;
-                //     default:
-                //         alert("Something went wrong");
-                // }
                 handleAuthError(error.code);
                 return;
             }
