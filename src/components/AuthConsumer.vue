@@ -218,7 +218,6 @@ setup () {
       errors.value.district = 'O distrito deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("district", isValid)
     if (!register_form.city) {
       errors.value.city = 'Por favor, preencha a sua cidade.';
       isValid = false;
