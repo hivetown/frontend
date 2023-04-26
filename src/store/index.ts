@@ -170,27 +170,6 @@ try {
         });
         router.push("/");
       } catch (error) {
-        // Handle error for address or user creation
-        // switch (error.code) {
-        //   // Handle different error codes as needed
-        //     case "auth/email-already-in-use":
-        //         alert("Email already in use");
-        //         break;
-        //     case "auth/invalid-email":
-        //         alert("Invalid email");
-        //         break;
-        //     case "auth/operation-not-allowed":
-        //         alert("Operation not allowed");
-        //         break;
-        //     case "auth/weak-password":
-        //         alert("Weak password");
-        //         break;
-        //     default:
-        //         alert("Something went wrong");
-        //         if (auth.currentUser) {
-        //             await deleteUser(auth.currentUser)       
-        //         }
-        // }
         // call handleAuthError(error) function
         handleAuthError(error.code);
         
