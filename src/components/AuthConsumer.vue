@@ -194,7 +194,6 @@ setup () {
       errors.value.street = 'A rua deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("street", isValid)
 
     if (!register_form.parish) {
       errors.value.parish = 'Por favor, preencha a sua freguesia.';
