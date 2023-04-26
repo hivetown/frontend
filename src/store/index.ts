@@ -90,10 +90,7 @@ export default createStore({
                 saveUser(auth.currentUser?.uid);
                 saveEmail(auth.currentUser?.email);
             } catch (error) {
-                // .catch((error) => {
                 // Handle errors
-                console.error(error);
-                // });
             }
 
             commit("SET_USER", auth.currentUser?.uid);
