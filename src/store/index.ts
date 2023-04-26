@@ -48,16 +48,6 @@ export default createStore({
         user: null,
     } as { token: string | null; user: Consumer | Producer | null; auth: boolean },
     mutations: {
-        /*
-        SET_USER(state, user: Consumer | Producer) {
-            state.user = user;
-            for (const key in user) {
-                if (Object.hasOwn(user, key)) {
-                    state.user[key] = user[key];
-                }
-            }
-        },
-*/
         SET_USER (state, user: Consumer | Producer) {
           state.user = user;          
         },
