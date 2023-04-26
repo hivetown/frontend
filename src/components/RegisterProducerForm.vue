@@ -96,11 +96,8 @@ export default {
     };
 
     const register = async () => {
-      console.log('Register function called!');
       if (validateForm()) {
-        console.log('Register form is valid!');
         register_form.type = 'Producer';
-        console.log("register_form.type producer", register_form.type)
         store.dispatch('register', register_form, register_form.type);
       }
     };
