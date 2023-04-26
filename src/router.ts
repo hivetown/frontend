@@ -55,6 +55,11 @@ const routes = [
         name: "Testes",
         component: Testes,
     },
+    {
+        path: "/produtos",
+        name: "Produtos",
+        component: ProductsProducer,
+    },
 ];
 
 const router = createRouter({
