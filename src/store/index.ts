@@ -31,7 +31,6 @@ import { postAddressConsumer } from "../api/addressConsumer";
 import { Consumer, Producer } from "@types/interfaces";
 import { api } from "../api/_base";
 import { Transaction } from 'firebase/firestore';
-// import type { DefineComponent from 'vue';
 
 const saveUser = (uid) => {
     // add new user to database
