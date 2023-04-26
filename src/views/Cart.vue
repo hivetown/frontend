@@ -17,8 +17,6 @@
 
                   <!--{{ itensCarrinho }}-->
 
-                  <!--{{ itensCarrinho }}-->
-
                   <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem"></CartItem><!--   -->
                   <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
 
@@ -34,7 +32,7 @@
                   <p style="text-align: justify;">
                     Total de items: <span class="checkout">{{ nElementos }}</span><br>
                     Sub-total: <span class="checkout">{{ precoTotal }}€</span><br>
-                    Entrega: <span class="checkout">0,00€</span><br>
+                    Entrega: <span class="checkout">0.00€</span><br>
                   </p>
 
                   <b-row>
@@ -170,7 +168,7 @@ table {
 
       let totalSum = 0;
       for (let i=0; i < this.itensCarrinho["items"].length; i++) {
-        totalSum += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice));
+        totalSum += (parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice))*parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity)));
       }
       //console.log(totalSum);
       this.precoTotal=totalSum.toFixed(2);
