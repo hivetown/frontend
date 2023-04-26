@@ -269,7 +269,6 @@ setup () {
       errors.value.password = 'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
       isValid = false;
     }
-    console.log("password", isValid)
     return isValid;
   };
 
