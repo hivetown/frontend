@@ -155,7 +155,6 @@ setup () {
       errors.value.name = 'O nome tem de começar com uma letra maiúscula.';
       isValid = false;
     }
-    console.log("name", isValid)
     if (!register_form.number) {
       errors.value.number = 'Por favor, preencha o número da sua morada.';
       isValid = false;
