@@ -122,7 +122,6 @@ export default {
 		}
 		function getUserType() {
       		return userType.value;
-			// return tipo.value;
    		}
 		return {
 			register_form,
