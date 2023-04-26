@@ -274,12 +274,9 @@ setup () {
 
   // console.log("is valid?", validateForm());
   const register = async () => {
-    console.log('Register function called!');
     if (validateForm()) {
-      console.log('Register form is valid!');
       register_form.zip_code = `${register_form.zip_code1}-${register_form.zip_code2}`;
       register_form.type = "Consumer"
-      console.log("register_form.type consumer", register_form.type)
       store.dispatch('register', register_form, register_form.type);
     }
   };
