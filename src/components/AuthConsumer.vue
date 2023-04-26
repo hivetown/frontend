@@ -163,8 +163,6 @@ setup () {
       errors.value.number = 'Por favor, preencha um número válido do tipo: 123';
       isValid = false;
     }
-    console.log("number", isValid)
-    console.log("door", isValid)
     // validate floor
     if (!register_form.floor) {
       errors.value.floor = 'Por favor, preencha o andar da sua morada.';
