@@ -5,21 +5,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   props: {
     message: {
       type: String,
-      required: true
+      required: true,
     },
     type: {
       type: String,
       default: 'error',
-      validator: (value: string) => ['error', 'warning'].includes(value)
-    }
-  }
-})
+      validator: (value: string) => ['error', 'warning'].includes(value),
+    },
+  },
+});
 </script>
 
 <style scoped>
