@@ -95,14 +95,6 @@ export default createStore({
 
             commit("SET_USER", auth.currentUser?.uid);
 
-            // auth.onIdTokenChanged((user) => {
-            //     if (user) {
-            //       // User logged in already or has just logged in.
-            //       saveUser(user.uid)
-            //     } else {
-            //       // User not logged in or has just logged out.
-            //     }
-            //   });
             router.push("/");
         },
 
