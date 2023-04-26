@@ -121,7 +121,6 @@ export default {
 			
 		}
 		function getUserType() {
-			console.log("userType_registo2: ", userType.value);
       		return userType.value;
 			// return tipo.value;
    		}
