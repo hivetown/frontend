@@ -179,7 +179,6 @@ setup () {
       errors.value.zip_code1 = 'Por favor, preencha um código postal válido do tipo: 1234';
       isValid = false;
     }
-    console.log("zip_code1", isValid)
     if (!register_form.zip_code2) {
       errors.value.zip_code2 = 'Por favor, preencha os 3 últimos dígitos do seu código postal.';
       isValid = false;
