@@ -36,7 +36,7 @@ import store from '../store';
 export default {
   setup () {
     const register_form = reactive({
-        name: 'll',
+        name: '',
         phone: '',
         vat: '',
         email: '',
@@ -64,7 +64,6 @@ export default {
         errors.value.name = 'Por favor, preencha um nome válido.';
         isValid = false;
       }
-      console.log("name", isValid)
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
         isValid = false;
@@ -72,7 +71,6 @@ export default {
         errors.value.phone = 'Por favor, preencha um número de telemóvel válido.';
         isValid = false;
       }
-      console.log("phone", isValid)
       if (!register_form.vat) {
         errors.value.vat = 'Por favor, preencha o seu NIF.';
         isValid = false;
@@ -80,7 +78,6 @@ export default {
         errors.value.vat = 'Por favor, preencha um NIF válido.';
         isValid = false;
       }
-      console.log("vat", isValid)
       if (!register_form.email) {
         errors.value.email = 'Por favor, preencha o seu email.';
         isValid = false;
@@ -88,7 +85,6 @@ export default {
         errors.value.email = 'Por favor, preencha um email válido do tipo: nome@mail.com';
         isValid = false;
       }
-      console.log("email", isValid)
       if (!register_form.password) {
         errors.value.password = 'Por favor, preencha a sua palavra-passe.';
         isValid = false;
@@ -96,16 +92,12 @@ export default {
         errors.value.password = 'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
         isValid = false;
       }
-      console.log("password", isValid)
       return isValid;
     };
 
     const register = async () => {
-      console.log('Register function called!');
       if (validateForm()) {
-        console.log('Register form is valid!');
         register_form.type = 'Producer';
-        console.log("register_form.type producer", register_form.type)
         store.dispatch('register', register_form, register_form.type);
       }
     };

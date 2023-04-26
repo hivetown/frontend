@@ -22,74 +22,10 @@
 				<div v-else-if="userType == 'Producer'" >
 					<RegisterProducerForm></RegisterProducerForm>
 				</div>
-					<!-- <input
-						type="text"
-						placeholder="Name"
-						v-model="register_form.name" />
-					<input
-						type="text"
-						placeholder="Address"
-						v-model="register_form.address" />
-					<input
-						type="text"
-						placeholder="Phone number"
-						v-model="register_form.phone_number" />
-					<input
-						type="date"
-						placeholder="Date of birth"
-						v-model="register_form.date_of_birth" />
-						<input 
-					type="email" 
-					placeholder="Email address"
-					v-model="register_form.email" />
-					<input 
-					type="password" 
-					placeholder="Password" 
-					v-model="register_form.password" />
-				<input 
-					type="submit" 
-					value="Register" method="post" action="../api/producers.ts" />	 -->
-				
-				<!-- <div v-else-if="register_form.consumer_supplier == 'supplier'">
-					<input
-						type="text"
-						placeholder="Name"
-						v-model="register_form.name" />
-					<input
-						type="text"
-						placeholder="Address"
-						v-model="register_form.address" />
-					<input
-						type="text"
-						placeholder="Phone number"
-						v-model="register_form.phone_number" />
-					<input
-						type="text"
-						placeholder="NIF"
-						v-model="register_form.nif" />
-						<h2>Register</h2>
-				<input 
-					type="email" 
-					placeholder="Email address"
-					v-model="register_form.email" />
-					<input 
-					type="password" 
-					placeholder="Password" 
-					v-model="register_form.password" />
-				<input 
-					type="submit" 
-					value="Register" method="post" action="../api/consumers.ts"/>
-
-				</div> -->
 				<p id="loginLink">Já tem uma conta? <router-link to="/login">Login</router-link></p>
                 </div>
 				
 				
-					<!-- Create a link to the login page -->
-				
-
-			<!-- </form> -->
-			<!-- Create buthon to redirect to step 2 of registration -->
 			
 
 
@@ -126,9 +62,7 @@ export default {
 			
 		}
 		function getUserType() {
-			console.log("userType_registo2: ", userType.value);
       		return userType.value;
-			// return tipo.value;
    		}
 		return {
 			register_form,

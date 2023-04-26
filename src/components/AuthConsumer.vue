@@ -155,7 +155,6 @@ setup () {
       errors.value.name = 'O nome tem de começar com uma letra maiúscula.';
       isValid = false;
     }
-    console.log("name", isValid)
     if (!register_form.number) {
       errors.value.number = 'Por favor, preencha o número da sua morada.';
       isValid = false;
@@ -163,8 +162,6 @@ setup () {
       errors.value.number = 'Por favor, preencha um número válido do tipo: 123';
       isValid = false;
     }
-    console.log("number", isValid)
-    console.log("door", isValid)
     // validate floor
     if (!register_form.floor) {
       errors.value.floor = 'Por favor, preencha o andar da sua morada.';
@@ -182,7 +179,6 @@ setup () {
       errors.value.zip_code1 = 'Por favor, preencha um código postal válido do tipo: 1234';
       isValid = false;
     }
-    console.log("zip_code1", isValid)
     if (!register_form.zip_code2) {
       errors.value.zip_code2 = 'Por favor, preencha os 3 últimos dígitos do seu código postal.';
       isValid = false;
@@ -190,7 +186,6 @@ setup () {
       errors.value.zip_code2 = 'Por favor, preencha um código postal válido do tipo: 123';
       isValid = false;
     }
-    console.log("zip_code2", isValid)
     // validate street
     if (!register_form.street) {
       errors.value.street = 'Por favor, preencha a sua rua.';
@@ -199,7 +194,6 @@ setup () {
       errors.value.street = 'A rua deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("street", isValid)
 
     if (!register_form.parish) {
       errors.value.parish = 'Por favor, preencha a sua freguesia.';
@@ -208,7 +202,6 @@ setup () {
       errors.value.parish = 'A freguesia deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("parish", isValid)
 
     if (!register_form.county) {
       errors.value.county = 'Por favor, preencha o seu concelho.';
@@ -218,7 +211,6 @@ setup () {
       isValid = false;
     }
     
-    console.log("county", isValid)
     if (!register_form.district) {
       errors.value.district = 'Por favor, preencha o seu distrito.';
       isValid = false;
@@ -226,7 +218,6 @@ setup () {
       errors.value.district = 'O distrito deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("district", isValid)
     if (!register_form.city) {
       errors.value.city = 'Por favor, preencha a sua cidade.';
       isValid = false;
@@ -234,7 +225,6 @@ setup () {
       errors.value.city = 'A cidade deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("city", isValid)
 
     if (!register_form.phone) {
       errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
@@ -243,7 +233,6 @@ setup () {
       errors.value.phone = 'Por favor, preencha um número de telemóvel válido do tipo: 912345678';
       isValid = false;
     }
-    console.log("phone", isValid)
     if (!register_form.latitude) {
       errors.value.latitude = 'Por favor, preencha a sua latitude.';
       isValid = false;
@@ -251,7 +240,6 @@ setup () {
       errors.value.latitude = 'Por favor, preencha uma latitude válida do tipo: 38.123456';
       isValid = false;
     }
-    console.log("latitude", isValid)
     if (!register_form.longitude) {
       errors.value.longitude = 'Por favor, preencha a sua longitude.';
       isValid = false;
@@ -267,7 +255,6 @@ setup () {
       errors.value.vat = 'Por favor, preencha um NIF válido do tipo: 123456789';
       isValid = false;
     }
-    console.log("vat", isValid)
     if (!register_form.email) {
       errors.value.email = 'Por favor, preencha o seu email.';
       isValid = false;
@@ -275,7 +262,6 @@ setup () {
       errors.value.email = 'Por favor, preencha um email válido do tipo: nome@mail.com';
       isValid = false;
     }
-    console.log("email", isValid)
     if (!register_form.password) {
       errors.value.password = 'Por favor, preencha a sua palavra-passe.';
       isValid = false;
@@ -283,18 +269,14 @@ setup () {
       errors.value.password = 'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
       isValid = false;
     }
-    console.log("password", isValid)
     return isValid;
   };
 
   // console.log("is valid?", validateForm());
   const register = async () => {
-    console.log('Register function called!');
     if (validateForm()) {
-      console.log('Register form is valid!');
       register_form.zip_code = `${register_form.zip_code1}-${register_form.zip_code2}`;
       register_form.type = "Consumer"
-      console.log("register_form.type consumer", register_form.type)
       store.dispatch('register', register_form, register_form.type);
     }
   };
