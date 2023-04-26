@@ -85,11 +85,6 @@
                 </div>
 				
 				
-					<!-- Create a link to the login page -->
-				
-
-			<!-- </form> -->
-			<!-- Create buthon to redirect to step 2 of registration -->
 			
 
 
