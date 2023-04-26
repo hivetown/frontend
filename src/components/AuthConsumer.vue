@@ -211,7 +211,6 @@ setup () {
       isValid = false;
     }
     
-    console.log("county", isValid)
     if (!register_form.district) {
       errors.value.district = 'Por favor, preencha o seu distrito.';
       isValid = false;
