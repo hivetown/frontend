@@ -239,7 +239,8 @@ export default createStore({
     },
 });
 
-async function handleAuthError(error) {
+async function handleAuthError(error: firebase.FirebaseError) {
+    console.log('Error type:', error);
     switch (error) {
         case 'auth/user-not-found':
             createPopup('Utilizador não encontrado', 'warning');

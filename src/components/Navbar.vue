@@ -102,7 +102,7 @@
 
   <!-- Nav inferior no modo telemovel -->
   <!-- TODO melhorar isto e o modo telemóvel no geral
-	     evitar repetir código como está aqui -->
+		   evitar repetir código como está aqui -->
   <div>
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">

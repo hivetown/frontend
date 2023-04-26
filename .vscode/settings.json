@@ -8,5 +8,7 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
-	"editor.defaultFormatter": "Vue.volar"
+	"editor.defaultFormatter": "Vue.volar",
+	// Disable vetur
+	"vetur.validation.template": false,
 }
