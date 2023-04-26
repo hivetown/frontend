@@ -1,9 +1,6 @@
 import { ApiRequest } from "../types/interfaces";
 import axios, { AxiosError } from "axios";
 import store from "../store";
-// import { useRoute} from "vue-router";
-
-// import ErrorPopup from '../components/ErrorPopup.vue'
 import ErrorPopup from '@/components/ErrorPopup.vue'
 import { createApp, watchEffect } from 'vue';
 import router from "../router";
