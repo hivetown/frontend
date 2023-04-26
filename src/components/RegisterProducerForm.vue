@@ -78,7 +78,6 @@ export default {
         errors.value.vat = 'Por favor, preencha um NIF válido.';
         isValid = false;
       }
-      console.log("vat", isValid)
       if (!register_form.email) {
         errors.value.email = 'Por favor, preencha o seu email.';
         isValid = false;
