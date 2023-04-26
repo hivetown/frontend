@@ -36,7 +36,7 @@ import store from '../store';
 export default {
   setup () {
     const register_form = reactive({
-        name: 'll',
+        name: '',
         phone: '',
         vat: '',
         email: '',
