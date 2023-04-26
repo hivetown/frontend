@@ -178,7 +178,6 @@ try {
     // if saveValue == "Producer" then post to producer collection
     else if (type == "Producer") {
       try {
-        console.log("Im in Producer");
   
         // Create user after data is successfully posted
         await createUserWithEmailAndPassword(auth, email, password);
