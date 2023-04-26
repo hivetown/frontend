@@ -64,7 +64,6 @@ export default {
         errors.value.name = 'Por favor, preencha um nome válido.';
         isValid = false;
       }
-      console.log("name", isValid)
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
         isValid = false;
