@@ -186,7 +186,6 @@ setup () {
       errors.value.zip_code2 = 'Por favor, preencha um código postal válido do tipo: 123';
       isValid = false;
     }
-    console.log("zip_code2", isValid)
     // validate street
     if (!register_form.street) {
       errors.value.street = 'Por favor, preencha a sua rua.';
