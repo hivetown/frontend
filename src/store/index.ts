@@ -39,7 +39,6 @@ const saveUser = (uid) => {
 
 const saveEmail = (email) => {
     localStorage.setItem("email", email);
-    console.log(email);
 };
 
 // export default createStore({
