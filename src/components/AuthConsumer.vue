@@ -255,7 +255,6 @@ setup () {
       errors.value.vat = 'Por favor, preencha um NIF válido do tipo: 123456789';
       isValid = false;
     }
-    console.log("vat", isValid)
     if (!register_form.email) {
       errors.value.email = 'Por favor, preencha o seu email.';
       isValid = false;
