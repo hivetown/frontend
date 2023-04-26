@@ -50,3 +50,28 @@ export interface BaseItems<T> {
     page: number;
     pageSize: number;
 }
+
+export interface ProducerProducts {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    specification?: ProductSpecification;
+    producer?: Producer;
+}
+
+// export interface Producers {
+//     id: number;
+//     name: string;
+//     email: string;
+//     phone: string;
+//     vat: string;
+//     products?: Product[];
+// }
+
+export interface ProducerProduct {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    producer?: Producer;
+    productionUnit?: 
+}
