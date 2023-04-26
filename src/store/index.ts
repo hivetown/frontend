@@ -16,7 +16,6 @@ import {
     signOut,
     updateProfile,
 } from "firebase/auth";
-// import transaction from axios;
 import transaction from "firebase/transaction";
 import { getCookie, setCookie, removeCookie } from "./cookies";
 
