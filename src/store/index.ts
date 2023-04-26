@@ -143,10 +143,6 @@ export default createStore({
             } = details;
 
 try {
-    // const userType = Registration.setup().getUserType();
-
-    console.log("userType_index: ", type);
-                    
     if (type == "Consumer") {
       try {
         
