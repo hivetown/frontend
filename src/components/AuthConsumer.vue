@@ -225,7 +225,6 @@ setup () {
       errors.value.city = 'A cidade deve ser uma palavra válida.';
       isValid = false;
     }
-    console.log("city", isValid)
 
     if (!register_form.phone) {
       errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
