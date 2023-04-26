@@ -26,30 +26,35 @@
                          :productPrice="[productSpec2.minPrice, productSpec2.maxPrice]" />
         </div>
 
-        <!-- TODO mudar para ser automático (como já está feito no produto) -->
         <!-- Características dos produtos a ser comparados -->
+        <!-- TODO fazer com que alinhem as categorias e os fields e por o resto dos dados -->
         <div class="spec-to-compare">
-            <!-- TODO trocar estes valores automáticamente -->
             <div class="mt-3 d-flex align-items-center spec-category-text">
                 <h5 class="p-3">Características</h5>
             </div>
+        
+            <div class="d-flex gap-5">
+                <!-- <div>
+                    <div v-for="(category, index) in product1Categories.items" :key="index">
+                        <h6 class="p-3">{{ category.name }}</h6>                          
+                        <tr v-for="(categoryFields, index) in fields1" :key="index" style="border-bottom: 2px solid #f3f3f3;">
+                            <p v-for="field in categoryFields">
+                                Nome: {{ field.field.name }}
+                            </p>
+                        </tr>
+                    </div>
+                </div> -->
+
+            </div>
+         
             <!-- Dados do produto 1 -->
             <div class="d-flex p-2" style="gap:30vh;">
-                <CompareSpec></CompareSpec>
-                <CompareSpec></CompareSpec>
+                <!-- <CompareSpec></CompareSpec>
+                <CompareSpec></CompareSpec> -->
             </div>
         </div>
-        <div class="spec-to-compare">
-            <!-- TODO trocar estes valores automáticamente -->
-            <div class="mt-3 d-flex align-items-center spec-category-text">
-                <h5 class="p-3">Características</h5>
-            </div>
-            <!-- Dados do produto 2 -->
-            <div class="d-flex p-2" style="gap:30vh;">
-                <CompareSpec></CompareSpec>
-                <CompareSpec></CompareSpec>
-            </div>
-        </div>
+
+        
     </div>
 </template>
 
@@ -71,7 +76,7 @@ import CompareSpec from "@/components/CompareSpec.vue";
 import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchProduct } from "@/api";
+import { fetchProduct, fetchProductCategories, fetchProductCategoriesFields } from "@/api";
 import { Product } from "@/types";
 import { defineComponent, onMounted } from "vue";
 import PriceFilter from "./PriceFilter.vue";
@@ -84,6 +89,10 @@ export default defineComponent({
             productSpec2: {} as Product,
             product1Img: "",
             product2Img: "",
+            product1Categories: {},
+            product2Categories: {},
+            fields1: [],
+            fields2: [],
         };
     },
     props: {
@@ -106,6 +115,28 @@ export default defineComponent({
         const productSpec2 = await fetchProduct(this.product2Id);
         this.productSpec2 = productSpec2.data;
         this.product2Img = productSpec2.data.images[0];
+
+
+        // Carregar as categorias do produto
+        // TODO - filtrar iguais e diferenças em destaque
+        const product1Categories = await fetchProductCategories(this.product1Id);
+        this.product1Categories = product1Categories.data;
+
+        const product2Categories = await fetchProductCategories(this.product2Id);
+        this.product2Categories = product2Categories.data;
+
+        try {
+            for (const categoria of this.product1Categories.items) {
+                const response = await fetchProductCategoriesFields(this.product1Id, categoria.id);
+                this.fields1.push(response.data.items);
+            }
+            for (const categoria of this.product2Categories.items) {
+                const response = await fetchProductCategoriesFields(this.product2Id, categoria.id);
+                this.fields2.push(response.data.items);
+            }
+        } catch (error) {
+            console.log("Erro: " + error);
+        }
     },
     components: { ProductCard }
 });

@@ -159,20 +159,20 @@ export default defineComponent({
       this.selectedProductId = id;
       if (this.prod1Id === null) {
         this.prod1Id = id;
-        console.log("Prod1Id é " + this.prod1Id);
+        // console.log("Prod1Id é " + this.prod1Id);
       } else if (this.prod2Id === null || this.prod1Id === null) {
         if (id != this.prod1Id) {
-          console.log("Os produtos são diferentes");
+          // console.log("Os produtos são diferentes");
           this.prod2Id = id;
-          console.log("Prod2Id é " + this.prod2Id);
+          // console.log("Prod2Id é " + this.prod2Id);
         } else {
           // console.log("Os produtos são iguais");
-          alert("O produto já está selecionado");
+          // alert("O produto já está selecionado");
         }
       } else {
         this.prod1Id = id;
         this.prod2Id = null;
-        console.log("Prod1Id é " + this.prod1Id);
+        // console.log("Prod1Id é " + this.prod1Id);
       }
 
       // if(this.prod1Id === null) {

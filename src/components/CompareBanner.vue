@@ -6,8 +6,6 @@
         <div class="parent d-flex justify-content-center align-items-center gap-4">
             
             <div class="d-flex flex-column">
-
-                <!-- {{ productsLoadedAmount }} -->
                 <h5 class="dgreen-txt">Comparador
                     <span v-show="productsLoadedAmount === 1" class="badge bg-secondary" style="border-radius: 100%;">1</span>
                     <span v-show="productsLoadedAmount === 2" class="badge bg-secondary" >2</span>
@@ -58,7 +56,7 @@
                         @click="openModal(product1.id, product2.id)">
                     <i class="bi bi-arrow-left-right"></i> Comparar
                 </button>
-                <a href="#">Limpar tudo</a>
+                <a href="#" id="limpar" @click="removeItem($event.target.id)">Limpar tudo</a>
             </div>
             
         </div>
@@ -153,6 +151,7 @@ export default {
 
             id1: null,
             id2: null,
+            
         };
     },
     props: {
@@ -176,47 +175,88 @@ export default {
     },
     methods: {
         removeItem(elemento) {
-            document.getElementById(elemento).style.display = "none";
             if (elemento === "img1") {
                 this.product1Loaded = false;
                 localStorage.setItem("compareItem1Id", null);
-            } else {
+                document.getElementById(elemento).style.display = "none";
+            } 
+            else if(elemento === "img2"){
                 this.product2Loaded = false;
                 localStorage.setItem("compareItem2Id", null);
+                document.getElementById(elemento).style.display = "none";
+            }
+            else if (elemento === "limpar") {
+                this.product1Loaded = false;
+                this.product2Loaded = false;
+                localStorage.setItem("compareItem1Id", null);
+                localStorage.setItem("compareItem2Id", null);
+                document.getElementById("img1").style.display = "none";
+                document.getElementById("img2").style.display = "none";
             }
             this.productsLoadedAmount--;
         },
+        async loadProduct(newId: number, imgId: string, product: any, prodImg: string) {
+            if (newId) {
+                const imgElem = document.getElementById(imgId);
+                if (imgElem.style.display === "none") {
+                    imgElem.style.display = "block";
+                    const productData = await fetchProduct(newId);
+                    product = productData.data;
+                    if (imgId === "img1") {
+                        this.product1 = product;
+                        this.prod1Img = product.images[0];
+                        this.product1Loaded = true;
+                    } else {
+                        this.product2 = product;
+                        this.prod2Img = product.images[0];
+                        this.product2Loaded = true;
+                    }
+                    if (this.productsLoadedAmount <= 2) {
+                        this.productsLoadedAmount++;
+                    }
+                    // productLoaded = true;
+                }
+            }
+        }
     },
     // TODO - melhorar o display de produtos quando se selecionam e desselecionam
     // porque ainda não está a funcionar bem 
+    //Juntar os 2 e meter a lógica lá dentro
      watch: {
+        // product1Id: async function (newId: number) {
+        //     if (newId) {
+        //         document.getElementById("img1").style.display = "block";
+        //         const product1 = await fetchProduct(newId);
+        //         this.product1 = product1.data;
+        //         this.prod1Img = this.product1.images[0];
+        //         if(this.productsLoadedAmount <= 2 ){
+        //             this.productsLoadedAmount++;
+        //         }
+        //         // this.productsLoadedAmount++;
+        //         this.product1Loaded = true;
+        //         // console.log("Produto 1: " + JSON.stringify(this.product1))
+        //         console.log("Produto 1 carregado")
+        //     }
+        // },
+        // product2Id: async function (newId: number) {
+        //     if (newId) {
+        //         document.getElementById("img2").style.display = "block";
+        //         const product2 = await fetchProduct(newId);
+        //         this.product2 = product2.data;
+        //         this.prod2Img = this.product2.images[0];
+        //         if (this.productsLoadedAmount <= 2) {
+        //             this.productsLoadedAmount++;
+        //         }
+        //         // this.productsLoadedAmount++;
+        //         this.product2Loaded = true;
+        //         console.log("Produto 2 carregado")
+        //     }
+        // },
         product1Id: async function (newId: number) {
-            if (newId) {
-                document.getElementById("img1").style.display = "block";
-                const product1 = await fetchProduct(newId);
-                this.product1 = product1.data;
-                this.prod1Img = this.product1.images[0];
-                if(this.productsLoadedAmount <= 2 ){
-                    this.productsLoadedAmount++;
-                }
-                // this.productsLoadedAmount++;
-                this.product1Loaded = true;
-                // console.log("Produto 1: " + JSON.stringify(this.product1))
-            }
+            await this.loadProduct(newId, "img1", this.product1, this.prod1Img);
         },
         product2Id: async function (newId: number) {
-            if (newId) {
-                document.getElementById("img2").style.display = "block";
-                const product2 = await fetchProduct(newId);
-                this.product2 = product2.data;
-                this.prod2Img = this.product2.images[0];
-                if (this.productsLoadedAmount <= 2) {
-                    this.productsLoadedAmount++;
-                }
-                // this.productsLoadedAmount++;
-                this.product2Loaded = true;
-                // console.log("Produto 2: " + JSON.stringify(this.product2))
-            }
+            await this.loadProduct(newId, "img2", this.product2, this.prod2Img);
         },
     },
 
@@ -229,20 +269,7 @@ export default {
          if (this.productsLoadedAmount <= 2) {
             this.productsLoadedAmount++;
         }
-        // this.productsLoadedAmount++;
         this.product1Loaded = true;	
-        // console.log("Produto 1: " + JSON.stringify(this.product1))
-
-        // if(this.product2Id){
-        //     // Segundo produto
-        //     const product2 = await fetchProduct(this.product2Id);
-        //     this.product2 = product2.data;
-        //     this.prod2Img = this.product2.images[0];
-        //     // console.log("Produto 2: " + JSON.stringify(this.product2))
-        //     this.productsLoadedAmount++;
-        //     this.product2Loaded = true;
-        //     console.log("Produto 2: " + JSON.stringify(this.product2))
-        // }
 
         document.getElementById("img2").style.display = "none";
     },

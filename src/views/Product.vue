@@ -175,13 +175,13 @@
                <h5 class="mb-4">Especificações</h5>
                <div style="background-color: ; height: ;">
                      <table style="background-color: ; width: 100%;">
-                        <!-- <thead>
-                           <tr>
-                              <th>Características</th>
-                           </tr>
-                        </thead> -->
                         <tbody>
                            <tr v-for="(category, index) in productCategoriesFields" :key="index" style="border-bottom: 2px solid #f3f3f3;">
+                              <!-- <div class="spec-to-compare">
+                                 <div class="mt-3 d-flex align-items-center spec-category-text">
+                                    <h5 class="p-3">{{productCategories.items[index].name}}</h5>
+                                 </div>
+                              </div> -->
                               <tr v-for="field in category">
                                  <div class="d-flex justify-content-arround px-3" style="background-color: ; height: 5vh;">
                                     <span style="font-weight:bold ; width: 45vh; background-color: ">{{ field.field.name }}</span> 
