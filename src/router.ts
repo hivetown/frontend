@@ -7,15 +7,12 @@ import Favourites from "./views/Favourites.vue";
 import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
-<<<<<<< HEAD
 import ProductsProducer from "./views/ProductsProducer.vue";
 import Testes from "./views/Testes.vue";
-=======
 import Login from "./views/Login.vue";
 import Registration from "./views/Registration.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
->>>>>>> HVT-12-criar-conta-no-sistema
 
 const routes = [
     {
