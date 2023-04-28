@@ -11,9 +11,11 @@ import Login from './views/Login.vue';
 import Registration from './views/Registration.vue';
 import AuthConsumer from './components/AuthConsumer.vue';
 import store from './store';
+import { useStore } from 'vuex';
 
 const isAuthenticated = () => {
-    return !!store.state.user;
+    console.log('store.state.auth', store.state.auth);
+    return store.state.auth;
 };
 const routes = [
     {
@@ -81,8 +83,9 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+    console.log('isAuthenticated', isAuthenticated());
     if (to.path === '/login' && isAuthenticated()) {
-        console.log('isAuthenticated', isAuthenticated());
+        
         // redirect to the home page if the user is already logged in
         next('/');
         return;
@@ -93,6 +96,7 @@ router.beforeEach(async (to, from, next) => {
         !isAuthenticated()
     ) {
         // redirect to the login page if the user is not logged in
+        console.log('n devia tar aqui upsi');
         next('/login');
         return;
     }

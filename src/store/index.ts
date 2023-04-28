@@ -45,6 +45,7 @@ export default createStore({
     state: {
         token: getCookie('token'),
         user: null,
+        auth: false,
     } as {
         token: string | null;
         user: Consumer | Producer | null;
@@ -65,6 +66,10 @@ export default createStore({
             state.token = null;
             removeCookie('token');
         },
+        SET_AUTH(state, auth: boolean) {
+            state.auth = auth;
+            console.log('auth is', auth);
+        },
     },
     actions: {
         async login({ commit }, details) {
@@ -83,6 +88,8 @@ export default createStore({
                     email,
                     password
                 );
+                // update auth state to true
+                commit('SET_AUTH', true);
                 // Save the authentication token to local storage
                 const authToken = userCredential.user.getIdToken();
                 // localStorage.setItem('authToken', await authToken);
@@ -221,6 +228,7 @@ export default createStore({
         },
 
         async logout({ commit }) {
+            commit('SET_AUTH', false);
             await signOut(auth);
 
             commit('CLEAR_USER');

@@ -12,66 +12,30 @@
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-heart mx-auto"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/favoritos"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Favoritos</router-link
-              >
-              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+              <router-link to="/favoritos" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item" style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-heart" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Favoritos
+              </router-link>
             </div>
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-cart"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/carrinho"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Carrinho</router-link
-              >
+              <router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item" style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-cart" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Carrinho
+              </router-link>
               <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
 
             <div class="d-flex" v-if="user.name === '' || user.image === ''">
-              <b-avatar
-                class="nav-item" style="background-color: #f3f3f3 !important;
-                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-                <i
-                  class="bi bi-person"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/login"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Login</router-link
-              >
+              <router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item" style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-person" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Login
+              </router-link>
             </div>
           </div>
 
@@ -79,7 +43,7 @@
             class="d-flex nav-items-right"
             v-if="(user.name !== '' && user.image !== '') || $store.state.user"
           >
-            <router-link to="/conta">
+            <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
                 :src="user.image"
@@ -88,7 +52,7 @@
               </b-avatar>
               <span>{{ user.name }}</span>
             </router-link>
-            <b-nav-item-dropdown right>
+            <b-nav-item-dropdown right class="p-2 grey-txt text-decoration-none">
               <b-dropdown-item href="#">Definições</b-dropdown-item>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
