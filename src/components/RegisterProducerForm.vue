@@ -33,21 +33,32 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { reactive } from 'vue';
+
+interface Errors {
+  name?: string;
+  phone?: string;
+  vat?: string;
+  email?: string;
+  password?: string;
+}
+
 export default {
   setup() {
+    const errors = ref<Errors>({});
     const register_form = reactive({
       name: '',
       phone: '',
       vat: '',
       email: '',
       password: '',
+      type: '',
     });
     const store = useStore();
-    const errors = ref({});
+    // const errors = ref<Errors>({});
 
     const validateForm = () => {
       errors.value = {};
-      let isValid = true;
+
       const regex = /^[a-zA-Z\s]+$/;
       const phoneRegex = /^[0-9]{9}$/;
       const vatRegex = /^[0-9]{9}$/;
@@ -56,49 +67,58 @@ export default {
 
       if (!register_form.name) {
         errors.value.name = 'Por favor, preencha o seu nome.';
-        isValid = false;
+        console.log('name empty');
       } else if (!regex.test(register_form.name)) {
         errors.value.name = 'Por favor, preencha um nome válido.';
-        isValid = false;
+        console.log('name invalid');
       }
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
-        isValid = false;
+        console.log('phone empty');
       } else if (!phoneRegex.test(register_form.phone)) {
         errors.value.phone =
           'Por favor, preencha um número de telemóvel válido.';
-        isValid = false;
+        console.log('phone invalid');
       }
       if (!register_form.vat) {
         errors.value.vat = 'Por favor, preencha o seu NIF.';
-        isValid = false;
+        console.log('vat empty');
       } else if (!vatRegex.test(register_form.vat)) {
         errors.value.vat = 'Por favor, preencha um NIF válido.';
-        isValid = false;
+        console.log('vat invalid');
       }
       if (!register_form.email) {
         errors.value.email = 'Por favor, preencha o seu email.';
-        isValid = false;
+        console.log('email empty');
       } else if (!emailRegex.test(register_form.email)) {
         errors.value.email =
           'Por favor, preencha um email válido do tipo: nome@mail.com';
-        isValid = false;
+        console.log('email invalid');
       }
       if (!register_form.password) {
         errors.value.password = 'Por favor, preencha a sua palavra-passe.';
-        isValid = false;
+        console.log('password empty');
       } else if (!passwordRegex.test(register_form.password)) {
         errors.value.password =
           'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
-        isValid = false;
+        console.log('password invalid');
       }
-      return isValid;
+      return Object.keys(errors.value).length === 0;
     };
 
     const register = async () => {
+      console.log('validateForm value: ', validateForm());
       if (validateForm()) {
+        console.log('form validated');
         register_form.type = 'Producer';
-        store.dispatch('register', register_form, register_form.type);
+        store.dispatch('register', {
+          name: register_form.name,
+          phone: register_form.phone,
+          vat: register_form.vat,
+          email: register_form.email,
+          password: register_form.password,
+          type: register_form.type,
+        });
       }
     };
 

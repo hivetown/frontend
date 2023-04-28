@@ -90,6 +90,7 @@ export default createStore({
                 commit('SET_TOKEN', await authToken);
                 // saveUser(auth.currentUser?.uid);
                 // saveEmail(auth.currentUser?.email);
+                router.push('/');
             } catch (error) {
                 // Handle errors
                 if (error instanceof FirebaseError) {
@@ -99,7 +100,7 @@ export default createStore({
 
             commit('SET_USER', auth.currentUser?.uid);
 
-            // router.push('/');
+            
         },
 
         async register(

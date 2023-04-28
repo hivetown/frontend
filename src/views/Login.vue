@@ -33,7 +33,10 @@ import { useStore } from 'vuex';
 
 export default {
   setup() {
-    const login_form = ref({});
+    const login_form = ref({
+      email: '',
+      password: '',
+    });
     const store = useStore();
     const login = async () => {
       store.dispatch('login', login_form.value);
