@@ -170,16 +170,39 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { reactive } from 'vue';
 
+interface Errors {
+  name?: string;
+  number?: string;
+  door?: string;
+  floor?: string;
+  zip_code?: string;
+  zip_code1?: string;
+  zip_code2?: string;
+  street?: string;
+  parish?: string;
+  county?: string;
+  district?: string;
+  city?: string;
+  latitude?: string;
+  longitude?: string;
+  phone?: string;
+  vat?: string;
+  email?: string;
+  password?: string;
+}
+
 export default {
   setup() {
     const activeTab = ref('personal');
-    const errors = ref({});
+    const errors = ref<Errors>({});
     const register_form = reactive({
       name: '',
       number: '',
       door: '',
       floor: '',
       zip_code: '',
+      zip_code1: '',
+      zip_code2: '',
       street: '',
       parish: '',
       county: '',
@@ -191,11 +214,11 @@ export default {
       vat: '',
       email: '',
       password: '',
+      type: '',
     });
     const store = useStore();
     const validateForm = () => {
       errors.value = {};
-      let isValid = true;
 
       const numRegex = /^[0-9]+$/;
       const zip1Regex = /^[0-9]{4}$/;
@@ -213,136 +236,104 @@ export default {
 
       if (!register_form.name) {
         errors.value.name = 'Por favor, preencha o seu nome.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.name)) {
         errors.value.name = 'O nome tem de começar com uma letra maiúscula.';
-        isValid = false;
       }
       if (!register_form.number) {
         errors.value.number = 'Por favor, preencha o número da sua morada.';
-        isValid = false;
       } else if (!numRegex.test(register_form.number)) {
         errors.value.number =
           'Por favor, preencha um número válido do tipo: 123';
-        isValid = false;
       }
       // validate floor
       if (!register_form.floor) {
         errors.value.floor = 'Por favor, preencha o andar da sua morada.';
-        isValid = false;
       } else if (!numRegex.test(register_form.floor)) {
         errors.value.floor = 'Por favor, preencha um andar válido do tipo: 3';
-        isValid = false;
       }
 
       if (!register_form.zip_code1) {
         errors.value.zip_code1 =
           'Por favor, preencha os 4 primeiros dígitos do seu código postal.';
-        isValid = false;
       } else if (!zip1Regex.test(register_form.zip_code1)) {
         errors.value.zip_code1 =
           'Por favor, preencha um código postal válido do tipo: 1234';
-        isValid = false;
       }
       if (!register_form.zip_code2) {
         errors.value.zip_code2 =
           'Por favor, preencha os 3 últimos dígitos do seu código postal.';
-        isValid = false;
       } else if (!zip2Regex.test(register_form.zip_code2)) {
         errors.value.zip_code2 =
           'Por favor, preencha um código postal válido do tipo: 123';
-        isValid = false;
       }
       // validate street
       if (!register_form.street) {
         errors.value.street = 'Por favor, preencha a sua rua.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.street)) {
         errors.value.street = 'A rua deve ser uma palavra válida.';
-        isValid = false;
       }
 
       if (!register_form.parish) {
         errors.value.parish = 'Por favor, preencha a sua freguesia.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.parish)) {
         errors.value.parish = 'A freguesia deve ser uma palavra válida.';
-        isValid = false;
       }
 
       if (!register_form.county) {
         errors.value.county = 'Por favor, preencha o seu concelho.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.county)) {
         errors.value.county = 'O concelho deve ser uma palavra válida.';
-        isValid = false;
       }
 
       if (!register_form.district) {
         errors.value.district = 'Por favor, preencha o seu distrito.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.district)) {
         errors.value.district = 'O distrito deve ser uma palavra válida.';
-        isValid = false;
       }
       if (!register_form.city) {
         errors.value.city = 'Por favor, preencha a sua cidade.';
-        isValid = false;
       } else if (!stringRegex.test(register_form.city)) {
         errors.value.city = 'A cidade deve ser uma palavra válida.';
-        isValid = false;
       }
 
       if (!register_form.phone) {
         errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
-        isValid = false;
       } else if (!phoneRegex.test(register_form.phone)) {
         errors.value.phone =
           'Por favor, preencha um número de telemóvel válido do tipo: 912345678';
-        isValid = false;
       }
       if (!register_form.latitude) {
         errors.value.latitude = 'Por favor, preencha a sua latitude.';
-        isValid = false;
       } else if (!latitudeRegex.test(register_form.latitude)) {
         errors.value.latitude =
           'Por favor, preencha uma latitude válida do tipo: 38.123456';
-        isValid = false;
       }
       if (!register_form.longitude) {
         errors.value.longitude = 'Por favor, preencha a sua longitude.';
-        isValid = false;
       } else if (!longitudeRegex.test(register_form.longitude)) {
         errors.value.longitude =
           'Por favor, preencha uma longitude válida do tipo: -9.123456';
-        isValid = false;
       }
 
       if (!register_form.vat) {
         errors.value.vat = 'Por favor, preencha o seu NIF.';
-        isValid = false;
       } else if (!vatRegex.test(register_form.vat)) {
         errors.value.vat =
           'Por favor, preencha um NIF válido do tipo: 123456789';
-        isValid = false;
       }
       if (!register_form.email) {
         errors.value.email = 'Por favor, preencha o seu email.';
-        isValid = false;
       } else if (!emailRegex.test(register_form.email)) {
         errors.value.email =
           'Por favor, preencha um email válido do tipo: nome@mail.com';
-        isValid = false;
       }
       if (!register_form.password) {
         errors.value.password = 'Por favor, preencha a sua palavra-passe.';
-        isValid = false;
       } else if (!passwordRegex.test(register_form.password)) {
         errors.value.password =
           'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
-        isValid = false;
       }
-      return isValid;
+      return Object.keys(errors.value).length === 0;
     };
 
     // console.log("is valid?", validateForm());
@@ -350,7 +341,26 @@ export default {
       if (validateForm()) {
         register_form.zip_code = `${register_form.zip_code1}-${register_form.zip_code2}`;
         register_form.type = 'Consumer';
-        store.dispatch('register', register_form, register_form.type);
+        // store.dispatch('register', register_form, register_form.type);
+        store.dispatch('register', {
+          name: register_form.name,
+          password: register_form.password,
+          email: register_form.email,
+          phone: register_form.phone,
+          vat: register_form.vat,
+          number: register_form.number,
+          door: register_form.door,
+          floor: register_form.floor,
+          zip_code: `${register_form.zip_code1}-${register_form.zip_code2}`,
+          street: register_form.street,
+          parish: register_form.parish,
+          county: register_form.county,
+          city: register_form.city,
+          district: register_form.district,
+          latitude: register_form.latitude,
+          longitude: register_form.longitude,
+          type: register_form.type,
+        });
       }
     };
 

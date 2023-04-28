@@ -57,11 +57,11 @@
             </div>
 
             <div class="d-flex" v-if="user.name === '' || user.image === ''">
-              <b-avatar>
+              <b-avatar
                 class="nav-item" style="background-color: #f3f3f3 !important;
                 box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
                 <i
-                  class="bi bi-cart"
+                  class="bi bi-person"
                   style="color: #164a41"
                   font-scale="1.5"
                 ></i>
@@ -85,8 +85,8 @@
                 :src="user.image"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
-                <span>{{ user.name }}</span>
               </b-avatar>
+              <span>{{ user.name }}</span>
             </router-link>
             <b-nav-item-dropdown right>
               <b-dropdown-item href="#">Definições</b-dropdown-item>
