@@ -17,7 +17,7 @@ import {
 } from 'firebase/auth';
 // import transaction from 'firebase/transaction';
 import { getCookie, setCookie, removeCookie } from './cookies';
-
+import { store } from '@/store';
 import firebase from 'firebase/app';
 import { FirebaseError } from 'firebase/app';
 // import saveValue from '../views/Registration.vue';
@@ -45,11 +45,13 @@ export default createStore({
     state: {
         token: getCookie('token'),
         user: null,
-        auth: false,
+        auth: null,
+        id: 0,
     } as {
         token: string | null;
         user: Consumer | Producer | null;
-        auth: boolean;
+        auth: any;
+        id: number;
     },
     mutations: {
         SET_USER(state, user: Consumer | Producer) {
@@ -66,13 +68,15 @@ export default createStore({
             state.token = null;
             removeCookie('token');
         },
-        SET_AUTH(state, auth: boolean) {
+        SET_AUTH(state, auth) {
             state.auth = auth;
-            console.log('auth is', auth);
+        },
+        SET_ID(state, id) {
+            state.id = id;
         },
     },
     actions: {
-        async login({ commit }, details) {
+        async login({ commit, dispatch }, details) {
             const { email, password } = details;
 
             // try {
@@ -89,12 +93,14 @@ export default createStore({
                     password
                 );
                 // update auth state to true
-                commit('SET_AUTH', true);
+                // commit('SET_AUTH', true);
                 // Save the authentication token to local storage
                 const authToken = userCredential.user.getIdToken();
                 // localStorage.setItem('authToken', await authToken);
                 // commit using SET_TOKEN using authToken, uid, email
                 commit('SET_TOKEN', await authToken);
+                // call fetchAuthUser action
+                await dispatch('fetchAuthUser');
                 // saveUser(auth.currentUser?.uid);
                 // saveEmail(auth.currentUser?.email);
                 router.push('/');
@@ -106,12 +112,24 @@ export default createStore({
             }
 
             commit('SET_USER', auth.currentUser?.uid);
-
-            
         },
-
+        async fetchAuthUser({ commit }) {
+            try {
+                console.log('Fetching user...');
+                const response = await fetchAuth();
+                const auth = response.data;
+                console.log('Fetched user:', auth);
+                console.log('id is ', auth.id);
+                commit('SET_ID', auth.id);
+                // console log id type
+                console.log('id type is ', typeof auth.id);
+                commit('SET_AUTH', auth);
+            } catch (error) {
+                console.error(error);
+            }
+        },
         async register(
-            { commit },
+            { commit, dispatch, state },
             details: {
                 name: string;
                 password: string;
@@ -167,10 +185,13 @@ export default createStore({
 
                         // Post consumer data
                         await postConsumer({ name, phone, vat });
-                        const authArray = await fetchAuth();
-                        commit('SET_USER', authArray);
-                        const { id } = authArray.data;
-                        await postAddressConsumer(id, {
+                        // const authArray = await fetchAuth();
+                        await dispatch('fetchAuthUser');
+                        commit('SET_USER', auth);
+                        // const { id } = state.id;
+                        // save state.id to variable
+                        // const id = state.id;
+                        await postAddressConsumer(state.id, {
                             number,
                             door,
                             floor,
@@ -207,8 +228,10 @@ export default createStore({
 
                         // Post producer data
                         await postProducer({ name, phone, vat });
-                        const authArray = await fetchAuth();
-                        commit('SET_USER', authArray);
+                        // const authArray = await fetchAuth();
+                        await dispatch('fetchAuthUser');
+                        commit('SET_USER', auth);
+                        console.log('auth é ', auth);
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
@@ -228,7 +251,7 @@ export default createStore({
         },
 
         async logout({ commit }) {
-            commit('SET_AUTH', false);
+            // commit('SET_AUTH', false);
             await signOut(auth);
 
             commit('CLEAR_USER');

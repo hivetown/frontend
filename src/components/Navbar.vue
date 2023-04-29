@@ -29,7 +29,7 @@
               <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
 
-            <div class="d-flex" v-if="user.name === '' || user.image === ''">
+            <div class="d-flex" v-if="auth.name === '' || auth.image === ''">
               <router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
                 <b-avatar class="nav-item" style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
                   <i class="bi bi-person" style="color: #164a41" font-scale="1.5"></i>
@@ -41,16 +41,16 @@
 
           <div
             class="d-flex nav-items-right"
-            v-if="(user.name !== '' && user.image !== '') || $store.state.user"
+            v-if="(auth.name !== '' && auth.image !== '') || $store.state.user"
           >
             <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                :src="user.image"
+                :src="auth.image"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ user.name }}</span>
+              <span>{{ auth.name }}</span>
             </router-link>
             <b-nav-item-dropdown right class="p-2 grey-txt text-decoration-none">
               <b-dropdown-item href="#">Definições</b-dropdown-item>
@@ -129,56 +129,95 @@
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
 
 import { ref, onMounted, watch } from 'vue';
 
-import { fetchAuth } from '../api/auth';
+// import { fetchAuth } from '../api/auth';
+
+// export default {
+//   setup() {
+//     const store = useStore();
+//     const user = ref({ name: '', image: '' });
+
+//     async function fetchUser() {
+//       try {
+//         const response = await fetchAuth();
+//         auth.value = response.data;
+//         console.log('Fetched user:', auth.value);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+
+//     onMounted(async () => {
+//       await fetchUser();
+//     });
+
+//     watch(
+//       () => store.state.user,
+//       (newValue) => {
+//         if (newValue) {
+//           fetchUser();
+//         } else {
+//           auth.value = { name: '', image: '' };
+//         }
+//       },
+//       { immediate: true }
+//     );
+
+//     function logout() {
+//       store.dispatch('logout');
+//       auth.value = { name: '', image: '' };
+//     }
+
+//     return {
+//       user,
+//       logout,
+//     };
+//   },
+// };
+
+import { useStore } from 'vuex';
 
 export default {
   setup() {
     const store = useStore();
-    const user = ref({ name: '', image: '' });
+    const auth = ref({ name: '', image: '' });
 
     async function fetchUser() {
       try {
-        const response = await fetchAuth();
-        user.value = response.data;
-        console.log('Fetched user:', user.value);
+        await store.dispatch('fetchAuthUser'); // call the fetchUser action in the store
+        // console.log('User data fetched');
       } catch (error) {
         console.error(error);
       }
     }
 
     onMounted(async () => {
-      await fetchUser();
+      // console.log('Navbar mounted');
+      await fetchUser(); // call fetchUser when the component is mounted
     });
 
+    // watch the user state in the store and update the component's user ref accordingly
     watch(
-      () => store.state.user,
+      () => store.state.auth,
       (newValue) => {
-        if (newValue) {
-          fetchUser();
-        } else {
-          user.value = { name: '', image: '' };
-        }
-      },
-      { immediate: true }
+        auth.value = newValue;
+      }
     );
-
     function logout() {
       store.dispatch('logout');
-      user.value = { name: '', image: '' };
+      auth.value = { name: '', image: '' };
     }
 
     return {
-      user,
+      auth,
       logout,
     };
   },
 };
 </script>
-
 <style>
 #logo img {
   width: 2.6em;
