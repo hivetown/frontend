@@ -11,7 +11,7 @@
           <!-- Product Info -->
           <div class="product-info">
             <router-link :to="'/products/' + product.id">
-              <h3 class="product-title">{{ product.title }}</h3>
+              <h3>class="product-title">{{ product.title }}</h3>
             </router-link>
             <p class="product-description">{{ product.description }}</p>
             <p class="product-price">{{ product.price }}</p>
@@ -26,45 +26,36 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, onMounted } from 'vue'
-import { Product } from '@/types/Product'
-import { fetchAllProducts } from '@/api/producerProducts'
-
+<script lang="ts">
+import { defineComponent, ref, onMounted } from 'vue';
+import { Product } from '@/types/Product';
+import { fetchAllProducts } from '@/api/producerProducts';
+import { fetchAuth } from '../api/auth';
 export default defineComponent({
-  props: {
-    producerId: {
-      type: Number,
-      required: true,
-    },
-    producerName: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const products = ref<Product[]>([])
+  setup() {
+    const products = ref<Product[]>([]);
 
     onMounted(async () => {
       try {
-        products.value = await fetchAllProducts(props.producerId)
+        const authArray = await fetchAuth();
+        const { id } = authArray.data;
+        console.log('Producer ID:', id);
+        products.value = await fetchAllProducts(id);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
-    })
+    });
 
     return {
       products,
-    }
+    };
   },
-})
+});
 </script>
 
 <style scoped>
 /* Add custom styles here */
 </style>
-
-
 
 <!-- <template>
   <div>

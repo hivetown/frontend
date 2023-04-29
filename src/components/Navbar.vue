@@ -89,6 +89,7 @@
               </b-avatar>
             </router-link>
             <b-nav-item-dropdown right>
+              <b-dropdown-item href="/produtos">Conta</b-dropdown-item>
               <b-dropdown-item href="#">Definições</b-dropdown-item>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
