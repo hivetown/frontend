@@ -85,6 +85,7 @@ export interface BaseItems<T> {
 }
 
 export interface ProducerProducts {
+    items: Product[];
     id: number;
     currentPrice: number;
     productionDate: Date;
