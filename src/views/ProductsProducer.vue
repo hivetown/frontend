@@ -72,7 +72,7 @@
           <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
-          <img :src="product.productSpec.image" class="square-image" alt="Imagem do produto" />
+          <img :src="product.producer.image.url" class="square-image" alt="Imagem do produto" />
         </b-card>
         <b-card-text class="">
           <div>
@@ -82,7 +82,7 @@
             <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
             <div class="d-flex gap-2">
               <h4 class="mb-3">{{ product.currentPrice }}€</h4>
-              <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p>
+              <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
             </div>
             <div class="d-flex gap-2">
               <router-link :to="'/product/edit/' + product.id">

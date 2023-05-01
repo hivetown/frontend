@@ -22,7 +22,7 @@ export interface Producer {
     phone: string;
     vat: string;
     products?: Product[];
-    type: "PRODUCER";
+    type: 'PRODUCER';
 }
 
 export interface Consumer {
@@ -31,7 +31,7 @@ export interface Consumer {
     email: string;
     phone: string;
     vat: string;
-    type: "CONSUMER";
+    type: 'CONSUMER';
 }
 
 export interface CreateConsumer {
@@ -107,5 +107,5 @@ export interface ProducerProduct {
     currentPrice: number;
     productionDate: Date;
     producer?: Producer;
-    productionUnit?: 
+    // productionUnit?: ProductionUnit;
 }
