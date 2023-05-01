@@ -263,8 +263,8 @@ Swal.fire({
   text: 'Esta ação não poderá ser desfeita',
   icon: 'warning',
   showCancelButton: true,
-  confirmButtonColor: '#3085d6',
-  cancelButtonColor: '#d33',
+  confirmButtonColor: '#d33',
+  cancelButtonColor: '#3085d6',
   confirmButtonText: 'Sim, cancelar',
   cancelButtonText: 'Não, voltar'
 }).then((result) => {
