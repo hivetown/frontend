@@ -41,12 +41,14 @@
 
           <div
             class="d-flex nav-items-right"
-            v-if="(auth.name !== '' && auth.image !== '') || $store.state.user"
+            v-if="
+              (auth.name !== '' && auth.image.url !== '') || $store.state.user
+            "
           >
             <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                :src="auth.image"
+                :src="auth.image.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
@@ -179,12 +181,23 @@ import { ref, onMounted, watch } from 'vue';
 // };
 
 import { useStore } from 'vuex';
+interface Auth {
+  name: string;
+  image: {
+    url: string;
+  };
+}
+
+interface AuthUser {
+  name: string;
+  image: { url: string } | null;
+}
 
 export default {
   setup() {
     const store = useStore();
-    const auth = ref({ name: '', image: '' });
-
+    // const auth = ref({ name: '', image: '' });
+    const auth = ref<Auth>({ name: '', image: { url: '' } }); // set the initial value of auth
     async function fetchUser() {
       try {
         await store.dispatch('fetchAuthUser'); // call the fetchUser action in the store
@@ -202,13 +215,16 @@ export default {
     // watch the user state in the store and update the component's user ref accordingly
     watch(
       () => store.state.auth,
-      (newValue) => {
-        auth.value = newValue;
+      (newValue: AuthUser) => {
+        auth.value = {
+          name: newValue.name,
+          image: newValue.image ? { url: newValue.image.url } : { url: '' },
+        };
       }
     );
     function logout() {
       store.dispatch('logout');
-      auth.value = { name: '', image: '' };
+      auth.value = { name: '', image: { url: '' } }; // update the auth object with the new shape
     }
 
     return {
