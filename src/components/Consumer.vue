@@ -1,21 +1,21 @@
 <template>
     <h3>Consumidores</h3>
     <div class="card-container">
-    <div v-for="user in users" :key="user.id">
+    <div v-for="idx in qtd" :key="idx">
 <!--TODO trocar para users.image-->
-    <b-card
-        :title="user.name"
-        img-src="https://picsum.photos/600/300/?image=25" 
-        img-alt="Image"
+<b-card id="b-card"
+        :title="users['items'][idx-1]['name']"
+        :img-src="users['items'][idx-1]['image']['url']" 
+        :img-alt="users['items'][idx-1]['image']['alt']"
         img-top
         tag="article"
         style="max-width: 17rem;"
         class="mb-2"
-    >
-        <b-card-text>
-        {{user.email}} <br> {{user.type}}
+    > <b-card-text>
+        {{users['items'][idx-1]['email']}} <br> {{users['items'][idx-1]['type']}}
         </b-card-text>
-        <b-button :href="'/consumer/' + user.id" variant="primary">Ver perfil</b-button>
+        <b-button :href="'/consumer/' + users['items'][idx-1]['id']" variant="primary">Ver perfil</b-button>
+       
     </b-card>
     </div>
     </div>
@@ -28,17 +28,18 @@ import { Consumer } from "../types/interfaces";
 export default {
   setup() {
     const users = ref<Consumer[]>([]);
-
+    const qtd = ref(0);
     onMounted(async () => {
       try {
         const response = await getConsumers();
         users.value = response.data;
+        qtd.value = users.value.items.length;
       } catch (error) {
         console.error(error);
       }
     });
 
-    return { users };
+    return { users, qtd };
   },
 };
 </script>
@@ -51,5 +52,10 @@ export default {
 
 .card-container > div {
   margin: 25px;
+  
+}
+#b-card{
+  background-color: rgb(239, 243, 247);
+
 }
 </style>

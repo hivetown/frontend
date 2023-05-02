@@ -5,21 +5,22 @@
     </div>
 <div class="cart">
   <b-card id="b-card"
-    title="nome"
-    img-src="https://picsum.photos/600/300/?image=25"
-    img-alt="Image"
+    :title="users['name']"
+    :img-src="users['image']['url']"
+    :img-alt="users['image']['alt']"
     img-top
     tag="article"
     style="max-width: 30rem;"
     class="mb-2"
   >
     <b-card-text>
-      email
+      Email: {{users['email']}}
       <br>
-      telefone
+      Telemóvel: {{users['phone']}}
       <br>
-      tipo
+      Morada: {{users['address']['street']}}, nº{{users['address']['number']}}, porta {{users['address']['door']}}
       <br>
+      {{users['address']['zipCode']}}, {{users['address']['city']}}
     </b-card-text>
 
     <b-button href="#" variant="secondary" @click="showCancelDialog"><span style="color:white;">Desativar conta</span></b-button>
@@ -92,7 +93,8 @@ h1 {
 }
 
 #b-card{
-  background-color: rgb(221, 229, 237)!important;
+  background-color: rgb(239, 243, 247)!important;
+
 }
 
 /* estilos para telas com largura menor ou igual a 600px */
