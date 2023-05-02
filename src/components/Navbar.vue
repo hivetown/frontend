@@ -85,11 +85,11 @@
             <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                :src="user.image?.url"
+                :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ user.name }}</span>
+              <span>{{ user.user.name }}</span>
             </router-link>
             <b-nav-item-dropdown
               right
@@ -171,6 +171,7 @@
 </template>
 
 <script lang="ts">
+import { Consumer, Producer } from '@types';
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
@@ -179,7 +180,7 @@ export default {
     const store = useStore();
 
     // computed user
-    const user = computed(() => store.state.user);
+    const user = computed(() => store.state.user as Consumer | Producer);
     setTimeout(() => console.log(user), 1000);
 
     const logout = async () => {

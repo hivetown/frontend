@@ -185,8 +185,9 @@ export default createStore({
                         await dispatch('fetchAuthUser');
                         // const { id } = state.id;
                         // save state.id to variable
+
                         // const id = state.id;
-                        await postAddressConsumer(state.user!.id, {
+                        await postAddressConsumer(state.user!.user.id, {
                             number,
                             door,
                             floor,
