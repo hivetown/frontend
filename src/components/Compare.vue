@@ -36,6 +36,19 @@
             <div v-for="field in fieldsTotais" style="background-color: pink; border-bottom: solid 1px black;">
                 Produto:{{ field[0] }}<br>
                 Fields: 
+                <div v-if="field[0].length > 1">
+                    <div class="d-flex">
+                        <div v-for="fs in field[1]" class="mb-4">
+                            <div style="background-color: red;">
+                                <div v-for="f in fs">
+                                    {{ f }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <!-- Para cada produto que tem os mesmos fields -->
                 <div v-for="fs in field[1]" class="mb-4">
                     <!-- Prod x: {{ fs }} -->
                     <div v-for="f in fs">
