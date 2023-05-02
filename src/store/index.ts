@@ -10,6 +10,7 @@ import { postProducer } from '../api/producers';
 import { fetchAuth } from '../api/auth';
 import ErrorPopup from '../components/ErrorPopup.vue';
 import {
+    UserCredential,
     createUserWithEmailAndPassword,
     deleteUser,
     signInWithEmailAndPassword,
@@ -28,6 +29,7 @@ import { FirebaseError } from 'firebase/app';
 // import { useStore } from 'vuex';
 import { postAddressConsumer } from '../api/addressConsumer';
 import { Consumer, Producer } from '../types/interfaces';
+import { AxiosError } from 'axios';
 // import { api } from '../api/_base';
 // import { Transaction } from 'firebase/firestore';
 // import type { DefineComponent } from 'vue';
@@ -45,13 +47,9 @@ export default createStore({
     state: {
         token: getCookie('token'),
         user: null,
-        auth: null,
-        id: 0,
     } as {
         token: string | null;
         user: Consumer | Producer | null;
-        auth: any;
-        id: number;
     },
     mutations: {
         SET_USER(state, user: Consumer | Producer) {
@@ -67,12 +65,6 @@ export default createStore({
         REMOVE_TOKEN(state) {
             state.token = null;
             removeCookie('token');
-        },
-        SET_AUTH(state, auth) {
-            state.auth = auth;
-        },
-        SET_ID(state, id) {
-            state.id = id;
         },
     },
     actions: {
@@ -110,8 +102,6 @@ export default createStore({
                     handleAuthError(error);
                 }
             }
-
-            commit('SET_USER', auth.currentUser?.uid);
         },
         async fetchAuthUser({ commit }) {
             try {
@@ -123,9 +113,15 @@ export default createStore({
                 commit('SET_ID', auth.id);
                 // console log id type
                 console.log('id type is ', typeof auth.id);
-                commit('SET_AUTH', auth);
+                commit('SET_USER', auth);
             } catch (error) {
-                console.error(error);
+                console.log('ERROR: ', error);
+                if (error instanceof AxiosError) {
+                    console.log('AXIOS ERROR', error);
+                    if (error.response?.status === 404) {
+                        throw new Error('User not found');
+                    }
+                }
             }
         },
         async register(
@@ -187,11 +183,10 @@ export default createStore({
                         await postConsumer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-                        commit('SET_USER', auth);
                         // const { id } = state.id;
                         // save state.id to variable
                         // const id = state.id;
-                        await postAddressConsumer(state.id, {
+                        await postAddressConsumer(state.user!.id, {
                             number,
                             door,
                             floor,
@@ -204,6 +199,7 @@ export default createStore({
                             latitude,
                             longitude,
                         });
+
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
@@ -230,8 +226,6 @@ export default createStore({
                         await postProducer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-                        commit('SET_USER', auth);
-                        console.log('auth é ', auth);
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
@@ -264,8 +258,6 @@ export default createStore({
                 if (user === null) {
                     commit('CLEAR_USER');
                 } else {
-                    commit('SET_USER', user);
-
                     if (router.currentRoute.value.path === '/login') {
                         router.push('/');
                     }
