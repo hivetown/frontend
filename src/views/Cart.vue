@@ -17,7 +17,7 @@
 
                   <!--{{ itensCarrinho }}-->
 
-                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem"></CartItem><!--   -->
+                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem" @deleteCartItem="itemRemoved"></CartItem><!--   -->
                   <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
 
                   <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
@@ -114,7 +114,7 @@ table {
 </script>
 
 <script lang="ts">
-  import { fetchCartItems } from "../api/consumers"
+  import { deleteCartItem, fetchCartItems } from "../api/consumers"
   import { Product } from "@/types";
   import { defineComponent } from "vue";
   import { Cart } from '@types/interfaces';
@@ -144,6 +144,14 @@ table {
     // Botão "Voltar"
     methods: {
         goBack() {window.history.back();},
+
+        itemRemoved(idToRmv: number) {
+          const indexToRemove = this.itensCarrinho.items.findIndex(item => item.producerProduct!.id === idToRmv);
+          console.log("CONA:  ",indexToRemove," idToRMV:", idToRmv)
+          if (indexToRemove !== -1) {
+            this.itensCarrinho.items.splice(indexToRemove, 1);
+          }
+        },
     },
     
     // Buscar Info do Carrinho
@@ -173,6 +181,8 @@ table {
       //console.log(totalSum);
       this.precoTotal=totalSum.toFixed(2);
     },
+
+
   };
   
 

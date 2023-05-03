@@ -2,9 +2,8 @@
 	<div class="d-flex gap-4">
 		<router-link to="/produto">
 			<b-card class="prod-card">
-				<span class="position-absolute top-0 end-0"> </span>
 				<!-- <img src="https://placehold.jp/150x150.png" class="square-image"> -->
-				<img src={{ cartItem.producerProduct!.productSpec!.image }} class="square-image" />
+				<img :src="cartItem.producerProduct!.productSpec!.images[0].url" class="square-image" alt="Product image"/>
 			</b-card>
 		</router-link>
 		<b-card-text class="w-100" style="background-color: ">
@@ -16,7 +15,6 @@
 				</div>
 
 				<div class="d-flex gap-2"> 
-          aaaaa
           <p class="mt-3">Quantidade:</p>
 					<div class="d-flex" style="margin-top: -10px">
 						<b-col col lg="5">
@@ -30,7 +28,7 @@
 					<!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
 
 					<div class="d-flex ms-auto justify-content-end">
-						<button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Remover do carrinho">
+						<button @click="removeCartItem" type="button" class="btn btn-outline-secondary circle-btn" title="Remover do carrinho">
 							<i class="bi bi-x-lg"></i>
 						</button>
 					</div>
@@ -43,6 +41,7 @@
 <script lang="ts">
 	import { CartItem } from '@/types';
 	import { PropType } from 'vue';
+	import { deleteCartItem } from "@/api"; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
 
 	export default {
 	  data() {
@@ -65,7 +64,7 @@
         cartItemPrice: this.priceCalc(),
 	    };
 	  },
-	  props: {
+	  props: { // Isto são coisas que se recebe do componente pai
 	    cartItem: {
 	      type: Object as PropType<CartItem>,
 	      required: true,
@@ -75,7 +74,32 @@
     methods: {
       priceCalc(): number {
         return this.cartItem.producerProduct!.currentPrice * this.cartItem.quantity;
-      }
+      },
+
+
+	  async removeCartItem(): Promise<void> {
+		try	{
+			//TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
+			//TODO: Desativar botão aqui
+			await deleteCartItem(1,this.cartItem.producerProduct!.id)
+			//TODO: Mudar o 1 para o id do cliente
+			console.log('test');
+			this.$emit('deleteCartItem',this.cartItem.producerProduct!.id);
+			console.log('id:',this.cartItem.producerProduct!.id);
+		}
+		catch(error) {
+			if(error instanceof Error) {
+				console.log(error.message)
+			}
+		}
+	  }
     },
 	};
 </script>
+
+<style>
+  .square-image {
+    width: 50%;
+    height: 50%;
+  }
+</style>

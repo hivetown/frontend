@@ -10,8 +10,15 @@ export interface ProductSpec {
     id: number;
     name: string;
     description: string;
-    image: string;
+    images: Image[];
     products?: Product[];
+}
+
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
 }
 
 export interface Producer {
