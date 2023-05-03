@@ -10,7 +10,6 @@ import { postProducer } from '../api/producers';
 import { fetchAuth } from '../api/auth';
 import ErrorPopup from '../components/ErrorPopup.vue';
 import {
-    UserCredential,
     createUserWithEmailAndPassword,
     deleteUser,
     signInWithEmailAndPassword,
@@ -18,30 +17,14 @@ import {
 } from 'firebase/auth';
 // import transaction from 'firebase/transaction';
 import { getCookie, setCookie, removeCookie } from './cookies';
-import { store } from '@/store';
+// import { store } from '@/store';
 import firebase from 'firebase/app';
 import { FirebaseError } from 'firebase/app';
-// import saveValue from '../views/Registration.vue';
-// import userType from '../views/Registration.vue';
 
-// import Registration from '../views/Registration.vue';
-
-// import { useStore } from 'vuex';
 import { postAddressConsumer } from '../api/addressConsumer';
 import { Consumer, Producer } from '../types/interfaces';
 import { AxiosError } from 'axios';
-// import { api } from '../api/_base';
-// import { Transaction } from 'firebase/firestore';
-// import type { DefineComponent } from 'vue';
 
-// const saveUser = (uid) => {
-//     // add new user to database
-//     localStorage.setItem('uid', uid);
-// };
-
-// const saveEmail = (email: string | null | undefined) => {
-//     localStorage.setItem('email', email);
-// };
 
 export default createStore({
     state: {
@@ -71,30 +54,19 @@ export default createStore({
         async login({ commit, dispatch }, details) {
             const { email, password } = details;
 
-            // try {
-            //     await signInWithEmailAndPassword(auth, email, password);
-            // } catch (error) {
-            //     handleAuthError(error.code);
-            //     return;
-            // }
-
             try {
                 const userCredential = await signInWithEmailAndPassword(
                     auth,
                     email,
                     password
                 );
-                // update auth state to true
-                // commit('SET_AUTH', true);
-                // Save the authentication token to local storage
+
                 const authToken = userCredential.user.getIdToken();
-                // localStorage.setItem('authToken', await authToken);
                 // commit using SET_TOKEN using authToken, uid, email
                 commit('SET_TOKEN', await authToken);
                 // call fetchAuthUser action
                 await dispatch('fetchAuthUser');
-                // saveUser(auth.currentUser?.uid);
-                // saveEmail(auth.currentUser?.email);
+
                 router.push('/');
             } catch (error) {
                 // Handle errors
@@ -109,10 +81,10 @@ export default createStore({
                 const response = await fetchAuth();
                 const auth = response.data;
                 console.log('Fetched user:', auth);
-                console.log('id is ', auth.id);
-                commit('SET_ID', auth.id);
-                // console log id type
-                console.log('id type is ', typeof auth.id);
+                // console.log('id is ', auth.id);
+                // commit('SET_ID', auth.id);
+                // // console log id type
+                // console.log('id type is ', typeof auth.id);
                 commit('SET_USER', auth);
             } catch (error) {
                 console.log('ERROR: ', error);
@@ -183,10 +155,7 @@ export default createStore({
                         await postConsumer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-                        // const { id } = state.id;
-                        // save state.id to variable
 
-                        // const id = state.id;
                         await postAddressConsumer(state.user!.user.id, {
                             number,
                             door,

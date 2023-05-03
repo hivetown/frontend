@@ -85,11 +85,11 @@
             <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                :src="user.user.image?.url"
+                :src="user?.image.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ user.user.name }}</span>
+              <span>{{ user?.name }}</span>
             </router-link>
             <b-nav-item-dropdown
               right

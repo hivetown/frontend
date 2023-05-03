@@ -34,10 +34,18 @@ export interface User {
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+    name: string;
+    image: {
+        url?: string;
+      };
 }
 
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
+    name: string;
+    image: {
+        url?: string;
+      };
 }
 
 export interface CreateConsumer {

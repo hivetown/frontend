@@ -32,13 +32,22 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
                 error.response?.status === 401 &&
                 router.currentRoute.value.meta.requiresAuth
             ) {
-                showErrorPopup(`Erro ${error.response.status}`, 'error');
+                showErrorPopup(
+                    `Erro ${error.response.status}: É necessário autenticar-se para realizar esta operação`,
+                    'error'
+                );
             } else if (error.response?.status === 403) {
-                showErrorPopup(`Erro ${error.response.status}`, 'error');
+                showErrorPopup(
+                    `Erro ${error.response.status}: Não tem permissões para esta operação`,
+                    'error'
+                );
             } else if (error.response?.status === 404) {
-                showErrorPopup(`Erro ${error.response.status}`, 'warning');
+                showErrorPopup(
+                    `Erro ${error.response.status}: Página não encontrada`,
+                    'warning'
+                );
             } else {
-                // Handle other error codes as needed
+                /* empty */
             }
 
             return Promise.reject(error);
