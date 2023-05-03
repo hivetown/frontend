@@ -12,88 +12,54 @@
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-heart mx-auto"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/favoritos"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Favoritos</router-link
-              >
-              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+              <router-link to="/favoritos" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item"
+                  style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-heart" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Favoritos
+              </router-link>
             </div>
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-cart"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/carrinho"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Carrinho</router-link
-              >
+              <router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item"
+                  style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-cart" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Carrinho
+              </router-link>
               <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
 
-            <div class="d-flex" v-if="user.name === '' || user.image === ''">
-              <b-avatar>
-                class="nav-item" style="background-color: #f3f3f3 !important;
-                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-                <i
-                  class="bi bi-cart"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
-              <router-link
-                to="/login"
-                class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500"
-                >Login</router-link
-              >
+            <div class="d-flex" v-if="auth.name === '' || auth.image === ''">
+              <router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500">
+                <b-avatar class="nav-item"
+                  style="background-color: #f3f3f3 !important; box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+                  <i class="bi bi-person" style="color: #164a41" font-scale="1.5"></i>
+                </b-avatar>
+                Login
+              </router-link>
             </div>
           </div>
 
-          <div
-            class="d-flex nav-items-right"
-            v-if="(user.name !== '' && user.image !== '') || $store.state.user"
-          >
-            <router-link to="/conta">
-              <b-avatar
-                class="nav-item"
-                :src="user.image"
-                style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
-              >
-                <span>{{ user.name }}</span>
+          <div class="d-flex nav-items-right" v-if="(auth.name !== '' && auth.image.url !== '') || $store.state.user
+            ">
+            <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
+              <b-avatar class="nav-item" :src="auth.image.url" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px">
               </b-avatar>
+              <span>{{ auth.name }}</span>
             </router-link>
-            <b-nav-item-dropdown right>
+            <!-- <b-nav-item-dropdown right>
               <b-dropdown-item href="/produtos">Conta</b-dropdown-item>
+            <b-nav-item-dropdown right class="p-2 grey-txt text-decoration-none">
               <b-dropdown-item href="#">Definições</b-dropdown-item>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
-              >
+              > -->
+            <b-nav-item-dropdown right class="p-2 grey-txt text-decoration-none">
+              <b-dropdown-item href="/produtos">Conta</b-dropdown-item>
+              <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item @click="logout" href="#">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -108,55 +74,27 @@
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i
-            class="bi bi-heart mx-auto dgreen-txt"
-            style="font-size: large"
-          ></i>
+        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
+          <i class="bi bi-heart mx-auto dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
+        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
           <i class="bi bi-cart mx-auto dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
+        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
           <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
+        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
           <i class="bi bi-search dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
+        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
           <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
         </button>
         <!-- <b-avatar class="mx-auto" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;"></b-avatar> -->
@@ -166,56 +104,109 @@
 </template>
 
 <script lang="ts">
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
 
 import { ref, onMounted, watch } from 'vue';
 
-import { fetchAuth } from '../api/auth';
+// import { fetchAuth } from '../api/auth';
+
+// export default {
+//   setup() {
+//     const store = useStore();
+//     const user = ref({ name: '', image: '' });
+
+//     async function fetchUser() {
+//       try {
+//         const response = await fetchAuth();
+//         auth.value = response.data;
+//         console.log('Fetched user:', auth.value);
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     }
+
+//     onMounted(async () => {
+//       await fetchUser();
+//     });
+
+//     watch(
+//       () => store.state.user,
+//       (newValue) => {
+//         if (newValue) {
+//           fetchUser();
+//         } else {
+//           auth.value = { name: '', image: '' };
+//         }
+//       },
+//       { immediate: true }
+//     );
+
+//     function logout() {
+//       store.dispatch('logout');
+//       auth.value = { name: '', image: '' };
+//     }
+
+//     return {
+//       user,
+//       logout,
+//     };
+//   },
+// };
+
+import { useStore } from 'vuex';
+interface Auth {
+  name: string;
+  image: {
+    url: string;
+  };
+}
+
+interface AuthUser {
+  name: string;
+  image: { url: string } | null;
+}
 
 export default {
   setup() {
     const store = useStore();
-    const user = ref({ name: '', image: '' });
-
+    // const auth = ref({ name: '', image: '' });
+    const auth = ref<Auth>({ name: '', image: { url: '' } }); // set the initial value of auth
     async function fetchUser() {
       try {
-        const response = await fetchAuth();
-        user.value = response.data;
-        console.log('Fetched user:', user.value);
+        await store.dispatch('fetchAuthUser'); // call the fetchUser action in the store
+        // console.log('User data fetched');
       } catch (error) {
         console.error(error);
       }
     }
 
     onMounted(async () => {
-      await fetchUser();
+      // console.log('Navbar mounted');
+      await fetchUser(); // call fetchUser when the component is mounted
     });
 
+    // watch the user state in the store and update the component's user ref accordingly
     watch(
-      () => store.state.user,
-      (newValue) => {
-        if (newValue) {
-          fetchUser();
-        } else {
-          user.value = { name: '', image: '' };
-        }
-      },
-      { immediate: true }
+      () => store.state.auth,
+      (newValue: AuthUser) => {
+        auth.value = {
+          name: newValue.name,
+          image: newValue.image ? { url: newValue.image.url } : { url: '' },
+        };
+      }
     );
-
     function logout() {
       store.dispatch('logout');
-      user.value = { name: '', image: '' };
+      auth.value = { name: '', image: { url: '' } }; // update the auth object with the new shape
     }
 
     return {
-      user,
+      auth,
       logout,
     };
   },
 };
 </script>
-
 <style>
 #logo img {
   width: 2.6em;

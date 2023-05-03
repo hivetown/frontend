@@ -8,47 +8,50 @@ import { auth } from '../components/firebase';
 import { postConsumer } from '../api/consumers';
 import { postProducer } from '../api/producers';
 import { fetchAuth } from '../api/auth';
-import ErrorPopup from '@/components/ErrorPopup.vue';
+import ErrorPopup from '../components/ErrorPopup.vue';
 import {
     createUserWithEmailAndPassword,
     deleteUser,
     signInWithEmailAndPassword,
     signOut,
-    updateProfile,
 } from 'firebase/auth';
-import transaction from 'firebase/transaction';
+// import transaction from 'firebase/transaction';
 import { getCookie, setCookie, removeCookie } from './cookies';
-
+import { store } from '@/store';
 import firebase from 'firebase/app';
+import { FirebaseError } from 'firebase/app';
+// import saveValue from '../views/Registration.vue';
+// import userType from '../views/Registration.vue';
 
-import saveValue from '../views/Registration.vue';
-import userType from '../views/Registration.vue';
+// import Registration from '../views/Registration.vue';
 
-import Registration from '../views/Registration.vue';
-
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
 import { postAddressConsumer } from '../api/addressConsumer';
-import { Consumer, Producer } from '@types/interfaces';
-import { api } from '../api/_base';
-import { Transaction } from 'firebase/firestore';
+import { Consumer, Producer } from '../types/interfaces';
+// import { api } from '../api/_base';
+// import { Transaction } from 'firebase/firestore';
+// import type { DefineComponent } from 'vue';
 
-const saveUser = (uid) => {
-    // add new user to database
-    localStorage.setItem('uid', uid);
-};
+// const saveUser = (uid) => {
+//     // add new user to database
+//     localStorage.setItem('uid', uid);
+// };
 
-const saveEmail = (email) => {
-    localStorage.setItem('email', email);
-};
+// const saveEmail = (email: string | null | undefined) => {
+//     localStorage.setItem('email', email);
+// };
 
 export default createStore({
     state: {
         token: getCookie('token'),
         user: null,
+        auth: null,
+        id: 0,
     } as {
         token: string | null;
         user: Consumer | Producer | null;
-        auth: boolean;
+        auth: any;
+        id: number;
     },
     mutations: {
         SET_USER(state, user: Consumer | Producer) {
@@ -65,17 +68,23 @@ export default createStore({
             state.token = null;
             removeCookie('token');
         },
+        SET_AUTH(state, auth) {
+            state.auth = auth;
+        },
+        SET_ID(state, id) {
+            state.id = id;
+        },
     },
     actions: {
-        async login({ commit }, details) {
+        async login({ commit, dispatch }, details) {
             const { email, password } = details;
 
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                handleAuthError(error.code);
-                return;
-            }
+            // try {
+            //     await signInWithEmailAndPassword(auth, email, password);
+            // } catch (error) {
+            //     handleAuthError(error.code);
+            //     return;
+            // }
 
             try {
                 const userCredential = await signInWithEmailAndPassword(
@@ -83,24 +92,44 @@ export default createStore({
                     email,
                     password
                 );
+                // update auth state to true
+                // commit('SET_AUTH', true);
                 // Save the authentication token to local storage
                 const authToken = userCredential.user.getIdToken();
-                localStorage.setItem('authToken', await authToken);
+                // localStorage.setItem('authToken', await authToken);
                 // commit using SET_TOKEN using authToken, uid, email
                 commit('SET_TOKEN', await authToken);
-                saveUser(auth.currentUser?.uid);
-                saveEmail(auth.currentUser?.email);
+                // call fetchAuthUser action
+                await dispatch('fetchAuthUser');
+                // saveUser(auth.currentUser?.uid);
+                // saveEmail(auth.currentUser?.email);
+                router.push('/');
             } catch (error) {
                 // Handle errors
+                if (error instanceof FirebaseError) {
+                    handleAuthError(error);
+                }
             }
 
             commit('SET_USER', auth.currentUser?.uid);
-
-            router.push('/');
         },
-
+        async fetchAuthUser({ commit }) {
+            try {
+                console.log('Fetching user...');
+                const response = await fetchAuth();
+                const auth = response.data;
+                console.log('Fetched user:', auth);
+                console.log('id is ', auth.id);
+                commit('SET_ID', auth.id);
+                // console log id type
+                console.log('id type is ', typeof auth.id);
+                commit('SET_AUTH', auth);
+            } catch (error) {
+                console.error(error);
+            }
+        },
         async register(
-            { commit },
+            { commit, dispatch, state },
             details: {
                 name: string;
                 password: string;
@@ -156,10 +185,13 @@ export default createStore({
 
                         // Post consumer data
                         await postConsumer({ name, phone, vat });
-                        const authArray = await fetchAuth();
-                        commit('SET_USER', authArray);
-                        const { id } = authArray.data;
-                        await postAddressConsumer(id, {
+                        // const authArray = await fetchAuth();
+                        await dispatch('fetchAuthUser');
+                        commit('SET_USER', auth);
+                        // const { id } = state.id;
+                        // save state.id to variable
+                        // const id = state.id;
+                        await postAddressConsumer(state.id, {
                             number,
                             door,
                             floor,
@@ -175,7 +207,9 @@ export default createStore({
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
-                        handleAuthError(error.code);
+                        if (error instanceof FirebaseError) {
+                            handleAuthError(error);
+                        }
                     }
                 }
                 // if saveValue == "Producer" then post to producer collection
@@ -194,28 +228,30 @@ export default createStore({
 
                         // Post producer data
                         await postProducer({ name, phone, vat });
-                        const authArray = await fetchAuth();
-                        commit('SET_USER', authArray);
+                        // const authArray = await fetchAuth();
+                        await dispatch('fetchAuthUser');
+                        commit('SET_USER', auth);
+                        console.log('auth é ', auth);
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
-                        handleAuthError(error.code);
+                        if (error instanceof FirebaseError) {
+                            handleAuthError(error);
+                        }
                     }
                 }
             } catch (error) {
-                // Handle error for getting user type
-                switch (error.code) {
-                    // Handle different error codes as needed
-                    default:
-                        handleAuthError(error.code);
-                        if (auth.currentUser) {
-                            deleteUser(auth.currentUser);
-                        }
+                if (error instanceof FirebaseError) {
+                    handleAuthError(error);
+                }
+                if (auth.currentUser) {
+                    deleteUser(auth.currentUser);
                 }
             }
         },
 
         async logout({ commit }) {
+            // commit('SET_AUTH', false);
             await signOut(auth);
 
             commit('CLEAR_USER');
@@ -240,8 +276,7 @@ export default createStore({
 });
 
 async function handleAuthError(error: firebase.FirebaseError) {
-    console.log('Error type:', error);
-    switch (error) {
+    switch (error.code) {
         case 'auth/user-not-found':
             createPopup('Utilizador não encontrado', 'warning');
             break;
