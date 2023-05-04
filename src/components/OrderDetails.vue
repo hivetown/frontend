@@ -1,25 +1,20 @@
 a<template>
   <div class="table-container" style="overflow: auto">
-    <!--
-      obter o user logado
-      <p>{{ user['id'] }}</p>
-    -->
   <table class="table table-striped">
 <thead>
   <tr>
     <th id="col" scope="col">Artigo</th>
-    <th id="col" scope="col">Nome do artigo</th>
+    <th id="col" scope="col"> </th>
     <th id="col" scope="col">Fornecedor</th>
     <th id="col" scope="col">Preço</th>
     <th id="col" scope="col">Quantidade</th>
+    <th id="col" scope="col">Eventos</th>
     <th id="col" scope="col">Estado</th>
     <th id="col" scope="col">Total</th>
   </tr>
 </thead>
 <tbody>
   <tr v-for="num in orderItem['totalItems']" :key="num">
-<!--<p>{{orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]}}</p>-->
-   <!-- <td><img src= "{{ orderItem?.items[num-1]?.producerProduct?.productSpec?.images[num-1]?.url }} "/></td>-->
    <td><a :href="'/products/' + orderItem?.items[num-1]?.producerProduct?.productSpec?.id"><img v-if="orderItem['items'][num-1]['producerProduct']['productSpec']['images'].length !== 0" :src="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.url" :alt="orderItem?.items[num-1]?.producerProduct?.productSpec?.images[0]?.alt"  style="height: 50px; " /><p id="texto" v-else>Imagem <br>indisponível</p></a></td>
     <!--TODO por marcas e produto como links-->
    <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
@@ -34,6 +29,10 @@ a<template>
     </td>
     <td>
       <p id="texto">{{orderItem['items'][num-1]['quantity'] }}</p>
+    </td>
+    <td>
+      <p id="texto">Última verificação: {{ eventos[num-1]['date']}}</p>
+      <p id="texto">Encontra-se em: {{ eventos[num-1]['address']['street'] }}, {{ eventos[num-1]['address']['parish'] }}, {{ eventos[num-1]['address']['city'] }}</p>
     </td>
     <td>
   
@@ -61,7 +60,6 @@ a<template>
 
     <td>
      <p id="texto">{{orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price'] }} €</p> 
-      <!--{{ totalSum += orderItem['items'][num-1]['quantity'] * orderItem['items'][num-1]['price']  }}-->
     </td>
   </tr>
 </tbody>
@@ -77,7 +75,7 @@ a<template>
 import Swal from 'sweetalert2';
 import { onMounted, ref} from "vue";
  import { fetchAllItems } from "../api";
- import { fetchAllOrders } from "../api";
+ import { fetchAllOrders, getShipment } from "../api";
  import { fetchUser } from "../api";
  import { Order, Consumer } from "../types/interfaces";
  
@@ -85,32 +83,34 @@ import { onMounted, ref} from "vue";
   var totalSum = 0;
   var date = '';
   const orders = ref<Order[]>([]);
-
+  const lista = [];
+  const eventos = ref<Order[]>([]);
   const user = ref<Consumer[]>([]);
   const search = ref('');
   //obtem o id do link
   const idO = window.location.pathname.split('/id').pop()?.toString();
+  
   onMounted(async () => {
-
-    //const userItem = await fetchUser();
-    //user.value=userItem.data;
-    //user logado
-    //console.log("user logado" + user.value['id']);
-
-    //utilizador logado para por em fetchAllOrders (user.value.id);
     //TODO por user logado
     const responseItem = await fetchAllItems('1', idO);
     orderItem.value=responseItem.data;
 
-    //trocar o 1 por (user.value['id']) que e o user logado
     //TODO por user logado
     const response = await fetchAllOrders('1');
     orders.value = response.data;
-    //totalSum+=(item.id);
     for (let i = 0; i < orderItem.value.items.length; i++) {
         totalSum += orderItem.value.items[i]['price'] * orderItem.value.items[i]['quantity'];
+        lista.push(orderItem.value.items[i]['producerProduct']['id']);
       }
-      console.log(totalSum)
+      for (let x = 0; x< lista.length; x++){
+        //TODO por user logado
+        const responseShipment = await getShipment(1,1, lista[x]);
+        //queremos o ultimo evento
+        eventos.value.push(responseShipment.data['events'][responseShipment.data['events'].length - 1]);
+
+      }
+
+      console.log(eventos.value);
       document.querySelector('#totalSum').textContent = "Total: " + totalSum + "€";
       for (let i = 0; i < orders.value.items.length; i++) {
         if (orders.value.items[i].id == idO) {
@@ -122,6 +122,7 @@ import { onMounted, ref} from "vue";
     
 
   });
+ 
   
 </script>
 <style scoped>
@@ -133,18 +134,7 @@ animation: fade 2s ease-in-out infinite alternate;
 0% { opacity: 0; }
 100% { opacity: 1; }
 }
-/*
-.bi-arrow-repeat {
-animation: spin 2s linear infinite;
-transform-origin: center !important;
 
-}
-
-@keyframes spin {
-from { transform: rotate(0deg); }
-to { transform: rotate(360deg); }
-}
-*/
 .bi-box-seam {
 animation: spin 2s linear infinite;
 }
@@ -166,8 +156,6 @@ to { transform: rotate(360deg); }
   position: -ms-sticky;
   z-index: 2 ;
 }
-
-
 
  .table th,
  .table td {
@@ -207,13 +195,12 @@ to { transform: rotate(360deg); }
   margin-top: 20px;
   font-size: 15px;
   text-align: right;
-  margin-right: 90px;
 }
 .table-container {
   max-height: 450px; /* Altura máxima da tabela */
   margin:auto;
   margin-top: 0px;
-  max-width: 90%;
+  max-width: 100%;
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   position: relative;
 }
@@ -236,8 +223,8 @@ table {
   /*em telemovel remove colunas,5 */
 
 
-.table th:nth-child(5),
-.table td:nth-child(5) {
+.table th:nth-child(6),
+.table td:nth-child(6) {
   display: none;
 }
 .table th:nth-child(1),
@@ -245,8 +232,8 @@ table {
   display: none;
 }
 
-.table th:nth-child(2),
-.table td:nth-child(2) {
+.table th:nth-child(4),
+.table td:nth-child(4) {
   display: none;
 }
 

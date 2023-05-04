@@ -14,3 +14,6 @@ export const fetchOrder = (userId: string, orderId: string, search?: string) =>
 export const fetchUser = (search?: string) =>
     api.get<Consumer[]>(`/auth`, { params: { search } });
 
+export const getShipment = (consumerId: number, orderId: number, producerProduct: number, search?: string) =>
+    api.get<Order[]>(`/consumers/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`, { params: { search }});
+
