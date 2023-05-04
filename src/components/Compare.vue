@@ -13,72 +13,51 @@
 
         <!-- TODO por automático -->
         <!-- Produtos a comparar -->
-        <div class="d-flex mt-5 px-3" style="gap:20vh; border-bottom: 2px solid #eeeeee;">
-            <ProductCard :productTitle="productSpec1.name" 
-                         :productDescription="productSpec1.description"
-                         :productImage="product1Img.url"
-                         :productId="product1Id" 
-                         :productPrice="[productSpec1.minPrice, productSpec1.maxPrice]" />
+        <div class="d-flex mt-5 px-3" style="gap:20vh; border-bottom: 2px solid #eeeeee; background-color:;">
+            <ProductCard style="margin-left: 25vh;" :productTitle="productSpec1.name" 
+                            :productDescription="productSpec1.description"
+                            :productImage="product1Img.url"
+                            :productId="product1Id" 
+                            :productPrice="[productSpec1.minPrice, productSpec1.maxPrice]" />
             <ProductCard :productTitle="productSpec2.name" 
-                         :productDescription="productSpec2.description"
-                         :productImage="product2Img.url"
-                         :productId="product2Id" 
-                         :productPrice="[productSpec2.minPrice, productSpec2.maxPrice]" />
+                            :productDescription="productSpec2.description"
+                            :productImage="product2Img.url"
+                            :productId="product2Id" 
+                            :productPrice="[productSpec2.minPrice, productSpec2.maxPrice]" />
         </div>
 
         <!-- Características dos produtos a ser comparados -->
-        <!-- TODO fazer com que alinhem as categorias e os fields e por o resto dos dados -->
         <div class="spec-to-compare">
             <div class="mt-3 d-flex align-items-center spec-category-text">
                 <h5 class="p-3">Características</h5>
             </div>
-            
-            <div v-for="field in fieldsTotais" style="background-color: pink; border-bottom: solid 1px black;">
-                Produto:{{ field[0] }}<br>
-                Fields: 
-                <div v-if="field[0].length > 1">
-                    <div class="d-flex">
-                        <div v-for="fs in field[1]" class="mb-4">
-                            <div style="background-color: red;">
-                                <div v-for="f in fs">
-                                    {{ f }}
+            <div>
+                <div class="">
+                    <!-- Field name -->
+                    <div v-for="(field, index) in fieldsTotais" :key="index" style="border-bottom: 1px solid black;">
+                        <div>
+                            <div class="d-flex" style="gap:12vh;" >
+                                <div v-for="(fs, fsIndex) in field[1]" :key="fsIndex" class="mb-4 d-flex gap-4">
+                                    <div v-if="fsIndex === 0">
+                                        <div v-for="f in fs" style="background-color: ; width: 25vh;">
+                                            {{ f.field.name }}:
+                                        </div>
+                                    </div>
+                                    <div class="" style="background-color: ; width: 25vh;">
+                                        <div v-for="f in fs" :key="f.field.id" class="d-flex gap-5">
+                                            {{ f.value }} {{ f.field.unit }}
+                                            <div v-if="field[0].length < 2">
+                                                -
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
-                <!-- Para cada produto que tem os mesmos fields -->
-                <div v-for="fs in field[1]" class="mb-4">
-                    <!-- Prod x: {{ fs }} -->
-                    <div v-for="f in fs">
-                        {{ f }}
-                    </div>
-                </div>
-            </div>
-            <!-- {{ fieldsTotais }} -->
-            <div class="d-flex gap-5">
-                <!-- <div>
-                    <div v-for="(category, index) in product1Categories.items" :key="index">
-                        <h6 class="p-3">{{ category.name }}</h6>                          
-                        <tr v-for="(categoryFields, index) in fields1" :key="index" style="border-bottom: 2px solid #f3f3f3;">
-                            <p v-for="field in categoryFields">
-                                Nome: {{ field.field.name }}
-                            </p>
-                        </tr>
-                    </div>
-                </div> -->
-
-            </div>
-         
-            <!-- Dados do produto 1 -->
-            <div class="d-flex p-2" style="gap:30vh;">
-                <!-- <CompareSpec></CompareSpec>
-                <CompareSpec></CompareSpec> -->
             </div>
         </div>
-
-        
     </div>
 </template>
 
