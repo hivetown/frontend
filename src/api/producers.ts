@@ -5,6 +5,10 @@ import { api } from "./_base";
 export const postConsumer = (producer: Producer) => 
     api.post("/producer", producer);
 
-export const getProducers = (search?: string) => 
+export const getProducersValues = (search?: string) => 
     api.get<Producer[]>("/producer", { params: { search } });
+
+export const getProducers = (page?: number, pageSize?: number, search?: string) =>
+    api.get<Producer[]>("/producers", { params: { page, pageSize, search } });
+
 

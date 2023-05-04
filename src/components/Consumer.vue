@@ -19,19 +19,34 @@
     </b-card>
     </div>
     </div>
+    <Pagination
+    :totalRows="totalItems"
+              :perPage="pageSize"
+              :currentPage="page"
+             >
+      </Pagination>
 </template>
 
 <script lang="ts">
-import {getConsumers} from '../api/consumers'
+import Pagination from '../components/Pagination.vue';
+import {getConsumers, getConsumersValues} from '../api/consumers'
 import { onMounted, ref} from "vue";
 import { Consumer } from "../types/interfaces";
 export default {
+  components: {Pagination},
   setup() {
     const users = ref<Consumer[]>([]);
     const qtd = ref(0);
+    const page = ref(1);
+    const pageSize = ref(24);
+    const totalItems = ref(0);
     onMounted(async () => {
       try {
-        const response = await getConsumers();
+        const responseItems = await getConsumersValues();
+        page.value=(responseItems.data.page);
+        pageSize.value=(responseItems.data.pageSize);
+        totalItems.value=(responseItems.data.totalItems);
+        const response = await getConsumers(page.value, pageSize.value); 
         users.value = response.data;
         qtd.value = users.value.items.length;
       } catch (error) {
@@ -39,7 +54,7 @@ export default {
       }
     });
 
-    return { users, qtd };
+    return { users, qtd, page, pageSize, totalItems };
   },
 };
 </script>

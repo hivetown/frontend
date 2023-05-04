@@ -1,26 +1,28 @@
 <template>
     <h1>Utilizadores</h1>
     <div class="botoes">
-        <h4>Mostrar resultados para </h4><br>
+        <h6>Mostrar resultados para: </h6>
     <div style="display: inline-block">
-      <label style="display: inline-block" for="option1">Todos os utilizadores</label><br>
       <input style="display: inline-block" type="radio" id="option1" name="options" v-model="selectedOption" value="option1" checked>
+      <label style="display: inline-block; font-size: 12px" for="option1"> Todos os utilizadores</label>
     </div>
     <div>
-      <label for="option2">Apenas consumidores</label><br>
-      <input type="radio" id="option2" name="options" v-model="selectedOption" value="option2">
+      <input style="display: inline-block" type="radio" id="option2" name="options" v-model="selectedOption" value="option2">
+      <label style="display: inline-block; font-size: 12px" for="option2"> Apenas consumidores</label>
     </div>
     <div>
-      <label for="option3">Apenas produtores</label><br>
-      <input type="radio" id="option3" name="options" v-model="selectedOption" value="option3">
+      <input style="display: inline-block" type="radio" id="option3" name="options" v-model="selectedOption" value="option3">
+      <label style="display: inline-block; font-size: 12px" for="option3"> Apenas produtores</label> <br>
     </div>
     </div>
     <div class="consumer" v-if="selectedOption === 'option1' || selectedOption === 'option2'">
       <Consumer></Consumer>
+    
     </div>
     <div class="producer" v-if="selectedOption === 'option1' || selectedOption === 'option3'">
       <Producer></Producer>
     </div> 
+
   </template>
   
 <script lang="ts">
@@ -40,6 +42,9 @@ export default {
 
 </script> 
 <style scoped>
+h6{
+  margin-left: 20px;
+}
 h1 {
     font-family: 'DM Serif Display';
     text-align: center;
@@ -57,12 +62,14 @@ input[type="radio"]:checked {
 input {
   appearance: none;
   -webkit-appearance: none;
-  width: 22px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   margin-left: 20px;
+  margin-right: 10px;
   border-radius: 50%;
   background: #e8e8e8;
-  border: 3px solid #FFF;
+  border: 2px solid #FFF;
+  padding: 0;
 
   /* The outline will be the outer circle */
   outline: 1px solid #999;
