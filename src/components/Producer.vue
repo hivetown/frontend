@@ -49,6 +49,7 @@ setup() {
       const response = await getProducers(page.value, pageSize.value); 
       users.value = response.data;
       qtd.value = users.value.items.length;
+      
     } catch (error) {
       console.error(error);
     }

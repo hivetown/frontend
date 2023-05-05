@@ -17,19 +17,38 @@
   <b-card-text>
     <strong>Email: </strong>{{ users['email'] || 'Não definido'}}
     <br>
-    <strong>Telemóvel: </strong>{{ users['phone'] || 'Nnão definido'}}
+    <strong>Telemóvel: </strong>{{ users['phone'] || 'Não definido'}}
     <br>
     <strong>Morada: </strong>
     {{ users['addresses'] && users['addresses'][0] ? users['addresses'][0]['street'] + ', nº' + users['addresses'][0]['number'] + ', porta ' + users['addresses'][0]['door'] + ' ' + users['addresses'][0]['zipCode'] + ', ' + users['addresses'][0]['city'] : 'Não definido'}}
-    <div v-for="num in users['addresses'] ? users['addresses'].length-1 : 0">
+    <div v-for="num in Array.isArray(users['addresses']) && users['addresses'].length > 0 ? users['addresses'].length-1 : 0">
+
       <strong>Morada: </strong>
       {{ users['addresses'] && users['addresses'][num] ? users['addresses'][num]['street'] + ', nº' + users['addresses'][num]['number'] + ', porta ' + users['addresses'][num]['door'] + ' ' + users['addresses'][num]['zipCode'] + ', ' + users['addresses'][num]['city'] : 'Não definido'}}
     </div>
   </b-card-text>
 
-
+<div class="editarConta">
+  <button href="#" style=" margin-right: 10px!important;" class="btn btn-outline-secondary btn-sm" @click="collapsed = !collapsed"><span >{{ collapsed ? 'Editar conta' : 'Minimizar' }}</span></button>
+      <div v-if="!collapsed">
+      <!-- Your content here -->
+      <strong>Insira os dados que quer alterar</strong>
+      <br>
+      <div class="form-group">
+          <label  for="name">Nome:</label>
+          <input  type="text" class="form-control" id="name" placeholder="Digite o nome" v-model="formData.name">
+          <label  for="name">Email:</label>
+          <input  type="text" class="form-control" id="name" placeholder="Digite o email" v-model="formData.email">
+          <label  for="name">Telemóvel:</label>
+          <input  type="text" class="form-control" id="name" placeholder="Digite o nº de telemóvel" v-model="formData.phone">
+        </div>
+        <button type="submit" class="btn btn-outline-secondary btn-sm" @click="saveChanges">Salvar alterações</button>
+    </div>
+</div>
     <div class="botaoCancel">
-    <b-button v-if="users['deletedAt']===null" href="#" variant="secondary" @click="showCancelDialog"><span style="color:white;">Desativar conta</span></b-button>
+      <p></p>
+
+      <button v-if="users['deletedAt']===null" href="#" class="btn btn-outline-secondary btn-sm" @click="showCancelDialog"><span style="color:black;">Desativar conta</span></button>
     <b-button v-else href="#" variant="secondary" @click="reativar"><span style="color:white;">Reativar conta</span></b-button>
   </div>
   </b-card>
@@ -40,13 +59,15 @@
 <script lang="ts">
 import Swal from 'sweetalert2';
 
-import {getConsumerId, desativarConsumer, ativarConsumer} from '../api/consumers'
+import {getConsumerId, desativarConsumer, ativarConsumer, updateConsumer} from '../api/consumers'
 import { onMounted, ref} from "vue";
 import { Consumer } from "../types/interfaces";
 export default {
   setup() {
+    let formData = {};
     const id = ref(0);
-    const users = ref<Consumer[]>([]);
+    const collapsed = ref(true);
+    const users = ref<Consumer>({});
     onMounted(async () => {
       
       id.value = window.location.pathname.split('/').pop()?.toString();
@@ -60,9 +81,45 @@ export default {
       }
     });
 
-    return { users, id };
+    return { users, id, collapsed, formData };
   },
   methods: {
+    saveChanges() {
+    // Define valores padrão para campos não preenchidos
+    const defaults = {
+    name: this.users.name,
+    email: this.users.email,
+    phone: this.users.phone
+  };
+  
+  // Mescla valores padrão com valores do formulário
+  const data = { ...defaults, ...this.formData };
+  
+  // Chama a função de atualização com o objeto mesclado
+  updateConsumer(this.id, data).then(response => {
+        Swal.fire({
+      icon: 'success',
+      title: 'Alterações salvas!',
+      showConfirmButton: false,
+      timer: 1500
+    }).then(() => {
+  location.reload();
+});
+    })
+    .catch(error => {
+      Swal.fire({
+      icon: 'error',
+      title: 'Erro ao efetuar alterações',
+      text: 'Tente mais tarde',
+      showConfirmButton: false,
+      timer: 1500
+    });
+
+    });
+  
+  console.log(data);
+}
+,
     showCancelDialog(): void {
       Swal.fire({
   title: 'Dasativar conta?',
@@ -81,7 +138,9 @@ export default {
       'Desativa!',
       'A conta encontra-se desativada.',
       'success'
-    );
+    ).then(() => {
+  location.reload();
+});
   })
   .catch((error) => {
     console.error(error);
@@ -122,7 +181,9 @@ export default {
       'Reativa!',
       'A conta encontra-se ativa novamente.',
       'success'
-    );
+    ).then(() => {
+  location.reload();
+});
   })
   .catch((error) => {
     console.error(error);
