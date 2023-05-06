@@ -13,7 +13,8 @@
 
         <!-- TODO por automático -->
         <!-- Produtos a comparar -->
-        <div class="d-flex mt-5 px-3" style="gap:20vh; border-bottom: 2px solid #eeeeee; background-color:;">
+        <!-- <div class="d-flex mt-5 px-3" style="gap:20vh; border-bottom: 2px solid #eeeeee; background-color:;"> -->
+        <div class="d-flex mt-5 px-3" style="gap:20vh;">
             <ProductCard style="margin-left: 25vh;" :productTitle="productSpec1.name" 
                             :productDescription="productSpec1.description"
                             :productImage="product1Img.url"
@@ -28,26 +29,31 @@
 
         <!-- Características dos produtos a ser comparados -->
         <div class="spec-to-compare">
-            <div class="mt-3 d-flex align-items-center spec-category-text">
+            <div class="mt-3 mb-3 d-flex align-items-center spec-category-text">
                 <h5 class="p-3">Características</h5>
             </div>
             <div>
                 <div class="">
                     <!-- Field name -->
-                    <div v-for="(field, index) in fieldsTotais" :key="index" style="border-bottom: 1px solid black;">
+                    <div v-for="(field, index) in fieldsTotais" :key="index" class="mb-3 parent" style="border-bottom: 1px solid #eeeeee;">
                         <div>
                             <div class="d-flex" style="gap:12vh;" >
                                 <div v-for="(fs, fsIndex) in field[1]" :key="fsIndex" class="mb-4 d-flex gap-4">
                                     <div v-if="fsIndex === 0">
                                         <div v-for="f in fs" style="background-color: ; width: 25vh;">
-                                            {{ f.field.name }}:
+                                            <span style="font-weight: bold">{{ f.field.name }}:</span>
                                         </div>
                                     </div>
                                     <div class="" style="background-color: ; width: 25vh;">
-                                        <div v-for="f in fs" :key="f.field.id" class="d-flex gap-5">
-                                            {{ f.value }} {{ f.field.unit }}
+                                        <div v-for="f in fs" :key="f.field.id" class="d-flex">
+                                            <div style="background-color: ; min-width: 25vh;">
+                                                {{ f.value }}
+                                                {{ f.field.unit }}
+                                            </div>
                                             <div v-if="field[0].length < 2">
-                                                -
+                                                <div style="background-color: ; width: 25vh; display: flex; justify-content: center;">
+                                                    <span>-</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

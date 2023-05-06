@@ -101,6 +101,10 @@
         height: 80vh;
     }
 
+    .square-image {
+        border-radius: 0.5em !important;
+    }
+
 </style>
   
 <!-- <script setup lang="ts">
