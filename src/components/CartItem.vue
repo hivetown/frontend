@@ -18,7 +18,7 @@
           <p class="mt-3">Quantidade:</p>
 					<div class="d-flex" style="margin-top: -10px">
 						<b-col col lg="5">
-							<b-form-select v-model="selectedBD" :options="options" size="sm" class="mt-3" @change=""></b-form-select>
+							<b-form-select v-model="selectedValue" :options="options" size="sm" class="mt-3" @input="updateQnt"></b-form-select>
 						</b-col>
 					</div>
           <p class="mt-3">{{ cartItem.producerProduct!.currentPrice }}€/item</p>
@@ -42,28 +42,18 @@
 	import { CartItem } from '@/types';
 	import { PropType } from 'vue';
 	import { deleteCartItem } from "@/api"; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
+	import { updateQuantityCartItem } from "@/api";
 
 	export default {
 	  data() {
 	    return {
-        selectedBD: this.cartItem.quantity,
-	      selectedDefault: 1,
-	      options: [
-	        { value: 1, text: '1' },
-	        { value: 2, text: '2' },
-	        { value: 3, text: '3' },
-	        { value: 4, text: '4' },
-	        { value: 5, text: '5' },
-	        { value: 6, text: '6' },
-	        { value: 7, text: '7' },
-	        { value: 8, text: '8' },
-	        { value: 9, text: '9' },
-	        { value: 10, text: '10' },
-	      ],
-
+		selectedValue: this.cartItem.quantity,
+		selectedValueBackup: this.selectedValue,
+		options: this.setupQts(),
         cartItemPrice: this.priceCalc(),
 	    };
 	  },
+
 	  props: { // Isto são coisas que se recebe do componente pai
 	    cartItem: {
 	      type: Object as PropType<CartItem>,
@@ -71,30 +61,59 @@
 	    },
 	  },
 
+	  
     methods: {
+	 setupQts() {
+		const opts: { value: number, text: string }[] = [];
+		for (let i=1; i<this.cartItem.producerProduct!.stock;i++) {
+			const build = { value: i, text: i.toString() };
+			opts.push(build)
+		}
+		return opts
+	 },
+
       priceCalc(): number {
         return this.cartItem.producerProduct!.currentPrice * this.cartItem.quantity;
       },
-
 
 	  async removeCartItem(): Promise<void> {
 		try	{
 			//TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
 			//TODO: Desativar botão aqui
-			await deleteCartItem(1,this.cartItem.producerProduct!.id)
+			await deleteCartItem(9,this.cartItem.producerProduct!.id)
 			//TODO: Mudar o 1 para o id do cliente
-			console.log('test');
+			//console.log('test');
 			this.$emit('deleteCartItem',this.cartItem.producerProduct!.id);
-			console.log('id:',this.cartItem.producerProduct!.id);
+			//console.log('id:',this.cartItem.producerProduct!.id);
 		}
 		catch(error) {
 			if(error instanceof Error) {
 				console.log(error.message)
 			}
 		}
-	  }
-    },
-	};
+	  },
+
+	  async updateQnt(): Promise<void>{
+		try {
+			//console.log('Entrou updateQnt')
+			await updateQuantityCartItem(9, this.cartItem.producerProduct!.id, {'quantity': parseInt(this.selectedValue)})
+			//console.log('Correu updateQnt')
+			this.$emit('updateCartItem');
+			//console.log(this.cartItem.producerProduct!)
+		}
+		catch(error) {
+			if(error instanceof Error) {
+				if (error.message === 'Request failed with status code 400') {
+					console.log('Produto fora de stock')
+				}
+				else {
+					console.log(error.message)
+				}
+			}
+		}
+    }
+	}
+	}
 </script>
 
 <style>

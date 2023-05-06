@@ -17,7 +17,7 @@
 
                   <!--{{ itensCarrinho }}-->
 
-                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem" @deleteCartItem="itemRemoved"></CartItem><!--   -->
+                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem" @deleteCartItem="itemRemoved" @updateCartItem="refreshValues"></CartItem><!--   -->
                   <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
 
                   <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
@@ -30,8 +30,8 @@
                   <div style="height:2vh"></div>
 
                   <p style="text-align: justify;">
-                    Total de items: <span class="checkout">{{ nElementos }}</span><br>
-                    Sub-total: <span class="checkout">{{ precoTotal }}€</span><br>
+                    Total de items: <span class="checkout">{{ getItems() }}</span><br>
+                    Sub-total: <span class="checkout">{{ getPrice() }}€</span><br>
                     Entrega: <span class="checkout">0.00€</span><br>
                   </p>
 
@@ -136,50 +136,60 @@ table {
         ],
 
         nElementos: 0,
-
         precoTotal: 0.0,
       };
     },
 
     // Botão "Voltar"
     methods: {
-        goBack() {window.history.back();},
+        goBack() {
+          window.history.back();
+        },
 
         itemRemoved(idToRmv: number) {
           const indexToRemove = this.itensCarrinho.items.findIndex(item => item.producerProduct!.id === idToRmv);
-          console.log("CONA:  ",indexToRemove," idToRMV:", idToRmv)
           if (indexToRemove !== -1) {
             this.itensCarrinho.items.splice(indexToRemove, 1);
           }
+        },
+
+        getItems() {
+          return this.nElementos;
+        },
+        
+        getPrice() {
+          return this.precoTotal;
+        },
+
+        countItems() {
+          let totalQtd = 0;
+          for (let i=0; i < this.itensCarrinho["items"].length; i++) {
+            totalQtd += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity));
+          }
+          return totalQtd
+        },
+
+        countPrice() {
+          let totalSum = 0;
+          for (let i=0; i < this.itensCarrinho["items"].length; i++) {
+            totalSum += (parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice))*parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity)));
+          }
+          totalSum = parseInt(totalSum.toFixed(2));
+          return totalSum;
+        },
+
+        async refreshValues() {
+          const itensCarrinho=await fetchCartItems(9);
+          this.itensCarrinho=itensCarrinho.data;
+          this.nElementos = this.countItems();
+          this.precoTotal = this.countPrice();
+          console.log(this.nElementos, this.precoTotal)
         },
     },
     
     // Buscar Info do Carrinho
     async beforeMount(){
-      const itensCarrinho=await fetchCartItems(1);
-      this.itensCarrinho=itensCarrinho.data;
-      //console.log(JSON.stringify(this.itensCarrinho));
-
-      let totalQtd = 0;
-      for (let i=0; i < this.itensCarrinho["items"].length; i++) {
-        totalQtd += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity));
-      }
-      this.nElementos = totalQtd;
-
-      //console.log(this.nElementos);
-
-      //console.log(this.listaQuantidade)
-
-      //console.log(JSON.stringify(this.itensCarrinho.items[0].quantity));
-      //console.log(Object.values(this.itensCarrinho["items"][0].producerProduct));
-      //console.log(JSON.stringify(this.itensCarrinho["items"][0].producerProduct?.currentPrice));
-
-      let totalSum = 0;
-      for (let i=0; i < this.itensCarrinho["items"].length; i++) {
-        totalSum += (parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice))*parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity)));
-      }
-      //console.log(totalSum);
-      this.precoTotal=totalSum.toFixed(2);
+      this.refreshValues();
     },
 
 
