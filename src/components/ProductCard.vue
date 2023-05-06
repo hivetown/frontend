@@ -54,8 +54,6 @@
         </b-card-text>
     </div>
 
-    <!-- <CompareBanner :product-id="selectedId"></CompareBanner>  -->
-
 </template>
 
 <style>
@@ -143,7 +141,6 @@ import CompareBanner from "@/components/CompareBanner.vue";
         },
         methods: {
             setupCompare(id){
-                // console.log("id: " + id);
                 localStorage.setItem("compareBannerState", "open");
                 if(localStorage.getItem("compareItem1Id") == "null"){
                     localStorage.setItem("compareItem1Id", id);
@@ -153,29 +150,12 @@ import CompareBanner from "@/components/CompareBanner.vue";
 
                 this.$emit('send-id', id);
             },
-            // handleLocalStorageChange(event) {
-            //     if (event.key === "compareBannerState") {
-            //         console.log("compareBannerState changed");
-            //     }
-            // }
-            // addToCompare(id) {
-            //     this.selectedId = id;
-            //     console.log("id: " + id);
-            //     // TODO corrigir o emit para mandar o id para o categorias produto
-            //     this.$emit('send-id', id);
-            //     // console.log("Evento send-id emitido com sucesso!");
-            // },
-            // sendId(){
-            //     this.$emit('send-id', this.productId);
-            // }
         },
         async beforeMount(){
             if(this.productId != undefined){
                 const productCategory = await fetchProductCategories(this.productId);
                 this.productCategory = productCategory.data.items[0];
             }
-            // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
-
         }
     };
 </script>
