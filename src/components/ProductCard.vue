@@ -31,7 +31,7 @@
                 </div>
                 
                 <!-- Botões -->
-                <div class="d-flex gap-2"> 
+                <div class="d-flex gap-2 buttons"> 
                     <button type="button" class="btn btn-outline-secondary circle-btn" 
                             v-b-tooltip.hover title="Adicionar ao carrinho">
                             <i class="bi bi-cart"></i>

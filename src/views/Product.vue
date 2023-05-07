@@ -153,9 +153,9 @@
                            v-bind:class="{ 'active-view': currentPage === 'detalhes' }">
                   <h5 class="grey-txt">Detalhes do produto</h5>
                </b-nav-item>
-               <b-nav-item @click="currentPage = 'avaliacoes'" 
-                           v-bind:class="{ 'active-view': currentPage === 'avaliacoes' }">
-                  <h5 class="grey-txt">Avaliações</h5>
+               <b-nav-item @click="currentPage = 'vendedores'" 
+                           v-bind:class="{ 'active-view': currentPage === 'vendedores' }">
+                  <h5 class="grey-txt">Outros vendedores</h5>
                </b-nav-item>
             </b-nav>
          </b-navbar>
@@ -216,7 +216,7 @@
             
          </div>
          <!-- Página das avaliações -->
-         <div class="px-4" v-if="currentPage === 'avaliacoes'">
+         <div class="px-4" v-if="currentPage === 'vendedores'">
             <div class="mt-4">
                <!-- <p>Aqui vão estar as <b>avaliações</b> do produto</p> -->
                <div style="background-color: ; height:">
@@ -232,20 +232,19 @@
       </div>
 
       <!-- Produtos semelhantes -->
-      <div class="separator-top mt-5">
+      <!-- <div class="separator-top mt-5">
          <div class="title d-flex justify-content-between align-items-center mb-5">
             <h4 class="grey-txt mt-4">Produtos semelhantes</h4>
             <button type="button" class="btn btn-outline-secondary btn-sm"> Ver todos </button>
          </div>
 
-         <!-- TODO pôr automático -->
          <div class="d-flex justify-content-center" style="background-color:; gap: 12vh">
-            <ProductCard></ProductCard>
-            <ProductCard></ProductCard>
-            <ProductCard></ProductCard>
-            <ProductCard></ProductCard>
+            <div v-for="">
+               <ProductCard>
+               </ProductCard>
+            </div>
          </div>
-      </div>
+      </div> -->
 
    </div>
 
