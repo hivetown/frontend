@@ -42,7 +42,7 @@
     <!-- Espeaço à direita -->
     <div class="" style="width: 100%; background-color:;">
       <!-- TODO trocar para a categoria escolhida -->
-      <h3 class="parent dgreen-txt">Portáteis</h3>
+      <h3 class="parent dgreen-txt">{{this.currentCategory}}</h3>
       <!-- Diferentes vistas da página -->
       <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
       <CustomViews
@@ -112,7 +112,7 @@
 // import ProductCard from "@/components/ProductCard.vue";
 
 // API
-import { fetchProduct, fetchAllProducts, fetchAllCategories} from "@/api";
+import { fetchProduct, fetchAllProducts, fetchCategory, fetchAllCategories} from "@/api";
 import { Product, Category } from "@/types";
 import { defineComponent } from "vue";
 
@@ -126,6 +126,7 @@ export default defineComponent({
       allProductsData: {} as any,
       // Filtros
       allCategories: {} as Category[],
+      currentCategory: '' as string,
     };
   },
   // A fazer antes de montar o componente
@@ -137,40 +138,23 @@ export default defineComponent({
     const page = parseInt(this.$route.query.page) || 1;
     const pageSize = parseInt(this.$route.query.pageSize) || 24;
     const categoryId = parseInt(this.$route.query.categoryId) || 1;
-    // console.log("categoria escolhida: "+category)
-    // console.log("Página do route: " + page)
-    // const allProductsData = await fetchAllProducts();
-    // const allProductsData = await fetchAllProducts(page, pageSize, category);
     const allProductsData = await fetchAllProducts(page, pageSize, undefined, categoryId);
     const allProducts = allProductsData.data.items;
     const allCategoriesData =  await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
-    // console.log("Este é o log: " + JSON.stringify(allCategories));
-    // console.log("Quantidade de cats: " + allCategories.length);
-    //  console.log("Quantidade de cats: " + allCategories.type);
     this.allProducts = allProducts;
     this.allProductsData = allProductsData;
     this.allCategories = allCategories;
 
-   
-
-    // for (let i = 0; i < allProducts.length; i++) {
-    //   const productId = allProducts[i].id;
-    //   const productData = await fetchProduct(productId);
-    //   const product = productData.data;
-
-    //   console.log(`Produto ${productId}: `, product);
-      
-    // }
-
-  //  console.log("Este é o log: " + allProductsData.data.pageSize);
-    // this.productSpec = await (await fetchProduct(1)).data;
-
+    // Carregar a categoria atualmente selecionada
+    if(this.$route.query.categoryId){
+      const currentCategory = await fetchCategory(this.$route.query.categoryId);
+      this.currentCategory = currentCategory.data.name;
+    }else{ // Se não houver uma 
+      this.currentCategory = "Todas as categorias";
+    }
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
-    // const maxPriceProduct = this.allProducts.reduce((prevProduct, currentProduct) => {
-    //   return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
-    // });
     const maxPriceProduct = this.allProducts.length > 0 ? this.allProducts.reduce((prevProduct, currentProduct) => {
       return prevProduct.maxPrice > currentProduct.maxPrice ? prevProduct : currentProduct;
     }) : null;
