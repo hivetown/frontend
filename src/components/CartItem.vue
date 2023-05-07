@@ -23,7 +23,7 @@
 					</div>
           <p class="mt-3">{{ cartItem.producerProduct!.currentPrice }}€/item</p>
           <div class="d-flex ms-auto mt-3 justify-content-end">
-            <h3>{{ cartItemPrice }}€</h3>
+            <h3>{{ priceCalc() }}€</h3>
           </div>
 					<!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
 
