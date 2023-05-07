@@ -342,12 +342,12 @@
             
             // Dados da BD
             producerProducts: [] as Product[],
-            defaultProduct: null,
+            defaultProduct: [] as Product,
             productDetails: null,
-            lowestPrice: null,
-            highestPrice: null,
-            stock: null,
-            producers: 1,
+            lowestPrice: Number,
+            highestPrice: Number,
+            stock: Number,
+            producers: 1 as Number,
 
             productCategories: [] as Product[],
             productCategoriesFields: [],
@@ -369,19 +369,6 @@
             this.selectedImage = this.defaultProduct.producer.images[index].url;
             this.selectedImageAlt = this.defaultProduct.producer.images[index].alt;
          },
-
-         // Carrega a lista de campos de categorias de produtos
-         // async loadProductCategoriesFields() {
-         //    const productCategories = await fetchProductCategories(this.$route.params.specid);
-         //    this.productCategories = Object.values(productCategories.data); // Transforma o objeto em um array
-         //    for (const categoria of this.productCategories[0]) {
-         //       const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
-         //       this.productCategoriesFields.push([categoria.id, response.data.items]);
-         //    }
-         //    // console.log("productCategoriesFields: " + JSON.stringify(this.productCategoriesFields))
-         //    this.$forceUpdate(); // Atualiza o componente
-         // },
-
       },
 
       // A fazer antes de montar o componente
@@ -414,7 +401,7 @@
          // Percorre a lista de produtores contando-os, encontra o preço mais alto e o preço 
          // mais baixo. Determina ainda o stock total
          for (let i = 1; i < this.producerProducts.items.length; i++) {
-            this.producers += 1;
+            this.producers = this.producers.valueOf() + 1;
             this.stock += this.producerProducts.items[i].stock;
             
             const currentPrice = this.producerProducts.items[i].currentPrice;
@@ -435,28 +422,13 @@
          try{
             for (const categoria of this.productCategories.items) {
                const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
-               this.fields.push( response.data.items);
+               this.fields.push(response.data.items);
             }
          }catch(error){
             console.log("Erro: " + error);
          }
-
-         // // Guarda os campos de cada categoria
-         // // console.log("Antes do for: "+ this.productCategoriesFields);
-         // for (const categoria of this.productCategories.items) {
-         //    const fields = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
-         //    for (const items of fields.data.items){
-         //       // console.log("items: " + JSON.stringify(items.field));
-         //       this.productCategoriesFields.push(items.field);
-         //    }
-         //    // console.log("Dentro do for: "+ JSON.stringify(this.productCategoriesFields));
-         //    // console.log("//////////////");
-         // }
-         // // this.productCategoriesFields = productCategoriesFieldsAtual;
-         // // console.log("Depois do for: " + JSON.stringify(this.productCategoriesFields));
       }, 
       created() {
-      //    this.loadProductCategoriesFields();
          this.productCategoriesFields = this.fields;
       },
          components: { ProductCard, PathComponent }
