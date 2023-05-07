@@ -26,8 +26,8 @@
                <div class="d-flex justify-content-between align-items-center mt-3 gap-3" style="overflow: auto;">
                   <img class="square-image alternative-img rounded-3"
                      style="background-color: #f3f3f3;"
-                     v-for="(image, index) in defaultProduct && defaultProduct.productSpec ? 
-                                                                defaultProduct.productSpec.images : []"
+                     v-for="(image, index) in defaultProduct && defaultProduct.producer ? 
+                                                                defaultProduct.producer.images : []"
                      :key="index"
                      :src="image.url"
                      :alt="image.alt"
@@ -39,11 +39,11 @@
 		
       <!-- Lado direito da página -->
 		<div class="w-50">
-			<div v-if="defaultProduct" class="w-75" style="min-height: 20vh;">
+			<div v-if="productDetails && productDetails.name && productDetails.description" class="w-75" style="min-height: 20vh;">
 
             <!-- Informação do produto -->
-            <h1 class="product-title">{{ defaultProduct.productSpec.name }}</h1>
-				<p class="grey-txt">{{ defaultProduct.productSpec.description }}</p>
+            <h1 class="product-title">{{ productDetails.name }}</h1>
+				<p class="grey-txt">{{ productDetails.description }}</p>
 
             <!-- TODO rating automático -->
             <!-- Rating -->
@@ -98,10 +98,10 @@
                           v-b-tooltip.hover title="Ver produto" >
                           <i class="bi bi-eye"></i>
                   </button> -->
-                  <button type="button" class="btn btn-outline-secondary circle-btn" 
+                  <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Comparar produto">
                           <i class="bi bi-arrow-left-right"></i>
-                  </button>
+                  </button> -->
                </div>
             </div>
          </div>
@@ -123,8 +123,8 @@
             <b-avatar class="nav-item" src="https://placekitten.com/320/320" 
                       style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
             </b-avatar> 
-            <div class="seller">
-               <h5 v-if="defaultProduct">{{ defaultProduct.producer.name }}</h5>
+            <div class="seller" v-if="defaultProduct && defaultProduct.producer">
+               <h5>{{ defaultProduct.producer.name }}</h5>
                <router-link :to="'/producer/' + defaultProduct.producer.id">
                   <a href="#" class="grey-txt">Sobre o vendedor</a>
                </router-link>
@@ -317,7 +317,7 @@
    import ProductCard from "@/components/ProductCard.vue";
    import PathComponent from "@/components/PathComponent.vue";
 
-   import { fetchProducerProducts, fetchProductCategories, fetchProductCategoriesFields } from "@/api";
+   import { fetchProduct, fetchProducerProducts, fetchProductCategories, fetchProductCategoriesFields } from "@/api";
    import { Product } from "@/types";
    import { defineComponent, PropType } from 'vue';
 
@@ -343,6 +343,7 @@
             // Dados da BD
             producerProducts: [] as Product[],
             defaultProduct: null,
+            productDetails: null,
             lowestPrice: null,
             highestPrice: null,
             stock: null,
@@ -365,8 +366,8 @@
          },
          // Selecionar a imagem do produto a visualizar
          selectImage(index: number) {
-            this.selectedImage = this.defaultProduct.productSpec.images[index].url;
-            this.selectedImageAlt = this.defaultProduct.productSpec.images[index].alt;
+            this.selectedImage = this.defaultProduct.producer.images[index].url;
+            this.selectedImageAlt = this.defaultProduct.producer.images[index].alt;
          },
 
          // Carrega a lista de campos de categorias de produtos
@@ -390,12 +391,18 @@
          this.producerProducts = producerProducts.data;
 
          // Produto com o preço mais baixo a ser apresentado quando a página é carregada
-         this.defaultProduct =  this.producerProducts.items[this.lowestPriceIndex].productSpec
+         // this.defaultProduct =  this.producerProducts.items[this.lowestPriceIndex].productSpec
+         this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex]
+
+         const productDetails = await fetchProduct(this.defaultProduct.productSpec);
+         this.productDetails = productDetails.data;
 
          // Carregar a imagem principal do produto
-         if (this.defaultProduct.images[this.lowestPriceIndex]) {
-            this.selectedImage = this.defaultProduct.images[this.lowestPriceIndex].url;
-            this.selectedImageAlt = this.defaultProduct.images[this.lowestPriceIndex].alt;
+         if(this.defaultProduct.producer.images){
+            if (this.defaultProduct.producer.images[this.lowestPriceIndex]) {
+               this.selectedImage = this.defaultProduct.producer.images[this.lowestPriceIndex].url;
+               this.selectedImageAlt = this.defaultProduct.producer.images[this.lowestPriceIndex].alt;
+            }
          }
 
          // Inicializa o menor preço, o maior e o stock
