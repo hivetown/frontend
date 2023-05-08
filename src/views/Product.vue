@@ -86,7 +86,7 @@
             </div>
 
             <!-- Botões compra -->
-            <div class="d-flex gap-4 align-items-center" style="margin-top:10vh;">
+            <div class="d-flex gap-4 align-items-center" style="margin-top:5vh;">
                <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
             
                <div class="aux-btns d-flex align-items-center gap-1"> 
@@ -120,7 +120,7 @@
          
          <!-- Vendedor -->
          <div class="mt-5 d-flex align-items-center gap-3">
-            <b-avatar class="nav-item" src="https://placekitten.com/320/320" 
+            <b-avatar class="nav-item" :src="defaultProduct.producer.image.url" :alt="defaultProduct.producer.image.alt"
                       style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
             </b-avatar> 
             <div class="seller" v-if="defaultProduct && defaultProduct.producer">
@@ -132,17 +132,6 @@
          </div>
 		</div>
 	</div>
-
-   <!-- TODO - outros vendedores -->
-   <!-- <div style="background-color: pink; height:">
-      <div v-for="(producerProduct, index) in producerProducts.items">
-         <div class="d-flex gap-3">
-            <p>Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
-            <p>{{ producerProduct.currentPrice }}€</p>
-         </div>
-      </div>
-   </div> -->
-  
 
    <!-- Informação adicional -->
    <div class="parent px-5">
@@ -162,92 +151,75 @@
          <!-- Página dos detalhes -->
          <div class="px-4" v-if="currentPage === 'detalhes'" >
             <div class="mt-4">
-               <h5 v-if="productCategories.items">
-                  Categorias do produto <span>({{ productCategories.items.length }})</span>
+               <h5 v-if="productCategories.items" class="mb-4">
+                  Categorias <span>({{ productCategories.items.length }})</span>
                </h5>
-               
-               <div v-for="categoria in productCategories.items">
-                  <!-- <li>{{ categoria.id }} - {{ categoria.name }}</li> -->
-                  <li class="px-3">{{ categoria.name }}</li>
+             
+               <div style="background-color: ;">
+                  <div v-for="categoria in productCategories.items" class="d-inline-block mx-2 cat-select">
+                     <router-link :to="'/products?categoryId=' + categoria.id">
+                        <a href="#" class="rounded-pill text-center mt-3 mb-3 px-3 py-1 prod-category">
+                           {{ categoria.name }}
+                        </a>
+                     </router-link>
+                  </div>
                </div>
+              
             </div>
             <div class="mt-4">
-               <h5 class="mb-4">Especificações</h5>
-               <div style="background-color: ; height: ;">
-                     <table style="background-color: ; width: 100%;">
-                        <!-- <thead>
-                           <tr>
-                              <th>Características</th>
-                           </tr>
-                        </thead> -->
-                        <tbody>
-                           <tr v-for="(category, index) in productCategoriesFields" :key="index" style="border-bottom: 2px solid #f3f3f3;">
-                              <tr v-for="field in category">
-                                 <div class="d-flex justify-content-arround px-3" style="background-color: ; height: 5vh;">
-                                    <span style="font-weight:bold ; width: 45vh; background-color: ">{{ field.field.name }}</span> 
-                                    <span style="font-weight: ;">{{ field.value }} {{ field.field.unit }}</span>
-                                 </div>
-                              </tr>
-                           </tr>
-                        </tbody>
-                     </table>
+               <div class="mt-3 mb-3 d-flex align-items-center spec-category-text">
+                  <h5 class="mt-4 mb-3">Características</h5>
                </div>
-
-
-
-
-               <div>
-                  <!-- <ul> -->
-                     <!-- Para cada categoria (bola preenchida) mostra os fields (bolas vazias)-->
-                     <!-- <li v-for="(category, index) in productCategoriesFields" :key="index">
-                        <div v-for="field in category">
-                           <ul>
-                              <li>Nome:{{ field.field.name }}</li>
-                              <li>Valor:{{ field.value }}</li>
-                              <li>Unidade:{{ field.field.unit }}</li>
-                           </ul>
-                           <p>----</p>
+               <div style="background-color: ; height: ;" class="px-3">
+                  <div v-for="(category, index) in productCategoriesFields" :key="index" class=" mt-3" :style="{ 'border-bottom': index !== productCategoriesFields.length - 1 ? '1px solid #eeeeee' : 'none' }">
+                     <div class=" d-flex gap-5" v-for="(field, index) in category" :key="index" >
+                        <div style="width: 25vh">
+                           <span style="font-weight: bold">{{ field.field.name }} </span>
                         </div>
-                     </li> -->
-                  <!-- </ul> -->
+                        <span :class="{ 'mb-3': index === category.length - 1 }">
+                           {{ field.value }} {{ field.field.unit }}
+                        </span>
+                     </div>
+                  </div>
                </div>
-               <!-- {{ productCategoriesFields }} -->
             </div>
-            
          </div>
-         <!-- Página das avaliações -->
+         <!-- Página dos outros vendedores -->
          <div class="px-4" v-if="currentPage === 'vendedores'">
-            <div class="mt-4">
-               <!-- <p>Aqui vão estar as <b>avaliações</b> do produto</p> -->
-               <div style="background-color: ; height:">
-                  <div v-for="(producerProduct, index) in producerProducts.items">
-                     <div class="d-flex gap-3">
-                        <p style="background-color: ; width: 60vh">Vendido por: <a href="#">{{ producerProduct.producer.name }}</a></p>
-                        <p>{{ producerProduct.currentPrice }}€</p>
+            <h5 v-if="productCategories.items" class="mb-4 mt-3"> Vendido por: </h5>
+
+            <div v-for="(producerProduct, index) in producerProducts.items">
+               <div class="mt-4" style="background-color:;">
+                  <div class="mt-5 d-flex align-items-center gap-3" style="background-color: ; width:70%;">
+                     <router-link :to="'/producer/' + producerProduct.producer.id">
+                        <b-avatar class="nav-item" :src="producerProduct.producer.image.url" :alt="producerProduct.producer.image.alt"
+                                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
+                        </b-avatar> 
+                     </router-link>
+                     <div class="seller">
+                        <h5>{{ producerProduct.producer.name }}</h5>
+                        <router-link :to="'/producer/' + producerProduct.producer.id">
+                           <a href="#" class="grey-txt">Sobre o vendedor</a>
+                        </router-link>
+                     </div>
+                     <div style="margin-left: 30%; position: absolute;">
+                        <div class="d-flex gap-5 align-items-center">
+                           <span><h5>{{ producerProduct.currentPrice }}€</h5></span>
+                           <div>
+                              <b-button class="buy-btn rounded-pill" style="scale:0.85;">Comprar agora</b-button>
+                              <button type="button" style="scale:1.1;" class="btn btn-outline-secondary circle-btn" 
+                                  v-b-tooltip.hover title="Adicionar ao carrinho">
+                                  <i class="bi bi-cart"></i>
+                              </button>
+                           </div>
+                        </div>
                      </div>
                   </div>
                </div>
             </div>
          </div>
       </div>
-
-      <!-- Produtos semelhantes -->
-      <!-- <div class="separator-top mt-5">
-         <div class="title d-flex justify-content-between align-items-center mb-5">
-            <h4 class="grey-txt mt-4">Produtos semelhantes</h4>
-            <button type="button" class="btn btn-outline-secondary btn-sm"> Ver todos </button>
-         </div>
-
-         <div class="d-flex justify-content-center" style="background-color:; gap: 12vh">
-            <div v-for="">
-               <ProductCard>
-               </ProductCard>
-            </div>
-         </div>
-      </div> -->
-
    </div>
-
 </template>
 
 <style>
@@ -298,6 +270,13 @@
       line-height: 0.2em;
    }
 
+   .prod-category{
+      color: white !important;
+   }
+
+   .cat-select a{
+      text-decoration: none !important;
+   }
 </style>
 
 <style scoped>
