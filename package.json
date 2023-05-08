@@ -30,6 +30,7 @@
     "bootstrap-icons-vue": "^1.8.1",
     "bootstrap-vue-3": "^0.5.1",
     "dotenv-cra": "^3.0.2",
+    "esbuild": "0.15.12",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-vue": "^9.6.0",
     "firebase": "^9.17.2",

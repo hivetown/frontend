@@ -26,36 +26,16 @@
 
               <td class="right-column">
               <div>
-                <h3>Rever a comprar</h3>
+                <h2>Totais</h2>
                   <div style="height:2vh"></div>
 
-                  <p style="text-align: justify;">
+                  <p style="text-align: justify; font-size: 1.3em;">
                     Total de items: <span class="checkout">{{ getItems() }}</span><br>
-                    Sub-total: <span class="checkout">{{ getPrice() }}€</span><br>
-                    Entrega: <span class="checkout">0.00€</span><br>
-                  </p>
-
-                  <b-row>
-                    <b-col col lg="8">
-                    <div>
-                    <b-form-select v-model="selected" :options="options" size="sm"></b-form-select>
-                    </div>
-                    </b-col>
-                    <b-col>
-                    <button type="button" class="btn btn-outline-secondary btn-sm checkout" >
-                    Aplicar
-                    </button>
-                    </b-col>
-                  </b-row>
-
-                  <div style="height:5vh;"></div>
-
-                  <p style="text-align: justify;">
-                    Total: <span class="checkout">{{ precoTotal }}€</span><br>
+                    Preço Total: <span class="checkout">{{ getPrice() }}</span><br>
                   </p>
                   <div style="text-align: center;">
                     <button type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
-                      Finalizar a compra
+                      Processeguir para Pagamento & Envio
                     </button>
                   </div>
               </div>
@@ -150,6 +130,7 @@ table {
           const indexToRemove = this.itensCarrinho.items.findIndex(item => item.producerProduct!.id === idToRmv);
           if (indexToRemove !== -1) {
             this.itensCarrinho.items.splice(indexToRemove, 1);
+            this.refreshValues();
           }
         },
 
@@ -175,7 +156,8 @@ table {
             totalSum += (parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice))*parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity)));
           }
           totalSum = parseInt(totalSum.toFixed(2));
-          return totalSum;
+          const toCurrency = totalSum.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
+          return toCurrency;
         },
 
         async refreshValues() {

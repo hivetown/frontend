@@ -28,7 +28,7 @@
 					<!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
 
 					<div class="d-flex ms-auto justify-content-end">
-						<button @click="removeCartItem" type="button" class="btn btn-outline-secondary circle-btn" title="Remover do carrinho">
+						<button @click="removeCartItem" variant="danger" type="button" class="btn btn-outline-secondary circle-btn" title="Remover do carrinho">
 							<i class="bi bi-x-lg"></i>
 						</button>
 					</div>
@@ -36,6 +36,13 @@
 			</div>
 		</b-card-text>
 	</div>
+
+	<!-- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO -->
+
+
+
+	<!-------------------------------------------->
+
 </template>
 
 <script lang="ts">
@@ -78,13 +85,18 @@
 
 	  async removeCartItem(): Promise<void> {
 		try	{
-			//TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
-			//TODO: Desativar botão aqui
-			await deleteCartItem(9,this.cartItem.producerProduct!.id)
-			//TODO: Mudar o 1 para o id do cliente
-			//console.log('test');
-			this.$emit('deleteCartItem',this.cartItem.producerProduct!.id);
-			//console.log('id:',this.cartItem.producerProduct!.id);
+			if (confirm("Tem a certeza chavalo?")) {
+				//TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
+				//TODO: Desativar botão aqui
+				await deleteCartItem(9,this.cartItem.producerProduct!.id)
+				//TODO: Mudar o 1 para o id do cliente
+				//console.log('test');
+				this.$emit('deleteCartItem',this.cartItem.producerProduct!.id);
+				//console.log('id:',this.cartItem.producerProduct!.id);
+
+			} else {
+				pass;
+			}
 		}
 		catch(error) {
 			if(error instanceof Error) {
