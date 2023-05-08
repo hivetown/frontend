@@ -64,12 +64,15 @@
                <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
             </div>
             <div>
-               <a href="#" v-if="producers > 1">
+               <a href="#" v-if="producers > 1" @click="currentPage = 'vendedores'">
                   <!-- TODO ver se é mais fácil trazer do /products/id (producerCount) -->
                   ver +{{ producers -1 }} vendedores
                </a>
                <!-- Não há mais vendedores para além do apresentado -->
                <a href="#" v-else-if="producers === 1"></a>
+
+               <!-- TODO - ver qual é o certo -->
+               <!-- {{ productDetails.producersCount }} -->
             </div>
 
             <!-- Quantidade -->
