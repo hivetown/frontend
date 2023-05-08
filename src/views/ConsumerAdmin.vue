@@ -1,4 +1,5 @@
 <template>
+  <a style=" color: black;" href="/admin" class="back"><i class="bi bi-arrow-left-circle"></i> Voltar</a>
   <div id="container">
     <div id="titulo">
     <h1>Consumidor {{  $route.params.id }}</h1>
@@ -7,7 +8,7 @@
 <div class="cart" >
   <b-card id="b-card"
     :title="users['name']"
-    :img-src="users['image'] && users['image']['url'] ? users['image']['url'] : '../semimagem.png'"
+    :img-src="users['image'] && users['image']['url'] ? users['image']['url'] : '../../public/semimagem.png'"
     :img-alt="users['image'] && users['image']['alt'] ? users['image']['alt'] : 'Default image'"
     img-top
     tag="article"
@@ -32,6 +33,7 @@
   <button href="#" style=" margin-right: 10px!important;" class="btn btn-outline-secondary btn-sm" @click="collapsed = !collapsed"><span >{{ collapsed ? 'Editar conta' : 'Minimizar' }}</span></button>
       <div v-if="!collapsed">
       <!-- Your content here -->
+      <br>
       <strong>Insira os dados que quer alterar</strong>
       <br>
       <div class="form-group">
@@ -81,8 +83,11 @@ export default {
       }
     });
 
+ 
+
     return { users, id, collapsed, formData };
   },
+
   methods: {
     saveChanges() {
     // Define valores padrão para campos não preenchidos
@@ -94,32 +99,58 @@ export default {
   
   // Mescla valores padrão com valores do formulário
   const data = { ...defaults, ...this.formData };
-  
-  // Chama a função de atualização com o objeto mesclado
-  updateConsumer(this.id, data).then(response => {
-        Swal.fire({
-      icon: 'success',
-      title: 'Alterações salvas!',
-      showConfirmButton: false,
-      timer: 1500
-    }).then(() => {
-  location.reload();
-});
-    })
-    .catch(error => {
-      Swal.fire({
-      icon: 'error',
-      title: 'Erro ao efetuar alterações',
-      text: 'Tente mais tarde',
-      showConfirmButton: false,
-      timer: 1500
-    });
+  console.log(this.formData);
+  if((Object.keys(this.formData).length === 0)===true){
+    Swal.fire({
+              icon: 'error',
+              title: 'Sem alterações a efetuar',
+              text: 'Precisa preenhcer pelo menos um campo para efetuar alterações',
+              showConfirmButton: false,
+              timer: 3500
+            });
+  }else{
 
+  // Chama a função de atualização com o objeto mesclado
+  updateConsumer(this.id, data)
+  .then(response => {
+    Swal.fire({
+      title: 'Tem certeza que deseja salvar as alterações?',
+      text: 'Poderá voltar a editar a conta caso se arrependa.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Não'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        updateConsumer(this.id, data)
+          .then(response => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Alterações salvas!',
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload();
+            });
+          })
+          .catch(error => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro ao efetuar alterações',
+              text: 'Tente mais tarde',
+              showConfirmButton: false,
+              timer: 1500
+            });
+          });
+      }
     });
-  
-  console.log(data);
+  })
+  .catch(error => {
+    console.log(error);
+  });
 }
-,
+},
+
     showCancelDialog(): void {
       Swal.fire({
   title: 'Dasativar conta?',
@@ -216,6 +247,11 @@ h1 {
   font-family: 'DM Serif Display';
 }
 
+.back {
+  font-size: 20px;
+  margin-left: 40px;
+}
+
 .cart {
   margin: 0 auto;
   display: flex;
@@ -233,8 +269,11 @@ h1 {
 @media (max-width: 600px) {
 
   .cart {
-    width: 300px;
-
-  }
+  margin: 0 auto;
+  display: flex;
+  width: 400px !important;
+  align-items: center;
+  justify-content: center;
+}
 }
 </style>

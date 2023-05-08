@@ -10,7 +10,8 @@ import User from "./views/User.vue";
 import Login from "./views/Login.vue";
 import Admin from "./views/Admin.vue";
 import Registration from "./views/Registration.vue";
-import Consumer from "./views/Consumer.vue";
+import ConsumerAdmin from "./views/ConsumerAdmin.vue";
+import ProducerAdmin from "./views/ProducerAdmin.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
 
@@ -81,9 +82,14 @@ const routes = [
         component: Admin,
     },
     {
-        path: "/consumer/:id",
+        path: "/admin/consumer/:id",
         name: "Consumer",
-        component: Consumer,
+        component: ConsumerAdmin,
+    },
+    {
+        path: "/admin/producer/:id",
+        name: "Producer",
+        component: ProducerAdmin,
     },
 
 ];

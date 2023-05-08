@@ -14,7 +14,7 @@
     > <b-card-text>
         {{users['items'][idx-1]['email']}} <br> {{users['items'][idx-1]['type']}}
         </b-card-text>
-        <b-button :href="'/consumer/' + users['items'][idx-1]['id']" variant="primary">Ver perfil</b-button>
+        <b-button :href="'admin/consumer/' + users['items'][idx-1]['id']" variant="primary">Ver perfil</b-button>
        
     </b-card>
     </div>
