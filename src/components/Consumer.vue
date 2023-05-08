@@ -5,8 +5,9 @@
 <!--TODO trocar para users.image-->
 <b-card id="b-card"
         :title="users['items'][idx-1]['name']"
-        :img-src="users['items'][idx-1]['image']['url']" 
-        :img-alt="users['items'][idx-1]['image']['alt']"
+        :img-src="users['items'][idx-1]['image'] ? (users['items'][idx-1]['image']['url'] ? users['items'][idx-1]['image']['url'] : '../../public/semimagem.png') : '../../public/semimagem.png'" 
+        :img-alt="users['items'][idx-1]['image'] ? (users['items'][idx-1]['image']['alt'] ? users['items'][idx-1]['image']['alt'] : 'sem imagem') : 'sem imagem'" 
+
         img-top
         tag="article"
         style="max-width: 17rem;"
@@ -20,12 +21,12 @@
     </div>
     </div>
     <Pagination
-    :totalRows="totalItems"
-              :perPage="pageSize"
-              :currentPage="page"
-             >
-      </Pagination>
-</template>
+  :totalRows="totalItems"
+            :perPage="pageSize"
+            :currentPage="page"
+            @page-changed="onPageChanged"
+           >
+    </Pagination></template>
 
 <script lang="ts">
 import Pagination from '../components/Pagination.vue';
@@ -37,13 +38,16 @@ export default {
   setup() {
     const users = ref<Consumer[]>([]);
     const qtd = ref(0);
-    const page = ref(1);
+    const page= ref(1);
     const pageSize = ref(24);
     const totalItems = ref(0);
     onMounted(async () => {
       try {
         const responseItems = await getConsumersValues();
         page.value=(responseItems.data.page);
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        page.value = parseInt(urlSearchParams.get('page'));
+       // page.value = 1;
         pageSize.value=(responseItems.data.pageSize);
         totalItems.value=(responseItems.data.totalItems);
         const response = await getConsumers(page.value, pageSize.value); 
@@ -53,9 +57,26 @@ export default {
         console.error(error);
       }
     });
-
-    return { users, qtd, page, pageSize, totalItems };
+console.log(page.value);
+    return { users, qtd, page, pageSize, totalItems};
   },
+  methods: {
+    onPageChanged(newPageNumber: number): void {
+    this.page = newPageNumber;
+    this.myFunction(); // chame sua função aqui
+  },
+  myFunction(): void {
+    // sua função aqui
+    const response = getConsumers(this.page, this.pageSize); 
+    this.users = response.data;
+    console.log(response);
+    console.log(this.page);
+  },
+    handlePageChange(value: number) {
+      this.page = value;
+      console.log(value);
+    },
+  }
 };
 </script>
 <style scoped>
