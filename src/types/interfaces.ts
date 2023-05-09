@@ -28,7 +28,9 @@ export interface User {
     email: string;
     phone: string;
     vat: string;
-    image: Image;
+    image: {
+        url?: string;
+      };
 }
 
 export interface Producer {

@@ -90,7 +90,10 @@ router.beforeEach(async (to, from, next) => {
     console.log('to', to);
     console.log('auth', store.state.user);
     console.log('isAuthenticated', isAuthenticated());
-    if (to.path === '/login' && isAuthenticated()) {
+    if (
+        (to.path === '/login' || to.path === '/registration') &&
+        isAuthenticated()
+    ) {
         // redirect to the home page if the user is already logged in
         next(from);
         return;

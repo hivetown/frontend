@@ -155,8 +155,9 @@ export default createStore({
                         await postConsumer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-
-                        await postAddressConsumer(state.user!.user.id, {
+                        const id = state.user!.user.id;
+                        console.log('id is ', id);
+                        await postAddressConsumer(id, {
                             number,
                             door,
                             floor,
