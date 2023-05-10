@@ -7,7 +7,6 @@
       </div>
 
       <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
-
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
@@ -154,16 +153,22 @@
         <!-- <b-avatar class="mx-auto" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;"></b-avatar> -->
       </b-nav-item>
     </b-nav>
+    <!-- <ProductsProducer :products="products" /> -->
   </div>
 </template>
-
+<!-- <div>
+  <ProductsProducer :products="products" />
+</div> -->
 <script lang="ts">
-import { Consumer, Producer } from '@types';
-import { computed } from 'vue';
+import { Consumer, Producer, ProducerProducts } from '@types';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { fetchAllProducts } from '../api/producerProducts';
-
+import ProductsProducer from '../views/ProductsProducer.vue';
 export default {
+  components: {
+    ProductsProducer,
+  },
   setup() {
     const store = useStore();
 
@@ -175,11 +180,13 @@ export default {
       await store.dispatch('logout');
     };
     const id = 2;
+    const products = ref<ProducerProducts[]>([]);
     if (user.value) {
       fetchAllProducts()
         .then((response) => {
-          const products = response.data;
-          console.log('Products:', products);
+          const productsArray = response.data;
+          console.log('Products:', productsArray);
+          products.value = productsArray;
           // Process the products data here
         })
         .catch((error) => {
@@ -190,6 +197,7 @@ export default {
     return {
       user,
       logout,
+      products,
     };
   },
 };

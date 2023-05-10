@@ -63,16 +63,18 @@
     </div>
   </div>
 </template> -->
+
 <template>
   <div class="container">
     <h1 class="mb-5">Meus Produtos</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <div v-for="product in products.items" :key="product.id" class="col">
+    <!-- <div v-for="product in products" :key="product.id" class="col"> -->
         <b-card class="prod-card position-relative">
           <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
-          <img :src="product.producer.image.url" class="square-image" alt="Imagem do produto" />
+          <img :src="product.producer.image?.url" class="square-image" alt="Imagem do produto" />
         </b-card>
         <b-card-text class="">
           <div>
@@ -144,7 +146,8 @@ import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
 export default defineComponent({
   setup() {
-    const products = ref<Product[]>([]);
+    // const products = ref<Product[]>([]);
+    const products = ref<{ items: Product[] }>({ items: [] });
 
     onMounted(async () => {
       try {
@@ -152,7 +155,7 @@ export default defineComponent({
         const { id } = authArray.data;
         console.log('Producer ID:', id);
 
-        const response = await fetchAllProducts(1);
+        const response = await fetchAllProducts(2);
         console.log('Response:', response);
 
         // const products = response.data as unknown as ProducerProducts;
@@ -162,6 +165,7 @@ export default defineComponent({
         console.log('Products:', productsArray);
 
         products.value = productsArray;
+        
       } catch (error) {
         console.error(error);
       }
