@@ -17,41 +17,22 @@ import {
 } from 'firebase/auth';
 // import transaction from 'firebase/transaction';
 import { getCookie, setCookie, removeCookie } from './cookies';
-import { store } from '@/store';
+// import { store } from '@/store';
 import firebase from 'firebase/app';
 import { FirebaseError } from 'firebase/app';
-// import saveValue from '../views/Registration.vue';
-// import userType from '../views/Registration.vue';
 
-// import Registration from '../views/Registration.vue';
-
-// import { useStore } from 'vuex';
 import { postAddressConsumer } from '../api/addressConsumer';
 import { Consumer, Producer } from '../types/interfaces';
-// import { api } from '../api/_base';
-// import { Transaction } from 'firebase/firestore';
-// import type { DefineComponent } from 'vue';
+import { AxiosError } from 'axios';
 
-// const saveUser = (uid) => {
-//     // add new user to database
-//     localStorage.setItem('uid', uid);
-// };
-
-// const saveEmail = (email: string | null | undefined) => {
-//     localStorage.setItem('email', email);
-// };
 
 export default createStore({
     state: {
         token: getCookie('token'),
         user: null,
-        auth: null,
-        id: 0,
     } as {
         token: string | null;
         user: Consumer | Producer | null;
-        auth: any;
-        id: number;
     },
     mutations: {
         SET_USER(state, user: Consumer | Producer) {
@@ -68,23 +49,10 @@ export default createStore({
             state.token = null;
             removeCookie('token');
         },
-        SET_AUTH(state, auth) {
-            state.auth = auth;
-        },
-        SET_ID(state, id) {
-            state.id = id;
-        },
     },
     actions: {
         async login({ commit, dispatch }, details) {
             const { email, password } = details;
-
-            // try {
-            //     await signInWithEmailAndPassword(auth, email, password);
-            // } catch (error) {
-            //     handleAuthError(error.code);
-            //     return;
-            // }
 
             try {
                 const userCredential = await signInWithEmailAndPassword(
@@ -92,17 +60,13 @@ export default createStore({
                     email,
                     password
                 );
-                // update auth state to true
-                // commit('SET_AUTH', true);
-                // Save the authentication token to local storage
+
                 const authToken = userCredential.user.getIdToken();
-                // localStorage.setItem('authToken', await authToken);
                 // commit using SET_TOKEN using authToken, uid, email
                 commit('SET_TOKEN', await authToken);
                 // call fetchAuthUser action
                 await dispatch('fetchAuthUser');
-                // saveUser(auth.currentUser?.uid);
-                // saveEmail(auth.currentUser?.email);
+
                 router.push('/');
             } catch (error) {
                 // Handle errors
@@ -110,8 +74,6 @@ export default createStore({
                     handleAuthError(error);
                 }
             }
-
-            commit('SET_USER', auth.currentUser?.uid);
         },
         async fetchAuthUser({ commit }) {
             try {
@@ -119,13 +81,19 @@ export default createStore({
                 const response = await fetchAuth();
                 const auth = response.data;
                 console.log('Fetched user:', auth);
-                console.log('id is ', auth.id);
-                commit('SET_ID', auth.id);
-                // console log id type
-                console.log('id type is ', typeof auth.id);
-                commit('SET_AUTH', auth);
+                // console.log('id is ', auth.id);
+                // commit('SET_ID', auth.id);
+                // // console log id type
+                // console.log('id type is ', typeof auth.id);
+                commit('SET_USER', auth);
             } catch (error) {
-                console.error(error);
+                console.log('ERROR: ', error);
+                if (error instanceof AxiosError) {
+                    console.log('AXIOS ERROR', error);
+                    if (error.response?.status === 404) {
+                        throw new Error('User not found');
+                    }
+                }
             }
         },
         async register(
@@ -187,11 +155,9 @@ export default createStore({
                         await postConsumer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-                        commit('SET_USER', auth);
-                        // const { id } = state.id;
-                        // save state.id to variable
-                        // const id = state.id;
-                        await postAddressConsumer(state.id, {
+                        const id = state.user!.user.id;
+                        console.log('id is ', id);
+                        await postAddressConsumer(id, {
                             number,
                             door,
                             floor,
@@ -204,6 +170,7 @@ export default createStore({
                             latitude,
                             longitude,
                         });
+
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
@@ -230,8 +197,6 @@ export default createStore({
                         await postProducer({ name, phone, vat });
                         // const authArray = await fetchAuth();
                         await dispatch('fetchAuthUser');
-                        commit('SET_USER', auth);
-                        console.log('auth é ', auth);
                         router.push('/');
                     } catch (error) {
                         // call handleAuthError(error) function
@@ -264,8 +229,6 @@ export default createStore({
                 if (user === null) {
                     commit('CLEAR_USER');
                 } else {
-                    commit('SET_USER', user);
-
                     if (router.currentRoute.value.path === '/login') {
                         router.push('/');
                     }

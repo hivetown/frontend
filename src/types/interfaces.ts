@@ -15,23 +15,39 @@ export interface ProductSpecification {
     products?: Product[];
 }
 
-export interface Producer {
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
+}
+
+export interface User {
     id: number;
     name: string;
     email: string;
     phone: string;
     vat: string;
-    products?: Product[];
-    type: 'PRODUCER';
+    image: {
+        url?: string;
+      };
+}
+
+export interface Producer {
+    user: User & { type: 'PRODUCER' };
+    imageShowcase: Image[];
+    name: string;
+    image: {
+        url?: string;
+      };
 }
 
 export interface Consumer {
-    id: number;
+    user: User & { type: 'CONSUMER' };
     name: string;
-    email: string;
-    phone: string;
-    vat: string;
-    type: 'CONSUMER';
+    image: {
+        url?: string;
+      };
 }
 
 export interface CreateConsumer {

@@ -19,30 +19,10 @@ import AuthConsumer from './components/AuthConsumer.vue';
 import store from './store';
 import { useStore } from 'vuex';
 import { onMounted, ref, watch } from 'vue';
-// import { auth } from './components/firebase';
-const auth = ref(null);
-async function fetchUser() {
-    try {
-        await store.dispatch('fetchAuthUser'); // call the fetchUser action in the store
-        // console.log('User data fetched');
-    } catch (error) {
-        console.error(error);
-    }
-}
-onMounted(async () => {
-    // console.log('Navbar mounted');
-    await fetchUser(); // call fetchUser when the component is mounted
-});
-watch(
-    () => store.state.auth,
-    (newValue) => {
-        auth.value = newValue;
-    }
-);
 
 const isAuthenticated = () => {
-    console.log('store.state.auth', store.state.auth);
-    return store.state.auth !== null;
+    // console.log('store.state.auth', store.state.auth);
+    return store.state.user !== null;
 };
 const routes = [
     {
@@ -102,6 +82,11 @@ const routes = [
         name: 'AuthConsumer',
         component: AuthConsumer,
     },
+    {
+        path: '/produtosprodutor',
+        name: 'produtosprodutor',
+        component: ProductsProducer,
+    },
 ];
 
 const router = createRouter({
@@ -110,10 +95,18 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+    if (!store.state.user) await store.dispatch('fetchAuthUser');
+
+    console.log('from', from);
+    console.log('to', to);
+    console.log('auth', store.state.user);
     console.log('isAuthenticated', isAuthenticated());
-    if (to.path === '/login' && isAuthenticated()) {
+    if (
+        (to.path === '/login' || to.path === '/registration') &&
+        isAuthenticated()
+    ) {
         // redirect to the home page if the user is already logged in
-        next('/');
+        next(from);
         return;
     }
 
