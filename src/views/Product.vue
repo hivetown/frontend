@@ -39,7 +39,7 @@
 		
       <!-- Lado direito da página -->
 		<div class="w-50">
-			<div v-if="productDetails && productDetails.name && productDetails.description" class="w-75" style="min-height: 20vh;">
+			<div v-if="productDetails && productDetails.name && productDetails.description" class="w-75" style="min-height: 18vh;">
 
             <!-- Informação do produto -->
             <h1 class="product-title">{{ productDetails.name }}</h1>
@@ -47,26 +47,25 @@
 
             <!-- TODO rating automático -->
             <!-- Rating -->
-            <div>
+            <!-- <div>
                <div class="rating d-flex gap-1 separator-bottom">
                   <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
                   <span class="">(10)</span>
                </div>
-            </div>
+            </div> -->
 
 			</div>
 
          <div class="separator-bottom" style="min-height: 30vh;">
-            <!-- TODO preço automático -->
             <!-- Preço -->
             <div class="d-flex align-items-center gap-3">
                <h3>{{lowestPrice}}€ - {{ highestPrice }}€</h3>
                <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
             </div>
             <div>
-               <a href="#" v-if="producers > 1" @click="currentPage = 'vendedores'">
+               <a href="#" v-if="producers.valueOf() > 1" @click="currentPage = 'vendedores'">
                   <!-- TODO ver se é mais fácil trazer do /products/id (producerCount) -->
-                  ver +{{ producers -1 }} vendedores
+                  ver +{{ producers.valueOf() -1 }} vendedores
                </a>
                <!-- Não há mais vendedores para além do apresentado -->
                <a href="#" v-else-if="producers === 1"></a>
@@ -123,7 +122,7 @@
          
          <!-- Vendedor -->
          <div class="mt-5 d-flex align-items-center gap-3">
-            <b-avatar class="nav-item" :src="defaultProduct.producer.image.url" :alt="defaultProduct.producer.image.alt"
+            <b-avatar v-if="defaultProduct.producer" class="nav-item" :src="defaultProduct.producer.image.url" :alt="defaultProduct.producer.image.alt"
                       style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;  scale:1.2;">
             </b-avatar> 
             <div class="seller" v-if="defaultProduct && defaultProduct.producer">
@@ -159,7 +158,7 @@
                </h5>
              
                <div style="background-color: ;">
-                  <div v-for="categoria in productCategories.items" class="d-inline-block mx-2 cat-select">
+                  <div v-for="categoria in productCategories.items" v-bind:key="categoria.id" class="d-inline-block mx-2 cat-select">
                      <router-link :to="'/products?categoryId=' + categoria.id">
                         <a href="#" class="rounded-pill text-center mt-3 mb-3 px-3 py-1 prod-category">
                            {{ categoria.name }}
@@ -191,7 +190,10 @@
          <div class="px-4" v-if="currentPage === 'vendedores'">
             <h5 v-if="productCategories.items" class="mb-4 mt-3"> Vendido por: </h5>
 
-            <div v-for="(producerProduct, index) in producerProducts.items">
+            <!-- TODO - ver qual é o certo -->
+            <!-- {{ producerProducts.items.length }} -->
+
+            <div v-for="(producerProduct, index) in producerProducts.items" v-bind:key="index">
                <div class="mt-4" style="background-color:;">
                   <div class="mt-5 d-flex align-items-center gap-3" style="background-color: ; width:70%;">
                      <router-link :to="'/producer/' + producerProduct.producer.id">
@@ -324,15 +326,15 @@
             // Dados da BD
             producerProducts: [] as Product[],
             defaultProduct: [] as Product,
-            productDetails: null,
+            productDetails: [] as Product[],
             lowestPrice: Number,
             highestPrice: Number,
             stock: Number,
             producers: 1 as Number,
 
             productCategories: [] as Product[],
-            productCategoriesFields: [],
-            fields: []
+            productCategoriesFields: [] as string[],
+            fields: [] as string[],
          }; 
       },
       methods: {
@@ -355,7 +357,7 @@
       // A fazer antes de montar o componente
       async beforeMount() {
          // Carregar os dados do produto da BD
-         const producerProducts = await fetchProducerProducts(this.$route.params.specid);
+         const producerProducts = await fetchProducerProducts(Number(this.$route.params.specid));
          this.producerProducts = producerProducts.data;
 
          // Produto com o preço mais baixo a ser apresentado quando a página é carregada
@@ -397,12 +399,12 @@
          this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
 
          // Carregar as categorias do produto
-         const productCategories = await fetchProductCategories(this.$route.params.specid);
+         const productCategories = await fetchProductCategories(Number(this.$route.params.specid));
          this.productCategories = productCategories.data;
 
          try{
             for (const categoria of this.productCategories.items) {
-               const response = await fetchProductCategoriesFields(this.$route.params.specid, categoria.id);
+               const response = await fetchProductCategoriesFields(Number(this.$route.params.specid), categoria.id);
                this.fields.push(response.data.items);
             }
          }catch(error){
