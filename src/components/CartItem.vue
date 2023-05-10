@@ -37,15 +37,28 @@
 		</b-card-text>
 	</div>
 
+
+
 	<!-- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO -->
 
-
+	<button @click="itemAdded(cartItem.producerProduct!.id)" variant="danger" type="button" class="btn btn-outline-secondary circle-btn" title="Remover do carrinho">
+    	<i class="bi bi-bag-plus-fill"></i>
+ 	</button> 
+	 <button @click="itemAddedTest()" variant="danger" type="button" class="btn btn-outline-secondary circle-btn" title="Remover do carrinho">
+    	<i class="bi bi-bag-plus-fill"></i>
+ 	</button> 
 
 	<!-------------------------------------------->
+
+
+
 
 </template>
 
 <script lang="ts">
+	// --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
+	import { addCartItem } from "../api/consumers";
+  	//-----------------------------------------------
 	import { CartItem } from '@/types';
 	import { PropType } from 'vue';
 	import { deleteCartItem } from "@/api"; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
@@ -70,6 +83,16 @@
 
 	  
     methods: {
+	// --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
+	async itemAdded(idToAdd: number) {
+		console.log(idToAdd)
+		await addCartItem(9, idToAdd, 10)
+	},
+	async itemAddedTest() {
+		await addCartItem(9, 11527, 10)
+	},
+	//-----------------------------------------------
+
 	 setupQts() {
 		const opts: { value: number, text: string }[] = [];
 		for (let i=1; i<this.cartItem.producerProduct!.stock;i++) {
@@ -93,7 +116,6 @@
 				//console.log('test');
 				this.$emit('deleteCartItem',this.cartItem.producerProduct!.id);
 				//console.log('id:',this.cartItem.producerProduct!.id);
-
 			} else {
 				pass;
 			}
