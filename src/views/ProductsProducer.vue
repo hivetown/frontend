@@ -74,7 +74,11 @@
           <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
-          <img :src="product.producer.image?.url" class="square-image" alt="Imagem do produto" />
+          <img
+            :src="product.productSpec.images[0].url"
+            class="square-image"
+            alt="Imagem do produto"
+          />
         </b-card>
         <b-card-text class="">
           <div>
