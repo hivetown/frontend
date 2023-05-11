@@ -69,7 +69,7 @@
     <h1 class="mb-5">Meus Produtos</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <div v-for="product in products.items" :key="product.id" class="col">
-    <!-- <div v-for="product in products" :key="product.id" class="col"> -->
+        <!-- <div v-for="product in products" :key="product.id" class="col"> -->
         <b-card class="prod-card position-relative">
           <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
@@ -92,16 +92,36 @@
             </div>
             <div class="d-flex gap-2">
               <router-link :to="'/product/edit/' + product.id">
-                <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Editar produto">
+                <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover
+                  title="Editar produto">
                   <i class="bi bi-pencil"></i>
                 </button>
               </router-link>
-              <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Remover produto">
+              <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover
+                title="Remover produto">
                 <i class="bi bi-trash"></i>
               </button>
             </div>
           </div>
         </b-card-text>
+
+      </div>
+      <div
+        class=""
+        style="
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: center;
+        "
+      >
+        <Pagination
+          v-if="allProductsData && allProductsData.data"
+          :total-rows="allProductsData.data.totalItems"
+          :per-page="allProductsData.data.pageSize"
+          :current-page="allProductsData.data.page"
+        >
+          ></Pagination
+        >
       </div>
     </div>
   </div>
@@ -143,43 +163,100 @@
 </template> -->
 <script lang="ts">
 
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, inject } from 'vue';
 import { Product } from '@/types/Product';
 import { fetchAllProducts } from '@/api/producerProducts';
 import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
-export default defineComponent({
-  setup() {
-    // const products = ref<Product[]>([]);
-    const products = ref<{ items: Product[] }>({ items: [] });
+import Pagination from '../components/Pagination.vue';
+// export default defineComponent({
+//   components: {
+//     Pagination,
+//   },
 
-    onMounted(async () => {
-      try {
-        const authArray = await fetchAuth();
-        const { id } = authArray.data;
-        console.log('Producer ID:', id);
+//   setup() {
+//     // const products = ref<Product[]>([]);
+//     const products = ref<{ items: Product[] }>({ items: [] });
+//     const $route = inject('$route') as any;
+//     onMounted(async () => {
+//       try {
+//         const authArray = await fetchAuth();
+//         const { id } = authArray.data;
+//         console.log('Producer ID:', id);
 
-        const response = await fetchAllProducts(2);
-        console.log('Response:', response);
+//         // const allProductsData  = await fetchAllProducts(2);
+//         const page = parseInt($route.query.page) || 1;
+//         const pageSize = parseInt($route.query.pageSize) || 24;
+//         const categoryId = parseInt($route.query.categoryId) || 1;
+//         const allProductsData = await fetchAllProducts(
+//           id,
+//           page,
+//           pageSize,
+//           categoryId
+//         );
+//         console.log('allProductsData :', allProductsData);
 
-        // const products = response.data as unknown as ProducerProducts;
-        // console.log('Products:', products.items);
+//         // const products = allProductsData .data as unknown as ProducerProducts;
+//         // console.log('Products:', products.items);
 
-        const productsArray = response.data;
-        console.log('Products:', productsArray);
+//         const productsArray = allProductsData.data;
+//         console.log('Products:', productsArray);
 
-        products.value = productsArray;
-        
-      } catch (error) {
-        console.error(error);
-      }
-    });
+//         products.value = productsArray;
 
+//         this.allProductsData = allProductsData;
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     });
+
+//     return {
+//       products,
+//       allProductsData: {} as any,
+//     };
+//   },
+// });
+
+
+export default {
+  components: {
+    Pagination,
+  },
+  data() {
     return {
-      products,
+      products: [] as Product[],
+      allProductsData: {},
     };
   },
-});
+  async mounted() {
+    try {
+      const authArray = await fetchAuth();
+      const { id } = authArray.data;
+      console.log('Producer ID:', id);
+
+      const page = parseInt(this.$route.query.page) || 1;
+      const pageSize = parseInt(this.$route.query.pageSize) || 24;
+      const categoryId = parseInt(this.$route.query.categoryId) || 1;
+
+      const allProductsData = await fetchAllProducts(
+        2,
+        page,
+        pageSize,
+        categoryId
+      );
+
+      console.log('allProductsData:', allProductsData);
+
+      const productsArray = allProductsData.data;
+      console.log('Products:', productsArray);
+
+      this.products = productsArray;
+      this.allProductsData = allProductsData;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+};
 </script>
 
 <style>
@@ -203,7 +280,8 @@ export default defineComponent({
 }
 
 .prod-category {
-  background-color: #9dc88d; /* A cor irá variar de acordo com a categoria */
+  background-color: #9dc88d;
+  /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
 

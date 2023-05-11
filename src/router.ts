@@ -86,6 +86,9 @@ const routes = [
         path: '/produtosprodutor',
         name: 'produtosprodutor',
         component: ProductsProducer,
+        meta: {
+            requiresAuth: true,
+        },
     },
 ];
 
