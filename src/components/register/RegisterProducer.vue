@@ -110,7 +110,7 @@ export default {
 
     const register = async () => {
       if (validateForm()) {
-        await store.dispatch('register', form.producer);
+        await store.dispatch('registerProducer', form);
       }
     };
 
