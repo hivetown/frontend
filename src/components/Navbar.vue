@@ -170,9 +170,9 @@ import { useStore } from 'vuex';
 import { fetchAllProducts } from '../api/producerProducts';
 import ProductsProducer from '../views/ProductsProducer.vue';
 export default {
-  components: {
-    ProductsProducer,
-  },
+  // components: {
+  //   ProductsProducer,
+  // },
   setup() {
     const store = useStore();
 
@@ -183,25 +183,26 @@ export default {
     const logout = async () => {
       await store.dispatch('logout');
     };
-    const id = 2;
-    const products = ref<ProducerProducts[]>([]);
-    if (user.value) {
-      fetchAllProducts()
-        .then((response) => {
-          const productsArray = response.data;
-          console.log('Products:', productsArray);
-          products.value = productsArray;
-          // Process the products data here
-        })
-        .catch((error) => {
-          console.error('Error fetching products:', error);
-        });
-    }
+    // const id = 2;
+    // const products = ref<ProducerProducts[]>([]);
+    // if (user.value) {
+    //   console.log('User:', user.value);
+    //   fetchAllProducts()
+    //     .then((response) => {
+    //       const productsArray = response.data;
+    //       console.log('Products:', productsArray);
+    //       products.value = productsArray;
+    //       // Process the products data here
+    //     })
+    //     .catch((error) => {
+    //       console.error('Error fetching products:', error);
+    //     });
+    // }
 
     return {
       user,
       logout,
-      products,
+      // products,
     };
   },
 };
