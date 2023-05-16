@@ -104,12 +104,16 @@
               <b-dropdown-item @click="logout" href="#">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div> -->
-          <b-nav-item-dropdown
+            <b-nav-item-dropdown
               right
               class="p-2 grey-txt text-decoration-none"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item href="/produtosprodutor">Conta</b-dropdown-item>
+              <div v-if="user.user.type === 'PRODUCER'">
+                <b-dropdown-item href="/produtosprodutor"
+                  >Conta</b-dropdown-item
+                >
+              </div>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
