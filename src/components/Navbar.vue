@@ -12,63 +12,93 @@
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-heart mx-auto"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
               <router-link
                 to="/favoritos"
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500"
-                >Favoritos</router-link
               >
-              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+                <b-avatar
+                  class="nav-item"
+                  style="
+                    background-color: #f3f3f3 !important;
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  "
+                >
+                  <i
+                    class="bi bi-heart"
+                    style="color: #164a41"
+                    font-scale="1.5"
+                  ></i>
+                </b-avatar>
+                Favoritos
+              </router-link>
             </div>
             <div class="d-flex">
-              <b-avatar
-                class="nav-item"
-                style="
-                  background-color: #f3f3f3 !important;
-                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                "
-              >
-                <i
-                  class="bi bi-cart"
-                  style="color: #164a41"
-                  font-scale="1.5"
-                ></i>
-              </b-avatar>
               <router-link
                 to="/carrinho"
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500"
-                >Carrinho</router-link
               >
+                <b-avatar
+                  class="nav-item"
+                  style="
+                    background-color: #f3f3f3 !important;
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  "
+                >
+                  <i
+                    class="bi bi-cart"
+                    style="color: #164a41"
+                    font-scale="1.5"
+                  ></i>
+                </b-avatar>
+                Carrinho
+              </router-link>
               <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
+
+            <div class="d-flex" v-if="!user">
+              <router-link
+                to="/login"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+              >
+                <b-avatar
+                  class="nav-item"
+                  style="
+                    background-color: #f3f3f3 !important;
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  "
+                >
+                  <i
+                    class="bi bi-person"
+                    style="color: #164a41"
+                    font-scale="1.5"
+                  ></i>
+                </b-avatar>
+                Login
+              </router-link>
+            </div>
           </div>
-          <div class="d-flex nav-items-right">
-            <router-link to="/conta">
+
+          <div class="d-flex nav-items-right" v-if="user">
+            <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                src="https://placekitten.com/320/320"
+                :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
-                <!-- TODO badges das notificações  -->
               </b-avatar>
+              <span>{{ user.user.name }}</span>
             </router-link>
-            <b-nav-item-dropdown right>
+            <b-nav-item-dropdown
+              right
+              class="p-2 grey-txt text-decoration-none"
+            >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item href="#">Terminar Sessão</b-dropdown-item>
+              <b-dropdown-item @click="logout" href="#"
+                >Terminar Sessão</b-dropdown-item
+              >
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -78,7 +108,7 @@
 
   <!-- Nav inferior no modo telemovel -->
   <!-- TODO melhorar isto e o modo telemóvel no geral
-	     evitar repetir código como está aqui -->
+			 evitar repetir código como está aqui -->
   <div>
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
@@ -134,12 +164,33 @@
         >
           <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
         </button>
-        <!-- <b-avatar class="mx-auto" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;"></b-avatar> -->
       </b-nav-item>
     </b-nav>
   </div>
 </template>
 
+<script lang="ts">
+import { useStore } from '@/store';
+import { computed } from 'vue';
+
+export default {
+  setup() {
+    const store = useStore();
+
+    // computed user
+    const user = computed(() => store.state.user);
+
+    const logout = async () => {
+      await store.dispatch('logout');
+    };
+
+    return {
+      user,
+      logout,
+    };
+  },
+};
+</script>
 <style>
 #logo img {
   width: 2.6em;
