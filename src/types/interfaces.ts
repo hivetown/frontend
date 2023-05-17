@@ -90,10 +90,29 @@ export interface Image {
     alt: string;
 }
 
-export interface Items {
-	id: number,
-	name: string,
-	address: ,
+export interface ProducerProduct {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    producer?: Producer; //Meto o ? para referir outra interface
+    productionUnit?: ProductionUnit;
+    productSpec?: ProductSpec;
+}
+
+export interface ProductionUnit {
+    id: number;
+    name: string;
+    address?: Address;
+    producer?: Producer;
+}
+
+export interface ProductSpec {
+    id: number;
+    name: string;
+    description: string;
+    images: Image[];
+    products?: Product[];
 }
 
 export type AuthenticatedUser = Consumer | Producer;

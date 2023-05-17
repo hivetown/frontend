@@ -149,3 +149,35 @@ table {
   }
 }
 </style>
+
+<script lang="ts">
+import { getUnit } from '@api';
+import { createProdutionUnit } from '@api';
+import { updateProductionUnit } from '@api';
+import { deleteProductionUnit } from '@api';
+import { Address } from '@types';
+
+export default {
+  data() {
+    return {};
+  },
+
+  methods: {
+    getProdUnit(producerId: number, unitId: number) {
+      getUnit(producerId, unitId);
+    },
+
+    addProdUnit(id: number, name: string, address: Address) {
+      createProdutionUnit(id, name, address);
+    },
+
+    updateProdUnit(id: number, unitId: number, name: string, address: Address) {
+      updateProductionUnit(id, unitId, name, address);
+    },
+
+    deleteProdUnit(producerId: number, unitId: number) {
+      deleteProductionUnit(producerId, unitId);
+    },
+  },
+};
+</script>
