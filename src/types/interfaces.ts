@@ -15,11 +15,18 @@ export interface ProductSpecification {
     products?: Product[];
 }
 
+<<<<<<< HEAD
 export interface Image {
     id: number;
     name: string;
     url: string;
     alt: string;
+=======
+export interface Role {
+    id: number;
+    name: string;
+    permissions: number;
+>>>>>>> main
 }
 
 export interface User {
@@ -28,26 +35,40 @@ export interface User {
     email: string;
     phone: string;
     vat: string;
+<<<<<<< HEAD
     image: {
         url?: string;
       };
+=======
+    role?: Role;
+    image?: {
+        url?: string;
+    };
+    type: 'PRODUCER' | 'CONSUMER';
+>>>>>>> main
 }
 
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+<<<<<<< HEAD
     name: string;
     image: {
         url?: string;
       };
+=======
+>>>>>>> main
 }
 
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
+<<<<<<< HEAD
     name: string;
     image: {
         url?: string;
       };
+=======
+>>>>>>> main
 }
 
 export interface CreateConsumer {
@@ -125,3 +146,26 @@ export interface ProducerProduct {
     producer?: Producer;
     // productionUnit?: ProductionUnit;
 }
+export interface Address {
+    id: number;
+    number: number;
+    door: string;
+    floor: number;
+    zipCode: string;
+    street: string;
+    parish: string;
+    county: string;
+    city: string;
+    district: string;
+    latitude: number;
+    longitude: number;
+}
+
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
+}
+
+export type AuthenticatedUser = Consumer | Producer;

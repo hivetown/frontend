@@ -1,5 +1,4 @@
-import { auth } from "../types/interfaces";
-import { api } from "./_base";
+import { AuthenticatedUser } from '@/types';
+import { api } from './_base';
 
-
-export const fetchAuth = () => api.get<auth>(`/auth`);
+export const fetchAuth = async () => api.get<AuthenticatedUser>('/auth');

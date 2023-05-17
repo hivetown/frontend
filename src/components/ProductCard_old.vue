@@ -24,7 +24,7 @@
 
       <span class="p-component text-700">Vendido por</span>
       <span class="text-xl text-700 block mb-3 font-semibold p-component">
-        {{ product.producer!.name }}
+        {{ product.producer!.user.name }}
       </span>
     </div>
 
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { Product } from "../types/interfaces";
+import { Product } from '../types/interfaces';
 
 const props = defineProps<{ product: Product }>();
 </script>

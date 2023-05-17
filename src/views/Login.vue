@@ -4,13 +4,13 @@
       <form class="login" @submit.prevent="login">
         <h2>Login</h2>
         <div class="grid-item">
-          <input type="email" placeholder="Email" v-model="login_form.email" />
+          <input type="email" placeholder="Email" v-model="loginForm.email" />
         </div>
         <div class="grid-item">
           <input
             type="password"
             placeholder="Palavra passe"
-            v-model="login_form.password"
+            v-model="loginForm.password"
           />
         </div>
 
@@ -28,21 +28,20 @@
 </template>
 
 <script lang="ts">
+import { useStore } from '@/store';
 import { ref } from 'vue';
-import { useStore } from 'vuex';
-
 export default {
   setup() {
-    const login_form = ref({
+    const loginForm = ref({
       email: '',
       password: '',
     });
     const store = useStore();
-    const login = async () => {
-      store.dispatch('login', login_form.value);
+    const login = () => {
+      return store.dispatch('login', loginForm.value);
     };
     return {
-      login_form,
+      loginForm,
       login,
     };
   },
@@ -97,7 +96,6 @@ form.login input:not([type='submit']) {
   color: #2c3e50;
   border-bottom: 2px solid #2c3e50;
 }
-
 input[type='submit'] {
   background: #2c3e50;
   color: #fff;
@@ -110,7 +108,6 @@ input[type='submit'] {
   text-transform: uppercase;
   margin-bottom: 1rem;
 }
-
 input[type='submit']:hover {
   background: #fff;
   color: #2c3e50;

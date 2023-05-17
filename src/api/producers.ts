@@ -1,6 +1,5 @@
-import { Producer, CreateProducer } from "../types/interfaces";
-import { api } from "./_base";
+import { CreateProducer } from '@/types';
+import { api } from './_base';
 
-
-export const postProducer = (producer: CreateProducer) => 
-    api.post("/producers", producer);
+export const createProducer = async (producer: CreateProducer) =>
+    api.post('/producers', producer);

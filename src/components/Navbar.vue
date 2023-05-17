@@ -86,24 +86,9 @@
                 class="nav-item"
                 :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
-              >
-              </b-avatar>
+              ></b-avatar>
               <span>{{ user.user.name }}</span>
             </router-link>
-            <!-- <b-nav-item-dropdown
-              right
-              class="p-2 grey-txt text-decoration-none"
-            >
-              <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item @click="logout" href="#"
-                >Terminar Sessão</b-dropdown-item
-              > 
-            <b-nav-item-dropdown right class="p-2 grey-txt text-decoration-none">
-              <b-dropdown-item href="/produtos">Conta</b-dropdown-item>
-              <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item @click="logout" href="#">Terminar Sessão</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </div> -->
             <b-nav-item-dropdown
               right
               class="p-2 grey-txt text-decoration-none"
@@ -126,35 +111,62 @@
 
   <!-- Nav inferior no modo telemovel -->
   <!-- TODO melhorar isto e o modo telemóvel no geral
-		   evitar repetir código como está aqui -->
+			 evitar repetir código como está aqui -->
   <div>
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
       <b-nav-item class="deu">
-        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
-          <i class="bi bi-heart mx-auto dgreen-txt" style="font-size: large"></i>
+        <button
+          type="button"
+          class="btn circle-btn mb-nav-item"
+          v-b-tooltip.hover
+          title="Adicionar ao carrinho"
+        >
+          <i
+            class="bi bi-heart mx-auto dgreen-txt"
+            style="font-size: large"
+          ></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
+        <button
+          type="button"
+          class="btn circle-btn mb-nav-item"
+          v-b-tooltip.hover
+          title="Adicionar ao carrinho"
+        >
           <i class="bi bi-cart mx-auto dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
+        <button
+          type="button"
+          class="btn circle-btn mb-nav-item"
+          v-b-tooltip.hover
+          title="Adicionar ao carrinho"
+        >
           <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
+        <button
+          type="button"
+          class="btn circle-btn mb-nav-item"
+          v-b-tooltip.hover
+          title="Adicionar ao carrinho"
+        >
           <i class="bi bi-search dgreen-txt" style="font-size: large"></i>
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button type="button" class="btn circle-btn mb-nav-item" v-b-tooltip.hover title="Adicionar ao carrinho">
+        <button
+          type="button"
+          class="btn circle-btn mb-nav-item"
+          v-b-tooltip.hover
+          title="Adicionar ao carrinho"
+        >
           <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
         </button>
-        <!-- <b-avatar class="mx-auto" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;"></b-avatar> -->
       </b-nav-item>
     </b-nav>
     <!-- <ProductsProducer :products="products" /> -->
@@ -166,13 +178,11 @@
 <script lang="ts">
 import { Consumer, Producer, ProducerProducts } from '@types';
 import { computed, ref } from 'vue';
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
 import { fetchAllProducts } from '../api/producerProducts';
 import ProductsProducer from '../views/ProductsProducer.vue';
+import { useStore } from '@/store';
 export default {
-  // components: {
-  //   ProductsProducer,
-  // },
   setup() {
     const store = useStore();
 
@@ -183,26 +193,10 @@ export default {
     const logout = async () => {
       await store.dispatch('logout');
     };
-    // const id = 2;
-    // const products = ref<ProducerProducts[]>([]);
-    // if (user.value) {
-    //   console.log('User:', user.value);
-    //   fetchAllProducts()
-    //     .then((response) => {
-    //       const productsArray = response.data;
-    //       console.log('Products:', productsArray);
-    //       products.value = productsArray;
-    //       // Process the products data here
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error fetching products:', error);
-    //     });
-    // }
 
     return {
       user,
       logout,
-      // products,
     };
   },
 };
