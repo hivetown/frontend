@@ -6,7 +6,7 @@
   "author": "@PGP04",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src --ext ts --fix",
+    "lint": "eslint --fix 'src/**/*.{ts,vue}'",
     "format": "prettier --write {src}/**/*.ts",
     "docs": "typedoc",
     "test": "jest",
