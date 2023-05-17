@@ -1,5 +1,5 @@
-import { Product } from "../types/interfaces";
-import { api } from "./_base";
+import { Product } from '../types/interfaces';
+import { api } from './_base';
 
 export const fetchAllProducts = (page?: number, pageSize?: number, search?: string, categoryId?: number) =>
   api.get<Product[]>("/products", { params: { page, pageSize, search, categoryId } });

@@ -10,12 +10,18 @@
   <div>
     <b-modal v-model="show" centered>
       <div class="d-block parent">
-		    <p>O que procura?</p>
-        <input class="form-control me-2 rounded-pill" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+        <p>O que procura?</p>
+        <input
+          class="form-control me-2 rounded-pill"
+          type="search"
+          placeholder="Pesquisar"
+          aria-label="Pesquisar"
+        />
+        <!-- <button class="btn btn-outline-success" type="submit">Pesquisar</button> -->
+        <!-- <b-button variant="primary" class="mt-3" @click="closeModal">Pesquisar</b-button> -->
       </div>
     </b-modal>
   </div>
-
 </template>
 
 <style>

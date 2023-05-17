@@ -58,11 +58,11 @@
         max-width: 18%; 
     }
 
-    .prod-card{
-        background-color:#f3f3f3 !important;
-        border-radius: 1.3em !important;
-        cursor: pointer;
-    }
+.prod-card {
+  background-color: #f3f3f3 !important;
+  border-radius: 1.3em !important;
+  cursor: pointer;
+}
 
     .prod-card .card-body{
         padding: 0 !important;
@@ -137,7 +137,6 @@ import { fetchProductCategories } from "@/api";
                 this.productCategory = productCategory.data.items[0];
             }
             // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
-
         }
     };
 </script>

@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import Banner from "@/components/Banner.vue";
-import CategoryCard from "@/components/CategoryCard.vue";
-import ProductCard from "@/components/ProductCard.vue";
+import Banner from '@/components/Banner.vue';
+import CategoryCard from '@/components/CategoryCard.vue';
+import ProductCard from '@/components/ProductCard.vue';
 </script>

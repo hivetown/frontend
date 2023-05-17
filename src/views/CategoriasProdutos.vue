@@ -135,9 +135,9 @@ export default defineComponent({
     // this.allProducts =   fetchAllProducts().data;
     // const searchTerm = "Recycled";
     // const allProductsData = await fetchAllProducts(searchTerm);
-    const page = parseInt(this.$route.query.page) || 1;
-    const pageSize = parseInt(this.$route.query.pageSize) || 24;
-    const categoryId = parseInt(this.$route.query.categoryId) || 1;
+    const page = parseInt(String(this.$route.query.page)) || 1;
+    const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
+    const categoryId = parseInt(String(this.$route.query.categoryId)) || 1;
     const allProductsData = await fetchAllProducts(page, pageSize, undefined, categoryId);
     const allProducts = allProductsData.data.items;
     const allCategoriesData =  await fetchAllCategories();
@@ -148,7 +148,7 @@ export default defineComponent({
 
     // Carregar a categoria atualmente selecionada
     if(this.$route.query.categoryId){
-      const currentCategory = await fetchCategory(this.$route.query.categoryId);
+      const currentCategory = await fetchCategory(Number(this.$route.query.categoryId));
       this.currentCategory = currentCategory.data.name;
     }else{ // Se não houver uma 
       this.currentCategory = "Todas as categorias";
