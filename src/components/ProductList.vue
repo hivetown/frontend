@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import ProductCardVue from "./ProductCard_old.vue";
-import { Product } from "../types/interfaces";
+import ProductCardVue from './ProductCard_old.vue';
+import { Product } from '../types/interfaces';
 
 const props = defineProps<{ products: Product[] }>();
 </script>

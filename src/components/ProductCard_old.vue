@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { Product } from "../types/interfaces";
+import { Product } from '../types/interfaces';
 
 const props = defineProps<{ product: Product }>();
 </script>

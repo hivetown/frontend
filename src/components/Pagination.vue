@@ -4,9 +4,9 @@
     <div class="overflow-auto" style="background-color: ;">
         <b-pagination :total-rows="totalRows" :per-page="perPage" :current-page="currentPage"></b-pagination>
         <p class="mt-3">Current Page: {{ currentPage }}</p> -->
-        <!-- <p> Produtos: {{ totalRows }}</p>
+<!-- <p> Produtos: {{ totalRows }}</p>
         <p> Por página: {{ perPage  }}</p> -->
-    <!-- </div>
+<!-- </div>
 </template>
 
 <script>
@@ -30,54 +30,57 @@ export default {
 </script> -->
 
 <template>
-    <div>
-        <b-pagination class="pagination" v-model="currentPage" :total-rows="totalRows" :per-page="perPage"></b-pagination>
-    </div>
+  <div>
+    <b-pagination
+      class="pagination"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+    ></b-pagination>
+  </div>
 </template>
 
 <script>
 export default {
-    props: {
-        totalRows: {
-            type: Number,
-            required: true
-        },
-        perPage: {
-            type: Number,
-            required: true
-        }
+  props: {
+    totalRows: {
+      type: Number,
+      required: true,
     },
-    data() {
-        return {
-            currentPage: parseInt(this.$route.query.page) || 1
-        };
+    perPage: {
+      type: Number,
+      required: true,
     },
-    watch: {
-        currentPage(newVal, oldVal) {
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set("page", newVal.toString());
-            window.location.replace(currentUrl.toString());
-            console.log("currentPage changed from " + oldVal + " to " + newVal);
-            
-        }
+  },
+  data() {
+    return {
+      currentPage: parseInt(this.$route.query.page) || 1,
+    };
+  },
+  watch: {
+    currentPage(newVal, oldVal) {
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.set('page', newVal.toString());
+      window.location.replace(currentUrl.toString());
+      console.log('currentPage changed from ' + oldVal + ' to ' + newVal);
     },
+  },
 };
 </script>
 
-
 <style>
-    .pagination .page-link{
-        color: #232323 !important;
-    }
+.pagination .page-link {
+  color: #232323 !important;
+}
 
-    .pagination .page-link:focus{
-        /* box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important; */
-        box-shadow: 0 0 0 0.2rem rgba(207, 207, 207, 0.25) !important;
-    }
-    
-    .pagination .page-item.active .page-link{
-        color:white !important;
-        border: 1px solid #ce9840;
-        background-color: #F1B24A !important;
-    }
+.pagination .page-link:focus {
+  /* box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important; */
+  box-shadow: 0 0 0 0.2rem rgba(207, 207, 207, 0.25) !important;
+}
+
+.pagination .page-item.active .page-link {
+  color: white !important;
+  border: 1px solid #ce9840;
+  background-color: #f1b24a !important;
+}
 </style>
