@@ -58,10 +58,10 @@
         "
       >
         <Pagination
-          v-if="allProductsData && allProductsData.data"
-          :total-rows="allProductsData.data.totalItems"
-          :per-page="allProductsData.data.pageSize"
-          :current-page="allProductsData.data.page"
+          v-if="allUnitsData && allUnitsData.data"
+          :total-rows="allUnitsData.data.totalItems"
+          :per-page="allUnitsData.data.pageSize"
+          :current-page="allUnitsData.data.page"
         >
           ></Pagination
         >
