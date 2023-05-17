@@ -2,14 +2,11 @@
   <div class="container">
     <h1 class="mb-5">Meus Produtos</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div v-for="product in products.items" :key="product.id" class="col">
+      <div v-for="unit in productionUnits.items" :key="unit.id" class="col">
         <!-- <div v-for="product in products" :key="product.id" class="col"> -->
         <b-card class="prod-card position-relative">
-          <!-- <span class="position-absolute top-0 end-0 p-3 fav">
-            <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
-          </span> -->
           <img
-            :src="product.productSpec.images[0].url"
+            :src="'https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
             class="square-image"
             alt="Imagem do produto"
           />
@@ -17,17 +14,20 @@
         <b-card-text class="">
           <div>
             <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">
-              {{ product.category }}
+              {{ unit.id }}
             </div>
-            <h5>{{ product.productSpec.name }}</h5>
-            <p>UP {{ product.productionUnit.id }}</p>
-            <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
+            <h5>{{ unit.address.district }}</h5>
+            <p>{{ unit.address.city }}</p>
+            <p>{{ unit.address.county }}</p>
+            <p class="grey-txt mt-3">
+              {{ unit.address.floor }}, {{ unit.address.door }}
+            </p>
             <div class="d-flex gap-2">
-              <h4 class="mb-3">{{ product.currentPrice }}€</h4>
+              <h4 class="mb-3">{{ unit.address.floor }} º Andar</h4>
               <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
             </div>
             <div class="d-flex gap-2">
-              <router-link :to="'/product/edit/' + product.id">
+              <router-link :to="'/product/edit/' + unit.id">
                 <button
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
@@ -106,58 +106,11 @@
 </template> -->
 <script lang="ts">
 import { defineComponent, ref, onMounted, inject } from 'vue';
-import { Product } from '@/types/Product';
-import { fetchAllProducts } from '@/api/producerProducts';
+import { Units } from '@/types/Units';
+import { fetchAllUnits } from '@/api/units';
 import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
-// export default defineComponent({
-//   components: {
-//     Pagination,
-//   },
-
-//   setup() {
-//     // const products = ref<Product[]>([]);
-//     const products = ref<{ items: Product[] }>({ items: [] });
-//     const $route = inject('$route') as any;
-//     onMounted(async () => {
-//       try {
-//         const authArray = await fetchAuth();
-//         const { id } = authArray.data;
-//         console.log('Producer ID:', id);
-
-//         // const allProductsData  = await fetchAllProducts(2);
-//         const page = parseInt($route.query.page) || 1;
-//         const pageSize = parseInt($route.query.pageSize) || 24;
-//         const categoryId = parseInt($route.query.categoryId) || 1;
-//         const allProductsData = await fetchAllProducts(
-//           id,
-//           page,
-//           pageSize,
-//           categoryId
-//         );
-//         console.log('allProductsData :', allProductsData);
-
-//         // const products = allProductsData .data as unknown as ProducerProducts;
-//         // console.log('Products:', products.items);
-
-//         const productsArray = allProductsData.data;
-//         console.log('Products:', productsArray);
-
-//         products.value = productsArray;
-
-//         this.allProductsData = allProductsData;
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     });
-
-//     return {
-//       products,
-//       allProductsData: {} as any,
-//     };
-//   },
-// });
 
 export default {
   components: {
@@ -165,8 +118,8 @@ export default {
   },
   data() {
     return {
-      products: [] as Product[],
-      allProductsData: {},
+      productionUnits: [] as Units[],
+      allUnitsData: {},
     };
   },
   async mounted() {
@@ -179,20 +132,16 @@ export default {
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
       const categoryId = parseInt(this.$route.query.categoryId) || 1;
 
-      const allProductsData = await fetchAllProducts(
-        2,
-        page,
-        pageSize,
-        categoryId
-      );
+      const allUnitsData = await fetchAllUnits(2, page, pageSize, categoryId);
 
-      console.log('allProductsData:', allProductsData);
+      console.log('allUnitsData:', allUnitsData);
 
-      const productsArray = allProductsData.data;
-      console.log('Products:', productsArray);
+      const productionUnitsArray = allUnitsData.data;
+      //   console.log('Production Units:', productionUnitsArray);
 
-      this.products = productsArray;
-      this.allProductsData = allProductsData;
+      this.productionUnits = productionUnitsArray;
+      console.log('Production Units:', this.productionUnits);
+      this.allUnitsData = allUnitsData;
     } catch (error) {
       console.error(error);
     }
@@ -242,56 +191,3 @@ export default {
   color: #333;
 }
 </style>
-
-<!-- <template>
-  <div>
-    <h1>{{ producerName }} Products</h1>
-    <ul>
-      <li v-for="product in products" :key="product.id">
-        {{ product.name }}
-      </li>
-    </ul>
-  </div>
-</template>
-
-<script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
-import { fetchAllProducts } from '@/api/producerProducts';
-import { Product } from '../types/interfaces/Product';
-import { fetchAuth } from '../api/auth';
-
-export default defineComponent({
-  props: {
-    producerId: {
-      type: Number,
-      required: true,
-    },
-    producerName: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const products = ref<Product[]>([])
-    const producerId = ref<number>(props.producerId)
-    const producerName = ref<string>(props.producerName)
-
-    onMounted(async () => {
-      try {
-        const authArray = await fetchAuth();
-        const { id } = authArray.data;
-        producerId.value = id;
-        products.value = await fetchAllProducts(producerId.value)
-      } catch (error) {
-        console.error(error)
-      }
-    })
-
-    return {
-      producerId,
-      producerName,
-      products,
-    }
-  },
-})
-</script> -->

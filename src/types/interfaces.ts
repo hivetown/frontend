@@ -1,4 +1,5 @@
 // import type { DefineComponent } from 'vue';
+import ProductionUnits from '@/views/ProductionUnits.vue';
 export interface Product {
     id: number;
     currentPrice: number;
@@ -128,6 +129,17 @@ export interface ProducerProducts {
     productionDate: Date;
     specification?: ProductSpecification;
     producer?: Producer;
+}
+
+
+export interface ProductionUnits {
+	id: number;
+	name: string;
+	description: string;
+	producer: Producer;
+	products: Product[];
+	address: Address;
+	images: Image[];
 }
 
 // export interface Producers {

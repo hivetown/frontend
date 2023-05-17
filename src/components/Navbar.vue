@@ -98,6 +98,7 @@
                 <b-dropdown-item href="/produtosprodutor"
                   >Conta</b-dropdown-item
                 >
+                <b-dropdown-item href="/unidadesproducao">UP</b-dropdown-item>
               </div>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
@@ -179,14 +180,15 @@
 import { Consumer, Producer, ProducerProducts } from '@types';
 import { computed, ref } from 'vue';
 // import { useStore } from 'vuex';
-import { fetchAllProducts } from '../api/producerProducts';
-import ProductsProducer from '../views/ProductsProducer.vue';
-import { useStore } from '@/store';
+// import { fetchAllProducts } from '../api/producerProducts';
+// import ProductsProducer from '../views/ProductsProducer.vue';
+import { useStore } from '@/store';
 export default {
   setup() {
     const store = useStore();
-
+    console.log('store: ', store);
     // computed user
+    console.log('userNav: ', store.state.user);
     const user = computed(() => store.state.user as Consumer | Producer);
     setTimeout(() => console.log(user), 1000);
 

@@ -29,6 +29,7 @@ export const store = createStore<State>({
     },
     mutations: {
         SET_USER(state, user: AuthenticatedUser) {
+            console.log('user', user);
             state.user = user;
         },
         CLEAR_USER(state) {
@@ -72,6 +73,7 @@ export const store = createStore<State>({
             try {
                 const response = await fetchAuth();
                 const auth = response.data;
+                // console.log('auth', auth);
                 commit('SET_USER', auth);
             } catch (error) {
                 if (error instanceof AxiosError) {

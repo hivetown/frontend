@@ -8,6 +8,7 @@ import Cart from '@/views/Cart.vue';
 import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import ProductsProducer from '@/views/ProductsProducer.vue';
+import ProductionUnits from '@/views/ProductionUnits.vue';
 import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
 import Registration from '@/views/Registration.vue';
@@ -17,10 +18,11 @@ import Login from '@/views/Login.vue';
 import Registration from '@/views/Registration.vue';
 // import AuthConsumer from '@/components/AuthConsumer.vue';
 
-import { useStore } from '@/store';
+// import { store, useStore } from '@/store';
+import { useStore } from '@/store';
 import { onMounted, ref, watch } from 'vue';
 
-import { store } from '../store';
+// import { store } from '../store';
 
 // const isAuthenticated = () => {
 //     // console.log('store.state.auth', store.state.auth);
@@ -88,9 +90,17 @@ const routes = [
         path: '/produtosprodutor',
         name: 'produtosprodutor',
         component: ProductsProducer,
-        meta: {
-            requiresAuth: true,
-        },
+        // meta: {
+        //     requiresAuth: true,
+        // },
+    },
+    {
+        path: '/unidadesproducao',
+        name: 'unidadesproducao',
+        component: ProductionUnits,
+        // meta: {
+        //     requiresAuth: true,
+        // },
     },
 ];
 
@@ -100,9 +110,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+    const store = useStore();
     const isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
 
+    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
+    console.log('isAuthenticated', isAuthenticated);
     if (
         (to.path === '/login' || to.path === '/registration') &&
         isAuthenticated
