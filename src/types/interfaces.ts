@@ -90,4 +90,10 @@ export interface Image {
     alt: string;
 }
 
+export interface Items {
+	id: number,
+	name: string,
+	address: ,
+}
+
 export type AuthenticatedUser = Consumer | Producer;
