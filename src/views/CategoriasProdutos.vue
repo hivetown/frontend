@@ -44,13 +44,19 @@
       <CustomViews></CustomViews>
       <div>
         <!-- TODO por isto automático -->
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
+        <div
+          class="parent d-flex justify-content-center mt-5"
+          style="gap: 14vh"
+        >
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
         </div>
-        <div class="parent d-flex justify-content-center mt-5" style="gap:14vh;">
+        <div
+          class="parent d-flex justify-content-center mt-5"
+          style="gap: 14vh"
+        >
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
           <ProductCard></ProductCard>
@@ -62,16 +68,16 @@
 </template>
 
 <script setup lang="ts">
-import CategoryFilter from "@/components/CategoryFilter.vue";
-import PriceFilter from "@/components/PriceFilter.vue";
-import SupplierFilter from "@/components/SupplierFilter.vue";
-import RatingFilter from "@/components/RatingFilter.vue";
-import CustomViews from "@/components/CustomViews.vue";
+import CategoryFilter from '@/components/CategoryFilter.vue';
+import PriceFilter from '@/components/PriceFilter.vue';
+import SupplierFilter from '@/components/SupplierFilter.vue';
+import RatingFilter from '@/components/RatingFilter.vue';
+import CustomViews from '@/components/CustomViews.vue';
 
-import ProductCard from "@/components/ProductCard.vue";
-import { onMounted, ref, watch } from "vue";
-import { fetchAllProducts } from "@/api";
-import { Product } from "@/types/interfaces";
+import ProductCard from '@/components/ProductCard.vue';
+import { onMounted, ref, watch } from 'vue';
+import { fetchAllProducts } from '@/api';
+import { Product } from '@/types/interfaces';
 
 const products = ref<Product[]>([]);
 
@@ -81,6 +87,6 @@ const fetchProducts = async (search?: string) => {
 
 onMounted(fetchProducts);
 
-const search = ref("");
+const search = ref('');
 watch(search, fetchProducts);
 </script>
