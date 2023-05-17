@@ -2,40 +2,78 @@
   <div class="root">
     <div class="wrapper-mains">
       <h1>Unidades de Produção</h1>
-
-      <table class="table table-responsive-md">
-        <tr>
-          <div style="display: flex; justify-content: space-between">
-            <!-- Secção para adicionar UP -->
-
-            <b-form inline>
-              <label class="sr-only" for="inline-form-input-name">Name</label>
+      <br />
+      <h3 class="parent dgreen-txt">Adicionar Novo Transporte</h3>
+      <!--Faltam os v-model="form.name" dentro dos b-form-input-->
+      <b-form inline>
+        <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
+        <b-row>
+          <b-col>
+            <b-form-group id="input-group-1" label="ID:" label-for="input-1">
               <b-form-input
-                id="inline-form-input-name"
-                class="mb-2 mr-sm-2 mb-sm-0"
-                placeholder="Jane Doe"
+                id="input-1"
+                placeholder="ID do transporte"
+                required
               ></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group id="input-group-2" label="Marca:" label-for="input-2">
+              <b-form-input
+                id="input-2"
+                placeholder="Marca do transporte"
+                required
+              ></b-form-input>
+            </b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+              id="input-group-3"
+              label="Capacidade:"
+              label-for="input-3"
+            >
+              <b-form-input
+                id="input-3"
+                placeholder="Capacidade do transporte"
+                required
+              ></b-form-input>
+            </b-form-group>
+          </b-col>
+        </b-row>
+        <div class="d-flex justify-content-center pd-2">
+          <b-button type="submit">Adicionar</b-button>
+          <b-button type="reset" variant="danger">Recomeçar</b-button>
+        </div>
+      </b-form>
 
-              <label class="sr-only" for="inline-form-input-username"
-                >Username</label
-              >
-              <b-input-group prepend="@" class="mb-2 mr-sm-2 mb-sm-0">
-                <b-form-input
-                  id="inline-form-input-username"
-                  placeholder="Username"
-                ></b-form-input>
-              </b-input-group>
-
-              <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0"
-                >Remember me</b-form-checkbox
-              >
-
-              <b-button variant="primary">Save</b-button>
-            </b-form>
-          </div>
-        </tr>
-      </table>
+      <hr />
     </div>
+  </div>
+
+  <hr />
+  <div>
+    <b-form inline>
+      <label class="sr-only" for="inline-form-input-name">Name</label>
+      <b-form-input
+        id="inline-form-input-name"
+        class="mb-2 mr-sm-2 mb-sm-0"
+        placeholder="Jane Doe"
+      ></b-form-input>
+
+      <label class="sr-only" for="inline-form-input-username">Username</label>
+      <b-input-group prepend="@" class="mb-2 mr-sm-2 mb-sm-0">
+        <b-form-input
+          id="inline-form-input-username"
+          placeholder="Username"
+        ></b-form-input>
+      </b-input-group>
+
+      <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0"
+        >Remember me</b-form-checkbox
+      >
+
+      <b-button variant="primary">Save</b-button>
+    </b-form>
   </div>
 </template>
 
