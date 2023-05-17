@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import ProductionUnits from '@/views/ProductionUnits.vue';
 import { store } from '@/store';
 
 const routes = [
@@ -63,6 +64,11 @@ const routes = [
         path: '/registration',
         name: 'Registration',
         component: Register,
+    },
+    {
+        path: '/unidadesproducao',
+        name: 'Unidades de Produção',
+        component: ProductionUnits,
     },
 ];
 
