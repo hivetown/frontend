@@ -2,7 +2,7 @@
   <div class="grid justify-content-center">
     <div
       class="col-12 sm:col-6 lg:col-4 xl:col-3"
-      v-for="product in products"
+      v-for="product in props.products"
       :key="product.id"
     >
       <div class="item">
@@ -13,8 +13,8 @@
 </template>
 
 <script setup lang="ts">
-import ProductCardVue from "./ProductCard_old.vue";
-import { Product } from "../types/interfaces";
+import ProductCardVue from './ProductCard_old.vue';
+import { Product } from '../types/interfaces';
 
 const props = defineProps<{ products: Product[] }>();
 </script>
