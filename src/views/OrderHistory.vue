@@ -7,17 +7,25 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
 import { fetchAllOrders } from '../api/orders';
+
 import { Order } from '../types/interfaces';
+import { fetchAuth } from '../api/auth';
+
 const orders = ref<Order[]>([]);
-const fetchProducts = async (search?: string) => {
-  orders.value = await fetchAllOrders(search).then((ps) => ps.data);
-};
-onMounted(fetchProducts);
 const search = ref('');
-watch(search, fetchProducts);
+var id = 0;
+onMounted(async () => {
+  const responseItem = await fetchAuth();
+  id = responseItem.data['id'];
+  fetchProducts();
+  console.log(id);
+});
+
+watch(search);
 </script>
+
 <script lang="ts">
 import OrderHistory from '../components/OrderHistory.vue';
 

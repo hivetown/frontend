@@ -1,31 +1,37 @@
 <template>
-	<main class="login">
-		<section class="forms">
+  <main class="login">
+    <section class="forms">
+      <!-- <form class="register" @submit.prevent="register"> -->
+      <!-- create a radio button to choose if you are a consumer or supplier -->
+      <!-- and make post request to the backend using "../api/consumers.ts" -->
+      <div class="p-field-radiobutton">
+        <p>Are you a consumer or a supplier?</p>
+        <input
+          type="radio"
+          id="consumer"
+          name="consumer_supplier"
+          checked
+          @click="saveValue('Consumer')"
+        />
+        <label for="consumer">Consumer</label>
+        <input
+          type="radio"
+          id="supplier"
+          name="consumer_supplier"
+          @click="saveValue('Producer')"
+        />
+        <label for="supplier">Supplier</label>
 
-			<!-- <form class="register" @submit.prevent="register"> -->
-                <!-- create a radio button to choose if you are a consumer or supplier -->
-				<!-- and make post request to the backend using "../api/consumers.ts" -->
-                <div class="p-field-radiobutton">
-                    <p>Are you a consumer or a supplier?</p>
-                      <input type="radio" id="consumer" name="consumer_supplier" checked @click="saveValue('Consumer')">
-                      <label for="consumer">Consumer</label>
-                      <input type="radio" id="supplier" name="consumer_supplier" @click="saveValue('Producer')">
-                      <label for="supplier">Supplier</label>                    
-                   
+        <!-- if value returned in saveValue() is consumer, then show the consumer registration form -->
+        <!-- var a is equaal to value returned in saveValue() -->
 
-				<!-- if value returned in saveValue() is consumer, then show the consumer registration form -->
-				<!-- var a is equaal to value returned in saveValue() -->	
-				
-				<div v-if="userType == 'Consumer'">
-					
-					
-			
-					<AuthConsumer></AuthConsumer>
-				</div>
-				<div v-else-if="userType == 'Producer'" >
-					<RegisterProducerForm></RegisterProducerForm>
-				</div>
-					<!-- <input
+        <div v-if="userType == 'Consumer'">
+          <AuthConsumer></AuthConsumer>
+        </div>
+        <div v-else-if="userType == 'Producer'">
+          <RegisterProducerForm></RegisterProducerForm>
+        </div>
+        <!-- <input
 						type="text"
 						placeholder="Name"
 						v-model="register_form.name" />
@@ -52,8 +58,8 @@
 				<input 
 					type="submit" 
 					value="Register" method="post" action="../api/producers.ts" />	 -->
-				
-				<!-- <div v-else-if="register_form.consumer_supplier == 'supplier'">
+
+        <!-- <div v-else-if="register_form.consumer_supplier == 'supplier'">
 					<input
 						type="text"
 						placeholder="Name"
@@ -84,79 +90,70 @@
 					value="Register" method="post" action="../api/consumers.ts"/>
 
 				</div> -->
-				<p id="loginLink">Já tem uma conta? <router-link to="/login">Login</router-link></p>
-                </div>
-				
-				
-					<!-- Create a link to the login page -->
-				
+        <p id="loginLink">
+          Já tem uma conta? <router-link to="/login">Login</router-link>
+        </p>
+      </div>
 
-			<!-- </form> -->
-			<!-- Create buthon to redirect to step 2 of registration -->
-			
+      <!-- Create a link to the login page -->
 
-
-		</section>
-	</main>
+      <!-- </form> -->
+      <!-- Create buthon to redirect to step 2 of registration -->
+    </section>
+  </main>
 </template>
 
 <script lang="ts">
-import { ref } from 'vue'
-import { useStore } from 'vuex'
+import { ref } from 'vue';
+import { useStore } from 'vuex';
 import router from '../router';
 import AuthConsumer from '../components/AuthConsumer.vue';
 import RegisterProducerForm from '../components/RegisterProducerForm.vue';
 
 export default {
-	components: {
-		AuthConsumer, RegisterProducerForm
-	},
-	setup () {
-		const register_form = ref({});
-		const store = useStore();
-		const register = () => {
-			store.dispatch('register', register_form.value);
-		}
-		// create ref to save the value of the radio button
-		const userType = ref('Consumer');
-		// create function to save the value of the radio button
-		function saveValue(radioValue) {
-			// Get the value of the input field with id="supplier"
-			userType.value = radioValue;
-		}
-		return {
-			register_form,
-			register,
-			userType,
-			saveValue
-		}
-	}
-}
-
-
-
+  components: {
+    AuthConsumer,
+    RegisterProducerForm,
+  },
+  setup() {
+    const register_form = ref({});
+    const store = useStore();
+    const register = () => {
+      store.dispatch('register', register_form.value);
+    };
+    // create ref to save the value of the radio button
+    const userType = ref('Consumer');
+    // create function to save the value of the radio button
+    function saveValue(radioValue) {
+      // Get the value of the input field with id="supplier"
+      userType.value = radioValue;
+    }
+    return {
+      register_form,
+      register,
+      userType,
+      saveValue,
+    };
+  },
+};
 </script>
 
 <style>
-
 /* align loginLink with Register button */
 #loginLink {
-	margin-left: 17px;
+  margin-left: 17px;
 }
 
 .p-field-radiobutton {
-	display: flex;
-	flex-direction: column;
-	margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
 }
-
-
-
 
 /* create border around the form */
 .forms {
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
 }
 </style>
