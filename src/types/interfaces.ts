@@ -44,6 +44,7 @@ export interface User {
     role?: Role;
     image?: {
         url?: string;
+        alt?: string;
     };
     type: 'PRODUCER' | 'CONSUMER';
 }
@@ -56,10 +57,9 @@ export interface Producer {
 export interface Category {
     id: number;
     name: string;
-    parent: number;
+    parent?: Category;
     image: Image;
     subCategories?: Category;
-    // field?: Field;
 }
 
 export interface SubCategory {
@@ -127,13 +127,6 @@ export interface Image {
     url: string;
     alt: string;
 }
-
-// export interface Field {
-//     id: number;
-//     name: string;
-//     unit: string;
-//     typy: string;
-// }
 
 export type AuthenticatedUser = Consumer | Producer;
 

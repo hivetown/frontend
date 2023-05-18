@@ -58,7 +58,7 @@ export default {
   },
   props: {
     categories: {
-      type: Array<Category>,
+      type: Array as () => (Category | { showSubCategories: boolean })[],
       required: true,
     },
   },

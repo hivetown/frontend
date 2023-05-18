@@ -175,6 +175,7 @@ export default defineComponent({
       undefined,
       categoryId
     );
+
     const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;

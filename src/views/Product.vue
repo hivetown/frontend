@@ -39,9 +39,7 @@
             <img
               class="square-image alternative-img rounded-3"
               style="background-color: #f3f3f3"
-              v-for="(image, index) in defaultProduct && defaultProduct.producer
-                ? defaultProduct.producer.imageShowcase
-                : []"
+              v-for="(image, index) in productDetails.images"
               :key="index"
               :src="image.url"
               :alt="image.alt"
@@ -78,23 +76,21 @@
       <div class="separator-bottom" style="min-height: 30vh">
         <!-- Preço -->
         <div class="d-flex align-items-center gap-3">
-          <h3>{{ lowestPrice }}€ - {{ highestPrice }}€</h3>
+          <h3>
+            {{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€
+          </h3>
           <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
         </div>
         <div>
           <a
             href="#"
-            v-if="producers.valueOf() > 1"
+            v-if="productDetails.producersCount > 1"
             @click="currentPage = 'vendedores'"
           >
-            <!-- TODO ver se é mais fácil trazer do /products/id (producerCount) -->
-            ver +{{ producers.valueOf() - 1 }} vendedores
+            ver +{{ productDetails.producersCount }} vendedores
           </a>
           <!-- Não há mais vendedores para além do apresentado -->
-          <a href="#" v-else-if="producers === 1"></a>
-
-          <!-- TODO - ver qual é o certo -->
-          <!-- {{ productDetails.producersCount }} -->
+          <a href="#" v-else-if="productDetails.producersCount === 1"></a>
         </div>
 
         <!-- Quantidade -->
@@ -111,7 +107,7 @@
           </div>
 
           <p class="mt-3 grey-txt">
-            <span>{{ stock }}</span> items disponíveis
+            <span>{{ defaultProduct.stock }}</span> items disponíveis
           </p>
         </div>
 
@@ -155,12 +151,10 @@
       <!-- Vendedor -->
       <div class="mt-5 d-flex align-items-center gap-3">
         <b-avatar
-          v-if="
-            defaultProduct.producer && defaultProduct.producer.imageShowcase
-          "
+          v-if="defaultProduct.producer && defaultProduct.producer.user.image"
           class="nav-item"
-          :src="defaultProduct.producer.imageShowcase[0].url"
-          :alt="defaultProduct.producer.imageShowcase[0].alt"
+          :src="defaultProduct.producer.user.image.url"
+          :alt="defaultProduct.producer.user.image.alt"
           style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; scale: 1.2"
         >
         </b-avatar>
@@ -262,17 +256,20 @@
           :key="index"
         >
           <div class="mt-4" style="background-color: ">
+            <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
+              v-if="producerProduct.id != defaultProduct.id"
             >
               <router-link
                 :to="'/producer/' + producerProduct.producer.user.id"
               >
                 <b-avatar
+                  v-if="producerProduct.producer.user.image"
                   class="nav-item"
-                  :src="producerProduct.producer.imageShowcase[0].url"
-                  :alt="producerProduct.producer.imageShowcase[0].alt"
+                  :src="producerProduct.producer.user.image.url"
+                  :alt="producerProduct.producer.user.image.alt"
                   style="
                     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
                     scale: 1.2;
@@ -426,6 +423,7 @@ export default defineComponent({
       // Dados da BD
       producerProducts: {} as BaseItems<ProducerProduct>,
       defaultProduct: {} as ProducerProduct,
+      //   defaultProduct: {} as ProductSpec,
       productDetails: {} as ProductSpec,
       lowestPrice: 0,
       highestPrice: 0,
@@ -450,78 +448,57 @@ export default defineComponent({
     },
     // Selecionar a imagem do produto a visualizar
     selectImage(index: number) {
-      this.selectedImage =
-        this.defaultProduct.producer.imageShowcase[index].url;
-      this.selectedImageAlt =
-        this.defaultProduct.producer.imageShowcase[index].alt;
+      this.selectedImage = this.productDetails.images[index].url;
+      this.selectedImageAlt = this.productDetails.images[index].alt;
     },
   },
 
   // A fazer antes de montar o componente
   async beforeMount() {
-    // Carregar os dados do produto da BD
-    const producerProducts = await fetchProducerProducts(
-      Number(this.$route.params.specid)
-    );
-    this.producerProducts = producerProducts.data;
+    // SpecId escolhida
+    const specId = Number(this.$route.params.specid);
 
-    // Produto com o preço mais baixo a ser apresentado quando a página é carregada
-    // this.defaultProduct =  this.producerProducts.items[this.lowestPriceIndex].productSpec
-    this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
-
-    const productDetails = await fetchProduct(this.defaultProduct.productSpec);
+    // Vai buscar os dados da spec para ter acesso aos dados específicos dela
+    // Pedido do tipo: /products/specId
+    const productDetails = await fetchProduct(specId);
     this.productDetails = productDetails.data;
 
     // Carregar a imagem principal do produto
-    if (this.defaultProduct.producer.imageShowcase) {
-      if (this.defaultProduct.producer.imageShowcase[this.lowestPriceIndex]) {
-        this.selectedImage =
-          this.defaultProduct.producer.imageShowcase[this.lowestPriceIndex].url;
-        this.selectedImageAlt =
-          this.defaultProduct.producer.imageShowcase[this.lowestPriceIndex].alt;
-      }
+    if (this.productDetails.images) {
+      this.selectedImage = this.productDetails.images[0].url;
+      this.selectedImageAlt = this.productDetails.images[0].alt;
     }
 
-    // Inicializa o menor preço, o maior e o stock
+    // Carrega todos os produtos que têm a productSpec passada na route
+    // Pedido /products/specId/products
+    const producerProducts = await fetchProducerProducts(specId);
+    this.producerProducts = producerProducts.data;
+
+    // Percorre a lista de produtos para encontrar qual deles é que tem o minPrice
     if (this.producerProducts.items.length > 0) {
-      const currentPrice = this.producerProducts.items[0].currentPrice;
-      this.lowestPrice = currentPrice;
-      this.highestPrice = currentPrice;
-      this.stock = this.producerProducts.items[0].stock;
+      for (let i = 0; i < this.producerProducts.items.length; i++) {
+        const currentPrice = this.producerProducts.items[i].currentPrice;
+        if (currentPrice <= this.productDetails.minPrice) {
+          this.lowestPriceIndex = i;
+        }
+      }
     }
-    // Percorre a lista de produtores contando-os, encontra o preço mais alto e o preço
-    // mais baixo. Determina ainda o stock total
-    for (let i = 1; i < this.producerProducts.items.length; i++) {
-      this.producers = this.producers.valueOf() + 1;
-      this.stock += this.producerProducts.items[i].stock;
 
-      const currentPrice = this.producerProducts.items[i].currentPrice;
-      if (currentPrice < this.lowestPrice) {
-        this.lowestPrice = currentPrice;
-        this.lowestPriceIndex = i;
-      }
-      if (currentPrice > this.highestPrice) {
-        this.highestPrice = currentPrice;
-      }
-    }
+    // Define o produto default que será aquele com o preço mais baixo e este
+    // será o que vai ter as infos apresentadas quando a página é carregada
     this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
 
     // Carregar as categorias do produto
-    const productCategories = await fetchProductCategories(
-      Number(this.$route.params.specid)
-    );
+    const productCategories = await fetchProductCategories(specId);
     this.productCategories = productCategories.data;
 
     try {
       for (const categoria of this.productCategories.items) {
         const response = await fetchProductCategoriesFields(
-          Number(this.$route.params.specid),
+          specId,
           categoria.id
         );
         this.fields.push(response.data.items);
-        // response.data.items.forEach((item: Category) => {
-        //   this.fields.items.push(item);
-        // });
       }
     } catch (error) {
       console.log('Erro: ' + error);
