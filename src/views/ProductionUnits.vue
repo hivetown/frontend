@@ -5,47 +5,57 @@
       <br />
       <h3 class="parent dgreen-txt">Adicionar Novo Transporte</h3>
       <!--Faltam os v-model="form.name" dentro dos b-form-input-->
-      <b-form inline>
-        <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
-        <b-row>
-          <b-col>
-            <b-form-group id="input-group-1" label="ID:" label-for="input-1">
-              <b-form-input
-                id="input-1"
-                placeholder="ID do transporte"
-                required
-              ></b-form-input>
-            </b-form-group>
-          </b-col>
-          <b-col>
-            <b-form-group id="input-group-2" label="Marca:" label-for="input-2">
-              <b-form-input
-                id="input-2"
-                placeholder="Marca do transporte"
-                required
-              ></b-form-input>
-            </b-form-group>
-          </b-col>
-          <b-col>
-            <b-form-group
-              id="input-group-3"
-              label="Capacidade:"
-              label-for="input-3"
-            >
-              <b-form-input
-                id="input-3"
-                placeholder="Capacidade do transporte"
-                required
-              ></b-form-input>
-            </b-form-group>
-          </b-col>
-        </b-row>
-        <div class="d-flex justify-content-center pd-2">
-          <b-button type="submit">Adicionar</b-button>
-          <b-button type="reset" variant="danger">Recomeçar</b-button>
-        </div>
-      </b-form>
+      <div>
+        <b-form inline>
+          <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
+          <b-row>
+            <b-col>
+              <b-form-group id="input-group-1" label="ID:" label-for="input-1">
+                <b-form-input
+                  id="input-1"
+                  placeholder="ID do transporte"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group
+                id="input-group-2"
+                label="Marca:"
+                label-for="input-2"
+              >
+                <b-form-input
+                  id="input-2"
+                  placeholder="Marca do transporte"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group
+                id="input-group-3"
+                label="Capacidade:"
+                label-for="input-3"
+              >
+                <b-form-input
+                  id="input-3"
+                  placeholder="Capacidade do transporte"
+                  required
+                ></b-form-input>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <div class="d-flex justify-content-center pd-2">
+            <b-button type="submit">Adicionar</b-button>
+            <b-button type="reset" variant="danger">Recomeçar</b-button>
+          </div>
+        </b-form>
+      </div>
 
+      <div>
+        <!--<PUCOmp v-for="puComp" in ProductionUnit.> </PUCOmp>-->
+        {{ Address }}
+      </div>
       <hr />
     </div>
   </div>
@@ -150,23 +160,26 @@ table {
 }
 </style>
 
+<script setup lang="ts">
+import PUComp from '@/components/ProductionUnitsComp.vue';
+</script>
+
 <script lang="ts">
-import { getUnit } from '@api';
-import { createProdutionUnit } from '@api';
-import { updateProductionUnit } from '@api';
-import { deleteProductionUnit } from '@api';
-import { Address } from '@types';
+import {
+  createProdutionUnit,
+  updateProductionUnit,
+  deleteProductionUnit,
+} from '../api/producers';
+import { Address, ProductionUnit } from '@types';
 
 export default {
   data() {
-    return {};
+    return {
+      pucomps: {} as ProdUnit,
+    };
   },
 
   methods: {
-    getProdUnit(producerId: number, unitId: number) {
-      getUnit(producerId, unitId);
-    },
-
     addProdUnit(id: number, name: string, address: Address) {
       createProdutionUnit(id, name, address);
     },
