@@ -9,6 +9,8 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import OrderHistory from '@/views/OrderHistory.vue';
+
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -48,6 +50,11 @@ const routes = [
         path: '/produto',
         name: 'Produto',
         component: Product,
+    },
+    {
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
     },
     {
         path: '/conta',

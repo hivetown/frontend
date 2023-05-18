@@ -61,14 +61,6 @@ const routes = [
     },
 
     {
-        path: '/encomendas',
-        name: 'OrderHistory',
-        component: OrderHistory,
-        meta: {
-            requiresAuth: true,
-        },
-    },
-    {
         path: '/login',
         name: 'Login',
         component: Login,
