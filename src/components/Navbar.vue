@@ -19,7 +19,7 @@
 								<i class="bi bi-bell" style="color: #164A41" font-scale="1.5"></i>
 							</b-avatar>
 							<!--numero de notificacoes-->
-							<b-badge   @click="showModalFunctions" variant="danger" class="rounded-circle position-absolute"  style="top: 30px; right: 490px; width:20px; height: 20px; border-radius: 50%;">9</b-badge>
+							<b-badge   @click="showModalFunctions" variant="danger" class="rounded-circle position-absolute"  style="top: 30px; right: 535px; width:20px; height: 20px; border-radius: 50%;">3</b-badge>
     						<Modal v-if="showModal"  />
 							<p class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Notificações</p>
 							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->

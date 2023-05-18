@@ -71,7 +71,7 @@
     border-radius:1%;
     position: absolute;
     top: 64%;
-    right: 9%;
+    right: 12%;
     width: 400px;
     background-color: #f3f3f3;
     border: 1px solid #ccc;
