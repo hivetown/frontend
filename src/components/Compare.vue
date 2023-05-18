@@ -49,7 +49,13 @@ import {
   fetchProductCategories,
   fetchProductCategoriesFields,
 } from '@/api';
-import { BaseItems, Category, ProductSpec, Image } from '@/types';
+import {
+  BaseItems,
+  Category,
+  ProductSpec,
+  ProductSpecField,
+  Image,
+} from '@/types';
 import { defineComponent } from 'vue';
 // import { number } from 'yargs';
 </script>
@@ -65,8 +71,8 @@ export default defineComponent({
       product2Img: {} as Image,
       product1Categories: {} as BaseItems<Category>,
       product2Categories: {} as BaseItems<Category>,
-      fields1: [] as [number, Category[]][],
-      fields2: [] as [number, Category[]][],
+      fields1: [] as [number, ProductSpecField[]][],
+      fields2: [] as [number, ProductSpecField[]][],
       categoriasTotais: {} as Record<number, (number | number[])[]>,
       fieldsTotais: {} as Record<number, (number | number[])[]>,
     };

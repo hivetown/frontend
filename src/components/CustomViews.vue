@@ -9,7 +9,6 @@
 
     <!-- Faz de placeholder -->
     <div class="w-25" style=""></div>
-
     <div
       class="w-50 d-flex justify-content-end align-items-center"
       style="gap: 2vh"

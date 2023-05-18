@@ -55,21 +55,19 @@
       <!-- Diferentes vistas da página -->
       <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
       <CustomViews
-        v-if="allProductsData && allProductsData.data"
-        :items="allProductsData.data.totalItems"
-        :amount="allProductsData.data.pageSize"
+        v-if="allProducts && allProducts.pageSize"
+        :items="allProducts.totalItems"
+        :amount="allProducts.pageSize"
       />
 
-      <div v-if="allProductsData?.data?.totalItems === 0" class="parent">
+      <div v-if="allProducts?.totalItems === 0" class="parent">
         <p>Não foram encontrados produtos para a categoria especificada</p>
       </div>
 
       <div v-else id="page-products">
         <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
         <div
-          v-for="(linha, indice) in Math.ceil(
-            (allProductsData?.data?.pageSize ?? 0) / 4
-          )"
+          v-for="(linha, indice) in Math.ceil((allProducts?.pageSize ?? 0) / 4)"
           :key="indice"
         >
           <div
@@ -77,7 +75,10 @@
             style="gap: 12vh"
           >
             <template
-              v-for="product in allProducts.slice(indice * 4, indice * 4 + 4)"
+              v-for="product in allProducts.items.slice(
+                indice * 4,
+                indice * 4 + 4
+              )"
               :key="product.id"
             >
               <!-- {{ product}} -->
@@ -105,13 +106,12 @@
                       :currentPage="allProductsData.data.page">
           </Pagination> -->
         <Pagination
-          v-if="allProductsData && allProductsData.data"
-          :total-rows="allProductsData.data.totalItems"
-          :per-page="allProductsData.data.pageSize"
-          :current-page="allProductsData.data.page"
+          v-if="allProducts"
+          :total-rows="allProducts.totalItems"
+          :per-page="allProducts.pageSize"
+          :current-page="allProducts.page"
         >
         </Pagination>
-
         <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
       </div>
     </div>
@@ -153,7 +153,7 @@ export default defineComponent({
       // Produtos
       allProducts: {} as BaseItems<ProductSpec>,
       productSpec: {} as ProductSpec,
-      allProductsData: {} as BaseItems<ProductSpec>,
+      //   allProductsData: {} as BaseItems<ProductSpec>,
       // Filtros
       allCategories: {} as Category[],
       currentCategory: {} as string,
@@ -169,18 +169,18 @@ export default defineComponent({
     const page = parseInt(String(this.$route.query.page)) || 1;
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
     const categoryId = parseInt(String(this.$route.query.categoryId)) || 1;
-    const allProductsData = await fetchAllProducts(
+    // const allProductsData = await fetchAllProducts(
+    const allProducts = await fetchAllProducts(
       page,
       pageSize,
       undefined,
       categoryId
     );
-
-    const allProducts = allProductsData.data.items;
+    this.allProducts = allProducts.data;
+    // const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
-    this.allProducts = allProducts;
-    this.allProductsData = allProductsData;
+    // this.allProductsData = allProductsData;
     this.allCategories = allCategories;
 
     // Carregar a categoria atualmente selecionada
@@ -193,10 +193,12 @@ export default defineComponent({
       // Se não houver uma
       this.currentCategory = 'Todas as categorias';
     }
+    console.log(this.allCategories);
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
     const maxPriceProduct =
-      this.allProducts.items.length > 0
+      //   this.allProducts.items.length > 0
+      this.allProducts.totalItems > 0
         ? this.allProducts.items.reduce((prevProduct, currentProduct) => {
             return prevProduct.maxPrice > currentProduct.maxPrice
               ? prevProduct

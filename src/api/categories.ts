@@ -1,4 +1,4 @@
-import { Category, SubCategory, BaseItems } from '../types/interfaces';
+import { Category, BaseItems } from '../types/interfaces';
 import { api } from './_base';
 
 export const fetchAllCategories = (search?: string) =>
@@ -8,4 +8,4 @@ export const fetchCategory = (specId: number) =>
     api.get<Category>(`/categories/${specId}`);
 
 export const fetchCategorySubCategories = (specId: number) =>
-    api.get<BaseItems<SubCategory>>(`/categories/${specId}/categories`);
+    api.get<Category>(`/categories/${specId}/categories`);

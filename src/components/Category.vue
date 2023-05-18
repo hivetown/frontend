@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable>
+    <b-navbar toggleable class=" ">
       <b-navbar-nav class="w-100">
         <b-navbar-item
           v-for="(category, index) in categories"
@@ -19,8 +19,9 @@
                 style="color: ; font-size: 1.2em"
               />
             </div>
+
             <div class="d-flex gap-2 justify-content-center align-items-center">
-              <input type="checkbox" @click="updateUrl(category.id)" />
+              <input type="checkbox" />
               <span
                 @click.stop="toggleCategory(category)"
                 style="cursor: pointer"
@@ -56,20 +57,20 @@
   /* background-color: #f3f3f3; */
   padding: 0.5em;
 }
+
 .child-cat span {
   /* color:#5A5A5A; */
 }
 </style>
 
-<script setup lang="ts">
-import { fetchCategorySubCategories } from '@/api';
-</script>
-
 <script lang="ts">
+import { Category } from '@/types';
+import { fetchCategorySubCategories } from '@/api';
+
 export default {
   props: {
     categories: {
-      type: Array,
+      type: Array as () => Category[],
       required: true,
     },
     depth: {
@@ -79,32 +80,36 @@ export default {
   },
   data() {
     return {
-      parentSubcategories: [],
-      subCategoriesById: {},
+      parentSubcategories: {} as Category[],
+      subCategoriesById: {} as Category[],
     };
   },
   methods: {
-    async fetchSubCategories(id) {
+    // async fetchSubCategories(id) {
+    //   const subCategories =
+    //     this.subCategoriesById[id] ||
+    //     (await fetchCategorySubCategories(id)).data.items.slice(0, 3);
+    //   this.subCategoriesById[id] = subCategories;
+    //   const category = this.categories.find((c) => c.id === id);
+    //   if (category) {
+    //     category.subCategories = subCategories;
+    //   }
+    // },
+    async fetchSubCategories(id: number) {
       const subCategories =
-        this.subCategoriesById[id] ||
-        (await fetchCategorySubCategories(id)).data.items.slice(0, 3);
+        this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
       this.subCategoriesById[id] = subCategories;
       const category = this.categories.find((c) => c.id === id);
       if (category) {
-        category.subCategories = subCategories;
+        category.subCategories = this.subCategoriesById[id];
       }
     },
-    async toggleCategory(category) {
+    async toggleCategory(category: Category) {
       const nextState = !category.showSubCategories;
       if (nextState && !category.subCategories) {
         await this.fetchSubCategories(category.id);
       }
       category.showSubCategories = nextState;
-    },
-    updateUrl(id) {
-      const currentCategory = new URL(window.location.href);
-      currentCategory.searchParams.set('categoryId', id.toString());
-      window.location.replace(currentCategory.toString());
     },
   },
 };

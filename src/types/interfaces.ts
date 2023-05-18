@@ -59,15 +59,16 @@ export interface Category {
     name: string;
     parent?: Category;
     image: Image;
+    showSubCategories?: boolean;
     subCategories?: Category;
 }
 
-export interface SubCategory {
-    id: number;
-    name: string;
-    parent: Category;
-    image: Image;
-}
+// export interface SubCategory {
+//     id: number;
+//     name: string;
+//     parent: Category;
+//     image: Image;
+// }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
 }
