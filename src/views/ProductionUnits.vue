@@ -54,7 +54,7 @@
 
       <div>
         <!--<PUCOmp v-for="puComp" in ProductionUnit.> </PUCOmp>-->
-        {{ Address }}
+        {{ pucomps }}
       </div>
       <hr />
     </div>
@@ -166,11 +166,14 @@ import PUComp from '@/components/ProductionUnitsComp.vue';
 
 <script lang="ts">
 import {
-  createProdutionUnit,
+  getUnits,
+  getUnit,
+  fetchPoructionUnits,
+  createProductionUnit,
   updateProductionUnit,
   deleteProductionUnit,
 } from '../api/producers';
-import { Address, ProductionUnit } from '@types';
+import { Address, ProdUnit } from '@types';
 
 export default {
   data() {
@@ -180,8 +183,16 @@ export default {
   },
 
   methods: {
+    getAllUnits(producerId: number) {
+      fetchPoructionUnits(producerId);
+    },
+
+    getOneUnit(producerId: number, unitId: number) {
+      getUnit(producerId, unitId);
+    },
+
     addProdUnit(id: number, name: string, address: Address) {
-      createProdutionUnit(id, name, address);
+      createProductionUnit(id, name, address);
     },
 
     updateProdUnit(id: number, unitId: number, name: string, address: Address) {

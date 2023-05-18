@@ -1,24 +1,32 @@
-import { Address, CreateProducer } from '@/types';
+import { ProductionUnit, Address, CreateProducer } from '@/types';
 import { api } from './_base';
 
 export const createProducer = async (producer: CreateProducer) =>
     api.post('/producers', producer);
 
-export const getUnit = (producerId: number, unitId: number) =>
-    api.get(`/${producerId}/units/${unitId}`);
+export const getUnits = (producerId: number) => api.get(`/${producerId}/units`);
 
-export const createProdutionUnit = (
+export const getUnit = (producerId: number, unitId: number) =>
+    api.get(`/producers/${producerId}/units/${unitId}`);
+
+export const getProductionUnitProducts = (producerId: number, unitId: number) =>
+    api.get(`/producers/${producerId}/units/${unitId}/products`);
+
+export const fetchPoructionUnits = (producerId: number) =>
+    api.get<ProductionUnit>(`/producers/${producerId}/units/`);
+
+export const createProductionUnit = (
     producerId: number,
     name: string,
     address: Address
-) => api.post(`/${producerId}/units`, { name, address });
+) => api.post(`/producers/${producerId}/units`, { name, address });
 
 export const updateProductionUnit = (
     producerId: number,
     unitId: number,
     name: string,
     address: Address
-) => api.post(`/${producerId}/units/${unitId}`, { name, address });
+) => api.post(`/producers/${producerId}/units/${unitId}`, { name, address });
 
 export const deleteProductionUnit = (producerId: number, unitId: number) =>
-    api.delete(`/${producerId}/units/${unitId}`);
+    api.delete(`/producers/${producerId}/units/${unitId}`);

@@ -100,6 +100,8 @@ export interface ProducerProduct {
     productSpec?: ProductSpec;
 }
 
+export interface ProdUnit extends BaseItems<ProductionUnit> {}
+
 export interface ProductionUnit {
     id: number;
     name: string;
