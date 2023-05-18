@@ -1,31 +1,31 @@
 <template>
-    <div>
+  <div>
     <h1>Histórico de encomendas</h1>
-    <br>
+    <br />
     <!--<OrderHistory/>-->
-    <OrderHistory/>
-    </div>
+    <OrderHistory />
+  </div>
 </template>
 <script setup lang="ts">
-  import { onMounted, ref, watch } from "vue";
-   import { fetchAllOrders } from "../api";
-   import { Order } from "../types/interfaces";
-  const orders = ref<Order[]>([]);
-  const fetchProducts = async (search?: string) => {
-     orders.value = await fetchAllOrders(search).then((ps) => ps.data);
-   };
-   onMounted(fetchProducts);
-   const search = ref("");
-   watch(search, fetchProducts);
+import { onMounted, ref, watch } from 'vue';
+import { fetchAllOrders } from '../api/orders';
+import { Order } from '../types/interfaces';
+const orders = ref<Order[]>([]);
+const fetchProducts = async (search?: string) => {
+  orders.value = await fetchAllOrders(search).then((ps) => ps.data);
+};
+onMounted(fetchProducts);
+const search = ref('');
+watch(search, fetchProducts);
 </script>
 <script lang="ts">
-import OrderHistory from "../components/OrderHistory.vue";
+import OrderHistory from '../components/OrderHistory.vue';
 
-export default{
+export default {
   components: {
-  OrderHistory
-  }
-}
+    OrderHistory,
+  },
+};
 </script>
 <style scoped>
 h1 {
