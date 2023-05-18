@@ -59,6 +59,11 @@ const routes = [
             requiresAuth: true,
         },
     },
+    {
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
+    },
 
     {
         path: '/login',
