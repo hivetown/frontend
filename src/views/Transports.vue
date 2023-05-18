@@ -2,7 +2,11 @@
   <div class="container">
     <h1 class="mb-5">Unidades de Produção</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div v-for="unit in productionUnits.items" :key="unit.id" class="col">
+      <div
+        v-for="transport in transportVehicles.items"
+        :key="transport.id"
+        class="col"
+      >
         <!-- <div v-for="product in products" :key="product.id" class="col"> -->
         <b-card class="prod-card position-relative">
           <img
@@ -14,20 +18,20 @@
         <b-card-text class="">
           <div>
             <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">
-              {{ unit.id }}
+              {{ transport.id }}
             </div>
-            <h5>{{ unit.address.district }}</h5>
-            <p>{{ unit.address.city }}</p>
-            <p>{{ unit.address.county }}</p>
+            <h5>{{ transport.address.district }}</h5>
+            <p>{{ transport.address.city }}</p>
+            <p>{{ transport.address.county }}</p>
             <p class="grey-txt mt-3">
-              {{ unit.address.floor }}, {{ unit.address.door }}
+              {{ transport.address.floor }}, {{ transport.address.door }}
             </p>
             <div class="d-flex gap-2">
-              <h4 class="mb-3">{{ unit.address.floor }}º Andar</h4>
+              <h4 class="mb-3">{{ transport.address.floor }}º Andar</h4>
               <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
             </div>
             <div class="d-flex gap-2">
-              <router-link :to="'/product/edit/' + unit.id">
+              <router-link :to="'/product/edit/' + transport.id">
                 <button
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
@@ -58,10 +62,10 @@
         "
       >
         <Pagination
-          v-if="allUnitsData && allUnitsData.data"
-          :total-rows="allUnitsData.data.totalItems"
-          :per-page="allUnitsData.data.pageSize"
-          :current-page="allUnitsData.data.page"
+          v-if="allTransportsData && allTransportsData.data"
+          :total-rows="allTransportsData.data.totalItems"
+          :per-page="allTransportsData.data.pageSize"
+          :current-page="allTransportsData.data.page"
         >
           ></Pagination
         >
@@ -71,42 +75,42 @@
 </template>
 
 <!-- <template>
-  <div class="container">
-    <h1 class="mb-5">My Products</h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div v-for="product in products" :key="product.id" class="col">
-        <b-card class="prod-card position-relative">
-         
-          <img :src="product.productSpec?.image" class="square-image" alt="Product image" />
-        </b-card>
-        <b-card-text class="">
-          <div>
-            <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ product.category }}</div>
-            <h5>{{ product.productSpec?.name }}</h5>
-            <p class="grey-txt mt-3">{{ product.productSpec?.description }}</p>
-            <div class="d-flex gap-2">
-              <h4 class="mb-3">{{ product.currentPrice }}€</h4>
-              <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p>
-            </div>
-            <div class="d-flex gap-2">
-              <router-link :to="'/product/edit/' + product.id">
-                <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Editar produto">
-                  <i class="bi bi-pencil"></i>
-                </button>
-              </router-link>
-              <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Remover produto">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </div>
-        </b-card-text>
-      </div>
-    </div>
-  </div>
-</template> -->
+	<div class="container">
+	  <h1 class="mb-5">My Products</h1>
+	  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+		<div v-for="product in products" :key="product.id" class="col">
+		  <b-card class="prod-card position-relative">
+		   
+			<img :src="product.productSpec?.image" class="square-image" alt="Product image" />
+		  </b-card>
+		  <b-card-text class="">
+			<div>
+			  <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ product.category }}</div>
+			  <h5>{{ product.productSpec?.name }}</h5>
+			  <p class="grey-txt mt-3">{{ product.productSpec?.description }}</p>
+			  <div class="d-flex gap-2">
+				<h4 class="mb-3">{{ product.currentPrice }}€</h4>
+				<p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p>
+			  </div>
+			  <div class="d-flex gap-2">
+				<router-link :to="'/product/edit/' + product.id">
+				  <button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Editar produto">
+					<i class="bi bi-pencil"></i>
+				  </button>
+				</router-link>
+				<button type="button" class="btn btn-outline-secondary circle-btn" v-b-tooltip.hover title="Remover produto">
+				  <i class="bi bi-trash"></i>
+				</button>
+			  </div>
+			</div>
+		  </b-card-text>
+		</div>
+	  </div>
+	</div>
+  </template> -->
 <script lang="ts">
 import { defineComponent, ref, onMounted, inject } from 'vue';
-import { Units } from '@/types/Units';
+import { TransportVehicles } from '@/types/TransportVehicles';
 import { fetchAllUnits } from '@/api/units';
 import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
@@ -118,8 +122,8 @@ export default {
   },
   data() {
     return {
-      productionUnits: [] as Units[],
-      allUnitsData: {},
+      transportVehicles: [] as Transports[],
+      allTransportsData: {},
     };
   },
   async mounted() {
@@ -132,16 +136,21 @@ export default {
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
       const categoryId = parseInt(this.$route.query.categoryId) || 1;
 
-      const allUnitsData = await fetchAllUnits(2, page, pageSize, categoryId);
+      const allTransportsData = await fetchAllUnits(
+        2,
+        page,
+        pageSize,
+        categoryId
+      );
 
-      console.log('allUnitsData:', allUnitsData);
+      console.log('allTransportsData:', allTransportsData);
 
-      const productionUnitsArray = allUnitsData.data;
-      //   console.log('Production Units:', productionUnitsArray);
+      const transportVehiclesArray = allTransportsData.data;
+      //   console.log('Production Units:', transportVehiclesArray);
 
-      this.productionUnits = productionUnitsArray;
-      console.log('Production Units:', this.productionUnits);
-      this.allUnitsData = allUnitsData;
+      this.transportVehicles = transportVehiclesArray;
+      console.log('Production Units:', this.transportVehicles);
+      this.allTransportsData = allTransportsData;
     } catch (error) {
       console.error(error);
     }

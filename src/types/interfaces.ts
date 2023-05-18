@@ -142,6 +142,16 @@ export interface ProductionUnits {
 	images: Image[];
 }
 
+export interface Transport {
+	id: number;
+	name: string;
+	description: string;
+	producer: Producer;
+	products: Product[];
+	address: Address;
+	images: Image[];
+}
+
 // export interface Producers {
 //     id: number;
 //     name: string;

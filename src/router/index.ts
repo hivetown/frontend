@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import ProductsProducer from '@/views/ProductsProducer.vue';
 import ProductionUnits from '@/views/ProductionUnits.vue';
+import Transports from '@/views/Transports.vue';
 import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
 import Registration from '@/views/Registration.vue';
@@ -98,6 +99,14 @@ const routes = [
         path: '/unidadesproducao',
         name: 'unidadesproducao',
         component: ProductionUnits,
+        // meta: {
+        //     requiresAuth: true,
+        // },
+    },
+    {
+        path: '/transportes',
+        name: 'transportes',
+        component: Transports,
         // meta: {
         //     requiresAuth: true,
         // },

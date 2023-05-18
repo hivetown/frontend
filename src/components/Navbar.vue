@@ -96,9 +96,14 @@
               <b-dropdown-item href="#">Definições</b-dropdown-item>
               <div v-if="user.user.type === 'PRODUCER'">
                 <b-dropdown-item href="/produtosprodutor"
-                  >Conta</b-dropdown-item
+                  >Produtos</b-dropdown-item
                 >
-                <b-dropdown-item href="/unidadesproducao">UP</b-dropdown-item>
+                <b-dropdown-item href="/unidadesproducao"
+                  >Unidades de Produção</b-dropdown-item
+                >
+                <b-dropdown-item href="/transportes"
+                  >Transportes</b-dropdown-item
+                >
               </div>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
