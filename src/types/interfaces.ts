@@ -33,6 +33,28 @@ export interface User {
     type: 'PRODUCER' | 'CONSUMER';
 }
 
+export interface Order {
+    id: number;
+    items: Product[];
+    shippingAddress: Address;
+    consumer?: User;
+}
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    vat: string;
+    type: string;
+}
+
+export interface CreateConsumer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
