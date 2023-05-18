@@ -223,26 +223,26 @@
           </div>
           <div style="background-color: ; height: " class="px-3">
             <div
-              v-for="(category, index) in productCategoriesFields"
+              v-for="(categoryFields, index) in productCategoriesFields"
               :key="index"
               class="mt-3"
               :style="{
                 'border-bottom':
-                  index !== (productCategoriesFields.totalItems - 1).toString()
+                  index !== productCategoriesFields.length - 1
                     ? '1px solid #eeeeee'
                     : 'none',
               }"
             >
               <div
                 class="d-flex gap-5"
-                v-for="(field, index) in category"
-                :key="index"
+                v-for="field in categoryFields"
+                :key="field.field.id"
               >
                 <div style="width: 25vh">
                   <!-- {{ field }} -->
                   <span style="font-weight: bold">{{ field.field.name }} </span>
                 </div>
-                <span :class="{ 'mb-3': index === category.length - 1 }">
+                <span :class="{ 'mb-3': index === categoryFields.length - 1 }">
                   {{ field.value }} {{ field.field.unit }}
                 </span>
               </div>
@@ -395,7 +395,13 @@ import {
   fetchProductCategories,
   fetchProductCategoriesFields,
 } from '@/api';
-import { ProductSpec, ProducerProduct, BaseItems, Category } from '@/types';
+import {
+  ProductSpec,
+  ProducerProduct,
+  BaseItems,
+  Category,
+  ProductSpecField,
+} from '@/types';
 import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
@@ -427,9 +433,9 @@ export default defineComponent({
       producers: 1 as Number,
 
       productCategories: {} as BaseItems<Category>,
-      productCategoriesFields: {} as BaseItems<Category>,
+      productCategoriesFields: [] as ProductSpecField[][],
       //   fields: {} as BaseItems<Category>,
-      fields: [] as Category[][],
+      fields: [] as ProductSpecField[][],
     };
   },
   methods: {
@@ -522,6 +528,7 @@ export default defineComponent({
     }
   },
   created() {
+    console.log(this.fields);
     this.productCategoriesFields = this.fields;
   },
   components: { PathComponent },

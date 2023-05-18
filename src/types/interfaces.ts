@@ -136,3 +136,21 @@ export interface Image {
 // }
 
 export type AuthenticatedUser = Consumer | Producer;
+
+export interface ProductSpecField {
+    field: Field;
+    value: string;
+}
+
+export interface Field {
+    id: number;
+    name: string;
+    unit: string;
+    type: string;
+    possibleValues: FieldPossibleValue[];
+}
+
+export interface FieldPossibleValue {
+    id: number;
+    value: string;
+}

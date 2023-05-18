@@ -122,7 +122,7 @@
 <script setup lang="ts">
 // import { Category } from '@/types';
 import { fetchProductCategories } from '@/api';
-import { Category } from '@types';
+import { Category } from '@/types';
 </script>
 
 <script lang="ts">

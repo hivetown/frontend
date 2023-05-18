@@ -3,6 +3,7 @@ import {
     Category,
     BaseItems,
     ProducerProduct,
+    ProductSpecField,
 } from '../types/interfaces';
 import { api } from './_base';
 
@@ -26,6 +27,6 @@ export const fetchProductCategories = (specId: number) =>
     api.get<BaseItems<Category>>(`/products/${specId}/categories`);
 
 export const fetchProductCategoriesFields = (specId: number, catId: number) =>
-    api.get<BaseItems<Category>>(
+    api.get<BaseItems<ProductSpecField>>(
         `/products/${specId}/categories/${catId}/fields`
     );
