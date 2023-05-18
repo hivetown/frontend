@@ -9,7 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
-import SupplierInfo from "./views/SupplierInfo.vue";
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 
 const routes = [
@@ -24,8 +24,8 @@ const routes = [
         component: About,
     },
     {
-        path: '/produtos',
-        name: 'Produtos',
+        path: '/products',
+        name: 'Products',
         component: CategoriasProdutos,
     },
     {
@@ -43,9 +43,9 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-		path: "/products/:specid",
-		name: "ProductDetails",
-		component: Product,
+        path: '/products/:specid',
+        name: 'ProductDetails',
+        component: Product,
     },
     {
         path: '/conta',
@@ -65,11 +65,11 @@ const routes = [
         name: 'Registration',
         component: Register,
     },
-	{
-		path: "/producer/:id",
-		name: "Producer",
-		component: SupplierInfo,
-	},
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
+    },
 ];
 
 const router = createRouter({

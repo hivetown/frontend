@@ -1,5 +1,4 @@
 <template>
-
   <b-form-input
     class="mt-3 mb-1 light-search"
     type="search"
@@ -45,75 +44,98 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import { Category, SubCategory, BaseItems } from '@/types';
+import { fetchCategorySubCategories } from '@/api';
+</script>
 
 <script lang="ts">
 export default {
-	data() {
-		return {
-			subCategoriesById: {},
-		};
-	},
-	props: {
-		categories: {
-			type: Array,
-			required: true,
-		},
-	},
-	computed: {
-		filteredCategories() {
-			const filtered = [];
-			for (const category of Object.values(this.categories)) {
-				if (!category.parent && !filtered.some((c) => c.name === category.name)) {
-					filtered.push(category);
-				}
-			}
-			return filtered.sort((a, b) => a.name.localeCompare(b.name));
-		},
-	},
-	methods: {
-		async fetchSubCategories(id) {
-			const subCategories = this.subCategoriesById[id] || await fetchCategorySubCategories(id);
-			this.subCategoriesById[id] = subCategories.data.items.slice(0, 3);
-			const category = this.categories.find(c => c.id === id);
-			if (category) {
-				category.subCategories = this.subCategoriesById[id];
-			}
-		},
-	},
+  data() {
+    return {
+      subCategoriesById: {} as Record<number, BaseItems<SubCategory>>,
+    };
+  },
+  props: {
+    categories: {
+      type: Array<Category>,
+      required: true,
+    },
+  },
+  computed: {
+    filteredCategories() {
+      const filtered: Category[] = [];
+      for (const category of this.categories) {
+        if (
+          !category.parent &&
+          !filtered.some((c) => c.name === category.name)
+        ) {
+          filtered.push(category);
+        }
+      }
+      return filtered.sort((a, b) => a.name.localeCompare(b.name));
+    },
+  },
+  // Ver se isto ainda funciona
+  methods: {
+    async fetchSubCategories(id: number) {
+      const subCategories: BaseItems<SubCategory> =
+        this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
+      this.subCategoriesById[id] = subCategories.data.items.slice(0, 3);
+      const category = this.categories.find((c) => c.id === id) as SubCategory;
+      if (category && 'subCategories' in category) {
+        category.subCategories = this.subCategoriesById[
+          id
+        ] as BaseItems<SubCategory>;
+      }
+    },
+  },
+
+  //   methods: {
+  //     async fetchSubCategories(id) {
+  //       const subCategories =
+  //         this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
+  //       this.subCategoriesById[id] = subCategories.data.items.slice(0, 3);
+  //       const category = this.categories.find((c) => c.id === id);
+  //       if (category) {
+  //         category.subCategories = this.subCategoriesById[id];
+  //       }
+  //     },
+  //   },
 };
 </script>
 
 <style>
-  /* Scrollbar //////////////////////////////////////////// */
+/* Scrollbar //////////////////////////////////////////// */
 
-  /* Google chrome */
-  ::-webkit-scrollbar {
-    width: 0.8em; /* Largura da barra */
-    background-color: #f3f3f3; 
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: #d3d3d3; /* Cor do thumb da barra */
-    border-radius: 20px; 
-    border: none; 
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: #b1b1b1;
-  }
+/* Google chrome */
+::-webkit-scrollbar {
+  width: 0.8em; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
 
-  /* Firefox */
-  ::-moz-scrollbar {
-    width: 8px; /* Largura da barra */
-    background-color: #f3f3f3; 
-  }
-  ::-moz-scrollbar-thumb {
-    background-color: #d3d3d3; /* Cor do thumb da barra */
-    border-radius: 20px; 
-    border: none;
-  }
-  ::-moz-scrollbar-thumb:hover {
-    background-color: #b1b1b1;
-  }
-  /* ////////////////////////////////////////////////////// */  
+/* Firefox */
+::-moz-scrollbar {
+  width: 8px; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-moz-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-moz-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+/* ////////////////////////////////////////////////////// */
 .cat-txt {
   cursor: pointer;
 }
