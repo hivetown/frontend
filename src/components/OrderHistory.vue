@@ -339,7 +339,6 @@ var idU = 0;
 const orders = ref<Order[]>([]);
 const arr = ref([]); // Use a função ref para criar uma referência reativa do array
 const store = useStore();
-console.log(useStore());
 const encomendas = [];
 const encomendasImage = ref<Array>([]);
 const encomendaId = ref([]);
@@ -350,7 +349,8 @@ const search = ref('');
 
 onMounted(async () => {
   //TODO por user logado
-  idU = (await fetchAuth()).data['id'];
+  //console.log(await fetchAuth().data);
+  idU = (await fetchAuth()).data.user.id;
   //idU = responseItem.data['id'];
   console.log(idU);
   const response = await fetchAllOrders(idU);
@@ -472,6 +472,8 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Carousel, Slide } from 'vue-carousel';
 const orders = ref<Order[]>([]);
 const novo = ref<number[]>([]);
+import { fetchAuth } from '../api/auth';
+var idU = 0;
 
 export default {
   components: { MDBCarousel, Carousel, Slide },
@@ -489,7 +491,7 @@ export default {
   methods: {
     onCheckboxChange() {
       let checkboxes = document.querySelectorAll(
-        "input[type='checkbox']:checked"
+        'input[type=\'checkbox\']:checked'
       );
       if (checkboxes.length == 0) {
         var button = document.getElementById('botao');
@@ -510,9 +512,10 @@ export default {
       //console.log(arr);
     },
     async exportSelectedOrders() {
+      idU = (await fetchAuth()).data.user.id;
       let arr = [];
       let checkboxes = document.querySelectorAll(
-        "input[type='checkbox']:checked"
+        'input[type=\'checkbox\']:checked'
       );
       for (let i = 0; i < checkboxes.length; i++) {
         arr.push(checkboxes[i].value);
