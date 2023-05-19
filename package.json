@@ -20,7 +20,10 @@
     "cz": "git-cz",
     "postinstall": "husky install .github/husky",
     "prepack": "yarn build && pinst --disable",
-    "postpack": "pinst --enable"
+    "postpack": "pinst --enable",
+	"docker:build": "docker build -t luckspt/hivetown-web .",
+	"docker:run": "docker run -p 8080:80 luckspt/hivetown-web",
+	"docker:push": "docker push luckspt/hivetown-web"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
