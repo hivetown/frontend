@@ -136,7 +136,6 @@
             >
           </td>
 
-          <!--TODO mudar o link para detalhada-->
           <td>
             <div
               v-if="
@@ -312,7 +311,6 @@
               :href="'/encomenda/id' + orders.items[num - 1]?.id"
               >Ver detalhes</BButton
             >
-            <!--TODO mudar link-->
           </td>
         </tr>
       </tbody>
@@ -349,9 +347,7 @@ const search = ref('');
 
 onMounted(async () => {
   //TODO por user logado
-  //console.log(await fetchAuth().data);
   idU = (await fetchAuth()).data.user.id;
-  //idU = responseItem.data['id'];
   console.log(idU);
   const response = await fetchAllOrders(idU);
   orders.value = response.data;
@@ -491,7 +487,7 @@ export default {
   methods: {
     onCheckboxChange() {
       let checkboxes = document.querySelectorAll(
-        'input[type=\'checkbox\']:checked'
+        "input[type='checkbox']:checked"
       );
       if (checkboxes.length == 0) {
         var button = document.getElementById('botao');
@@ -515,7 +511,7 @@ export default {
       idU = (await fetchAuth()).data.user.id;
       let arr = [];
       let checkboxes = document.querySelectorAll(
-        'input[type=\'checkbox\']:checked'
+        "input[type='checkbox']:checked"
       );
       for (let i = 0; i < checkboxes.length; i++) {
         arr.push(checkboxes[i].value);
