@@ -1,19 +1,25 @@
+<!-- eslint-disable vue/valid-v-for -->
 <template>
   <div class="root">
     <div class="wrapper-mains">
       <h1>Unidades de Produção</h1>
-      <br />
-      <h3 class="parent dgreen-txt">Adicionar Novo Transporte</h3>
+      <hr />
+      <h3 class="parent dgreen-txt">Adicionar Unidades de Produção</h3>
       <!--Faltam os v-model="form.name" dentro dos b-form-input-->
       <div>
         <b-form inline>
           <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
           <b-row>
             <b-col>
-              <b-form-group id="input-group-1" label="ID:" label-for="input-1">
+              <b-form-group
+                id="input-group-1"
+                label="Marca:"
+                label-for="input-2"
+                label-cols="3"
+              >
                 <b-form-input
                   id="input-1"
-                  placeholder="ID do transporte"
+                  placeholder="Insira a Marca do transporte"
                   required
                 ></b-form-input>
               </b-form-group>
@@ -21,41 +27,54 @@
             <b-col>
               <b-form-group
                 id="input-group-2"
-                label="Marca:"
+                label="Capacidade:"
                 label-for="input-2"
+                label-cols="3"
+                label-cols-sm="3"
               >
                 <b-form-input
-                  id="input-2"
-                  placeholder="Marca do transporte"
+                  id="input-3"
+                  placeholder="Insira uma Morada válida"
                   required
                 ></b-form-input>
               </b-form-group>
             </b-col>
             <b-col>
-              <b-form-group
-                id="input-group-3"
-                label="Capacidade:"
-                label-for="input-3"
-              >
-                <b-form-input
-                  id="input-3"
-                  placeholder="Capacidade do transporte"
-                  required
-                ></b-form-input>
-              </b-form-group>
+              <div class="d-flex justify-content-center pd-2">
+                <b-button type="submit">Adicionar</b-button>
+                <b-button type="reset" variant="danger">Recomeçar</b-button>
+              </div>
             </b-col>
           </b-row>
-          <div class="d-flex justify-content-center pd-2">
-            <b-button type="submit">Adicionar</b-button>
-            <b-button type="reset" variant="danger">Recomeçar</b-button>
-          </div>
         </b-form>
       </div>
 
+      <br />
+      <hr />
+
+      <h3 class="parent dgreen-txt">Gestão de Unidades de Produção</h3>
+
       <div>
-        <!--<PUCOmp v-for="puComp" in ProductionUnit.> </PUCOmp>-->
-        {{ pucomps }}
+        <b-table
+          :items="items"
+          :fields="fields"
+          v-model:sort-by="sortBy"
+          v-model:sort-desc="sortDesc"
+          responsive="sm"
+        ></b-table>
+
+        <div>
+          Sorting By: <b>{{ sortBy }}</b
+          >, Sort Direction:
+          <b>{{ sortDesc ? 'Descending' : 'Ascending' }}</b>
+        </div>
       </div>
+
+      <br />
+      <hr />
+
+      <h3 class="parent dgreen-txt">Zona de Teste</h3>
+
       <hr />
     </div>
   </div>
@@ -161,30 +180,69 @@ table {
 </style>
 
 <script setup lang="ts">
-import PUComp from '@/components/ProductionUnitsComp.vue';
+import ProductionUnitsComp from '@/components/ProductionUnitsComp.vue';
 </script>
 
 <script lang="ts">
 import {
   getUnits,
   getUnit,
-  fetchPoructionUnits,
+  fetchProductionUnits,
   createProductionUnit,
   updateProductionUnit,
   deleteProductionUnit,
 } from '../api/producers';
-import { Address, ProdUnit } from '@types';
+import { Address, ProdUnit, ProductionUnit } from '@types';
 
 export default {
   data() {
     return {
-      pucomps: {} as ProdUnit,
+      userProdUnit: {} as Array<Object>,
+      teste: this.getPUs(),
+
+      sortBy: 'ID',
+      sortDesc: false,
+      fields: [
+        { key: 'ID', sortable: true },
+        { key: 'Marca', sortable: true },
+        { key: 'Morada', sortable: true },
+      ],
+
+      items: {},
     };
   },
 
+  async beforeMount() {
+    await this.getPUnit(1);
+  },
+
   methods: {
-    getAllUnits(producerId: number) {
-      fetchPoructionUnits(producerId);
+    getPUs() {
+      this.getPUnit(1);
+      return this.userProdUnit;
+    },
+
+    async getPUnit(producerId: number) {
+      try {
+        this.userProdUnit = (await fetchProductionUnits(producerId)).data.items;
+
+        const opts: { id: number; marca: string; morada: string }[] = [];
+
+        for (let i = 0; i < Object.entries(this.userProdUnit).length; i++) {
+          const build = {
+            ID: this.userProdUnit[i].id,
+            Marca: this.userProdUnit[i].name,
+            Morada: `${this.userProdUnit[i].address?.county}, ${this.userProdUnit[i].address?.city},
+				${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
+				${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
+          };
+          opts.push(build);
+        }
+        console.log(opts);
+        this.items = opts;
+      } catch (error) {
+        console.error(error);
+      }
     },
 
     getOneUnit(producerId: number, unitId: number) {

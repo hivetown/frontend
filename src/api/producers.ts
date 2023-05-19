@@ -12,8 +12,8 @@ export const getUnit = (producerId: number, unitId: number) =>
 export const getProductionUnitProducts = (producerId: number, unitId: number) =>
     api.get(`/producers/${producerId}/units/${unitId}/products`);
 
-export const fetchPoructionUnits = (producerId: number) =>
-    api.get<ProductionUnit>(`/producers/${producerId}/units/`);
+export const fetchProductionUnits = (producerId: number) =>
+    api.get<ProductionUnit>(`/producers/${producerId}/units`);
 
 export const createProductionUnit = (
     producerId: number,
