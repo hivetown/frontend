@@ -28,8 +28,10 @@
           >
             <b-navbar-nav class="ml-auto p-3">
               <b-nav-item
-                v-for="(subCategory, index) in category.subCategories"
-                :key="index"
+                v-for="(
+                  subCategory, indexSubcategory
+                ) in category.subCategories"
+                :key="indexSubcategory"
               >
                 <!-- <router-link :to="subCategory.link">{{ subCategory.name }}</router-link> -->
                 <a>{{ subCategory.name }}</a>

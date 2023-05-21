@@ -12,12 +12,11 @@ import ProductionUnits from '@/views/ProductionUnits.vue';
 import Transports from '@/views/Transports.vue';
 import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
-import Registration from '@/views/Registration.vue';
-// import AuthConsumer from './components/AuthConsumer.vue';
-import { auth } from './components/firebase';
-import Login from '@/views/Login.vue';
-import Registration from '@/views/Registration.vue';
-// import AuthConsumer from '@/components/AuthConsumer.vue';
+import Register from '@/views/Register.vue';
+import { store } from '@/store';
+import { Permission } from '@/types';
+import { hasPermission } from '@/utils/permissions';
+import { createPopup } from '@/utils/popup';
 
 // import { store, useStore } from '@/store';
 import { useStore } from '@/store';
@@ -80,7 +79,7 @@ const routes = [
     {
         path: '/registration',
         name: 'Registration',
-        component: Registration,
+        component: Register,
     },
     // {
     //     path: '/authconsumer',
@@ -111,6 +110,16 @@ const routes = [
         //     requiresAuth: true,
         // },
     },
+    {
+        path: '/admin',
+        name: 'Admin',
+        component: Register,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions:
+                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
+    },
 ];
 
 const router = createRouter({
@@ -119,8 +128,11 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    const store = useStore();
-    const isAuthenticated = !!store.state.user;
+    let isAuthenticated = !!store.state.user;
+    if (!isAuthenticated) {
+        await store.dispatch('fetchAuthUser');
+        isAuthenticated = !!store.state.user;
+    }
 
     if (!isAuthenticated) await store.dispatch('fetchAuthUser');
     console.log('isAuthenticated', isAuthenticated);
@@ -139,6 +151,21 @@ router.beforeEach(async (to, from, next) => {
     ) {
         // redirect to the login page if the user is not logged in
         next('/login');
+        return;
+    }
+
+    if (
+        to.matched.some((record) => record.meta.requiredPermissions) &&
+        !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
+    ) {
+        // redirect back to the previous page if the user does not have the required permissions
+        createPopup(
+            `Você não tem permissão para aceder a ${
+                to.name?.toString() || 'página'
+            }.`,
+            'error'
+        );
+        next(from);
         return;
     }
 
