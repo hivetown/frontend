@@ -16,18 +16,17 @@ export interface ProductSpecification {
     products?: Product[];
 }
 
-<<<<<<< HEAD
 export interface Image {
     id: number;
     name: string;
     url: string;
     alt: string;
-=======
+}
+
 export interface Role {
     id: number;
     name: string;
     permissions: number;
->>>>>>> main
 }
 
 export interface User {
@@ -36,40 +35,20 @@ export interface User {
     email: string;
     phone: string;
     vat: string;
-<<<<<<< HEAD
-    image: {
-        url?: string;
-      };
-=======
     role?: Role;
     image?: {
         url?: string;
     };
     type: 'PRODUCER' | 'CONSUMER';
->>>>>>> main
 }
 
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
-<<<<<<< HEAD
-    name: string;
-    image: {
-        url?: string;
-      };
-=======
->>>>>>> main
 }
 
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
-<<<<<<< HEAD
-    name: string;
-    image: {
-        url?: string;
-      };
-=======
->>>>>>> main
 }
 
 export interface CreateConsumer {
