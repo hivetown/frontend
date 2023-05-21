@@ -175,7 +175,7 @@ onMounted(async () => {
   }
   for (let x = 0; x < lista.length; x++) {
     //TODO por user logado
-    const responseShipment = await getShipment(idU, 1, lista[x]);
+    const responseShipment = await getShipment(idU, idO, lista[x]);
     //queremos o ultimo evento
     eventos.value.push(
       responseShipment.data['events'][
