@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import Order from '@/views/Order.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -19,6 +20,12 @@ const routes = [
         path: '/',
         name: 'Página principal',
         component: Home,
+    },
+    {
+        // O link para a encomenda deve ter o codigo
+        path: '/encomenda/id:id',
+        name: 'Encomenda',
+        component: Order,
     },
     {
         path: '/sobre',

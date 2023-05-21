@@ -46,20 +46,23 @@ import { onMounted, ref } from 'vue';
 import { fetchAllItems, fetchAllOrders, fetchOrder } from '../api/orders';
 import { fetchUser } from '../api/orders';
 import { Order, Consumer } from '../types/interfaces';
+import { fetchAuth } from '../api/auth';
+var idU = 0;
 
 const user = ref<Consumer[]>([]);
 const orderItem = ref<Order[]>([]); //array com os produtos
 const orders = ref<Order[]>([]);
 const search = ref('');
 onMounted(async () => {
+  idU = (await fetchAuth()).data.user.id;
   //TODO por user logado
-  const responseOrder = await fetchAllOrders('1');
+  const responseOrder = await fetchAllOrders(idU);
   orders.value = responseOrder.data;
   const id = window.location.pathname.split('/id').pop()?.toString();
   //obtem o id da encomenda
   console.log(id);
   //TODO por user logado
-  const responseItem = await fetchOrder('1', id);
+  const responseItem = await fetchOrder(idU, id);
   orderItem.value = responseItem.data;
 });
 </script>

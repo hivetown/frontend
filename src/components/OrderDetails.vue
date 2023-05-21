@@ -145,6 +145,8 @@ import { fetchAllItems } from '../api/orders';
 import { fetchAllOrders, getShipment } from '../api/orders';
 import { fetchUser } from '../api/orders';
 import { Order, Consumer } from '../types/interfaces';
+import { fetchAuth } from '../api/auth';
+var idU = 0;
 
 const orderItem = ref<Order[]>([]); //array com os produtos
 var totalSum = 0;
@@ -158,12 +160,13 @@ const search = ref('');
 const idO = window.location.pathname.split('/id').pop()?.toString();
 
 onMounted(async () => {
+  idU = (await fetchAuth()).data.user.id;
   //TODO por user logado
-  const responseItem = await fetchAllItems('1', idO);
+  const responseItem = await fetchAllItems(idU, idO);
   orderItem.value = responseItem.data;
 
   //TODO por user logado
-  const response = await fetchAllOrders('1');
+  const response = await fetchAllOrders(idU);
   orders.value = response.data;
   for (let i = 0; i < orderItem.value.items.length; i++) {
     totalSum +=
@@ -172,7 +175,7 @@ onMounted(async () => {
   }
   for (let x = 0; x < lista.length; x++) {
     //TODO por user logado
-    const responseShipment = await getShipment(1, 1, lista[x]);
+    const responseShipment = await getShipment(idU, 1, lista[x]);
     //queremos o ultimo evento
     eventos.value.push(
       responseShipment.data['events'][
