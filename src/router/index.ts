@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import CreateOrder from '@/views/createOrder.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -37,6 +38,11 @@ const routes = [
         meta: {
             requiresAuth: true,
         },
+    },
+    {
+        path: '/createOrder',
+        name: 'CreateOrder',
+        component: CreateOrder,
     },
     {
         path: '/carrinho',
