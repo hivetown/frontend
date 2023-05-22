@@ -2,16 +2,31 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpecification;
+    specification?: ProductSpec;
     producer?: Producer;
 }
 
-export interface ProductSpecification {
+export interface ProductSpec {
     id: number;
     name: string;
     description: string;
-    image: string;
+    deletedAt: Date;
+    minPrice: number;
+    maxPrice: number;
+    producersCount: number;
+    images: Image[];
     products?: Product[];
+}
+
+export interface ProducerProduct {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    deletedAt: Date;
+    producer: Producer;
+    productionUnit: productionUnit;
+    productSpec: number;
 }
 
 export interface Role {
@@ -29,6 +44,7 @@ export interface User {
     role?: Role;
     image?: {
         url?: string;
+        alt?: string;
     };
     type: 'PRODUCER' | 'CONSUMER';
 }
@@ -38,6 +54,21 @@ export interface Producer {
     imageShowcase: Image[];
 }
 
+export interface Category {
+    id: number;
+    name: string;
+    parent?: Category;
+    image: Image;
+    showSubCategories?: boolean;
+    subCategories?: Category;
+}
+
+// export interface SubCategory {
+//     id: number;
+//     name: string;
+//     parent: Category;
+//     image: Image;
+// }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
 }
@@ -52,6 +83,14 @@ export interface CreateProducer {
     name: string;
     phone: string;
     vat: string;
+}
+
+export interface productionUnit {
+    id: number;
+    name: string;
+    address: string;
+    producer: Producer;
+    deletedAt: Date;
 }
 
 export interface ApiRequest {
@@ -91,3 +130,21 @@ export interface Image {
 }
 
 export type AuthenticatedUser = Consumer | Producer;
+
+export interface ProductSpecField {
+    field: Field;
+    value: string;
+}
+
+export interface Field {
+    id: number;
+    name: string;
+    unit: string;
+    type: string;
+    possibleValues: FieldPossibleValue[];
+}
+
+export interface FieldPossibleValue {
+    id: number;
+    value: string;
+}
