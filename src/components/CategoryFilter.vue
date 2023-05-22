@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-// import Category from '@/components/Category.vue';
+import Category from '@/components/Category.vue';
 import { Category as CategoryType } from '@/types';
 import { fetchCategorySubCategories } from '@/api';
 import { PropType } from 'vue';

@@ -66,6 +66,7 @@
 <script lang="ts">
 import { Category } from '@/types';
 import { fetchCategorySubCategories } from '@/api';
+import { onBeforeMount } from 'vue';
 
 export default {
   props: {
