@@ -8,6 +8,7 @@
 // import Category from '@/components/Category.vue';
 import { Category as CategoryType } from '@/types';
 import { fetchCategorySubCategories } from '@/api';
+import { PropType } from 'vue';
 </script>
 
 <script lang="ts">
@@ -19,14 +20,13 @@ export default {
   },
   props: {
     categories: {
-      type: Array as () => CategoryType[],
+      type: Array as PropType<CategoryType[]>,
       required: true,
     },
   },
   computed: {
     filteredCategories() {
       const filtered = [] as CategoryType[];
-      //   console.log(this.categories);
       for (const category of this.categories) {
         if (
           !category.parent &&

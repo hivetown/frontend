@@ -155,8 +155,8 @@ export default defineComponent({
       productSpec: {} as ProductSpec,
       //   allProductsData: {} as BaseItems<ProductSpec>,
       // Filtros
-      allCategories: {} as Category[],
-      currentCategory: {} as string,
+      allCategories: [] as Category[],
+      currentCategory: '' as string,
       mostExpensiveProduct: null as ProductSpec | null,
     };
   },
