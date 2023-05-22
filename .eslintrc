@@ -13,7 +13,7 @@
     "rules": {
 		"quotes": ["error", "single"],
         "prettier/prettier": "error",
-        // not needed for vue 3
-        "vue/no-multiple-template-root": "off"
+        "vue/multi-word-component-names": 0,
+		"vue/comment-directive": "warn"
     }
 }
