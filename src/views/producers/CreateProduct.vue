@@ -1,84 +1,48 @@
+<!-- TODO: Dummy because i'm missing the products list page -->
 <template>
-  <div>
-    <span class="p-float-label p-input-icon-right">
-      <PrimeInputText
-        id="productSearch"
-        v-model="searchQuery"
-        :minlength="3"
-        :class="{
-          'p-invalid': !isQueryValid,
-        }"
-      />
-      <label for="productSearch">Produto a adicionar</label>
+  <h1>DUMMY PAGE!</h1>
 
-      <small v-if="!isQueryValid"
-        >Insira pelo menos 3 caracteres para pesquisar um produto</small
-      >
+  <PrimeButton
+    id="showProductFinderOverlayButton"
+    label="Create Product"
+    icon="pi pi-plus"
+    @click="toggleOverlay"
+  />
 
-      <i v-if="searching" class="pi pi-spin pi-spinner"></i>
-    </span>
-
-    <div class="grid justify-content-center gap-3">
-      <ProductCard
-        v-for="product in products.items"
-        :key="product.id"
-        :product="product"
-        class="col-6 md:col-3 lg:col-2"
-      ></ProductCard>
-    </div>
-  </div>
+  <OverlayPanel ref="showProductFinderOverlay">
+    <CreateProduct />
+  </OverlayPanel>
 </template>
 
 <script lang="ts">
-import { fetchAllProducts } from '@/api';
-import PrimeInputText from 'primevue/inputtext';
-import { computed, ref, watch } from 'vue';
-import { useDebounceFn } from '@vueuse/core';
-import { useRouter } from 'vue-router';
-import { BaseItems, ProductSpecification } from '@types';
-import { useRoute } from 'vue-router';
-import ProductCard from '@/components/ProductCard.vue';
-
+import CreateProduct from '@/components/producer/products/CreateProduct.vue';
+import PrimeButton from 'primevue/button';
+import OverlayPanel from 'primevue/overlaypanel';
+import { onMounted, ref } from 'vue';
 export default {
-  name: 'CreateProduct',
   components: {
-    PrimeInputText,
-    ProductCard,
+    CreateProduct,
+    PrimeButton,
+    OverlayPanel,
   },
   setup() {
-    const router = useRouter();
-    const route = useRoute();
-    const searchQuery = ref((route.query.search as string) || '');
-    const searching = ref(false);
-    const products = ref({} as BaseItems<ProductSpecification>);
+    const showProductFinderOverlay = ref();
 
-    const fetchProducts = useDebounceFn(async () => {
-      console.log('fetching', searchQuery.value, isQueryValid.value);
-      if (!isQueryValid.value) return;
+    const toggleOverlay = (event: any) => {
+      showProductFinderOverlay.value.toggle(event);
+    };
 
-      const { data } = await fetchAllProducts(searchQuery.value);
-      products.value = data;
-      router.push({ query: { search: searchQuery.value } });
-    }, 1000);
-
-    watch(searchQuery, async () => {
-      console.log('searching', searchQuery.value);
-      searching.value = true;
-      await fetchProducts().finally(() => (searching.value = false));
+    onMounted(() => {
+      // TODO remove this
+      //   Click the showProductFinderOverlayButton button
+      setTimeout(() => {
+        document.getElementById('showProductFinderOverlayButton')!.click();
+      }, 50);
     });
-
-    const isQueryValid = computed(() => {
-      return searchQuery.value && searchQuery.value.length >= 3;
-    });
-
-    fetchProducts();
 
     return {
-      searchQuery,
-      fetchProducts,
-      searching,
-      isQueryValid,
-      products,
+      showProductFinderOverlay,
+      toggleOverlay,
     };
   },
 };
