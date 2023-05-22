@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import CreateProduct from '@/views/producers/CreateProduct.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -75,6 +76,14 @@ const routes = [
             requiresAuth: true,
             requiredPermissions:
                 Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
+    },
+    {
+        path: '/producers/:producerId/products/new',
+        name: 'CreateProduct',
+        component: CreateProduct,
+        meta: {
+            requiresAuth: true,
         },
     },
 ];
