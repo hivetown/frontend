@@ -60,7 +60,6 @@ import Footer from '@/components/Footer.vue';
   color: #a9a9a9 !important;
 }
 
-<<<<<<< HEAD
 button a {
   color: #5a5a5a;
   text-decoration: none !important;
@@ -69,13 +68,13 @@ button a {
 button a:hover {
   color: white;
   text-decoration: none !important;
-=======
-.separator-top{
+}
+
+.separator-top {
   border-top: 1px solid #f3f3f3;
 }
 
-.separator-bottom{
+.separator-bottom {
   border-bottom: 1px solid #f3f3f3;
->>>>>>> HVT-5-ver-detalhes-de-produtos
 }
 </style>
