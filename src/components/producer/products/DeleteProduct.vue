@@ -39,7 +39,10 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  emits: {
+    deleteProduct: (producerProduct: Product) => true,
+  },
+  setup(props, { emit }) {
     const confirm = useConfirm();
     const toast = useToast();
 
@@ -63,6 +66,8 @@ export default {
 
             const productId = props.producerProduct.id;
             await deleteProducerProduct(producerId, productId);
+
+            emit('deleteProduct', props.producerProduct);
 
             toast.add({
               severity: 'success',
