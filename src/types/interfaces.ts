@@ -98,4 +98,12 @@ export interface ProductionUnit {
     images: Image[];
 }
 
+export interface CreateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
+    productSpecId: number;
+}
+
 export type AuthenticatedUser = Consumer | Producer;

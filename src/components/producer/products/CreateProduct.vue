@@ -1,5 +1,13 @@
 <template>
   <div class="p-3">
+    <Toast>
+      <template #message="slotProps">
+        <div class="p-toast-message-text">
+          <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+          <div class="p-toast-detail" v-html="slotProps.message.detail" />
+        </div>
+      </template>
+    </Toast>
     <h4>Criar um produto</h4>
 
     <div class="card flex justify-content-center">
@@ -19,6 +27,7 @@
           @item-select="productSpec.changed"
           @change="productSpec.reset"
           force-selection
+          empty-search-message="Nenhum produto encontrado"
         >
           <template #option="slotProps">
             <div class="flex align-options-center">
@@ -58,6 +67,7 @@
           @item-select="productionUnit.changed"
           @change="productionUnit.reset"
           force-selection
+          empty-search-message="Nenhuma unidade de produção encontrada"
         >
           <template #option="slotProps">
             <div class="flex align-options-center">
@@ -79,74 +89,81 @@
           >{{ formErrors.productionUnit }}</small
         >
 
-		<!-- Production date -->
-		<label for="productionDate">Data de produção</label>
-		<InputMask
-		  v-model="formValues.value.productionDate"
-		  :input-class="{ 'p-invalid': formErrors.productionDate }"
-		  input-id="productionDate"
-		  aria-describedby="productionDateError"
-		  mask="99/99/9999"
-		  slot="content"
-		  :placeholder="productionDatePlaceholder"
-		></InputMask>
-		<small
-		  v-if="formErrors.productionDate"
-		  class="p-error"
-		  id="productionDateError"
-		  >{{ formErrors.productionDate }}</small
-		>
+        <!-- Production date -->
+        <label for="productionDate">Data de produção</label>
+        <Calendar
+          v-model="formValues.productionDate"
+          :input-class="{ 'p-invalid': formErrors.productionDate }"
+          input-id="productionDate"
+          aria-describedby="productionDateError"
+          :max-date="new Date()"
+          show-icon
+          date-format="dd/mm/yy"
+        ></Calendar>
+        <small
+          v-if="formErrors.productionDate"
+          class="p-error"
+          id="productionDateError"
+          >{{ formErrors.productionDate }}</small
+        >
 
-		<!-- Stock -->
-		<label for="quantity">Quantidade</label>
-		<InputNumber
-		  v-model="formValues.value.quantity"
-		  :input-class="{ 'p-invalid': formErrors.quantity }"
-		  input-id="quantity"
-		  aria-describedby="quantityError"
-		  slot="content"
-		  :placeholder="quantityPlaceholder"
-		  :min="1"
-		  :max="999999999"
-		></InputNumber>
-		<small
-		  v-if="formErrors.quantity"
-		  class="p-error"
-		  id="quantityError"
-		  >{{ formErrors.quantity }}</small
-		>
+        <!-- Stock -->
+        <label for="stock">Stock</label>
+        <InputNumber
+          v-model="formValues.stock"
+          :input-class="{ 'p-invalid': formErrors.stock }"
+          input-id="stock"
+          aria-describedby="stockError"
+          :min="1"
+          :max="999999999"
+        ></InputNumber>
+        <small v-if="formErrors.stock" class="p-error" id="stockError">{{
+          formErrors.stock
+        }}</small>
 
-		<!-- Price -->
-		<label for="price">Preço</label>
-		<InputNumber
-		  v-model="formValues.value.price"
-		  :input-class="{ 'p-invalid': formErrors.price }"
-		  input-id="price"
-		  aria-describedby="priceError"
-		  slot="content"
-		  :placeholder="pricePlaceholder"
-		  :min="0"
-		  :max="999999999"
-		></InputNumber>
-		<small
-		  v-if="formErrors.price"
-		  class="p-error"
-		  id="priceError"
-		  >
+        <!-- Price -->
+        <label for="price">Preço</label>
+        <InputNumber
+          v-model="formValues.price"
+          :input-class="{ 'p-invalid': formErrors.price }"
+          input-id="price"
+          aria-describedby="priceError"
+          mode="currency"
+          currency="EUR"
+          locale="pt-PT"
+          :min="0"
+          :max="999999999"
+        ></InputNumber>
+        <small v-if="formErrors.price" class="p-error" id="priceError">
+          {{ formErrors.price }}
+        </small>
 
-		<PrimeButton type="submit" label="Criar produto" />
+        <!-- Submit -->
+        <PrimeButton
+          type="submit"
+          label="Criar produto"
+          :loading="submitting"
+        />
       </VeeForm>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { fetchAllProducts, fetchAllProductionUnits } from '@/api';
+import {
+  fetchAllProducts,
+  fetchAllProductionUnits,
+  createProducerProduct,
+} from '@/api';
 import { ComputedRef, computed, ref } from 'vue';
 import { BaseItems, ProductSpecification, ProductionUnit } from '@/types';
 import AutoComplete from 'primevue/autocomplete';
 import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
+import Calendar from 'primevue/calendar';
+import InputNumber from 'primevue/inputnumber';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 export default {
   name: 'CreateProduct',
@@ -154,6 +171,9 @@ export default {
     AutoComplete,
     PrimeButton,
     VeeForm,
+    Calendar,
+    InputNumber,
+    Toast,
   },
   setup() {
     // Product Spec
@@ -228,10 +248,11 @@ export default {
       values: formValues,
     } = useForm({
       initialValues: {
-        value: {
-          productSpec: {} as ProductSpecification,
-          productionUnit: {} as ProductionUnit,
-        },
+        productSpec: {} as ProductSpecification,
+        productionUnit: {} as ProductionUnit,
+        productionDate: null as Date | null,
+        stock: 0,
+        price: 0,
       },
     });
 
@@ -251,11 +272,85 @@ export default {
       return true;
     });
 
-    const createProduct = handleSubmit((values) => {
-      console.log('form submitter', values);
-      if (values.value) {
-        resetForm();
-        productSpec.searchQuery.value = '';
+    useField('productionDate', (value: Date) => {
+      if (!value) {
+        return 'A data de produção é obrigatória';
+      }
+
+      if (value.getTime() > Date.now()) {
+        return 'A data de produção deve ser no passado';
+      }
+
+      return true;
+    });
+
+    useField('stock', (value: number) => {
+      if (!value && value !== 0) {
+        return 'O stock é obrigatória';
+      }
+
+      if (value < 1) {
+        return 'O stock deve ser maior que 0';
+      }
+
+      return true;
+    });
+
+    useField('price', (value: number) => {
+      if (!value && value !== 0) {
+        return 'O preço é obrigatório';
+      }
+
+      if (value < 0) {
+        return 'O preço deve ser maior ou igual a 0';
+      }
+
+      return true;
+    });
+
+    const toast = useToast();
+    const submitting = ref(false);
+    const createProduct = handleSubmit(async (values) => {
+      if (values) {
+        // Disable submitting
+        submitting.value = true;
+
+        // Submit
+        try {
+          // TODO insert producer id
+          const product = await createProducerProduct(1, {
+            currentPrice: values.price,
+            productionDate: values.productionDate!,
+            productionUnitId: values.productionUnit.id,
+            productSpecId: values.productSpec.id,
+            stock: values.stock,
+          });
+
+          toast.add({
+            severity: 'success',
+            summary: 'Produto criado',
+            detail: `O produto foi criado com sucesso, clique <a href="/producer/${1}/products/${
+              product.data.id
+            }">aqui</a> para ver o seu novo produto."`,
+          });
+
+          // Reset form
+          resetForm();
+          productSpec.searchQuery.value = '';
+          productionUnit.searchQuery.value = '';
+        } catch (error) {
+          // TODO handle error
+          toast.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: `Ocorreu um erro ao criar o produto, por favor tente novamente.<br/>${
+              (error as Error).message
+            }`,
+          });
+        }
+
+        // Enable submitting
+        submitting.value = false;
       }
     });
 
@@ -263,6 +358,8 @@ export default {
       // Form
       formErrors,
       createProduct,
+      formValues,
+      submitting,
       // Product Spec
       productSpec,
       // Production Unit
