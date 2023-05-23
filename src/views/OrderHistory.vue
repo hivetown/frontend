@@ -7,8 +7,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, computed, ref, watch } from 'vue';
-import { fetchAllOrders } from '../api/orders';
+import { onMounted, ref, watch } from 'vue';
 
 import { Order } from '../types/interfaces';
 import { fetchAuth } from '../api/auth';
