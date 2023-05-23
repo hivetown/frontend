@@ -44,6 +44,13 @@
           </div>
         </div>
       </template>
+
+      <template #footer>
+        <small
+          >Já tenho conta!
+          <RouterLink :to="{ name: 'Login' }">Entrar</RouterLink></small
+        >
+      </template>
     </Card>
   </div>
 </template>
