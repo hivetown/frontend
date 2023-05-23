@@ -1,177 +1,187 @@
 <template>
-  <div class="p-3">
-    <Toast>
-      <template #message="slotProps">
-        <div class="p-toast-message-text">
-          <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-          <div class="p-toast-detail" v-html="slotProps.message.detail" />
-        </div>
-      </template>
-    </Toast>
-    <h4>{{ methodName }} produto</h4>
+  <OverlayPanel ref="manageProductOverlay">
+    <div class="p-3">
+      <Toast>
+        <template #message="slotProps">
+          <div class="p-toast-message-text">
+            <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+            <div class="p-toast-detail" v-html="slotProps.message.detail" />
+          </div>
+        </template>
+      </Toast>
+      <h4>{{ methodName }} produto</h4>
 
-    <div class="flex justify-content-center mt-4">
-      <VeeForm @submit="createProduct" class="flex flex-column gap-3">
-        <!-- Product Spec -->
-        <div class="flex flex-column gap-2">
-          <label for="productSpec">Nome do produto</label>
-          <AutoComplete
-            v-model="productSpec.searchQuery.value"
-            :input-class="{ 'p-invalid': formErrors.productSpec }"
-            input-id="productSpec"
-            aria-describedby="productSpecError"
-            :min-length="3"
-            data-key="id"
-            option-label="name"
-            :suggestions="productSpec.items.value.items"
-            @complete="productSpec.search"
-            @item-select="productSpec.changed"
-            @change="productSpec.reset"
-            force-selection
-            empty-search-message="Nenhum produto encontrado"
-            :disabled="productSpec.disabled"
-          >
-            <template #option="slotProps">
-              <div class="flex align-options-center">
-                <img
-                  :src="slotProps.option.images[0].url"
-                  :alt="slotProps.option.images[0].alt"
-                  class="mr-2"
-                  style="width: 75px; height: 75px"
-                />
-
-                <div>
-                  <div class="font-bold">{{ slotProps.option.name }}</div>
-                  <div class="text-sm">{{ slotProps.option.description }}</div>
-                </div>
-              </div>
-            </template>
-            <template #empty
-              >Nenhum produto encontrado para "{{
-                productSpec.searchQuery.value
-              }}"</template
+      <div class="flex justify-content-center mt-4">
+        <VeeForm @submit="createProduct" class="flex flex-column gap-3">
+          <!-- Product Spec -->
+          <div class="flex flex-column gap-2">
+            <label for="productSpec">Nome do produto</label>
+            <AutoComplete
+              v-model="productSpec.searchQuery.value"
+              :input-class="{ 'p-invalid': formErrors.productSpec }"
+              input-id="productSpec"
+              aria-describedby="productSpecError"
+              :min-length="3"
+              data-key="id"
+              option-label="name"
+              :suggestions="productSpec.items.value.items"
+              @complete="productSpec.search"
+              @item-select="productSpec.changed"
+              @change="productSpec.reset"
+              force-selection
+              empty-search-message="Nenhum produto encontrado"
+              :disabled="productSpec.disabled"
             >
-          </AutoComplete>
-          <small id="productSpecHelp"
-            >Escreva pelo menos 3 letras para iniciar a pesquisa</small
-          >
-          <small
-            v-if="formErrors.productSpec"
-            class="p-error"
-            id="productSpecError"
-            >{{ formErrors.productSpec }}</small
-          >
-        </div>
+              <template #option="slotProps">
+                <div class="flex align-options-center">
+                  <img
+                    :src="slotProps.option.images[0].url"
+                    :alt="slotProps.option.images[0].alt"
+                    class="mr-2"
+                    style="width: 75px; height: 75px"
+                  />
 
-        <!-- Production Unit -->
-        <div class="flex flex-column gap-2">
-          <label for="productionUnit">Nome da unidade de produção</label>
-          <AutoComplete
-            v-model="productionUnit.searchQuery.value"
-            :input-class="{ 'p-invalid': formErrors.productionUnit }"
-            input-id="productionUnit"
-            aria-describedby="productionUnitError"
-            :min-length="3"
-            data-key="id"
-            option-label="name"
-            :suggestions="productionUnit.items.value.items"
-            @complete="productionUnit.search"
-            @item-select="productionUnit.changed"
-            @change="productionUnit.reset"
-            force-selection
-            empty-search-message="Nenhuma unidade de produção encontrada"
-          >
-            <template #option="slotProps">
-              <div class="flex align-options-center">
-                <div>
-                  <div>{{ slotProps.option.name }}</div>
-                  <div class="text-sm">
-                    {{ slotProps.option.address.parish }},
-                    {{ slotProps.option.address.county }},
-                    {{ slotProps.option.address.city }}
+                  <div>
+                    <div class="font-bold">{{ slotProps.option.name }}</div>
+                    <div class="text-sm">
+                      {{ slotProps.option.description }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-            <template #empty
-              >Nenhuma unidade de produção encontrada para "{{
-                productionUnit.searchQuery.value
-              }}"</template
+              </template>
+              <template #empty
+                >Nenhum produto encontrado para "{{
+                  productSpec.searchQuery.value
+                }}"</template
+              >
+            </AutoComplete>
+            <small id="productSpecHelp"
+              >Escreva pelo menos 3 letras para iniciar a pesquisa</small
             >
-          </AutoComplete>
-          <small>Escreva pelo menos 3 letras para iniciar a pesquisa</small>
-          <small
-            v-if="formErrors.productionUnit"
-            class="p-error"
-            id="productionUnitError"
-            >{{ formErrors.productionUnit }}</small
-          >
-        </div>
+            <small
+              v-if="formErrors.productSpec"
+              class="p-error"
+              id="productSpecError"
+              >{{ formErrors.productSpec }}</small
+            >
+          </div>
 
-        <!-- Production date -->
-        <div class="flex flex-column gap-2">
-          <label for="productionDate">Data de produção</label>
-          <Calendar
-            v-model="formValues.productionDate"
-            :input-class="{ 'p-invalid': formErrors.productionDate }"
-            input-id="productionDate"
-            aria-describedby="productionDateError"
-            :max-date="new Date()"
-            show-icon
-            date-format="dd/mm/yy"
-          ></Calendar>
-          <small
-            v-if="formErrors.productionDate"
-            class="p-error"
-            id="productionDateError"
-            >{{ formErrors.productionDate }}</small
-          >
-        </div>
+          <!-- Production Unit -->
+          <div class="flex flex-column gap-2">
+            <label for="productionUnit">Nome da unidade de produção</label>
+            <AutoComplete
+              v-model="productionUnit.searchQuery.value"
+              :input-class="{ 'p-invalid': formErrors.productionUnit }"
+              input-id="productionUnit"
+              aria-describedby="productionUnitError"
+              :min-length="3"
+              data-key="id"
+              option-label="name"
+              :suggestions="productionUnit.items.value.items"
+              @complete="productionUnit.search"
+              @item-select="productionUnit.changed"
+              @change="productionUnit.reset"
+              force-selection
+              empty-search-message="Nenhuma unidade de produção encontrada"
+            >
+              <template #option="slotProps">
+                <div class="flex align-options-center">
+                  <div>
+                    <div>{{ slotProps.option.name }}</div>
+                    <div class="text-sm">
+                      {{ slotProps.option.address.parish }},
+                      {{ slotProps.option.address.county }},
+                      {{ slotProps.option.address.city }}
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template #empty
+                >Nenhuma unidade de produção encontrada para "{{
+                  productionUnit.searchQuery.value
+                }}"</template
+              >
+            </AutoComplete>
+            <small>Escreva pelo menos 3 letras para iniciar a pesquisa</small>
+            <small
+              v-if="formErrors.productionUnit"
+              class="p-error"
+              id="productionUnitError"
+              >{{ formErrors.productionUnit }}</small
+            >
+          </div>
 
-        <!-- Stock -->
-        <div class="flex flex-column gap-2">
-          <label for="stock">Stock</label>
-          <InputNumber
-            v-model="formValues.stock"
-            :input-class="{ 'p-invalid': formErrors.stock }"
-            input-id="stock"
-            aria-describedby="stockError"
-            :min="1"
-            :max="999999999"
-          ></InputNumber>
-          <small v-if="formErrors.stock" class="p-error" id="stockError">{{
-            formErrors.stock
-          }}</small>
-        </div>
+          <!-- Production date -->
+          <div class="flex flex-column gap-2">
+            <label for="productionDate">Data de produção</label>
+            <Calendar
+              v-model="formValues.productionDate"
+              :input-class="{ 'p-invalid': formErrors.productionDate }"
+              input-id="productionDate"
+              aria-describedby="productionDateError"
+              :max-date="new Date()"
+              show-icon
+              date-format="dd/mm/yy"
+            ></Calendar>
+            <small
+              v-if="formErrors.productionDate"
+              class="p-error"
+              id="productionDateError"
+              >{{ formErrors.productionDate }}</small
+            >
+          </div>
 
-        <!-- Price -->
-        <div class="flex flex-column gap-2">
-          <label for="price">Preço</label>
-          <InputNumber
-            v-model="formValues.price"
-            :input-class="{ 'p-invalid': formErrors.price }"
-            input-id="price"
-            aria-describedby="priceError"
-            mode="currency"
-            currency="EUR"
-            locale="pt-PT"
-            :min="0"
-            :max="999999999"
-          ></InputNumber>
-          <small v-if="formErrors.price" class="p-error" id="priceError">
-            {{ formErrors.price }}
-          </small>
-        </div>
+          <!-- Stock -->
+          <div class="flex flex-column gap-2">
+            <label for="stock">Stock</label>
+            <InputNumber
+              v-model="formValues.stock"
+              :input-class="{ 'p-invalid': formErrors.stock }"
+              input-id="stock"
+              aria-describedby="stockError"
+              :min="1"
+              :max="999999999"
+            ></InputNumber>
+            <small v-if="formErrors.stock" class="p-error" id="stockError">{{
+              formErrors.stock
+            }}</small>
+          </div>
 
-        <!-- Submit -->
-        <PrimeButton
-          type="submit"
-          :label="`${methodName} produto`"
-          :loading="submitting"
-        />
-      </VeeForm>
+          <!-- Price -->
+          <div class="flex flex-column gap-2">
+            <label for="price">Preço</label>
+            <InputNumber
+              v-model="formValues.price"
+              :input-class="{ 'p-invalid': formErrors.price }"
+              input-id="price"
+              aria-describedby="priceError"
+              mode="currency"
+              currency="EUR"
+              locale="pt-PT"
+              :min="0"
+              :max="999999999"
+            ></InputNumber>
+            <small v-if="formErrors.price" class="p-error" id="priceError">
+              {{ formErrors.price }}
+            </small>
+          </div>
+
+          <!-- Submit -->
+          <PrimeButton
+            type="submit"
+            :label="`${methodName} produto`"
+            :loading="submitting"
+          />
+        </VeeForm>
+      </div>
     </div>
-  </div>
+  </OverlayPanel>
+
+  <PrimeButton
+    :icon="`pi pi-${methodName === 'Criar' ? 'plus' : 'pencil'}`"
+    outlined
+    @click="toggleOverlay"
+  />
 </template>
 
 <script lang="ts">
@@ -181,13 +191,21 @@ import {
   createProducerProduct,
   updateProducerProduct,
 } from '@/api';
-import { ComputedRef, PropType, computed, onBeforeMount, ref } from 'vue';
+import {
+  ComputedRef,
+  PropType,
+  computed,
+  onBeforeMount,
+  onMounted,
+  ref,
+} from 'vue';
 import {
   BaseItems,
   Product,
   ProductSpecification,
   ProductionUnit,
 } from '@/types';
+import OverlayPanel from 'primevue/overlaypanel';
 import AutoComplete from 'primevue/autocomplete';
 import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
@@ -205,6 +223,7 @@ export default {
     Calendar,
     InputNumber,
     Toast,
+    OverlayPanel,
   },
   props: {
     defaultProductionUnit: {
@@ -254,14 +273,25 @@ export default {
     if (
       props.method === 'update' &&
       (!props.producerProductId ||
-        !props.defaultProductSpec ||
-        !props.defaultProductionUnit)
+        !props.defaultProductSpec.id ||
+        !props.defaultProductionUnit.id)
     ) {
       throw new Error(
         'When method is "update", producerProductId, defaultProductSpec, and defaultProductionUnit must be provided'
       );
     }
     const methodName = props.method === 'create' ? 'Criar' : 'Atualizar';
+
+    // Overlay
+    const manageProductOverlay = ref();
+    const toggleOverlay = (event: MouseEvent) => {
+      console.log(manageProductOverlay.value);
+      manageProductOverlay.value.toggle(event);
+    };
+
+    onMounted(() => {
+      console.log(manageProductOverlay.value);
+    });
 
     // Form
     const {
@@ -480,6 +510,9 @@ export default {
     return {
       // Misc
       methodName,
+      //   Overlay
+      toggleOverlay,
+      manageProductOverlay,
       // Form
       formErrors,
       createProduct: manageProduct,

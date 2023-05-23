@@ -71,7 +71,6 @@ export default {
               life: 3000,
             });
           } catch (error) {
-            console.log(error);
             if (error instanceof AxiosError) {
               if (error.response?.status === 404) {
                 toast.add({
