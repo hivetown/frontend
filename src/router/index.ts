@@ -26,6 +26,9 @@ const routes = [
         path: '/encomenda/id:id',
         name: 'Encomenda',
         component: Order,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/sobre',
