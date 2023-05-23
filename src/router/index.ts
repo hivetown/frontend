@@ -9,7 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
-import SupplierInfo from './views/SupplierInfo.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
