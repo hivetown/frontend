@@ -9,6 +9,8 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import Success from '@/views/Success.vue';
+import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/createOrder.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
@@ -43,6 +45,16 @@ const routes = [
         path: '/createOrder',
         name: 'CreateOrder',
         component: CreateOrder,
+    },
+    {
+        path: '/orders/:orderId/success',
+        name: 'Success',
+        component: Success,
+    },
+    {
+        path: '/orders/:orderId/cancel',
+        name: 'Cancel',
+        component: Cancel,
     },
     {
         path: '/carrinho',
