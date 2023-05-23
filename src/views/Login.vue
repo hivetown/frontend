@@ -1,6 +1,6 @@
 <template>
   <div id="full" class="grid align-items-center justify-content-center">
-    <Card class="3">
+    <Card>
       <template #title> Entrar </template>
 
       <template #content>
@@ -12,9 +12,10 @@
             <span class="p-input-icon-left">
               <i class="pi pi-envelope" />
               <InputText
+                autocomplete="on"
                 input-id="formEmail"
                 v-model="formValues.email"
-                :input-class="{ 'p-invalid': formErrors.email }"
+                :class="{ 'p-invalid': formErrors.email }"
                 aria-describedby="emailError"
                 placeholder="Email"
               />
@@ -31,13 +32,15 @@
             >
             <span class="p-input-icon-left">
               <i class="pi pi-lock" />
-              <InputText
+              <Password
+                autocomplete="on"
                 input-id="formPassword"
-                type="password"
                 v-model="formValues.password"
-                :input-class="{ 'p-invalid': formErrors.password }"
+                :class="{ 'p-invalid': formErrors.password }"
                 aria-describedby="passwordError"
                 placeholder="Password"
+                toggle-mask
+                :feedback="false"
               />
             </span>
 
@@ -47,12 +50,13 @@
           </div>
 
           <PrimeButton type="submit" label="Entrar" :loading="loading" />
-
-          <small
-            >Não tenho conta ainda!
-            <RouterLink to="/register">Registar</RouterLink></small
-          >
         </VeeForm>
+      </template>
+      <template #footer>
+        <small
+          >Ainda não tenho conta!
+          <RouterLink :to="{ name: 'Register' }">Registar</RouterLink></small
+        >
       </template>
     </Card>
   </div>
@@ -65,12 +69,14 @@ import { useStore } from '@/store';
 import InputText from 'primevue/inputtext';
 import PrimeButton from 'primevue/button';
 import { ref } from 'vue';
+import Password from 'primevue/password';
 export default {
   components: {
     Card,
     VeeForm,
     InputText,
     PrimeButton,
+    Password,
   },
   setup() {
     const {
