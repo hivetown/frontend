@@ -28,3 +28,8 @@ export const updateProducerProduct = async (
         `/producers/${producerId}/products/${producerProductId}`,
         product
     );
+
+export const deleteProducerProduct = async (
+    producerId: number,
+    producerProductId: number
+) => api.delete(`/producers/${producerId}/products/${producerProductId}`);

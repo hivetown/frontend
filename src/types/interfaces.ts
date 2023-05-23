@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpecification;
+    productSpec?: ProductSpecification;
     producer?: Producer;
 }
 

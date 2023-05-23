@@ -5,6 +5,7 @@ import BootstrapVue3, { BCarousel, BCarouselSlide } from 'bootstrap-vue-3';
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 import { key, store } from '@/store';
 import router from './router';
 
@@ -23,6 +24,7 @@ app.use(BootstrapVue3);
 app.use(BootstrapIconsPlugin);
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(ConfirmationService);
 app.use(router);
 
 app.component('BCarousel', BCarousel);

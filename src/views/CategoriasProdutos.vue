@@ -77,9 +77,9 @@ import CustomViews from '@/components/CustomViews.vue';
 import ProductCard from '@/components/ProductCard.vue';
 import { onMounted, ref, watch } from 'vue';
 import { fetchAllProducts } from '@/api';
-import { Product } from '@/types/interfaces';
+import { BaseItems, ProductSpecification } from '@/types/interfaces';
 
-const products = ref<Product[]>([]);
+const products = ref<BaseItems<ProductSpecification>>();
 
 const fetchProducts = async (search?: string) => {
   products.value = await fetchAllProducts(search).then((ps) => ps.data);

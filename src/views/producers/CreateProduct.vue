@@ -22,7 +22,7 @@
   </OverlayPanel> -->
 
   <div class="p-3">
-    <DeleteProduct />
+    <DeleteProduct :producer-product="producerProduct" />
   </div>
 </template>
 
@@ -51,9 +51,9 @@ export default {
     onMounted(() => {
       // TODO DEMO, remove this
       //   Click the showProductFinderOverlayButton button
-      setTimeout(() => {
-        document.getElementById('showProductFinderOverlayButton')!.click();
-      }, 1000);
+      //   setTimeout(() => {
+      //     document.getElementById('showProductFinderOverlayButton')!.click();
+      //   }, 1000);
     });
 
     // TODO: DEMO OF USING DEFAULT PRODUCTION UNIT
@@ -68,11 +68,55 @@ export default {
       DEMOdefaultProductSpec.value = res.data.items[0];
     });
 
+    const producerProduct = ref({
+      id: 10,
+      currentPrice: 685,
+      productionDate: '2022-08-10T15:40:10.000Z',
+      stock: 37,
+      deletedAt: null,
+      producer: 1,
+      productionUnit: {
+        id: 2,
+        name: 'Sandro Magalhães - N# Gafanha da Nazaré',
+        address: 2,
+        deletedAt: null,
+        producer: 1,
+      },
+      productSpec: {
+        id: 817,
+        name: 'Sem Marca Algodão Bola',
+        description:
+          'Ergonomic executive chair upholstered in bonded black leather and PVC padded seat and back for all-day comfort and support',
+        deletedAt: null,
+        images: [
+          {
+            id: 3335,
+            name: 'Lead Marketing Facilitator',
+            url: 'https://loremflickr.com/640/480/dog?lock=60398',
+            alt: 'back up haptic pixel',
+          },
+          {
+            id: 3336,
+            name: 'Human Infrastructure Producer',
+            url: 'https://loremflickr.com/640/480/dog?lock=48816',
+            alt: 'compress cross-platform capacitor',
+          },
+          {
+            id: 3337,
+            name: 'Senior Factors Administrator',
+            url: 'https://loremflickr.com/640/480/dog?lock=36241',
+            alt: 'hack open-source hard drive',
+          },
+        ],
+      },
+    });
+
     return {
       showProductFinderOverlay,
       toggleOverlay,
       DEMOdefaultProductionUnit,
       DEMOdefaultProductSpec,
+      producerProduct,
     };
   },
 };

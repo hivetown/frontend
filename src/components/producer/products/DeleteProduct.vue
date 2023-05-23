@@ -18,42 +18,81 @@
 </template>
 
 <script lang="ts">
+import { Product } from '@/types';
+import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
 import Toast from 'primevue/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
+import { PropType } from 'vue';
+import { AxiosError } from 'axios';
 export default {
   components: {
     PrimeButton,
     Toast,
     ConfirmPopup,
   },
-  setup() {
+  props: {
+    producerProduct: {
+      type: Object as PropType<Product>,
+      required: true,
+    },
+  },
+  setup(props) {
     const confirm = useConfirm();
     const toast = useToast();
 
     const confirmDeleteProduct = (event: any) => {
+      console.log(event.currentTarget);
       confirm.require({
         target: event.currentTarget,
-        message: 'Tem a certeza que quer eliminar este produto?',
+        group: 'deleteProducerProduct',
+        message: `Tem a certeza que quer eliminar o produto "${
+          props.producerProduct.productSpec!.name
+        }"?`,
         icon: 'pi pi-info-circle',
         acceptClass: 'p-button-danger',
-        accept: () => {
-          toast.add({
-            severity: 'success',
-            summary: 'Produto eliminado',
-            detail: 'O produto foi eliminado com sucesso',
-            life: 3000,
-          });
-        },
-        reject: () => {
-          toast.add({
-            severity: 'info',
-            summary: 'Produto não eliminado',
-            detail: 'O produto não foi eliminado',
-            life: 3000,
-          });
+        acceptLabel: 'Sim, eliminar',
+        rejectLabel: 'Não',
+        accept: async () => {
+          try {
+            // TODO typings are a bit weird
+            const producerId = props.producerProduct
+              .producer as unknown as number;
+
+            const productId = props.producerProduct.id;
+            await deleteProducerProduct(producerId, productId);
+
+            toast.add({
+              severity: 'success',
+              summary: 'Produto eliminado',
+              detail: 'O produto foi eliminado com sucesso',
+              life: 3000,
+            });
+          } catch (error) {
+            console.log(error);
+            if (error instanceof AxiosError) {
+              if (error.response?.status === 404) {
+                toast.add({
+                  severity: 'warn',
+                  summary: 'Erro ao eliminar produto',
+                  detail: 'O produto já não existe',
+                  life: 3000,
+                });
+
+                return;
+              }
+            }
+
+            // Catch all
+            toast.add({
+              severity: 'error',
+              summary: 'Erro ao eliminar produto',
+              detail: 'Ocorreu um erro ao eliminar o produto',
+              life: 3000,
+            });
+          }
         },
       });
     };
