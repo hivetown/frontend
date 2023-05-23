@@ -17,7 +17,7 @@ import Footer from '@/components/Footer.vue';
 * {
   /* font-family: 'Roboto', sans-serif; */
   /* font-family: 'DM Serif Display', serif; */
-  color: #232323;
+  /* color: #232323; */
   font-family: 'Inter', sans-serif;
 }
 
