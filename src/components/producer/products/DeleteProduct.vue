@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { Product } from '@/types';
+import { ProducerProduct } from '@/types';
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -35,7 +35,7 @@ export default {
   },
   props: {
     producerProduct: {
-      type: Object as PropType<Product>,
+      type: Object as PropType<ProducerProduct>,
       required: true,
     },
   },

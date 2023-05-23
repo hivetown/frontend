@@ -1,7 +1,7 @@
 import {
     CreateProducer,
     CreateProducerProduct,
-    Product,
+    ProducerProduct,
     UpdateProducerProduct,
 } from '@/types';
 import { api } from './_base';
@@ -17,14 +17,14 @@ export const fetchAllProductionUnits = async (
 export const createProducerProduct = async (
     producerId: number,
     product: CreateProducerProduct
-) => api.post<Product>(`/producers/${producerId}/products`, product);
+) => api.post<ProducerProduct>(`/producers/${producerId}/products`, product);
 
 export const updateProducerProduct = async (
     producerId: number,
     producerProductId: number,
     product: UpdateProducerProduct
 ) =>
-    api.put<Product>(
+    api.put<ProducerProduct>(
         `/producers/${producerId}/products/${producerProductId}`,
         product
     );

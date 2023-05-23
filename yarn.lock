@@ -9830,6 +9830,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vue3-simple-typeahead@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "vue3-simple-typeahead@npm:1.0.11"
+  peerDependencies:
+    vue: ^3.0.5
+  checksum: c0fe503b246c0d479e01399c3d0e5939d226b5877284454208c867f8a1c0f07421e9d3673f3c430e05e76bd95b9c7308bb245857ac1b7c92183e8efbee8ffccd
+  languageName: node
+  linkType: hard
+
 "vue@npm:^2.6.10":
   version: 2.7.14
   resolution: "vue@npm:2.7.14"
@@ -9837,15 +9846,6 @@ __metadata:
     "@vue/compiler-sfc": 2.7.14
     csstype: ^3.1.0
   checksum: 8b06da67cc40870c66a30b7a6bc2874950cd4383792c371eb30497dd14fc7b41cf308b1c4517368d8f0e7ac16198c08de19236f6a79fe43f4bdbc4a1d9d4ad07
-  languageName: node
-  linkType: hard
-
-"vue3-simple-typeahead@npm:^1.0.11":
-  version: 1.0.11
-  resolution: "vue3-simple-typeahead@npm:1.0.11"
-  peerDependencies:
-    vue: ^3.0.5
-  checksum: c0fe503b246c0d479e01399c3d0e5939d226b5877284454208c867f8a1c0f07421e9d3673f3c430e05e76bd95b9c7308bb245857ac1b7c92183e8efbee8ffccd
   languageName: node
   linkType: hard
 

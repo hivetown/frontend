@@ -263,13 +263,13 @@
               v-if="producerProduct.id != defaultProduct.id"
             >
               <router-link
-                :to="'/producer/' + producerProduct.producer.user.id"
+                :to="'/producer/' + producerProduct.producer!.user.id"
               >
                 <b-avatar
-                  v-if="producerProduct.producer.user.image"
+                  v-if="producerProduct.producer!.user.image"
                   class="nav-item"
-                  :src="producerProduct.producer.user.image.url"
-                  :alt="producerProduct.producer.user.image.alt"
+                  :src="producerProduct.producer!.user.image.url"
+                  :alt="producerProduct.producer!.user.image.alt"
                   style="
                     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
                     scale: 1.2;
@@ -278,9 +278,9 @@
                 </b-avatar>
               </router-link>
               <div class="seller">
-                <h5>{{ producerProduct.producer.user.name }}</h5>
+                <h5>{{ producerProduct.producer!.user.name }}</h5>
                 <router-link
-                  :to="'/producer/' + producerProduct.producer.user.id"
+                  :to="'/producer/' + producerProduct.producer!.user.id"
                 >
                   <a href="#" class="grey-txt">Sobre o vendedor</a>
                 </router-link>

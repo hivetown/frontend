@@ -1,11 +1,3 @@
-export interface Product {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    specification?: ProductSpec;
-    producer?: Producer;
-}
-
 export interface ProductSpec {
     id: number;
     name: string;
@@ -15,7 +7,6 @@ export interface ProductSpec {
     maxPrice: number;
     producersCount: number;
     images: Image[];
-    products?: Product[];
 }
 
 export interface ProducerProduct {

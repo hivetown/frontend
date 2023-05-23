@@ -7,17 +7,18 @@ import {
     ProductSpecField,
 } from '../types/interfaces';
 
+interface FetchAllProductsParams {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    categoryId?: number;
+}
 export const fetchAllProducts = ({
     page,
     pageSize,
     search,
     categoryId,
-}: {
-    page?: number;
-    pageSize?: number;
-    search?: string;
-    categoryId?: number;
-}) =>
+}: FetchAllProductsParams = {}) =>
     api.get<BaseItems<ProductSpec>>('/products', {
         params: { page, pageSize, search, categoryId },
     });
