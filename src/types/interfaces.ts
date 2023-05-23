@@ -106,4 +106,11 @@ export interface CreateProducerProduct {
     productSpecId: number;
 }
 
+export interface UpdateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
+}
+
 export type AuthenticatedUser = Consumer | Producer;
