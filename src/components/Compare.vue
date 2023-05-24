@@ -6,6 +6,8 @@
       <p class="grey-txt">A comparar <span>2</span> produtos</p>
     </div>
     <!-- Produtos a comparar -->
+    {{ product1Id }}
+    {{ product2Id }}
     <div class="d-flex mt-5 px-3" style="gap: 20vh">
       <ProductCard
         style="margin-left: 25vh"
@@ -24,9 +26,9 @@
       />
     </div>
     <!-- Características dos produtos a ser comparados -->
-    <!-- <div class="spec-to-compare">
+    <div class="spec-to-compare">
       <ProductSpec :fields-totais="fieldsTotais"></ProductSpec>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -40,7 +42,7 @@
 <script setup lang="ts">
 // Componentes
 import ProductCard from '@/components/ProductCard.vue';
-// import ProductSpec from '@/components/ProductSpec.vue';
+import ProductSpec from '@/components/ProductSpec.vue';
 
 // API
 import {
@@ -51,7 +53,7 @@ import {
 import {
   BaseItems,
   Category,
-  ProductSpec,
+  ProductSpec as Specification,
   ProductSpecField,
   Image,
 } from '@/types';
@@ -63,8 +65,8 @@ export default defineComponent({
   data() {
     return {
       // Dados da BD
-      productSpec1: {} as ProductSpec,
-      productSpec2: {} as ProductSpec,
+      productSpec1: {} as Specification,
+      productSpec2: {} as Specification,
       product1Img: {} as Image,
       product2Img: {} as Image,
       product1Categories: {} as BaseItems<Category>,
@@ -91,8 +93,10 @@ export default defineComponent({
     // console.log("foi recarregado")
     // Carregar os dados do produto 1
     const productSpec1 = await fetchProduct(this.product1Id);
+    console.log('dados usados no pedido: ' + this.product1Id);
     this.productSpec1 = productSpec1.data;
     this.product1Img = productSpec1.data.images[0];
+    console.log('dados do prod1: ' + JSON.stringify(this.productSpec1));
 
     const product1Categories = await fetchProductCategories(this.product1Id);
     this.product1Categories = product1Categories.data;

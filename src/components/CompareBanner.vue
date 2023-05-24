@@ -100,8 +100,6 @@
       scrollable
       hide-footer
     >
-      {{ product1.id }}
-      {{ product2.id }}
       <Compare :product1-id="product1.id" :product2-id="product2.id" />
     </b-modal>
   </div>
@@ -267,7 +265,7 @@ export default {
     // const prod1Id = localStorage.getItem('compareItem1Id');
     const product1 = await fetchProduct(this.product1Id);
     this.product1 = product1.data;
-    console.log('prod1: ' + JSON.stringify(this.product1));
+    // console.log('prod1: ' + JSON.stringify(this.product1));
     this.prod1Img = this.product1.images[0];
     if (this.productsLoadedAmount <= 2) {
       this.productsLoadedAmount++;

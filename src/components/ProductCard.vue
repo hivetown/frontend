@@ -140,7 +140,7 @@ export default {
     productId: {
       type: Number,
       required: true,
-      default: null,
+      //   default: null,
     },
     productTitle: {
       type: String,
@@ -160,9 +160,9 @@ export default {
       default: null,
     },
   },
-  created() {
-    window.addEventListener('storage', this.handleLocalStorageChange);
-  },
+  //   created() {
+  //     window.addEventListener('storage', this.handleLocalStorageChange);
+  //   },
   methods: {
     setupCompare(id: number) {
       localStorage.setItem('compareBannerState', 'open');

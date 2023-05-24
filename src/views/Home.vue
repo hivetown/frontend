@@ -30,10 +30,10 @@
       </button>
     </div>
     <div class="d-flex justify-content-center" style="gap: 12vh">
+      <!-- <ProductCard></ProductCard>
       <ProductCard></ProductCard>
       <ProductCard></ProductCard>
-      <ProductCard></ProductCard>
-      <ProductCard></ProductCard>
+      <ProductCard></ProductCard> -->
     </div>
   </div>
 </template>
@@ -41,5 +41,5 @@
 <script setup lang="ts">
 import Banner from '@/components/Banner.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
-import ProductCard from '@/components/ProductCard.vue';
+// import ProductCard from '@/components/ProductCard.vue';
 </script>
