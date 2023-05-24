@@ -139,15 +139,14 @@ a
 </template>
 
 <script setup lang="ts">
-import Swal from 'sweetalert2';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { fetchAllItems } from '../api/orders';
 import { fetchAllOrders, getShipment } from '../api/orders';
-import { fetchUser } from '../api/orders';
 import { Order, Consumer } from '../types/interfaces';
 import { fetchAuth } from '../api/auth';
+import { useRoute } from 'vue-router';
+import { useStore } from '@/store';
 var idU = 0;
-
 const orderItem = ref<Order[]>([]); //array com os produtos
 var totalSum = 0;
 var date = '';
@@ -156,11 +155,13 @@ const lista = [];
 const eventos = ref<Order[]>([]);
 const user = ref<Consumer[]>([]);
 const search = ref('');
+const route = useRoute();
 //obtem o id do link
-const idO = window.location.pathname.split('/id').pop()?.toString();
-
+const store = useStore();
+const user2 = computed(() => store.state.user);
+idU = user2.value['user']['id'];
 onMounted(async () => {
-  idU = (await fetchAuth()).data.user.id;
+  const idO: string = route.params.id;
   //TODO por user logado
   const responseItem = await fetchAllItems(idU, idO);
   orderItem.value = responseItem.data;
@@ -184,12 +185,14 @@ onMounted(async () => {
     );
   }
 
-  console.log(eventos.value);
-  document.querySelector('#totalSum').textContent = 'Total: ' + totalSum + '€';
+  const totalSumElement = document.getElementById('totalSum');
+  if (totalSumElement instanceof HTMLElement) {
+    totalSumElement.innerHTML = `Total: ${totalSum}€`;
+  }
   for (let i = 0; i < orders.value.items.length; i++) {
     if (orders.value.items[i].id == idO) {
       date = orders.value.items[i].orderDate.substring(0, 10);
-      document.querySelector('#data').textContent =
+      document.getElementById('data').textContent =
         'Encomenda efetuada em: ' + date;
     }
   }

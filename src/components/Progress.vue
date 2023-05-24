@@ -53,7 +53,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import { useStore } from '@/store';
 import { fetchOrder, fetchUser } from '../api/orders';
 import { Order, Consumer } from '../types/interfaces';
 import { fetchAuth } from '../api/auth';
@@ -61,14 +62,14 @@ var idU = 0;
 const orderItem = ref<Order[]>([]); //array com os produtos
 const search = ref('');
 const user = ref<Consumer[]>([]);
-
+const store = useStore();
+const user2 = computed(() => store.state.user);
+idU = user2.value['user']['id'];
 //obtem o id do link da encomenda atual
 const id = window.location.pathname.split('/id').pop()?.toString();
 onMounted(async () => {
   //TODO por user logado
-  idU = (await fetchAuth()).data.user.id;
   const responseItem = await fetchOrder(idU, id);
-  console.log(id);
   orderItem.value = responseItem.data;
 });
 </script>

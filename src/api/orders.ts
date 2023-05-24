@@ -19,8 +19,7 @@ export const fetchOrder = (userId: number, orderId: string, search?: string) =>
     });
 
 //obtem o user logado
-export const fetchUser = (search?: string) =>
-    api.get<Consumer[]>('/auth', { params: { search } });
+export const fetchUser = () => api.get<Consumer[]>('/auth');
 
 export const getShipment = (
     consumerId: number,

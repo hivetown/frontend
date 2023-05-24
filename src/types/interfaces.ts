@@ -73,6 +73,14 @@ export interface Address {
     number: number;
     door: string;
     floor: number;
+    zipCode: string;
+    street: string;
+    parish: string;
+    county: string;
+    city: string;
+    district: string;
+    latitude: number;
+    longitude: number;
 }
 
 export interface Order {
@@ -80,7 +88,7 @@ export interface Order {
     items: Product[];
     shippingAddress: Address;
     consumer?: User;
-  }
+}
 
 export interface Image {
     id: number;
@@ -90,4 +98,3 @@ export interface Image {
 }
 
 export type AuthenticatedUser = Consumer | Producer;
-  
