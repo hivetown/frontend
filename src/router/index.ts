@@ -27,8 +27,8 @@ const routes = [
         component: About,
     },
     {
-        path: '/produtos',
-        name: 'Produtos',
+        path: '/products',
+        name: 'Products',
         component: CategoriasProdutos,
     },
     {
@@ -46,8 +46,8 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: '/produto',
-        name: 'Produto',
+        path: '/products/:specid',
+        name: 'ProductDetails',
         component: Product,
     },
     {
@@ -67,16 +67,6 @@ const routes = [
         path: '/registration',
         name: 'Registration',
         component: Register,
-    },
-    {
-        path: '/admin',
-        name: 'Admin',
-        component: Register,
-        meta: {
-            requiresAuth: true,
-            requiredPermissions:
-                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
-        },
     },
     {
         path: '/producer/:id',
