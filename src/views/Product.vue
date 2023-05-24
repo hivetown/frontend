@@ -260,7 +260,10 @@
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
-              v-if="producerProduct.id != defaultProduct.id"
+              v-if="
+                producerProduct.producer &&
+                producerProduct.id != defaultProduct.id
+              "
             >
               <router-link
                 :to="'/producer/' + producerProduct.producer.user.id"
