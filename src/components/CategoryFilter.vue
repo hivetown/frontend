@@ -48,55 +48,73 @@
 export default {
   data() {
     return {
-      categories: [
-        {
-          name: 'Categoria 1',
-          subCategories: [
-            { name: 'Subcategoria 1', link: '/subcategoria1' },
-            { name: 'Subcategoria 2', link: '/subcategoria2' },
-          ],
-          showSubCategories: false,
-        },
-        {
-          name: 'Categoria 2',
-          subCategories: [
-            { name: 'Subcategoria 3', link: '/subcategoria3' },
-            { name: 'Subcategoria 4', link: '/subcategoria4' },
-          ],
-          showSubCategories: false,
-        },
-        {
-          name: 'Categoria 3',
-          subCategories: [
-            { name: 'Subcategoria 5', link: '/subcategoria5' },
-            { name: 'Subcategoria 6', link: '/subcategoria6' },
-          ],
-          showSubCategories: false,
-        },
-        {
-          name: 'Categoria 4',
-          subCategories: [
-            { name: 'Subcategoria 7', link: '/subcategoria7' },
-            { name: 'Subcategoria 8', link: '/subcategoria8' },
-          ],
-          showSubCategories: false,
-        },
-        {
-          name: 'Categoria 5',
-          subCategories: [
-            { name: 'Subcategoria 9', link: '/subcategoria9' },
-            { name: 'Subcategoria 10', link: '/subcategoria10' },
-          ],
-          showSubCategories: false,
-        },
-      ],
+      subCategoriesById: {} as CategoryType[],
     };
+  },
+  props: {
+    categories: {
+      type: Array as PropType<CategoryType[]>,
+      required: true,
+    },
+  },
+  computed: {
+    filteredCategories() {
+      const filtered = [] as CategoryType[];
+      for (const category of this.categories) {
+        if (
+          !category.parent &&
+          !filtered.some((c) => c.name === category.name)
+        ) {
+          filtered.push(category);
+        }
+      }
+      return filtered.sort((a, b) => a.name.localeCompare(b.name));
+    },
+  },
+  methods: {
+    async fetchSubCategories(id: number) {
+      const subCategories =
+        this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
+      this.subCategoriesById[id] = subCategories;
+      const category = this.categories.find((c) => c.id === id);
+      if (category) {
+        category.subCategories = this.subCategoriesById[id];
+      }
+    },
   },
 };
 </script>
 
 <style>
-.cat-txt {
-  cursor: pointer;
+/* Ver se é suposto estar aqui ou no App.vue */
+/* Scrollbar //////////////////////////////////////////// */
+
+/* Google chrome */
+::-webkit-scrollbar {
+  width: 0.8em; /* Largura da barra */
+  background-color: #f3f3f3;
 }
+::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+
+/* Firefox */
+::-moz-scrollbar {
+  width: 8px; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-moz-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-moz-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+/* ////////////////////////////////////////////////////// */
 </style>

@@ -19,8 +19,6 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <!-- Por enquanto limitado a apenas 10 -->
-          <!-- <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter> -->
           <CategoryFilter :categories="allCategories"></CategoryFilter>
         </div>
 
@@ -88,6 +86,7 @@
                 :product-description="product.description"
                 :product-image="product.images[0]?.url"
                 :product-price="[product.minPrice, product.maxPrice]"
+                @send-id="handleId"
               />
             </template>
           </div>
@@ -101,10 +100,6 @@
           justify-content: center;
         "
       >
-        <!-- <Pagination :totalRows="allProductsData.data.totalItems" 
-                      :perPage="allProductsData.data.pageSize" 
-                      :currentPage="allProductsData.data.page">
-          </Pagination> -->
         <Pagination
           v-if="allProducts"
           :total-rows="allProducts.totalItems"
@@ -112,14 +107,17 @@
           :current-page="allProducts.page"
         >
         </Pagination>
+
         <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
       </div>
     </div>
   </div>
 
-  <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
-  <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <!-- <CompareBanner></CompareBanner> -->
+  <CompareBanner
+    v-if="selectedProductId && prod1Id"
+    :product1-id="prod1Id"
+    :product2-id="prod2Id || undefined"
+  ></CompareBanner>
 </template>
 
 <script setup lang="ts">
@@ -133,14 +131,11 @@ import Pagination from '@/components/Pagination.vue';
 // Componentes auxiliares
 import CustomViews from '@/components/CustomViews.vue';
 import ProductCard from '@/components/ProductCard.vue';
-// import CompareBanner from '@/components/CompareBanner.vue';
+import CompareBanner from '@/components/CompareBanner.vue';
 </script>
 
 <!-- TODO atualizar tipagens -->
 <script lang="ts">
-// Componentes
-// import ProductCard from "@/components/ProductCard.vue";
-
 // API
 import { fetchAllProducts, fetchCategory, fetchAllCategories } from '@/api';
 import { ProductSpec, Category, BaseItems } from '@/types';
@@ -149,27 +144,58 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
+      compareBannerState: localStorage.getItem('compareBannerState'),
       // Dados da BD
       // Produtos
       allProducts: {} as BaseItems<ProductSpec>,
       productSpec: {} as ProductSpec,
-      //   allProductsData: {} as BaseItems<ProductSpec>,
+      //   allProductsData: {} as any,
       // Filtros
       allCategories: [] as Category[],
       currentCategory: '' as string,
       mostExpensiveProduct: null as ProductSpec | null,
+
+      selectedProductId: null as number | null,
+      prod1Id: null as number | null,
+      prod2Id: null as number | null,
     };
+  },
+  methods: {
+    handleId(id: number) {
+      this.selectedProductId = id;
+      if (this.prod1Id === null) {
+        this.prod1Id = id;
+        // TODO - nelhorar isto para quando os produtos que se quer comparar são iguais
+      } else if (this.prod2Id === null || this.prod1Id === null) {
+        if (id != this.prod1Id) {
+          this.prod2Id = id;
+        } else {
+          // console.log("Os produtos são iguais");
+          // alert("O produto já está selecionado");
+        }
+      } else {
+        this.prod1Id = id;
+        this.prod2Id = null;
+      }
+    },
   },
   // A fazer antes de montar o componente
   async beforeMount() {
+    localStorage.setItem('compareItem1Id', 'null');
+    localStorage.setItem('compareItem2Id', 'null');
+
+    if (
+      localStorage.getItem('compareItem1Id') === 'null' ||
+      localStorage.getItem('compareItem2Id') === 'null'
+    ) {
+      localStorage.setItem('compareBannerState', 'closed');
+    }
+
     // Carregar os dados do produto da BD
-    // this.allProducts =   fetchAllProducts().data;
-    // const searchTerm = "Recycled";
-    // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(String(this.$route.query.page)) || 1;
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
-    const categoryId = parseInt(String(this.$route.query.categoryId)) || 1;
-    // const allProductsData = await fetchAllProducts(
+    const categoryId =
+      parseInt(String(this.$route.query.categoryId)) || undefined;
     const allProducts = await fetchAllProducts(
       page,
       pageSize,
@@ -180,6 +206,7 @@ export default defineComponent({
     // const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
+    // this.allProducts = allProducts;
     // this.allProductsData = allProductsData;
     this.allCategories = allCategories;
 
@@ -193,7 +220,7 @@ export default defineComponent({
       // Se não houver uma
       this.currentCategory = 'Todas as categorias';
     }
-    console.log(this.allCategories);
+    // console.log(this.allCategories);
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
     const maxPriceProduct =
@@ -208,6 +235,15 @@ export default defineComponent({
 
     this.mostExpensiveProduct = maxPriceProduct;
   },
-  components: { ProductCard, Pagination, CustomViews },
+  components: {
+    ProductCard,
+    Pagination,
+    CustomViews,
+    CompareBanner,
+    CategoryFilter,
+    PriceFilter,
+    SupplierFilter,
+    RatingFilter,
+  },
 });
 </script>
