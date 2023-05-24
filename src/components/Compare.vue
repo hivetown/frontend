@@ -6,28 +6,19 @@
       <p class="grey-txt">A comparar <span>2</span> produtos</p>
     </div>
     <!-- Produtos a comparar -->
-    {{ product1Id }}
-    {{ product2Id }}
-    <div class="d-flex mt-5 px-3" style="gap: 20vh">
+    <div class="d-flex mt-5 px-3 justify-content-around">
       <ProductCard
-        style="margin-left: 25vh"
-        :product-title="productSpec1.name"
-        :product-description="productSpec1.description"
-        :product-image="product1Img.url"
-        :product-id="product1Id"
-        :product-price="[productSpec1.minPrice, productSpec1.maxPrice]"
-      />
-      <ProductCard
-        :product-title="productSpec2.name"
-        :product-description="productSpec2.description"
-        :product-image="product2Img.url"
-        :product-id="product2Id"
-        :product-price="[productSpec2.minPrice, productSpec2.maxPrice]"
+        v-for="product in products"
+        :key="product.id"
+        :product-spec="product"
       />
     </div>
     <!-- Características dos produtos a ser comparados -->
     <div class="spec-to-compare">
-      <ProductSpec :fields-totais="fieldsTotais"></ProductSpec>
+      <ProductSpec
+        :loading="loadingProductsFields"
+        :products-fields="productsFields"
+      ></ProductSpec>
     </div>
   </div>
 </template>
@@ -45,19 +36,13 @@ import ProductCard from '@/components/ProductCard.vue';
 import ProductSpec from '@/components/ProductSpec.vue';
 
 // API
+import { fetchProductCategories, fetchProductCategoriesFields } from '@/api';
 import {
-  fetchProduct,
-  fetchProductCategories,
-  fetchProductCategoriesFields,
-} from '@/api';
-import {
-  BaseItems,
   Category,
+  ProductSpecFieldWithCategory,
   ProductSpec as Specification,
-  ProductSpecField,
-  Image,
 } from '@/types';
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 </script>
 
 <script lang="ts">
@@ -65,117 +50,54 @@ export default defineComponent({
   data() {
     return {
       // Dados da BD
-      productSpec1: {} as Specification,
-      productSpec2: {} as Specification,
-      product1Img: {} as Image,
-      product2Img: {} as Image,
-      product1Categories: {} as BaseItems<Category>,
-      product2Categories: {} as BaseItems<Category>,
-      fields1: [] as [number, ProductSpecField[]][],
-      fields2: [] as [number, ProductSpecField[]][],
-      categoriasTotais: {} as Record<number, number[]>,
-      fieldsTotais: {} as Record<
-        number,
-        // Product1 Fields, Product2 Fields
-        [ProductSpecField[], ProductSpecField[]]
-      >,
+      // Category[] for each product
+      productsCategories: [] as Category[][],
+      // {idCategory: {category, fields}} for each product
+      productsFields: [] as Record<number, ProductSpecFieldWithCategory>[],
+      loadingProductsFields: false,
     };
   },
   props: {
-    product1Id: {
-      type: Number,
-      required: true,
-    },
-    product2Id: {
-      type: Number,
+    products: {
+      type: Object as PropType<Specification[]>,
       required: true,
     },
   },
 
   // A fazer antes de montar o componente
   async beforeMount() {
-    console.log('ids', this.product1Id, this.product2Id);
-    // console.log("foi recarregado")
-    // Carregar os dados do produto 1
-    const productSpec1 = await fetchProduct(this.product1Id);
-    this.productSpec1 = productSpec1.data;
-    this.product1Img = productSpec1.data.images[0];
+    this.loadingProductsFields = true;
 
-    const product1Categories = await fetchProductCategories(this.product1Id);
-    this.product1Categories = product1Categories.data;
+    for (const product of this.products) {
+      this.productsCategories.push(
+        (await fetchProductCategories(product.id)).data.items
+      );
+    }
 
-    // Carregar os dados do produto 2
-    const productSpec2 = await fetchProduct(this.product2Id);
-    this.productSpec2 = productSpec2.data;
-    this.product2Img = productSpec2.data.images[0];
-
-    const product2Categories = await fetchProductCategories(this.product2Id);
-    this.product2Categories = product2Categories.data;
+    this.productsFields = Array(this.products.length).fill({});
 
     // Juntar todas as categorias dos dois produtos
-    try {
-      // Do produto 1
-      for (const categoria of this.product1Categories.items) {
-        if (!(categoria.id in this.categoriasTotais)) {
-          this.categoriasTotais[categoria.id] = [1];
-        } else {
-          this.categoriasTotais[categoria.id].push(1);
-        }
+    // Para cada produto
+    for (let idx = 0; idx < this.products.length; idx++) {
+      const product = this.products[idx];
 
-        const response = await fetchProductCategoriesFields(
-          this.product1Id,
+      // Para cada categoria
+      for (const categoria of this.productsCategories[idx]) {
+        const fields = await fetchProductCategoriesFields(
+          product.id,
           categoria.id
         );
-        this.fields1.push([categoria.id, response.data.items]);
-      }
+        console.log(product.name, '|', categoria.name, '|', fields.data.items);
 
-      // Do produto 2
-      for (const categoria of this.product2Categories.items) {
-        // Junta as categorias dos dois produtos que são iguais
-        if (!(categoria.id in this.categoriasTotais)) {
-          this.categoriasTotais[categoria.id] = [2];
-        } else {
-          this.categoriasTotais[categoria.id].push(2);
-        }
-
-        const response = await fetchProductCategoriesFields(
-          this.product2Id,
-          categoria.id
-        );
-        this.fields2.push([categoria.id, response.data.items]);
-      }
-    } catch (error) {
-      console.log('Erro: ' + error);
-    }
-
-    // Para cada categoria das categorias totais, vê os fields dela por produto
-    for (const _categoryId of Object.keys(this.categoriasTotais)) {
-      const categoryId = Number(_categoryId);
-
-      for (const field of this.fields1) {
-        const [fieldCategoryId, fieldValues] = field;
-        if (fieldCategoryId === categoryId) {
-          if (!(categoryId in this.fieldsTotais)) {
-            this.fieldsTotais[categoryId] = [fieldValues, []];
-          } else {
-            this.fieldsTotais[categoryId][0] = fieldValues;
-          }
-        }
-      }
-
-      for (const field of this.fields2) {
-        const [fieldCategoryId, fieldValues] = field;
-        if (fieldCategoryId === categoryId) {
-          if (!(categoryId in this.fieldsTotais)) {
-            this.fieldsTotais[categoryId] = [[], fieldValues];
-          } else {
-            this.fieldsTotais[categoryId][1] = fieldValues;
-          }
-        }
+        // Os vários fields da categoria dum produto
+        this.productsFields[idx][categoria.id] = {
+          category: categoria,
+          fieldValues: fields.data.items,
+        };
       }
     }
 
-    console.log('COMPARE.VUE fieldsTotais', this.fieldsTotais);
+    this.loadingProductsFields = false;
   },
   components: { ProductCard },
 });

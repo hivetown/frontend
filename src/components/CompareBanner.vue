@@ -7,62 +7,36 @@
         <h5 class="dgreen-txt">
           Comparador
           <span
-            v-show="productsLoadedAmount === 1"
             class="badge bg-secondary"
-            style="border-radius: 100%"
-            >1</span
+            :style="products.length === 1 ? 'border-radius: 100%' : ''"
           >
-          <span v-show="productsLoadedAmount === 2" class="badge bg-secondary"
-            >2</span
-          >
+            {{ products.length }}
+          </span>
         </h5>
-        <p v-show="productsLoadedAmount < 2" class="grey-txt">
+
+        <p v-if="products.length < 2" class="grey-txt">
           Ainda pode adicionar
-          <span v-show="productsLoadedAmount === 0">2 produtos</span>
-          <span v-show="productsLoadedAmount === 1">1 produto</span>
+          <span>{{ 2 - products.length }} produtos</span>
         </p>
-        <p v-show="productsLoadedAmount === 2">
-          Selecionou o máximo de produtos
-        </p>
+        <p v-else>Selecionou o máximo de produtos</p>
       </div>
 
       <div class="d-flex gap-4">
-        <!-- Produto 1 -->
-        <div>
+        <!-- Mostrar os Produtos -->
+        <div v-for="product in products" :key="product.id">
           <div
             style="position: relative"
             class="prod-container d-flex justify-content-center align-items-center"
           >
             <i
-              id="img1"
               class="bi bi-x-lg"
               style="position: absolute; color: red"
-              @click="removeItem(($event.target as HTMLElement).id)"
+              @click="removeItem(product)"
             ></i>
             <img
-              v-if="product1Loaded"
               class="square-image"
-              :src="prod1Img.url"
-              :alt="prod1Img.alt"
-            />
-          </div>
-        </div>
-        <!-- Produto 2 -->
-        <div>
-          <div
-            class="prod-container d-flex justify-content-center align-items-center"
-          >
-            <i
-              id="img2"
-              class="bi bi-x-lg"
-              style="position: absolute; color: red"
-              @click="removeItem(($event.target as HTMLElement).id)"
-            ></i>
-            <img
-              v-if="product2Loaded"
-              class="square-image"
-              :src="prod2Img.url"
-              :alt="prod2Img.alt"
+              :src="product.images[0].url"
+              :alt="product.images[0].alt"
             />
           </div>
         </div>
@@ -71,21 +45,17 @@
       <div class="d-flex flex-column justify-content-center align-items-center">
         <!-- Botão de comparar -->
         <button
-          v-if="productsLoadedAmount === 2"
           type="button"
           class="btn btn-secondary rounded-pill"
           v-b-tooltip.hover
           title="Comparar produto"
-          @click="openModal(product1.id, product2.id)"
+          :disabled="!canCompare"
+          @click="openModal"
         >
           <i style="color: #eeeeee" class="bi bi-arrow-left-right"></i> Comparar
         </button>
-        <a
-          href="#"
-          id="limpar"
-          @click="removeItem(($event.target as HTMLElement).id)"
-          >Limpar tudo</a
-        >
+        <!-- TODO button? -->
+        <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a>
       </div>
     </div>
   </div>
@@ -100,7 +70,7 @@
       scrollable
       hide-footer
     >
-      <Compare :product1-id="product1.id" :product2-id="product2.id" />
+      <Compare v-if="showModal" :products="products" />
     </b-modal>
   </div>
 </template>
@@ -139,142 +109,53 @@
 </style>
 
 <script lang="ts">
-import { ref } from 'vue';
+import { PropType } from 'vue';
 import Compare from '@/components/Compare.vue';
-import { ProductSpec, Image } from '@/types';
-import { fetchProduct } from '@/api';
-
-const showModal = ref(false);
-const openModal = (id1: number, id2: number) => {
-  // TODO - ver como remover isto sem dar erro
-  console.log(id1);
-  console.log(id2);
-  ////
-  showModal.value = true;
-};
+import { ProductSpec } from '@/types';
 
 export default {
   data() {
     return {
-      productsLoadedAmount: 0,
-      product1Loaded: false,
-      product2Loaded: false,
-      product1: {} as ProductSpec,
-      product2: {} as ProductSpec,
-      prod1Img: {} as Image,
-      prod2Img: {} as Image,
-
-      id1: null,
-      id2: null,
+      showModal: false,
     };
   },
-  props: {
-    product1Id: {
-      type: Number,
-      required: true,
+  computed: {
+    canCompare() {
+      return this.products.length >= 2;
     },
-    product2Id: {
-      type: Number,
-      default: null,
+  },
+  props: {
+    products: {
+      type: Object as PropType<ProductSpec[]>,
+      required: true,
     },
   },
   components: {
     Compare,
   },
-  setup() {
-    return {
-      showModal,
-      openModal,
-    };
-  },
   methods: {
-    removeItem(elemento: string) {
-      const documentElement = document.getElementById(elemento);
-      const docImg1 = document.getElementById('img1');
-      const docImg2 = document.getElementById('img2');
-      if (elemento === 'img1') {
-        this.product1Loaded = false;
-        //   localStorage.setItem('compareItem1Id', null);
-        if (documentElement) {
-          documentElement.style.display = 'none';
-        }
-      } else if (elemento === 'img2') {
-        this.product2Loaded = false;
-        // localStorage.setItem('compareItem2Id', null);
-        if (documentElement) {
-          documentElement.style.display = 'none';
-        }
-      } else if (elemento === 'limpar') {
-        this.product1Loaded = false;
-        this.product2Loaded = false;
-        // localStorage.setItem('compareItem1Id', null);
-        // localStorage.setItem('compareItem2Id', null);
-
-        if (docImg1 && docImg2) {
-          docImg1.style.display = 'none';
-          docImg2.style.display = 'none';
-        }
+    removeItem(produto: ProductSpec) {
+      const index = this.products.indexOf(produto);
+      if (index > -1) {
+        // TODO replace with emit
+        this.products.splice(index, 1);
       }
-      this.productsLoadedAmount--;
     },
-    async loadProduct(
-      newId: number,
-      imgId: string,
-      product: any,
-      prodImg: Image
-    ) {
-      if (newId) {
-        const imgElem = document.getElementById(imgId);
-        if (imgElem) {
-          if (imgElem.style.display === 'none') {
-            imgElem.style.display = 'block';
-            const productData = await fetchProduct(newId);
-            product = productData.data;
-            if (imgId === 'img1') {
-              this.product1 = product;
-              this.prod1Img = product.images[0];
-              this.product1Loaded = true;
-            } else {
-              this.product2 = product;
-              this.prod2Img = product.images[0];
-              this.product2Loaded = true;
-            }
-            if (this.productsLoadedAmount <= 2) {
-              this.productsLoadedAmount++;
-            }
-            console.log(prodImg); // TODO- como tirar isto sem dar erro
-          }
-        }
-      }
+    removeAllItems() {
+      // TODO replace with emit
+      this.products.splice(0, this.products.length);
+    },
+    openModal() {
+      this.showModal = true;
     },
   },
   watch: {
-    product1Id: async function (newId: number) {
-      await this.loadProduct(newId, 'img1', this.product1, this.prod1Img);
+    products: {
+      immediate: true,
+      handler() {
+        console.log('products changed');
+      },
     },
-    product2Id: async function (newId: number) {
-      await this.loadProduct(newId, 'img2', this.product2, this.prod2Img);
-    },
-  },
-
-  async beforeMount() {
-    this.product1.id = 1;
-    this.product2.id = 2;
-
-    // Primeiro produto
-    // const prod1Id = localStorage.getItem('compareItem1Id');
-    const product1 = await fetchProduct(this.product1Id);
-    this.product1 = product1.data;
-    // console.log('prod1: ' + JSON.stringify(this.product1));
-    this.prod1Img = this.product1.images[0];
-    if (this.productsLoadedAmount <= 2) {
-      this.productsLoadedAmount++;
-    }
-    this.product1Loaded = true;
-    const docImg2 = document.getElementById('img2');
-    if (docImg2) {
-      docImg2.style.display = 'none';
-    }
   },
 };
 </script>

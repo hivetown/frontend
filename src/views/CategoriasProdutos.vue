@@ -81,12 +81,9 @@
             >
               <!-- {{ product}} -->
               <ProductCard
-                :product-id="product.id"
-                :product-title="product.name"
-                :product-description="product.description"
-                :product-image="product.images[0]?.url"
-                :product-price="[product.minPrice, product.maxPrice]"
-                @send-id="handleId"
+                :product-spec="product"
+                :can-compare="canCompareMoreProducts"
+                @compare="addProductToCompare"
               />
             </template>
           </div>
@@ -114,9 +111,8 @@
   </div>
 
   <CompareBanner
-    v-if="selectedProductId && prod1Id"
-    :product1-id="prod1Id"
-    :product2-id="prod2Id || undefined"
+    v-if="isCompareBannerVisible"
+    :products="productsToCompare"
   ></CompareBanner>
 </template>
 
@@ -144,7 +140,6 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
-      compareBannerState: localStorage.getItem('compareBannerState'),
       // Dados da BD
       // Produtos
       allProducts: {} as BaseItems<ProductSpec>,
@@ -154,43 +149,25 @@ export default defineComponent({
       allCategories: [] as Category[],
       currentCategory: '' as string,
       mostExpensiveProduct: null as ProductSpec | null,
-
-      selectedProductId: null as number | null,
-      prod1Id: null as number | null,
-      prod2Id: null as number | null,
+      productsToCompare: [] as ProductSpec[],
     };
   },
   methods: {
-    handleId(id: number) {
-      this.selectedProductId = id;
-      if (this.prod1Id === null) {
-        this.prod1Id = id;
-        // TODO - nelhorar isto para quando os produtos que se quer comparar são iguais
-      } else if (this.prod2Id === null || this.prod1Id === null) {
-        if (id != this.prod1Id) {
-          this.prod2Id = id;
-        } else {
-          // console.log("Os produtos são iguais");
-          // alert("O produto já está selecionado");
-        }
-      } else {
-        this.prod1Id = id;
-        this.prod2Id = null;
-      }
+    addProductToCompare(productSpec: ProductSpec) {
+      if (!this.productsToCompare.find((spec) => spec.id === productSpec.id))
+        this.productsToCompare.push(productSpec);
+    },
+  },
+  computed: {
+    isCompareBannerVisible() {
+      return this.productsToCompare.length > 0;
+    },
+    canCompareMoreProducts() {
+      return this.productsToCompare.length < 2;
     },
   },
   // A fazer antes de montar o componente
   async beforeMount() {
-    localStorage.setItem('compareItem1Id', 'null');
-    localStorage.setItem('compareItem2Id', 'null');
-
-    if (
-      localStorage.getItem('compareItem1Id') === 'null' ||
-      localStorage.getItem('compareItem2Id') === 'null'
-    ) {
-      localStorage.setItem('compareBannerState', 'closed');
-    }
-
     // Carregar os dados do produto da BD
     const page = parseInt(String(this.$route.query.page)) || 1;
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;

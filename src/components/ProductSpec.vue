@@ -3,28 +3,34 @@
     <h5 class="p-3">Características</h5>
   </div>
   <div>
-    <div class="">
-      <!-- Field name -->
-      {{ fieldsTotais }}
+    <b-spinner v-if="loading" variant="primary" label="Spinning"></b-spinner>
+    <div v-else>
+      <!-- {{ productsFields }} -->
+      <!-- Para cada produto -->
       <div
-        v-for="([fieldsProd1, fieldsProd2], index) in fieldsTotais"
+        v-for="(productFields, index) in productsFields"
         class="mb-3 parent"
         style="border-bottom: 1px solid #eeeeee"
         :key="index"
       >
         <div class="d-flex" style="gap: 12vh">
-          <p v-if="fieldsProd1">
-            Fields1:
-            {{
-              fieldsProd1.map((f) => `${f.field.name}: ${f.value}`).join(' | ')
-            }}
-          </p>
-          <p v-if="fieldsProd2">
-            Fields2:
-            {{
-              fieldsProd2.map((f) => `${f.field.name}: ${f.value}`).join(' | ')
-            }}
-          </p>
+          <!-- Para cada categoria -->
+          <div
+            v-for="(categoriesFields, idxCategories) in productFields"
+            :key="idxCategories"
+          >
+            <b>Category {{ categoriesFields.category.name }}</b>
+
+            <!-- Para cada field da categoria -->
+            <div
+              v-for="(field, idxField) in categoriesFields.fieldValues"
+              :key="idxField"
+            >
+              <!-- Para cada valor do field da categoria -->
+              {{ field.field.name }}: {{ field.value }}
+            </div>
+          </div>
+
           <!-- {{ index }}
           {{ field[1] }} -->
           <!-- <div v-for="(fs, fsIndex) in field[1]">
@@ -83,17 +89,19 @@
 </template>
 
 <script lang="ts">
-import { ProductSpecField } from '@types';
+import { ProductSpecFieldWithCategory } from '@types';
 import { PropType, defineComponent } from 'vue';
 // import { ProductSpecField } from '@/interfaces';
 
 export default defineComponent({
   name: 'ProductSpec',
   props: {
-    fieldsTotais: {
-      type: Object as PropType<
-        Record<number, [ProductSpecField[], ProductSpecField[]]>
-      >,
+    productsFields: {
+      type: [] as PropType<Record<number, ProductSpecFieldWithCategory>[]>,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
       required: true,
     },
   },

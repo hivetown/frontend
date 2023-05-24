@@ -9,8 +9,12 @@
         >
         </i>
       </span>
-      <router-link :to="'/products/' + productId">
-        <img :src="productImage" class="square-image" />
+      <router-link :to="'/products/' + productSpec.id">
+        <img
+          :src="productImage.url"
+          :alt="productImage.alt"
+          class="square-image"
+        />
       </router-link>
     </b-card>
 
@@ -26,15 +30,11 @@
           {{ productCategory.name }}
         </div>
 
-        <h5>{{ productTitle }}</h5>
-        <p class="grey-txt mt-3">{{ productDescription }}</p>
+        <h5>{{ productSpec.name }}</h5>
+        <p class="grey-txt mt-3">{{ productSpec.description }}</p>
         <div class="d-flex gap-2">
           <h4 class="mb-3">
-            {{
-              productPrice && productPrice.length > 1
-                ? productPrice[0] + '€ - ' + productPrice[1] + '€'
-                : ''
-            }}
+            {{ productPricing }}
           </h4>
           <!-- TODO, fazer com que seja  -->
           <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
@@ -50,7 +50,7 @@
           >
             <i class="bi bi-cart"></i>
           </button>
-          <router-link :to="'/products/' + productId">
+          <router-link :to="'/products/' + productSpec.id">
             <button
               type="button"
               class="btn btn-outline-secondary circle-btn"
@@ -65,7 +65,8 @@
             class="btn btn-outline-secondary circle-btn"
             v-b-tooltip.hover
             title="Comparar produto"
-            @click="setupCompare(productId)"
+            :disabled="!canCompare"
+            @click="setupCompare()"
           >
             <i class="bi bi-arrow-left-right"></i>
           </button>
@@ -123,8 +124,8 @@
 
 <script setup lang="ts">
 import { fetchProductCategories } from '@/api';
-// import CompareBanner from '@/components/CompareBanner.vue';
-import { Category } from '@/types';
+import { Category, ProductSpec } from '@/types';
+import { PropType } from 'vue';
 </script>
 
 <script lang="ts">
@@ -136,50 +137,43 @@ export default {
       selectedId: null as number | null, // Id do produto selecionado
     };
   },
-  props: {
-    productId: {
-      type: Number,
-      required: true,
-      //   default: null,
+  computed: {
+    productImage() {
+      return this.productSpec.images[0];
     },
-    productTitle: {
-      type: String,
-      required: true,
-    },
-    productDescription: {
-      type: String,
-      required: true,
-    },
-    productImage: {
-      type: String,
-      required: true,
-    },
-    productPrice: {
-      type: Array,
-      required: false,
-      default: null,
-    },
-  },
-  //   created() {
-  //     window.addEventListener('storage', this.handleLocalStorageChange);
-  //   },
-  methods: {
-    setupCompare(id: number) {
-      localStorage.setItem('compareBannerState', 'open');
-      if (localStorage.getItem('compareItem1Id') == 'null') {
-        localStorage.setItem('compareItem1Id', String(id));
-      } else if (localStorage.getItem('compareItem2Id') == 'null') {
-        localStorage.setItem('compareItem2Id', String(id));
+    productPricing() {
+      const { minPrice, maxPrice } = this.productSpec;
+      if (minPrice === maxPrice) {
+        if (minPrice === 0) return 'Grátis';
+
+        return `${minPrice} €`;
       }
 
-      this.$emit('send-id', id);
+      return `${minPrice} € - ${maxPrice} €`;
+    },
+  },
+  props: {
+    productSpec: {
+      type: Object as PropType<ProductSpec>,
+      required: true,
+    },
+    canCompare: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    compare: (productSpec: ProductSpec) => true,
+  },
+  methods: {
+    setupCompare() {
+      this.$emit('compare', this.productSpec);
     },
   },
   async beforeMount() {
-    if (this.productId != undefined) {
-      const productCategory = await fetchProductCategories(this.productId);
-      this.productCategory = productCategory.data.items[0];
-    }
+    const productCategories = await fetchProductCategories(this.productSpec.id);
+    this.productCategory = productCategories.data.items[0];
   },
 };
 </script>
