@@ -73,8 +73,12 @@ export default defineComponent({
       product2Categories: {} as BaseItems<Category>,
       fields1: [] as [number, ProductSpecField[]][],
       fields2: [] as [number, ProductSpecField[]][],
-      categoriasTotais: {} as Record<number, (number | number[])[]>,
-      fieldsTotais: {} as Record<number, (number | number[])[]>,
+      categoriasTotais: {} as Record<number, number[]>,
+      fieldsTotais: {} as Record<
+        number,
+        // Product1 Fields, Product2 Fields
+        [ProductSpecField[], ProductSpecField[]]
+      >,
     };
   },
   props: {
@@ -90,13 +94,12 @@ export default defineComponent({
 
   // A fazer antes de montar o componente
   async beforeMount() {
+    console.log('ids', this.product1Id, this.product2Id);
     // console.log("foi recarregado")
     // Carregar os dados do produto 1
     const productSpec1 = await fetchProduct(this.product1Id);
-    console.log('dados usados no pedido: ' + this.product1Id);
     this.productSpec1 = productSpec1.data;
     this.product1Img = productSpec1.data.images[0];
-    console.log('dados do prod1: ' + JSON.stringify(this.productSpec1));
 
     const product1Categories = await fetchProductCategories(this.product1Id);
     this.product1Categories = product1Categories.data;
@@ -116,22 +119,25 @@ export default defineComponent({
         if (!(categoria.id in this.categoriasTotais)) {
           this.categoriasTotais[categoria.id] = [1];
         } else {
-          this.categoriasTotais[categoria.id].push([1]);
+          this.categoriasTotais[categoria.id].push(1);
         }
+
         const response = await fetchProductCategoriesFields(
           this.product1Id,
           categoria.id
         );
         this.fields1.push([categoria.id, response.data.items]);
       }
+
       // Do produto 2
       for (const categoria of this.product2Categories.items) {
         // Junta as categorias dos dois produtos que são iguais
         if (!(categoria.id in this.categoriasTotais)) {
           this.categoriasTotais[categoria.id] = [2];
         } else {
-          this.categoriasTotais[categoria.id].push([2]);
+          this.categoriasTotais[categoria.id].push(2);
         }
+
         const response = await fetchProductCategoriesFields(
           this.product2Id,
           categoria.id
@@ -143,28 +149,33 @@ export default defineComponent({
     }
 
     // Para cada categoria das categorias totais, vê os fields dela por produto
-    for (const [cat] of Object.entries(this.categoriasTotais)) {
+    for (const _categoryId of Object.keys(this.categoriasTotais)) {
+      const categoryId = Number(_categoryId);
+
       for (const field of this.fields1) {
-        if (String(field[0]) == cat) {
-          if (!(cat in this.fieldsTotais)) {
-            this.fieldsTotais[Number(cat)] = [[1], [Number(field[1])]];
+        const [fieldCategoryId, fieldValues] = field;
+        if (fieldCategoryId === categoryId) {
+          if (!(categoryId in this.fieldsTotais)) {
+            this.fieldsTotais[categoryId] = [fieldValues, []];
           } else {
-            Array(this.fieldsTotais[Number(cat)][0]).push(1);
-            Array(this.fieldsTotais[Number(cat)][1]).push(Number(field[1]));
+            this.fieldsTotais[categoryId][0] = fieldValues;
           }
         }
       }
+
       for (const field of this.fields2) {
-        if (String(field[0]) == cat) {
-          if (!(cat in this.fieldsTotais)) {
-            this.fieldsTotais[Number(cat)] = [[2], [Number(field[1])]];
+        const [fieldCategoryId, fieldValues] = field;
+        if (fieldCategoryId === categoryId) {
+          if (!(categoryId in this.fieldsTotais)) {
+            this.fieldsTotais[categoryId] = [[], fieldValues];
           } else {
-            Array(this.fieldsTotais[Number(cat)][0]).push(2);
-            Array(this.fieldsTotais[Number(cat)][1]).push(Number(field[1]));
+            this.fieldsTotais[categoryId][1] = fieldValues;
           }
         }
       }
     }
+
+    console.log('COMPARE.VUE fieldsTotais', this.fieldsTotais);
   },
   components: { ProductCard },
 });

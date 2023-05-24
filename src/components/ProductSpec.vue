@@ -7,14 +7,26 @@
       <!-- Field name -->
       {{ fieldsTotais }}
       <div
-        v-for="(field, index) in fieldsTotais"
+        v-for="([fieldsProd1, fieldsProd2], index) in fieldsTotais"
         class="mb-3 parent"
         style="border-bottom: 1px solid #eeeeee"
         :key="index"
       >
         <div class="d-flex" style="gap: 12vh">
-          {{ index }}
-          {{ field[1] }}
+          <p v-if="fieldsProd1">
+            Fields1:
+            {{
+              fieldsProd1.map((f) => `${f.field.name}: ${f.value}`).join(' | ')
+            }}
+          </p>
+          <p v-if="fieldsProd2">
+            Fields2:
+            {{
+              fieldsProd2.map((f) => `${f.field.name}: ${f.value}`).join(' | ')
+            }}
+          </p>
+          <!-- {{ index }}
+          {{ field[1] }} -->
           <!-- <div v-for="(fs, fsIndex) in field[1]">
             <p>{{ index }} {{ field }}</p>
           </div> -->
@@ -71,14 +83,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { ProductSpecField } from '@types';
+import { PropType, defineComponent } from 'vue';
 // import { ProductSpecField } from '@/interfaces';
 
 export default defineComponent({
   name: 'ProductSpec',
   props: {
     fieldsTotais: {
-      type: Object as () => Record<number, (number | number[])[]>,
+      type: Object as PropType<
+        Record<number, [ProductSpecField[], ProductSpecField[]]>
+      >,
       required: true,
     },
   },
