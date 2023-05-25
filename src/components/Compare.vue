@@ -52,8 +52,8 @@ export default defineComponent({
       // Dados da BD
       // Category[] for each product
       productsCategories: [] as Category[][],
-      // {idCategory: {category, fields}} for each product
-      productsFields: [] as Record<number, ProductSpecFieldWithCategory>[],
+      // {idCategory: [{category, fields}] for each product}
+      productsFields: {} as Record<number, ProductSpecFieldWithCategory>,
       loadingProductsFields: false,
     };
   },
@@ -74,8 +74,6 @@ export default defineComponent({
       );
     }
 
-    this.productsFields = Array(this.products.length).fill(null).map(Object);
-
     // Juntar todas as categorias dos dois produtos
     // Para cada produto
     for (let idx = 0; idx < this.products.length; idx++) {
@@ -88,9 +86,15 @@ export default defineComponent({
           categoria.id
         );
 
+        // Fill the array with the amount of products
+        if (!this.productsFields[categoria.id])
+          this.productsFields[categoria.id] = {
+            category: categoria,
+            products: Array(this.products.length).fill(null).map(Object),
+          };
+
         // Os vários fields da categoria dum produto
-        this.productsFields[idx][categoria.id] = {
-          category: categoria,
+        this.productsFields[categoria.id].products[idx] = {
           fieldValues: fields.data.items,
         };
       }

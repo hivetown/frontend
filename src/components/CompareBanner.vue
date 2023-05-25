@@ -149,13 +149,5 @@ export default {
       this.showModal = true;
     },
   },
-  watch: {
-    products: {
-      immediate: true,
-      handler() {
-        console.log('products changed');
-      },
-    },
-  },
 };
 </script>

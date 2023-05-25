@@ -142,5 +142,7 @@ export interface FieldPossibleValue {
 
 export interface ProductSpecFieldWithCategory {
     category: Category;
-    fieldValues: ProductSpecField[];
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
 }

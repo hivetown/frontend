@@ -5,26 +5,27 @@
   <div>
     <b-spinner v-if="loading" variant="primary" label="Spinning"></b-spinner>
     <div v-else class="d-flex">
-      <!-- Para cada produto -->
-
+      <!-- Para cada categoria -->
       <div
-        v-for="(productFields, index) in productsFields"
+        v-for="(categories, idxCategories) in productsFields"
         class="mb-3 parent"
         style="border-bottom: 1px solid #eeeeee"
-        :key="index"
+        :key="idxCategories"
       >
         <div>
+          <div class="rounded-pill text-center mt-3 mb-3 w-25 prod-category">
+            {{ categories.category.name }}
+          </div>
+
+          <!-- Para cada produto -->
           <div
             class="mb-3"
-            v-for="(categoriesFields, idxCategories) in productFields"
-            :key="idxCategories"
+            v-for="(productFields, idxProduct) in categories.products"
+            :key="idxProduct"
           >
-            <div class="rounded-pill text-center mt-3 mb-3 w-25 prod-category">
-              {{ categoriesFields.category.name }}
-            </div>
-
+            <!-- Para cada field -->
             <div
-              v-for="(field, idxField) in categoriesFields.fieldValues"
+              v-for="(field, idxField) in productFields.fieldValues"
               :key="idxField"
             >
               {{ field.field.name }}: {{ field.value }} {{ field.field.unit }}
@@ -54,7 +55,7 @@ export default defineComponent({
   },
   props: {
     productsFields: {
-      type: [] as PropType<Record<number, ProductSpecFieldWithCategory>[]>,
+      type: Object as PropType<Record<number, ProductSpecFieldWithCategory>>,
       required: true,
     },
     loading: {
@@ -64,13 +65,13 @@ export default defineComponent({
   },
   async beforeMount() {
     // Para cada producto
-    for (let idx = 0; idx < this.productsFields.length; idx++) {
-      if (idx + 1 === 1) {
-        this.dadosProd1.push(this.productsFields[idx]);
-      } else {
-        this.dadosProd2.push(this.productsFields[idx]);
-      }
-    }
+    // for (let idx = 0; idx < this.productsFields.length; idx++) {
+    //   if (idx + 1 === 1) {
+    //     this.dadosProd1.push(this.productsFields[idx]);
+    //   } else {
+    //     this.dadosProd2.push(this.productsFields[idx]);
+    //   }
+    // }
   },
 });
 </script>
