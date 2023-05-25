@@ -4,97 +4,54 @@
   </div>
   <div>
     <b-spinner v-if="loading" variant="primary" label="Spinning"></b-spinner>
-    <div v-else>
-      <!-- {{ productsFields }} -->
+    <div v-else class="d-flex">
       <!-- Para cada produto -->
+
       <div
         v-for="(productFields, index) in productsFields"
         class="mb-3 parent"
         style="border-bottom: 1px solid #eeeeee"
         :key="index"
       >
-        <div class="d-flex" style="gap: 12vh">
-          <!-- Para cada categoria -->
+        <div>
           <div
+            class="mb-3"
             v-for="(categoriesFields, idxCategories) in productFields"
             :key="idxCategories"
           >
-            <b>Category {{ categoriesFields.category.name }}</b>
+            <div class="rounded-pill text-center mt-3 mb-3 w-25 prod-category">
+              {{ categoriesFields.category.name }}
+            </div>
 
-            <!-- Para cada field da categoria -->
             <div
               v-for="(field, idxField) in categoriesFields.fieldValues"
               :key="idxField"
             >
-              <!-- Para cada valor do field da categoria -->
-              {{ field.field.name }}: {{ field.value }}
+              {{ field.field.name }}: {{ field.value }} {{ field.field.unit }}
             </div>
           </div>
-
-          <!-- {{ index }}
-          {{ field[1] }} -->
-          <!-- <div v-for="(fs, fsIndex) in field[1]">
-            <p>{{ index }} {{ field }}</p>
-          </div> -->
         </div>
       </div>
-      <!-- <div
-        v-for="(field, findex) in fieldsTotais"
-        :key="findex"
-        class="mb-3 parent"
-        style="border-bottom: 1px solid #eeeeee"
-      >
-        <div>
-          <div class="d-flex" style="gap: 12vh">
-            <div
-              v-for="(fs, fsIndex) in field[1]"
-              :key="fsIndex"
-              class="mb-4 d-flex gap-4"
-            >
-              <div v-if="Number(fsIndex) === 0">
-                <div
-                  v-for="(f, index) in fs"
-                  style="background-color: ; width: 25vh"
-                  :key="index"
-                >
-                  <span style="font-weight: bold">{{ f.field.name }}:</span>
-                </div>
-              </div>
-              <div class="" style="background-color: ; width: 25vh">
-                <div v-for="f in fs" :key="f.field.id" class="d-flex">
-                  <div style="background-color: ; min-width: 25vh">
-                    {{ f.value }}
-                    {{ f.field.unit }}
-                  </div>
-                  <div v-if="field[0].length < 2">
-                    <div
-                      style="
-                        background-color: ;
-                        width: 25vh;
-                        display: flex;
-                        justify-content: center;
-                      "
-                    >
-                      <span>-</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ProductSpecFieldWithCategory } from '@types';
+import { beforeMain } from '@popperjs/core';
+import { Category, ProductSpecFieldWithCategory } from '@types';
 import { PropType, defineComponent } from 'vue';
 // import { ProductSpecField } from '@/interfaces';
 
 export default defineComponent({
   name: 'ProductSpec',
+  data() {
+    return {
+      // TODO - ver o tipo disto
+      categoriasExistentes: [],
+      dadosProd1: [] as Record<number, ProductSpecFieldWithCategory>[],
+      dadosProd2: [] as Record<number, ProductSpecFieldWithCategory>[],
+    };
+  },
   props: {
     productsFields: {
       type: [] as PropType<Record<number, ProductSpecFieldWithCategory>[]>,
@@ -104,6 +61,16 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+  },
+  async beforeMount() {
+    // Para cada producto
+    for (let idx = 0; idx < this.productsFields.length; idx++) {
+      if (idx + 1 === 1) {
+        this.dadosProd1.push(this.productsFields[idx]);
+      } else {
+        this.dadosProd2.push(this.productsFields[idx]);
+      }
+    }
   },
 });
 </script>
