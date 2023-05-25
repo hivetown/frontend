@@ -18,7 +18,6 @@ var id = 0;
 onMounted(async () => {
   const responseItem = await fetchAuth();
   id = responseItem.data['id'];
-  fetchProducts();
   console.log(id);
 });
 

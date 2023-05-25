@@ -50,7 +50,6 @@
                   class="carousel slide"
                   data-ride="carousel"
                 >
-                  <!-- Indicators -->
                   <div>
                     <div
                       v-if="
@@ -68,10 +67,11 @@
                             style="width: 75px"
                             :src="encomendasImage[1]"
                             :alt="'Image ' + (index + 1)"
-                            v-if="encomendasImage[1].length !== 0"
+                            v-if="
+                              encomendasImage[1] &&
+                              encomendasImage[1].length !== 0
+                            "
                           />
-                          <!--            <img style="width: 75px;" :src="encomendasImage[0][1]" :alt="'Image ' + (index + 1)" v-if="image !== null"> 
--->
                           <p id="texto" v-else>Produtos sem <br />imagem</p>
                         </a>
                       </div>
@@ -330,9 +330,8 @@
 import Swal from 'sweetalert2';
 import { onMounted, ref, watch, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
-import { useStore } from 'vuex';
 import { Consumer, Order } from '../types/interfaces';
-import { fetchAuth } from '../api/auth';
+import { useStore } from '@/store';
 var idU = 0;
 const orders = ref<Order[]>([]);
 const arr = ref([]); // Use a função ref para criar uma referência reativa do array
@@ -344,11 +343,11 @@ const orderIds = ref<number[]>([]); //array com o id das encomendas
 const orderItem = ref<Order[]>([]); //array com os produtos
 const user = ref<Consumer[]>([]);
 const search = ref('');
-
+const user2 = computed(() => store.state.user);
+idU = user2.value['user']['id'];
 onMounted(async () => {
   //TODO por user logado
-  idU = (await fetchAuth()).data.user.id;
-  console.log(idU);
+
   const response = await fetchAllOrders(idU);
   orders.value = response.data;
   orders.value.items.forEach((item) => {
@@ -396,6 +395,7 @@ onMounted(async () => {
     }
     encomendasImage.value.push(encomendaX);
   }
+  console.log(encomendasImage)[1];
 });
 
 function cancelarEncomenda(num) {
@@ -487,7 +487,7 @@ export default {
   methods: {
     onCheckboxChange() {
       let checkboxes = document.querySelectorAll(
-        "input[type='checkbox']:checked"
+        'input[type=\'checkbox\']:checked'
       );
       if (checkboxes.length == 0) {
         var button = document.getElementById('botao');
@@ -508,10 +508,12 @@ export default {
       //console.log(arr);
     },
     async exportSelectedOrders() {
-      idU = (await fetchAuth()).data.user.id;
+      const store = useStore();
+      const user2 = computed(() => store.state.user);
+      idU = user2.value['user']['id'];
       let arr = [];
       let checkboxes = document.querySelectorAll(
-        "input[type='checkbox']:checked"
+        'input[type=\'checkbox\']:checked'
       );
       for (let i = 0; i < checkboxes.length; i++) {
         arr.push(checkboxes[i].value);
