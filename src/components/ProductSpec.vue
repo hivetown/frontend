@@ -4,7 +4,7 @@
   </div>
   <div>
     <b-spinner v-if="loading" variant="primary" label="Spinning"></b-spinner>
-    <div v-else class="d-flex">
+    <div v-else class="">
       <!-- Para cada categoria -->
       <div
         v-for="(categories, idxCategories) in productsFields"
@@ -16,19 +16,64 @@
           <div class="rounded-pill text-center mt-3 mb-3 w-25 prod-category">
             {{ categories.category.name }}
           </div>
-
           <!-- Para cada produto -->
-          <div
+          <!-- <div
             class="mb-3"
             v-for="(productFields, idxProduct) in categories.products"
             :key="idxProduct"
-          >
-            <!-- Para cada field -->
+          > -->
+          <!-- TODO - meter traços nos que não têm nada -->
+          <div class="mb-3 d-flex gap-5">
+            <div>
+              <template v-for="product in categories.products">
+                <template v-for="(fieldValue, idxField) in product.fieldValues">
+                  <div v-if="Object.keys(fieldValue.field).length !== 0">
+                    {{ fieldValue.field.name }}:
+                  </div>
+                </template>
+              </template>
+            </div>
             <div
-              v-for="(field, idxField) in productFields.fieldValues"
-              :key="idxField"
+              v-for="(productFields, idxProduct) in categories.products"
+              :key="idxProduct"
             >
-              {{ field.field.name }}: {{ field.value }} {{ field.field.unit }}
+              <div v-if="Object.keys(productFields).length === 0" class="">
+                <div>
+                  <!-- vazio -->
+                  <div v-for="product in categories.products">
+                    <div
+                      v-for="(fieldValue, idxField) in product.fieldValues"
+                      :key="idxField"
+                    >
+                      -
+                      <!-- {{ fieldValue.field.name }}: {{ fieldValue.value }} -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="">
+                <div
+                  v-for="(fieldValue, idxField) in productFields.fieldValues"
+                  :key="idxField"
+                >
+                  <!-- {{ fieldValue.field.name }} -->
+                  {{ fieldValue.value }}
+                  {{ fieldValue.field.unit }}
+                  <!-- Para cada field -->
+                  <!-- <div
+                    v-for="(field, idxField) in productFields.fieldValues"
+                    :key="idxField"
+                  > -->
+
+                  <!-- <div class="d-flex gap-2">
+                      <div>{{ field.field.name }}:</div>
+                      <div></div>
+                    </div> -->
+                  <!-- {{ field.field.name }}: {{ field.value }}
+                    {{ field.field.unit }} -->
+                  <!-- </div> -->
+                </div>
+              </div>
             </div>
           </div>
         </div>
