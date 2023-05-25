@@ -8,7 +8,7 @@
           <img
             :src="'https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
             class="square-image"
-            alt="Imagem do produto"
+            alt="Imagem da unidade de produção"
           />
         </b-card>
         <b-card-text class="">
