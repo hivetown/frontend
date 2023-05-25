@@ -74,7 +74,7 @@ export default defineComponent({
       );
     }
 
-    this.productsFields = Array(this.products.length).fill({});
+    this.productsFields = Array(this.products.length).fill(null).map(Object);
 
     // Juntar todas as categorias dos dois produtos
     // Para cada produto
@@ -87,7 +87,6 @@ export default defineComponent({
           product.id,
           categoria.id
         );
-        console.log(product.name, '|', categoria.name, '|', fields.data.items);
 
         // Os vários fields da categoria dum produto
         this.productsFields[idx][categoria.id] = {
