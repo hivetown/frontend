@@ -12,7 +12,7 @@
             <span class="p-input-icon-left">
               <i class="pi pi-envelope" />
               <InputText
-                autocomplete="on"
+                autocomplete="email"
                 input-id="formEmail"
                 v-model="formValues.email"
                 :class="{ 'p-invalid': formErrors.email }"
@@ -33,7 +33,7 @@
             <span class="p-input-icon-left">
               <i class="pi pi-lock" />
               <Password
-                autocomplete="on"
+                autocomplete="current-password"
                 input-id="formPassword"
                 v-model="formValues.password"
                 :class="{ 'p-invalid': formErrors.password }"
