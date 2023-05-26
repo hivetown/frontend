@@ -4,7 +4,7 @@
   </div>
   <div>
     <b-spinner v-if="loading" variant="primary" label="Spinning"></b-spinner>
-    <div v-else class="">
+    <div v-else>
       <!-- Para cada categoria -->
       <div
         v-for="(categories, idxCategories) in productsFields"
@@ -12,67 +12,76 @@
         style="border-bottom: 1px solid #eeeeee"
         :key="idxCategories"
       >
-        <div>
-          <div class="rounded-pill text-center mt-3 mb-3 w-25 prod-category">
-            {{ categories.category.name }}
-          </div>
-          <!-- Para cada produto -->
-          <!-- <div
-            class="mb-3"
-            v-for="(productFields, idxProduct) in categories.products"
-            :key="idxProduct"
-          > -->
-          <!-- TODO - meter traços nos que não têm nada -->
-          <div class="mb-3 d-flex gap-5">
-            <div>
-              <template v-for="product in categories.products">
-                <template v-for="(fieldValue, idxField) in product.fieldValues">
-                  <div v-if="Object.keys(fieldValue.field).length !== 0">
-                    {{ fieldValue.field.name }}:
-                  </div>
-                </template>
-              </template>
-            </div>
+        <!-- <div
+          class="rounded-pill text-center mt-3 mb-3 prod-category"
+          style="width: 15%"
+        >
+          {{ categories.category.name }}
+        </div> -->
+        <p class="fw-bold">Categoria: {{ categories.category.name }}</p>
+        <!-- Fields -->
+        <div class="mb-3 d-flex gap-5">
+          <!-- Nome dos fields -->
+          <!-- Caso só um dos produtos tenha valores -->
+          <div
+            style="width: 25%"
+            v-if="
+              imprime(
+                Object.keys(categories.products).length,
+                categories.products
+              )
+            "
+          >
             <div
               v-for="(productFields, idxProduct) in categories.products"
               :key="idxProduct"
             >
-              <div v-if="Object.keys(productFields).length === 0" class="">
-                <div>
-                  <!-- vazio -->
-                  <div v-for="product in categories.products">
-                    <div
-                      v-for="(fieldValue, idxField) in product.fieldValues"
-                      :key="idxField"
-                    >
-                      -
-                      <!-- {{ fieldValue.field.name }}: {{ fieldValue.value }} -->
-                    </div>
-                  </div>
-                </div>
+              <div
+                v-for="(fieldValue, idxField) in productFields.fieldValues"
+                :key="idxField"
+              >
+                <sapn>{{ fieldValue.field.name }}:</sapn>
               </div>
-              <div v-else class="">
+            </div>
+          </div>
+          <!-- Caso ambos os produtos tenham valores -->
+          <div v-else style="width: 25%">
+            <div
+              v-for="(productFields, idxProduct) in categories.products[0]
+                .fieldValues"
+              :key="idxProduct"
+            >
+              <span>{{ productFields.field.name }}:</span>
+            </div>
+          </div>
+
+          <!-- Dados dos fields -->
+          <!-- Para cada categoria -->
+          <div
+            style="width: 15%"
+            v-for="(productFields, idxProduct) in categories.products"
+            :key="idxProduct"
+          >
+            <!-- Se não tiver valores -->
+            <div v-if="Object.keys(productFields).length === 0" class="">
+              <div v-for="(product, idp) in categories.products" :key="idp">
                 <div
-                  v-for="(fieldValue, idxField) in productFields.fieldValues"
+                  v-for="(fieldValue, idxField) in product.fieldValues"
                   :key="idxField"
                 >
-                  <!-- {{ fieldValue.field.name }} -->
-                  {{ fieldValue.value }}
-                  {{ fieldValue.field.unit }}
-                  <!-- Para cada field -->
-                  <!-- <div
-                    v-for="(field, idxField) in productFields.fieldValues"
-                    :key="idxField"
-                  > -->
-
-                  <!-- <div class="d-flex gap-2">
-                      <div>{{ field.field.name }}:</div>
-                      <div></div>
-                    </div> -->
-                  <!-- {{ field.field.name }}: {{ field.value }}
-                    {{ field.field.unit }} -->
-                  <!-- </div> -->
+                  <span>-</span>
                 </div>
+              </div>
+            </div>
+            <!-- Se tiver valores -->
+            <div v-else>
+              <div
+                v-for="(fieldValue, idxField) in productFields.fieldValues"
+                :key="idxField"
+              >
+                <span class="grey-txt"
+                  >{{ fieldValue.value }} {{ fieldValue.field.unit }}</span
+                >
               </div>
             </div>
           </div>
@@ -83,21 +92,11 @@
 </template>
 
 <script lang="ts">
-import { beforeMain } from '@popperjs/core';
-import { Category, ProductSpecFieldWithCategory } from '@types';
+import { ProductSpecFieldWithCategory, ProductSpecField } from '@types';
 import { PropType, defineComponent } from 'vue';
-// import { ProductSpecField } from '@/interfaces';
 
 export default defineComponent({
   name: 'ProductSpec',
-  data() {
-    return {
-      // TODO - ver o tipo disto
-      categoriasExistentes: [],
-      dadosProd1: [] as Record<number, ProductSpecFieldWithCategory>[],
-      dadosProd2: [] as Record<number, ProductSpecFieldWithCategory>[],
-    };
-  },
   props: {
     productsFields: {
       type: Object as PropType<Record<number, ProductSpecFieldWithCategory>>,
@@ -108,15 +107,21 @@ export default defineComponent({
       required: true,
     },
   },
-  async beforeMount() {
-    // Para cada producto
-    // for (let idx = 0; idx < this.productsFields.length; idx++) {
-    //   if (idx + 1 === 1) {
-    //     this.dadosProd1.push(this.productsFields[idx]);
-    //   } else {
-    //     this.dadosProd2.push(this.productsFields[idx]);
-    //   }
-    // }
+  methods: {
+    imprime(tamanho: number, produto: { fieldValues: ProductSpecField[] }[]) {
+      let temParaOs2 = false as boolean;
+      for (let i = 0; i < tamanho; i++) {
+        if (!temParaOs2) {
+          if (Object.keys(produto[i]).length != 0) {
+            temParaOs2 = true;
+          }
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    },
   },
 });
 </script>
