@@ -460,6 +460,27 @@ function exportSelectedOrders() {
   return exportOrders(idU, arr);
 }
 
+function onCheckboxChange() {
+  let checkboxes = document.querySelectorAll('input[type=\'checkbox\']:checked');
+  if (checkboxes.length == 0) {
+    var button = document.getElementById('botao');
+    button.style.display = 'none';
+  } else {
+    var button = document.getElementById('botao');
+    button.style.display = 'block';
+  }
+}
+function rs(totalItems) {
+  let arr = [];
+  var a = 0;
+  for (let i = 0; i < totalItems; i++) {
+    arr.push(i);
+    a = a + 1;
+  }
+  arr.reverse();
+  //console.log(arr);
+}
+
 function cancelarEncomendaImpossivel() {
   // exibe uma mensagem de alerta para o usuário
   Swal.fire({
@@ -470,7 +491,6 @@ function cancelarEncomendaImpossivel() {
   });
 }
 </script>
-
 <script lang="ts">
 import { exportOrders } from '../api/orders';
 import { MDBCarousel } from 'mdb-vue-ui-kit';
@@ -481,7 +501,6 @@ const orders = ref<Order[]>([]);
 const novo = ref<number[]>([]);
 import { fetchAuth } from '../api/auth';
 var idU = 0;
-
 export default {
   components: { MDBCarousel, Carousel, Slide },
 
@@ -493,30 +512,6 @@ export default {
   computed: {
     isExportButtonVisible() {
       return this.selectedOrders.length > 0;
-    },
-  },
-  methods: {
-    onCheckboxChange() {
-      let checkboxes = document.querySelectorAll(
-        'input[type=\'checkbox\']:checked'
-      );
-      if (checkboxes.length == 0) {
-        var button = document.getElementById('botao');
-        button.style.display = 'none';
-      } else {
-        var button = document.getElementById('botao');
-        button.style.display = 'block';
-      }
-    },
-    async rs(totalItems) {
-      let arr = [];
-      var a = 0;
-      for (let i = 0; i < totalItems; i++) {
-        arr.push(i);
-        a = a + 1;
-      }
-      arr.reverse();
-      //console.log(arr);
     },
   },
 };
