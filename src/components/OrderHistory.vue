@@ -72,7 +72,7 @@
                               encomendasImage[1].length !== 0
                             "
                           />
-                          <p id="texto" v-else>Produtos sem <br />imagem</p>
+                          <p class="texto" v-else>Produtos sem <br />imagem</p>
                         </a>
                       </div>
                     </div>
@@ -104,7 +104,7 @@
                               :alt="'Image ' + (index + 1)"
                               v-if="image !== null"
                             />
-                            <p id="texto" v-else>Produto sem <br />imagem</p>
+                            <p class="texto" v-else>Produto sem <br />imagem</p>
                           </a>
                         </div>
                       </div>
@@ -125,7 +125,7 @@
 
           <td>
             <a
-              id="texto"
+              class="texto"
               :href="'/encomenda/id' + orders?.items[num - 1]?.id"
               style="text-decoration: none; color: black"
               >{{
@@ -145,12 +145,12 @@
               "
               style="display: inline-flex"
             >
-              <i id="texto" class="bi bi-check-all"></i>
+              <i class="bi bi-check-all"></i>
               <a
                 :href="'/encomenda/id' + orders?.items[num - 1]?.id"
                 style="text-decoration: none; color: black"
               >
-                <p id="texto">Entregue</p></a
+                <p class="texto">Entregue</p></a
               >
             </div>
             <div
@@ -161,12 +161,12 @@
               "
               style="display: inline-flex"
             >
-              <i id="texto" class="bi bi-box-seam"></i>
+              <i class="bi bi-box-seam"></i>
               <a
                 :href="'/encomenda/id' + orders?.items[num - 1]?.id"
                 style="text-decoration: none; color: black"
               >
-                <p id="texto">Em processamento</p></a
+                <p class="texto">Em processamento</p></a
               >
             </div>
             <div
@@ -177,11 +177,11 @@
               "
               style="display: inline-flex"
             >
-              <i id="texto" class="bi bi-cash-coin"></i>
+              <i class="bi bi-cash-coin"></i>
               <a
                 :href="'/encomenda/id' + orders?.items[num - 1]?.id"
                 style="text-decoration: none; color: black"
-                ><p id="texto">Pago</p>
+                ><p class="texto">Pago</p>
               </a>
             </div>
             <div
@@ -192,11 +192,11 @@
               "
               style="display: inline-flex"
             >
-              <i id="texto" class="bi bi-x-lg"></i>
+              <i class="bi bi-x-lg"></i>
               <a
                 :href="'/encomenda/id' + orders?.items[num - 1]?.id"
                 style="text-decoration: none; color: black"
-                ><p id="texto">Cancelada</p></a
+                ><p class="texto">Cancelada</p></a
               >
             </div>
             <div
@@ -207,11 +207,11 @@
               "
               style="display: inline-flex"
             >
-              <i id="texto" class="bi bi-truck"></i>
+              <i class="bi bi-truck"></i>
               <a
                 :href="'/encomenda/id' + orders?.items[num - 1]?.id"
                 style="text-decoration: none; color: black"
-                ><p id="texto">Em andamento</p></a
+                ><p class="texto">Em andamento</p></a
               >
             </div>
             <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
@@ -283,7 +283,7 @@
             <a
               :href="'/encomenda/id' + orders?.items[num - 1]?.id"
               style="text-decoration: none; color: black"
-              id="texto"
+              class="texto"
               >{{
                 orders['items'] && orders['items'][num - 1]
                   ? orders['items'][num - 1]['orderDate'].substring(0, 10)
@@ -295,7 +295,7 @@
             <a
               :href="'/encomenda/id' + orders?.items[num - 1]?.id"
               style="text-decoration: none; color: black"
-              id="texto"
+              class="texto"
               >{{
                 orders['items'] && orders['items'][num - 1]
                   ? orders['items'][num - 1]['totalPrice']
@@ -449,6 +449,16 @@ function cancelarEncomenda(num) {
     }
   });
 }
+function exportSelectedOrders() {
+  idU = user2.value['user']['id'];
+  let arr = [];
+  let checkboxes = document.querySelectorAll('input[type=\'checkbox\']:checked');
+  for (let i = 0; i < checkboxes.length; i++) {
+    arr.push(checkboxes[i].value);
+  }
+  //TODO trocar para user logado
+  return exportOrders(idU, arr);
+}
 
 function cancelarEncomendaImpossivel() {
   // exibe uma mensagem de alerta para o usuário
@@ -465,6 +475,7 @@ function cancelarEncomendaImpossivel() {
 import { exportOrders } from '../api/orders';
 import { MDBCarousel } from 'mdb-vue-ui-kit';
 import { Component, Vue } from 'vue-property-decorator';
+import { useStore } from '@/store';
 import { Carousel, Slide } from 'vue-carousel';
 const orders = ref<Order[]>([]);
 const novo = ref<number[]>([]);
@@ -507,20 +518,6 @@ export default {
       arr.reverse();
       //console.log(arr);
     },
-    async exportSelectedOrders() {
-      const store = useStore();
-      const user2 = computed(() => store.state.user);
-      idU = user2.value['user']['id'];
-      let arr = [];
-      let checkboxes = document.querySelectorAll(
-        'input[type=\'checkbox\']:checked'
-      );
-      for (let i = 0; i < checkboxes.length; i++) {
-        arr.push(checkboxes[i].value);
-      }
-      //TODO trocar para user logado
-      return await exportOrders(idU, arr);
-    },
   },
 };
 </script>
@@ -529,7 +526,8 @@ export default {
 #morada2 {
   font-size: 11px;
 }
-#texto,
+.texto,
+i,
 #morada {
   font-size: 13px;
 }
