@@ -8,7 +8,6 @@ import Cart from "./views/Cart.vue";
 import Product from "./views/Product.vue";
 import User from "./views/User.vue";
 import Login from "./views/Login.vue";
-import Registration from "./views/Registration.vue";
 import Notifications from "./views/Notifications.vue";
 import AuthConsumer from "./components/AuthConsumer.vue";
 import { auth } from "./components/firebase";
@@ -64,11 +63,7 @@ const routes = [
         name: "Login",
         component: Login,
     },
-    {
-        path: "/registration",
-        name: "Registration",
-        component: Registration,
-    },
+    
     {
         path: "/authconsumer",
         name: "AuthConsumer",
