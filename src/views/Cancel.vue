@@ -4,14 +4,16 @@
   </body>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue';
 import { onMounted, ref } from 'vue';
 import Swal from 'sweetalert2';
 import { cancelPayment } from '../api/consumers';
-import { fetchAuth } from '../api/auth';
+import { useStore } from '@/store';
 var idU = 0;
-
+const store = useStore();
+const user2 = computed(() => store.state.user);
+idU = user2.value['user']['id'];
 onMounted(async () => {
-  idU = (await fetchAuth()).data.user.id;
   console.log(idU);
   let currentUrl = window.location.href;
   const pathSegments = currentUrl.split('/');

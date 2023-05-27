@@ -83,6 +83,13 @@ export interface Address {
     longitude: number;
 }
 
+export interface Order {
+    id: number;
+    items: Product[];
+    shippingAddress: Address;
+    consumer?: User;
+}
+
 export interface Image {
     id: number;
     name: string;
