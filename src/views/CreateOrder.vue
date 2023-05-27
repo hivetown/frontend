@@ -111,8 +111,6 @@ import {
   getCart,
   getProduct,
 } from '../api/cart.ts';
-import { fetchAuth } from '../api/auth';
-
 import { useStore } from '@/store';
 var idU = 0;
 const store = useStore();
@@ -125,8 +123,6 @@ const item = ref<Order[]>([]);
 const items = ref<Order[]>([]);
 
 onMounted(async () => {
-  // idU = (await fetchAuth()).data.user.id;
-  console.log(idU + 'ID YA');
   //TODO trocar pelo id do user logado
   const addresses = await getAddresses(idU);
   console.log(addresses.data.items);
@@ -144,6 +140,7 @@ import AddAddress from '../components/AddAddress.vue';
 import { fetchAuth } from '../api/auth';
 
 var idU = 0;
+//aqui nao conseggui usar nao sei pq
 //const store2 = useStore();
 //const user3 = computed(() => store2.state.user);
 //idU = user3.value['user']['id'];

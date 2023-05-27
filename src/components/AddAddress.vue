@@ -171,11 +171,10 @@
 </template>
 
 <script lang="ts">
-import { onMounted, computed } from 'vue';
+import { computed } from 'vue';
 import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { Address } from '../types/interfaces';
-import { fetchAuth } from '../api/auth';
 import { useStore } from '@/store';
 var idU = 0;
 
@@ -214,14 +213,7 @@ export default {
       latitude: '',
     };
   },
-  created() {
-    // Resto do seu código de inicialização e lógica aqui
-    console.log(this.idU); // Exemplo de uso da variável idU no contexto do componente
-  },
-  async mounted() {
-    // this.idU = (await fetchAuth()).data.user.id; // Atualiza o valor de idU
-    console.log(this.idU);
-  },
+
   methods: {
     handleSubmit() {
       const {
@@ -253,7 +245,6 @@ export default {
         longitude: longitude ? parseFloat(this.$refs.longitude.value) : 0,
       };
 
-      console.log(this.address);
       if (!this.name) {
         this.showError('Por favor, preencha o campo "Nome".');
         return;
