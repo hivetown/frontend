@@ -104,7 +104,7 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
 import CartItem from '@/components/CartItem.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import {
   getAddresses,
   postOrderPayment,
@@ -112,7 +112,12 @@ import {
   getProduct,
 } from '../api/cart.ts';
 import { fetchAuth } from '../api/auth';
+
+import { useStore } from '@/store';
 var idU = 0;
+const store = useStore();
+const user2 = computed(() => store.state.user);
+idU = user2.value['user']['id'];
 const address2 = ref<Order[]>([]); //array com os produtos
 const collapsed = ref(true);
 const cart = ref<Order[]>([]); //array com os produtos
@@ -120,8 +125,8 @@ const item = ref<Order[]>([]);
 const items = ref<Order[]>([]);
 
 onMounted(async () => {
-  idU = (await fetchAuth()).data.user.id;
-  console.log(idU);
+  // idU = (await fetchAuth()).data.user.id;
+  console.log(idU + 'ID YA');
   //TODO trocar pelo id do user logado
   const addresses = await getAddresses(idU);
   console.log(addresses.data.items);
@@ -137,10 +142,13 @@ onMounted(async () => {
 <script lang="ts">
 import AddAddress from '../components/AddAddress.vue';
 import { fetchAuth } from '../api/auth';
+
 var idU = 0;
+//const store2 = useStore();
+//const user3 = computed(() => store2.state.user);
+//idU = user3.value['user']['id'];
 onMounted(async () => {
   idU = (await fetchAuth()).data.user.id;
-  console.log(idU);
 });
 export default {
   components: { AddAddress },

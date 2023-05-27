@@ -171,11 +171,12 @@
 </template>
 
 <script lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { Address } from '../types/interfaces';
 import { fetchAuth } from '../api/auth';
+import { useStore } from '@/store';
 var idU = 0;
 
 export default {
@@ -185,9 +186,18 @@ export default {
       required: true,
     },
   },
+  setup() {
+    const store = useStore();
+    const user2 = computed(() => store.state.user);
+    const idU = computed(() => user2.value?.user?.id || 0);
+
+    return {
+      idU,
+    };
+  },
   data() {
     return {
-      idU: 0, // Valor inicial de idU
+      idU: idU, // Valor inicial de idU
       address: {} as Address,
       isChecked: false, // Inicialmente o checkbox não estará selecionado
       name: '', // Propriedade para validar o campo "Nome"
@@ -204,8 +214,12 @@ export default {
       latitude: '',
     };
   },
+  created() {
+    // Resto do seu código de inicialização e lógica aqui
+    console.log(this.idU); // Exemplo de uso da variável idU no contexto do componente
+  },
   async mounted() {
-    this.idU = (await fetchAuth()).data.user.id; // Atualiza o valor de idU
+    // this.idU = (await fetchAuth()).data.user.id; // Atualiza o valor de idU
     console.log(this.idU);
   },
   methods: {
@@ -329,6 +343,7 @@ export default {
 
       //adiciona o novo endereco
       //TODO trocar para user logado
+
       postNewAdress(this.idU, this.address)
         .then((response) => {
           Swal.fire({
