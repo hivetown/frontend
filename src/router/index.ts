@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import ConsentPage from '@/views/ConsentPage.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -67,6 +68,11 @@ const routes = [
         name: 'Registration',
         component: Register,
     },
+    {
+        path: '/consent',
+        name: 'ConsentManagement',
+        component: ConsentPage,
+    },
 ];
 
 const router = createRouter({
@@ -118,4 +124,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-
