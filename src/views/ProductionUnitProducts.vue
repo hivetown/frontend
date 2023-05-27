@@ -2,65 +2,79 @@
   <div class="container">
     <h1 class="mb-5">Produtos da UP: {{ $route.params.unitName }}</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div v-for="product in unitProducts.items" :key="product.id" class="col">
-        <b-card class="prod-card position-relative">
-          <img
-            :src="product.productSpec.images[0].url"
-            class="square-image"
-            alt="Imagem do produto"
-          />
-        </b-card>
-        <b-card-text class="">
-          <div>
-            <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">
-              {{ product.category }}
-            </div>
-            <h5>{{ product.productSpec.name }}</h5>
-            <p>UP: {{ product.productionUnit.name }}</p>
-            <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
-            <div class="d-flex gap-2">
-              <h4 class="mb-3">{{ product.currentPrice }}€</h4>
-              <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
-            </div>
-            <div class="d-flex gap-2">
-              <router-link :to="'/product/edit/' + product.id">
+      <template
+        v-if="
+          unitProducts && unitProducts.items && unitProducts.items.length > 0
+        "
+      >
+        <div
+          v-for="product in unitProducts.items"
+          :key="product.id"
+          class="col"
+        >
+          <b-card class="prod-card position-relative">
+            <img
+              :src="product.productSpec.images[0].url"
+              class="square-image"
+              alt="Imagem do produto"
+            />
+          </b-card>
+          <b-card-text class="">
+            <div>
+              <div
+                class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
+              >
+                {{ product.category }}
+              </div>
+              <h5>{{ product.productSpec.name }}</h5>
+              <p>UP: {{ product.productionUnit.name }}</p>
+              <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
+              <div class="d-flex gap-2">
+                <h4 class="mb-3">{{ product.currentPrice }}€</h4>
+              </div>
+              <div class="d-flex gap-2">
+                <router-link :to="'/product/edit/' + product.id">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary circle-btn"
+                    v-b-tooltip.hover
+                    title="Editar produto"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </router-link>
                 <button
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
                   v-b-tooltip.hover
-                  title="Editar produto"
+                  title="Remover produto"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-trash"></i>
                 </button>
-              </router-link>
-              <button
-                type="button"
-                class="btn btn-outline-secondary circle-btn"
-                v-b-tooltip.hover
-                title="Remover produto"
-              >
-                <i class="bi bi-trash"></i>
-              </button>
+              </div>
             </div>
-          </div>
-        </b-card-text>
-      </div>
-      <div
-        class=""
-        style="
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: center;
-        "
-      >
-        <Pagination
-          v-if="allUnitProducts && allUnitProducts.data"
-          :total-rows="allUnitProducts.data.totalItems"
-          :per-page="allUnitProducts.data.pageSize"
-          :current-page="allUnitProducts.data.page"
+          </b-card-text>
+        </div>
+        <div
+          class=""
+          style="
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+          "
         >
-          ></Pagination
-        >
+          <Pagination
+            v-if="allUnitProducts && allUnitProducts.data"
+            :total-rows="allUnitProducts.data.totalItems"
+            :per-page="allUnitProducts.data.pageSize"
+            :current-page="allUnitProducts.data.page"
+          >
+            ></Pagination
+          >
+        </div>
+      </template>
+      <div v-else>
+        <p>Esta Unidade de Produção ainda não tem produtos associados.</p>
       </div>
     </div>
   </div>

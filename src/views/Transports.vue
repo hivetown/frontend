@@ -2,93 +2,106 @@
   <div class="container">
     <h1 class="mb-5">Veículos de Transporte</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div
-        v-for="transport in transportVehicles.items"
-        :key="transport.id"
-        class="col"
+      <template
+        v-if="
+          transportVehicles &&
+          transportVehicles.items &&
+          transportVehicles.items.length > 0
+        "
       >
-        <!-- <div v-for="product in products" :key="product.id" class="col"> -->
-        <b-card class="prod-card position-relative">
-          <!-- <img
+        <div
+          v-for="transport in transportVehicles.items"
+          :key="transport.id"
+          class="col"
+        >
+          <!-- <div v-for="product in products" :key="product.id" class="col"> -->
+          <b-card class="prod-card position-relative">
+            <!-- <img
             :src="product.productSpec.images[0].url"
             class="square-image"
             alt="Imagem do produto"
           /> -->
-          <img
-            :src="transport.image.url"
-            class="square-image"
-            alt="Imagem do veículo"
-          />
-        </b-card>
-        <b-card-text class="">
-          <div>
-            <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">
-              {{ transport.licensePlate }}
-            </div>
-            <p>
-              <span
-                :style="{
-                  color: transport.status === 'AVAILABLE' ? 'green' : 'red',
-                }"
+            <img
+              :src="transport.image.url"
+              class="square-image"
+              alt="Imagem do veículo"
+            />
+          </b-card>
+          <b-card-text class="">
+            <div>
+              <div
+                class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
               >
-                {{
-                  transport.status === 'AVAILABLE'
-                    ? 'Disponível'
-                    : 'Indisponível'
-                }}
-              </span>
-            </p>
-            <h5>UP:</h5>
-            <p>
-              {{ transport.productionUnit.name }}
-            </p>
+                {{ transport.licensePlate }}
+              </div>
+              <p>
+                <span
+                  :style="{
+                    color: transport.status === 'AVAILABLE' ? 'green' : 'red',
+                  }"
+                >
+                  {{
+                    transport.status === 'AVAILABLE'
+                      ? 'Disponível'
+                      : 'Indisponível'
+                  }}
+                </span>
+              </p>
+              <h5>UP:</h5>
+              <p>
+                {{ transport.productionUnit.name }}
+              </p>
 
-            <!-- <p>{{ transport.address.county }}</p>
+              <!-- <p>{{ transport.address.county }}</p>
             <p class="grey-txt mt-3">
               {{ transport.address.floor }}, {{ transport.address.door }}
             </p>
             <div class="d-flex gap-2">
               <h4 class="mb-3">{{ transport.address.floor }}º Andar</h4>
             </div> -->
-            <div class="d-flex gap-2">
-              <router-link :to="'/product/edit/' + transport.id">
+              <div class="d-flex gap-2">
+                <router-link :to="'/product/edit/' + transport.id">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary circle-btn"
+                    v-b-tooltip.hover
+                    title="Editar produto"
+                  >
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                </router-link>
                 <button
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
                   v-b-tooltip.hover
-                  title="Editar produto"
+                  title="Remover produto"
                 >
-                  <i class="bi bi-pencil"></i>
+                  <i class="bi bi-trash"></i>
                 </button>
-              </router-link>
-              <button
-                type="button"
-                class="btn btn-outline-secondary circle-btn"
-                v-b-tooltip.hover
-                title="Remover produto"
-              >
-                <i class="bi bi-trash"></i>
-              </button>
+              </div>
             </div>
-          </div>
-        </b-card-text>
-      </div>
-      <div
-        class=""
-        style="
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: center;
-        "
-      >
-        <Pagination
-          v-if="allTransportsData && allTransportsData.data"
-          :total-rows="allTransportsData.data.totalItems"
-          :per-page="allTransportsData.data.pageSize"
-          :current-page="allTransportsData.data.page"
+          </b-card-text>
+        </div>
+        <div
+          class=""
+          style="
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+          "
         >
-          ></Pagination
-        >
+          <Pagination
+            v-if="allTransportsData && allTransportsData.data"
+            :total-rows="allTransportsData.data.totalItems"
+            :per-page="allTransportsData.data.pageSize"
+            :current-page="allTransportsData.data.page"
+          >
+            ></Pagination
+          >
+        </div>
+      </template>
+      <div v-else>
+        <p>Ainda não tem veículos registados.</p>
       </div>
     </div>
   </div>

@@ -2,78 +2,91 @@
   <div class="container">
     <h1 class="mb-5">Unidades de Produção</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <div v-for="unit in productionUnits.items" :key="unit.id" class="col">
-        <!-- <div v-for="product in products" :key="product.id" class="col"> -->
-        <router-link
-          :to="{
-            name: 'ProductionUnitProducts',
-            params: { producerId: 2, unitId: unit.id, unitName: unit.name },
-          }"
-        >
-          <b-card class="prod-card position-relative">
-            <img
-              :src="'https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
-              class="square-image"
-              alt="Imagem da unidade de produção"
-            />
-          </b-card>
-          <b-card-text class="">
-            <div>
-              <div
-                class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
-              >
-                {{ unit.id }}
-              </div>
-              <h5>{{ unit.address.district }}</h5>
-              <p>{{ unit.address.city }}</p>
-              <p>{{ unit.address.county }}</p>
-              <p class="grey-txt mt-3">
-                {{ unit.address.floor }}, {{ unit.address.door }}
-              </p>
-              <div class="d-flex gap-2">
-                <h4 class="mb-3">{{ unit.address.floor }}º Andar</h4>
-                <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
-              </div>
-              <div class="d-flex gap-2">
-                <router-link :to="'/product/edit/' + unit.id">
+      <template
+        v-if="
+          productionUnits &&
+          productionUnits.items &&
+          productionUnits.items.length > 0
+        "
+      >
+        <div v-for="unit in productionUnits.items" :key="unit.id" class="col">
+          <router-link
+            :to="{
+              name: 'ProductionUnitProducts',
+              params: {
+                producerId: unit.producer,
+                unitId: unit.id,
+                unitName: unit.name,
+              },
+            }"
+          >
+            <b-card class="prod-card position-relative">
+              <img
+                :src="'https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
+                class="square-image"
+                alt="Imagem da unidade de produção"
+              />
+            </b-card>
+            <b-card-text class="">
+              <div>
+                <div
+                  class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
+                >
+                  {{ unit.id }}
+                </div>
+                <h5>{{ unit.address.district }}</h5>
+                <p>{{ unit.address.city }}</p>
+                <p>{{ unit.address.county }}</p>
+                <p class="grey-txt mt-3">
+                  {{ unit.address.floor }}, {{ unit.address.door }}
+                </p>
+                <div class="d-flex gap-2">
+                  <h4 class="mb-3">{{ unit.address.floor }}º Andar</h4>
+                </div>
+                <div class="d-flex gap-2">
+                  <router-link :to="'/product/edit/' + unit.id">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary circle-btn"
+                      v-b-tooltip.hover
+                      title="Editar produto"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </router-link>
                   <button
                     type="button"
                     class="btn btn-outline-secondary circle-btn"
                     v-b-tooltip.hover
-                    title="Editar produto"
+                    title="Remover produto"
                   >
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-trash"></i>
                   </button>
-                </router-link>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary circle-btn"
-                  v-b-tooltip.hover
-                  title="Remover produto"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
+                </div>
               </div>
-            </div>
-          </b-card-text>
-        </router-link>
-      </div>
-      <div
-        class=""
-        style="
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: center;
-        "
-      >
-        <Pagination
-          v-if="allUnitsData && allUnitsData.data"
-          :total-rows="allUnitsData.data.totalItems"
-          :per-page="allUnitsData.data.pageSize"
-          :current-page="allUnitsData.data.page"
+            </b-card-text>
+          </router-link>
+        </div>
+        <div
+          class=""
+          style="
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+          "
         >
-          ></Pagination
-        >
+          <Pagination
+            v-if="allUnitsData && allUnitsData.data"
+            :total-rows="allUnitsData.data.totalItems"
+            :per-page="allUnitsData.data.pageSize"
+            :current-page="allUnitsData.data.page"
+          >
+            ></Pagination
+          >
+        </div>
+      </template>
+      <div v-else>
+        <p>Ainda não tem Unidades de Produção registadas.</p>
       </div>
     </div>
   </div>
@@ -107,7 +120,7 @@ export default {
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      const allUnitsData = await fetchAllUnits(2, page, pageSize);
+      const allUnitsData = await fetchAllUnits(id, page, pageSize);
 
       console.log('allUnitsData:', allUnitsData);
 
