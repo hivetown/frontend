@@ -8,9 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import Navbar from '@/components/Navbar.vue';
-import Search from '@/components/Search.vue';
-import Footer from '@/components/Footer.vue';
+import Navbar from "@/components/Navbar.vue";
+import Search from "@/components/Search.vue";
+import Footer from "@/components/Footer.vue";
 </script>
 
 <style>
@@ -18,7 +18,7 @@ import Footer from '@/components/Footer.vue';
   /* font-family: 'Roboto', sans-serif; */
   /* font-family: 'DM Serif Display', serif; */
   color: #232323;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .grey-txt {
