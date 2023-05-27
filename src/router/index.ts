@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import Notifications from '@/views/Notifications.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -42,6 +43,11 @@ const routes = [
         path: '/carrinho',
         name: 'Cart',
         component: Cart,
+    },
+    {
+        path: '/notifications',
+        name: 'Notifications',
+        component: Notifications,
     },
     // O link para o produto deveria ter o seu nome ou id
     {
@@ -118,4 +124,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-

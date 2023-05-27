@@ -43,11 +43,11 @@ export interface User {
     vat: string;
     role?: Role;
     image?: Image;
-    type: 'PRODUCER' | 'CONSUMER';
+    type: "PRODUCER" | "CONSUMER";
 }
 
 export interface Producer {
-    user: User & { type: 'PRODUCER' };
+    user: User & { type: "PRODUCER" };
     imageShowcase: Image[];
 }
 
@@ -61,7 +61,7 @@ export interface Category {
 }
 
 export interface Consumer {
-    user: User & { type: 'CONSUMER' };
+    user: User & { type: "CONSUMER" };
 }
 
 export interface CreateConsumer {

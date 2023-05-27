@@ -8,113 +8,130 @@
 
       <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
 
-			<b-collapse id="nav-collapse" is-nav>
-				<b-navbar-nav class="ms-auto mt-4 mb-3">
-					<div  @click="showModalFunction" class="d-flex nav-items-left">
-						<div class="d-flex"><!--todo por se user logado-->
-							<b-avatar
-@click="showModalFunction" class="nav-item position-relative" 
-							style="background-color: #f3f3f3 !important; 
-							box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ms-auto mt-4 mb-3">
+          <div @click="showModalFunction" class="d-flex nav-items-left">
+            <div class="d-flex">
+              <!--todo por se user logado-->
+              <b-avatar
+                @click="showModalFunction"
+                class="nav-item position-relative"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                "
+              >
+                <i
+                  class="bi bi-bell"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <!--numero de notificacoes-->
+              <b-badge
+                @click="showModalFunctions"
+                variant="danger"
+                class="rounded-circle position-absolute"
+                style="
+                  top: 30px;
+                  right: 535px;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                "
+                >{{ orderItem["totalItems"] }}</b-badge
+              >
+              <Modal v-if="showModal" />
+              <p
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+              >
+                Notificações
+              </p>
+              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+            </div>
+            <div class="d-flex">
+              <b-avatar
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                "
+              >
+                <i
+                  class="bi bi-heart mx-auto"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <router-link
+                to="/favoritos"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+                >Favoritos</router-link
+              >
+              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+            </div>
+            <div class="d-flex">
+              <b-avatar
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                "
+              >
+                <i
+                  class="bi bi-cart"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <router-link
+                to="/carrinho"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+                >Carrinho</router-link
+              >
+              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
+            </div>
 
-								<i class="bi bi-bell" style="color: #164A41" font-scale="1.5"></i>
-							</b-avatar>
-							<!--numero de notificacoes-->
-							<b-badge   @click="showModalFunctions" variant="danger" class="rounded-circle position-absolute"  style="top: 30px; right: 535px; width:20px; height: 20px; border-radius: 50%;">3</b-badge>
-    						<Modal v-if="showModal"  />
-							<p class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Notificações</p>
-							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
-						</div>
-						<div class="d-flex">
-							<b-avatar 
-								class="nav-item" 
-								style="background-color: #f3f3f3 !important; 
-								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								<i class="bi bi-heart mx-auto" style="color: #164A41" font-scale="1.5"></i>
-							</b-avatar>
-							<router-link to="/favoritos" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Favoritos</router-link>
-							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
-						</div>
-						<div class="d-flex">
-							<b-avatar 
-								class="nav-item" 
-								style="background-color: #f3f3f3 !important; 
-								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
-							</b-avatar>
-							<router-link to="/carrinho" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Carrinho</router-link>
-							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
-						</div>
-						
-						<div class="d-flex" v-if="!$store.state.user">
-							<b-avatar>
-								class="nav-item" 
-								style="background-color: #f3f3f3 !important; 
-								box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-								<i class="bi bi-cart" style="color: #164A41;" font-scale="1.5"></i>
-							</b-avatar>
-							<router-link to="/login" class="p-2 grey-txt text-decoration-none" style="font-weight: 500;">Login</router-link>
-							<!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
-						</div>
-
-					</div>
-
-					<div class="d-flex nav-items-right" v-if="$store.state.user">
-						<router-link to="/conta">
-							<b-avatar class="nav-item" src="https://placekitten.com/320/320" style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;">
-									<!-- TODO badges das notificações  -->
-							</b-avatar> 
-						</router-link>
-						<b-nav-item-dropdown right>
-							<b-dropdown-item href="#">Definições</b-dropdown-item>
-							<b-dropdown-item @click="$store.dispatch('logout')" href="#">Terminar Sessão</b-dropdown-item>
-						</b-nav-item-dropdown>
-					</div>
-				</b-navbar-nav>
-			</b-collapse>
-		</b-navbar>
-	</div>
-
-            <div class="d-flex" v-if="!user">
+            <div class="d-flex" v-if="!$store.state.user">
+              <b-avatar
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                "
+              >
+                <i
+                  class="bi bi-cart"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
               <router-link
                 to="/login"
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500"
+                >Login</router-link
               >
-                <b-avatar
-                  class="nav-item"
-                  style="
-                    background-color: #f3f3f3 !important;
-                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                  "
-                >
-                  <i
-                    class="bi bi-person"
-                    style="color: #164a41"
-                    font-scale="1.5"
-                  ></i>
-                </b-avatar>
-                Login
-              </router-link>
+              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
           </div>
 
-          <div class="d-flex nav-items-right" v-if="user">
-            <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
+          <div class="d-flex nav-items-right" v-if="$store.state.user">
+            <router-link to="/conta">
               <b-avatar
                 class="nav-item"
-                :src="user.user.image?.url"
+                src="https://placekitten.com/320/320"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
+                <!-- TODO badges das notificações  -->
               </b-avatar>
-              <span>{{ user.user.name }}</span>
             </router-link>
-            <b-nav-item-dropdown
-              right
-              class="p-2 grey-txt text-decoration-none"
-            >
+            <b-nav-item-dropdown right>
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item @click="logout" href="#"
+              <b-dropdown-item @click="$store.dispatch('logout')" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
             </b-nav-item-dropdown>
@@ -126,7 +143,7 @@
 
   <!-- Nav inferior no modo telemovel -->
   <!-- TODO melhorar isto e o modo telemóvel no geral
-			 evitar repetir código como está aqui -->
+		 evitar repetir código como está aqui -->
   <div>
     <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
@@ -188,10 +205,16 @@
 </template>
 
 <script lang="ts">
-import { useStore } from '@/store';
-import { computed } from 'vue';
-
+import { ref } from "vue";
+import { useStore } from "@/store";
+import { computed } from "vue";
+import Modal from '../components/Modal.vue';
+import { getUnreadNotifications } from '../api/notifications';
+const orderItem = ref([]);
 export default {
+  components: {
+    Modal,
+  },
   setup() {
     const store = useStore();
 
@@ -199,13 +222,33 @@ export default {
     const user = computed(() => store.state.user);
 
     const logout = async () => {
-      await store.dispatch('logout');
+      await store.dispatch("logout");
     };
-
+  },
+  methods: {
+    showModalFunction() {
+      this.showModal = !this.showModal;
+      console.log(this.showModal);
+    },
+  },
+  data() {
     return {
-      user,
-      logout,
+      showModal: false,
+      orderItem,
     };
+  },
+  mounted() {
+    getUnreadNotifications()
+      .then((responseItem) => {
+        orderItem.value = responseItem.data;
+      })
+      .catch((error) => {
+        console.error(error);
+        // Lide com o erro aqui
+      });
+    // if (this.notifications.length > 0) {
+    //  this.notifications[0].unread = false;
+    //}
   },
 };
 </script>
@@ -216,7 +259,7 @@ export default {
 }
 
 .logo-txt {
-  font-family: 'DM Serif Display', serif;
+  font-family: "DM Serif Display", serif;
   font-size: 30px !important;
   color: #164a41 !important;
   letter-spacing: -0.03em;
