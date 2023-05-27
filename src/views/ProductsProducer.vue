@@ -20,7 +20,7 @@
               {{ product.category }}
             </div>
             <h5>{{ product.productSpec.name }}</h5>
-            <p>UP {{ product.productionUnit.id }}</p>
+            <p>UP: {{ product.productionUnit.name }}</p>
             <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
             <div class="d-flex gap-2">
               <h4 class="mb-3">{{ product.currentPrice }}€</h4>
@@ -111,53 +111,7 @@ import { fetchAllProducts } from '@/api/producerProducts';
 import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
-// export default defineComponent({
-//   components: {
-//     Pagination,
-//   },
-
-//   setup() {
-//     // const products = ref<Product[]>([]);
-//     const products = ref<{ items: Product[] }>({ items: [] });
-//     const $route = inject('$route') as any;
-//     onMounted(async () => {
-//       try {
-//         const authArray = await fetchAuth();
-//         const { id } = authArray.data;
-//         console.log('Producer ID:', id);
-
-//         // const allProductsData  = await fetchAllProducts(2);
-//         const page = parseInt($route.query.page) || 1;
-//         const pageSize = parseInt($route.query.pageSize) || 24;
-//         const categoryId = parseInt($route.query.categoryId) || 1;
-//         const allProductsData = await fetchAllProducts(
-//           id,
-//           page,
-//           pageSize,
-//           categoryId
-//         );
-//         console.log('allProductsData :', allProductsData);
-
-//         // const products = allProductsData .data as unknown as ProducerProducts;
-//         // console.log('Products:', products.items);
-
-//         const productsArray = allProductsData.data;
-//         console.log('Products:', productsArray);
-
-//         products.value = productsArray;
-
-//         this.allProductsData = allProductsData;
-//       } catch (error) {
-//         console.error(error);
-//       }
-//     });
-
-//     return {
-//       products,
-//       allProductsData: {} as any,
-//     };
-//   },
-// });
+import { useStore } from '@/store';
 
 export default {
   components: {
@@ -171,20 +125,14 @@ export default {
   },
   async mounted() {
     try {
-      const authArray = await fetchAuth();
-      const { id } = authArray.data;
-      console.log('Producer ID:', id);
+      const store = useStore();
+      const id = store.state.user!.user.id;
+      console.log('iddd', id);
 
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
-      const categoryId = parseInt(this.$route.query.categoryId) || 1;
 
-      const allProductsData = await fetchAllProducts(
-        2,
-        page,
-        pageSize,
-        categoryId
-      );
+      const allProductsData = await fetchAllProducts(id, page, pageSize);
 
       console.log('allProductsData:', allProductsData);
 

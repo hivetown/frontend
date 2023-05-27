@@ -38,7 +38,7 @@
                 }}
               </span>
             </p>
-            <h5>UP {{ transport.productionUnit.id }}:</h5>
+            <h5>UP:</h5>
             <p>
               {{ transport.productionUnit.name }}
             </p>
@@ -101,7 +101,7 @@ import { fetchAllTransports } from '@/api/transports';
 import { fetchAuth } from '../api/auth';
 import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
-
+import { useStore } from '@/store';
 export default {
   components: {
     Pagination,
@@ -117,14 +117,14 @@ export default {
   },
   async mounted() {
     try {
-      const authArray = await fetchAuth();
-      const { id } = authArray.data;
-      console.log('Producer ID:', id);
+      const store = useStore();
+      const id = store.state.user!.user.id;
+      console.log('iddd', id);
 
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      const allTransportsData = await fetchAllTransports(2, page, pageSize);
+      const allTransportsData = await fetchAllTransports(id, page, pageSize);
 
       console.log('allTransportsData:', allTransportsData);
 

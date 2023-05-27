@@ -7,9 +7,8 @@ import { api } from './_base';
 export const fetchAllProducts = (
     id: number,
     page: number,
-    pageSize: number,
-    categoryId: number
+    pageSize: number
 ) =>
     api.get<ProducerProducts[]>(`/producers/${id}/products`, {
-        params: { page, pageSize, categoryId },
+        params: { page, pageSize },
     });

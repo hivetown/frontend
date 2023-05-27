@@ -90,25 +90,25 @@ const routes = [
         path: '/produtosprodutor',
         name: 'produtosprodutor',
         component: ProductsProducer,
-        // meta: {
-        //     requiresAuth: true,
-        // },
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/unidadesproducao',
         name: 'unidadesproducao',
         component: ProductionUnits,
-        // meta: {
-        //     requiresAuth: true,
-        // },
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/transportes',
         name: 'transportes',
         component: Transports,
-        // meta: {
-        //     requiresAuth: true,
-        // },
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/admin',
