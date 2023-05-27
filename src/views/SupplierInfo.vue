@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex parent p-4" style="background-color: ">
-    <!-- <div class="w-25" style="background-color:; height:; border-right: solid 2px #eeeeee;"> -->
     <div class="w-25 mt-4" style="background-color: ; height: ">
       <div class="">
         <!-- Imagem do produtor -->
@@ -11,7 +10,6 @@
           :alt="dadosProdutor.user.image.alt"
         />
       </div>
-      <!-- <h3 class="text-center mt-4 mb-3">Nome</h3> -->
     </div>
     <!-- Sobre -->
     <div
@@ -49,32 +47,31 @@
   </div>
 
   <div class="parent px-5">
-    <!-- {{ unidadesProd }} -->
-    <h5 class="">
+    <h5 class="mb-4">
       Unidades de produção: <span>({{ unidadesProd.totalItems }})</span>
     </h5>
-    <!-- TODO - meter mais pequeno -->
-    <div class="d-flex" style="border: solid 2px #f1b24a; border-radius: 0.5vh">
-      <div class="" style="width: 35%">
-        <div
-          v-for="(unidade, idU) in unidadesProd.items"
-          :key="idU"
-          style="border-bottom: solid 2px #f1b24a"
-          class="p-3"
-        >
-          <!-- {{ unidade }} -->
-          <div @click="updateImage(idU)">
+    <div class="d-flex production-unit-container">
+      <div class="units-container" style="width: 20%">
+        <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
+          <div
+            :id="String(idU)"
+            @click="updateImage(idU + 1)"
+            class="production-unit"
+          >
             <p class="text-center fw-bold">{{ unidade.name }}</p>
-            <div class="">
-              <p class="text-center mb-1">nº{{ unidade.address.number }}</p>
+            <div class="d-flex gap-2 justify-content-center">
+              <p class="text-center mb-1">nº{{ unidade.address.number }},</p>
+              <p class="text-center mb-1">
+                {{ unidade.address.floor }} {{ unidade.address.door }}
+              </p>
               <p class="text-center">{{ unidade.address.zipCode }}</p>
             </div>
             <!-- TODO - por automatico -->
-            <p class="text-center">A 5km de si</p>
+            <p class="text-center mb-1">A 5km de si</p>
           </div>
         </div>
       </div>
-      <div class="w-75" style="background-color: pink; height: ">
+      <div class="" style="background-color: lightgrey; width: 80%">
         <!-- TODO - trocar src das imagens por sources do mapa (ver como) -->
         <img
           class=""
@@ -87,12 +84,12 @@
   </div>
   <!-- TODO - ajeitar -->
   <div>
-    <Pagination
+    <!-- <Pagination
       v-if="unidadesProd"
       :total-rows="unidadesProd.totalItems"
       :per-page="unidadesProd.pageSize"
       :current-page="unidadesProd.page"
-    ></Pagination>
+    ></Pagination> -->
   </div>
 </template>
 
@@ -106,6 +103,7 @@ export default {
       mapImage: 1,
       dadosProdutor: {} as Producer,
       unidadesProd: {} as BaseItems<productionUnit>,
+      elementoSelecionado: 0 as number,
     };
   },
   props: {
@@ -117,6 +115,14 @@ export default {
   methods: {
     updateImage(number: number) {
       this.mapImage = number;
+      const idElemento = number - 1;
+      const elemento = document.getElementById(String(idElemento));
+      const atual = document.getElementById(String(this.elementoSelecionado));
+      if (elemento && idElemento != this.elementoSelecionado) {
+        elemento.classList.add('selected-unit');
+        atual?.classList.remove('selected-unit');
+        this.elementoSelecionado = idElemento;
+      }
     },
   },
   async beforeMount() {
@@ -128,6 +134,14 @@ export default {
     const unidadesProd = await fetchProducerProductionUnits(producerId);
     this.unidadesProd = unidadesProd.data;
     console.log(this.unidadesProd);
+
+    // Define a UP selecionada por default
+    let atualSelecionado = document.getElementById(
+      String(this.elementoSelecionado)
+    );
+    if (atualSelecionado) {
+      atualSelecionado.classList.add('selected-unit');
+    }
   },
   components: { Pagination },
 };
@@ -151,5 +165,37 @@ export default {
   border-radius: 50%;
   border: 5px solid #164a41;
   object-fit: cover;
+}
+
+.production-unit-container {
+  max-height: 45vh;
+  border-radius: 0.8vh;
+}
+.units-container {
+  overflow-y: scroll;
+}
+.production-unit {
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  border-radius: 0.8vh;
+  width: 95%;
+  display: block;
+  margin: auto;
+  margin-top: 4%;
+  margin-bottom: 4%;
+  padding: 5%;
+}
+
+.production-unit:hover {
+  border: 2px solid #f3f3f3;
+}
+
+.selected-unit {
+  border: 2px solid #f1b24a;
+  box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
+  cursor: pointer;
+}
+
+.selected-unit:hover {
+  border: 2px solid #f1b24a;
 }
 </style>
