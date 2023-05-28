@@ -159,6 +159,8 @@ export interface ReportMap {
 }
 
 export interface ReportEvolution {
-    numeroEncomendas: number;
-    numeroEncomendasCancelados: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
 }

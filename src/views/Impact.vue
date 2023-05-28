@@ -56,7 +56,11 @@
               <h4 class="py-4 dgreen-txt">Histórico de gastos</h4>
               <!-- Gráfico de linhas -->
               <div class="graph-container">
-                <LineChart></LineChart>
+                <!-- <LineChart></LineChart> -->
+                <LineChart
+                  :chart-data="lineChartData"
+                  :chart-options="lineChartOptions"
+                />
               </div>
             </div>
             <div style="background-color: ; width: 48%">
@@ -79,10 +83,10 @@
             <!-- {{ reportMap }} -->
             <!-- {{ reportEvolution }} -->
             <!-- MUDAR O TIPO PARA OBJETO DE OBJETOS EM TODO O LADO -->
-            <div v-for="(numEncomendas, data) in reportEvolution" :key="data">
+            <div v-for="(comprasTotais, data) in reportEvolution" :key="data">
               <!-- TRANSFORMAR O ID EM MÊS E USAR APENAS O DATA.NUMEROENCOMENDAS -->
-              {{ data }} -
-              {{ numEncomendas.numeroEncomendas }}
+              <!-- {{ data }} - -->
+              <!-- {{ comprasTotais }} -->
             </div>
           </div>
         </div>
@@ -111,16 +115,24 @@ export default defineComponent({
     return {
       raio: 0 as Ref<number>,
 
+      // Informações do user
       userLoggedId: 0 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
 
+      // Reports
       reportCards: {} as ReportCard,
       reportMap: {} as ReportMap[],
       reportEvolution: {} as ReportEvolution,
 
+      // Gráfico de linhas
       graphLabels: [] as string[],
       graphData: [] as number[],
+      lineChartData: {
+        labels: ['no data'],
+        datasets: [],
+      } as any,
+      lineChartOptions: {},
     };
   },
   // A fazer antes de montar o componente
@@ -139,10 +151,9 @@ export default defineComponent({
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
     }
-    // console.log('id: ' + this.userLoggedId);
 
     // Ir buscar os dados dos cards
-    // TODO mudar para ser o id do user logado e o raio do slider
+    // TODO mudar para ser o id do user logado e o raio do slider e as datas
     const reportCards = await fetchConsumerReportCards(
       1,
       '2020-01-01',
@@ -152,7 +163,7 @@ export default defineComponent({
     this.reportCards = reportCards.data;
 
     // Ir buscar os dados do mapa
-    // TODO mudar para ser o id do user logado e o raio do slider
+    // TODO mudar para ser o id do user logado e o raio do slider e as datas
     const reportMap = await fetchConsumerReportMap(
       1,
       '2020-01-01',
@@ -162,21 +173,44 @@ export default defineComponent({
     this.reportMap = reportMap.data;
 
     // Ir buscar os dados da evolução
-    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view
+    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
     const reportEvolution = await fetchConsumerReportEvolution(
       1,
       '2020-01-01',
       '2023-12-31',
       700,
-      'numeroEncomendas'
+      'comprasTotais'
     );
     this.reportEvolution = reportEvolution.data;
+    this.updateGraphData();
+  },
+  methods: {
+    // Atualizar os dados do gráfico de linhas
+    // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
+    updateGraphData() {
+      // Limpar os arrays de dados
+      this.graphLabels = [];
+      this.graphData = [];
 
-    // Preparar os dados para o gráfico de linhas (Evolução)
-    for (const [data, numEncomendas] of Object.entries(this.reportEvolution)) {
-      this.graphLabels.push(data);
-      this.graphData.push(numEncomendas.numeroEncomendas); // Só as que não foram canceladas
-    }
+      // Preparar os dados para o gráfico de linhas (Evolução)
+      for (const [data, comprasTotais] of Object.entries(
+        this.reportEvolution
+      )) {
+        this.graphLabels.push(String(data));
+        this.graphData.push(comprasTotais.comprasTotais); // Só as que não foram canceladas
+      }
+
+      this.lineChartData = {
+        labels: this.graphLabels,
+        datasets: [
+          {
+            label: 'Valor gasto',
+            backgroundColor: '#9DC88D',
+            data: this.graphData,
+          },
+        ],
+      };
+    },
   },
   components: { DatePicker, Slider, ImpactDataCard, LineChart, BarChart },
 });
