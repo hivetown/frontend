@@ -139,3 +139,15 @@ export interface FieldPossibleValue {
     id: number;
     value: string;
 }
+
+export interface ReportCard {
+    id: number;
+    numeroEncomendas: number;
+    numeroEncomendasCanceladas: number;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
+    comprasTotais: number;
+    comprasTotaisCanceladas: number;
+    numeroProdutosEncomendados: number;
+    numeroProdutosEncomendadosCancelados: number;
+}
