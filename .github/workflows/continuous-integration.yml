@@ -6,6 +6,8 @@ on:
       - main
   # TODO remove, this is for testing only!!!
   pull_request:
+    branches: 
+      - 'main'
 
 jobs:
   Linting:
