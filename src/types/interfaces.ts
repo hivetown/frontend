@@ -111,6 +111,7 @@ export interface Address {
     district: string;
     latitude: number;
     longitude: number;
+    consumer?: Consumer;
 }
 
 export interface Image {
@@ -150,4 +151,14 @@ export interface ReportCard {
     comprasTotaisCanceladas: number;
     numeroProdutosEncomendados: number;
     numeroProdutosEncomendadosCancelados: number;
+}
+
+export interface ReportMap {
+    shippingAddress: Address;
+    productionUnitAddress: Address;
+}
+
+export interface ReportEvolution {
+    numeroEncomendas: number;
+    numeroEncomendasCancelados: number;
 }

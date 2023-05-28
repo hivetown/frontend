@@ -1,4 +1,11 @@
-import { Address, Consumer, CreateConsumer, ReportCard } from '@/types';
+import {
+    Address,
+    Consumer,
+    CreateConsumer,
+    ReportCard,
+    ReportMap,
+    ReportEvolution,
+} from '@/types';
 import { api } from './_base';
 
 export const createConsumer = async (consumer: CreateConsumer) =>
@@ -15,4 +22,25 @@ export const fetchConsumerReportCards = (
 ) =>
     api.get<ReportCard>(
         `/reports/${id}/flashcards?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
+    );
+
+export const fetchConsumerReportMap = (
+    id: number,
+    dataInicio?: string,
+    dataFim?: string,
+    raio?: number
+) =>
+    api.get<ReportMap[]>(
+        `/reports/${id}/map?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
+    );
+
+export const fetchConsumerReportEvolution = (
+    id: number,
+    dataInicio?: string,
+    dataFim?: string,
+    raio?: number,
+    view?: string
+) =>
+    api.get<ReportEvolution>(
+        `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );

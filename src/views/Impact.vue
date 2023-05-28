@@ -21,28 +21,28 @@
             <!-- Imagem do user -->
             <img
               class="producer-image d-block mx-auto"
-              src="https://placehold.co/600x400"
-              alt="imagemUser"
+              :src="userLoggedNImage.url"
+              :alt="userLoggedNImage.alt"
             />
-            <h3 class="main-txt dgreen-txt">Madalena Rodrigues</h3>
+            <h3 class="main-txt dgreen-txt">{{ userLoggedName }}</h3>
           </div>
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
               title="Total gasto"
-              :value="2000"
+              :value="reportCards.comprasTotais"
               color="#7CA2C3"
             ></ImpactDataCard>
             <ImpactDataCard
               icon="bi bi-box-seam"
               title="Encomendas"
-              :value="7"
+              :value="reportCards.numeroEncomendas"
               color="#DC6942"
             ></ImpactDataCard>
             <ImpactDataCard
               icon="bi bi-bag"
               title="Produtos comprados"
-              :value="12"
+              :value="reportCards.numeroProdutosEncomendados"
               color="#F1B24A"
             ></ImpactDataCard>
           </div>
@@ -74,7 +74,16 @@
             class="mt-5 parent"
             style="background-color: lightgray; height: 40vh"
           >
-            {{ reportCards }}
+            <!-- Reports -->
+            <!-- {{ reportCards }} -->
+            <!-- {{ reportMap }} -->
+            <!-- {{ reportEvolution }} -->
+            <!-- MUDAR O TIPO PARA OBJETO DE OBJETOS EM TODO O LADO -->
+            <div v-for="(numEncomendas, data) in reportEvolution" :key="data">
+              <!-- TRANSFORMAR O ID EM MÊS E USAR APENAS O DATA.NUMEROENCOMENDAS -->
+              {{ data }} -
+              {{ numEncomendas.numeroEncomendas }}
+            </div>
           </div>
         </div>
       </div>
@@ -90,16 +99,28 @@ import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import { ref, computed, defineComponent } from 'vue';
 import { useStore } from '@/store';
-import { ReportCard, Image } from '@/types';
-import { fetchConsumerReportCards } from '@/api';
+import { ReportCard, Image, ReportMap, ReportEvolution } from '@/types';
+import {
+  fetchConsumerReportCards,
+  fetchConsumerReportMap,
+  fetchConsumerReportEvolution,
+} from '@/api';
 
 export default defineComponent({
   data() {
     return {
       raio: 0 as Ref<number>,
+
       userLoggedId: 0 as number,
-      userLoggedImage: {} as Image,
+      userLoggedName: '' as string,
+      userLoggedNImage: {} as Image,
+
       reportCards: {} as ReportCard,
+      reportMap: {} as ReportMap[],
+      reportEvolution: {} as ReportEvolution,
+
+      graphLabels: [] as string[],
+      graphData: [] as number[],
     };
   },
   // A fazer antes de montar o componente
@@ -113,19 +134,15 @@ export default defineComponent({
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
+      this.userLoggedName = userLoggedId.value['user']['name'];
+      if (userLoggedId.value['user']['image']) {
+        this.userLoggedNImage = userLoggedId.value['user']['image'];
+      }
     }
     // console.log('id: ' + this.userLoggedId);
 
     // Ir buscar os dados dos cards
-    // const dataInicio = new Date('2020-01-01');
-    // const dataFim = new Date('2023-12-31');
-    // const reportCards = await fetchConsumerReportCards(
-    //   this.userLoggedId,
-    //   dataInicio,
-    //   dataFim,
-    //   3000
-    // );
-    // USER ALEATORIO
+    // TODO mudar para ser o id do user logado e o raio do slider
     const reportCards = await fetchConsumerReportCards(
       1,
       '2020-01-01',
@@ -133,7 +150,33 @@ export default defineComponent({
       700
     );
     this.reportCards = reportCards.data;
-    console.log('reportCards: ' + JSON.stringify(this.reportCards));
+
+    // Ir buscar os dados do mapa
+    // TODO mudar para ser o id do user logado e o raio do slider
+    const reportMap = await fetchConsumerReportMap(
+      1,
+      '2020-01-01',
+      '2023-12-31',
+      700
+    );
+    this.reportMap = reportMap.data;
+
+    // Ir buscar os dados da evolução
+    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view
+    const reportEvolution = await fetchConsumerReportEvolution(
+      1,
+      '2020-01-01',
+      '2023-12-31',
+      700,
+      'numeroEncomendas'
+    );
+    this.reportEvolution = reportEvolution.data;
+
+    // Preparar os dados para o gráfico de linhas (Evolução)
+    for (const [data, numEncomendas] of Object.entries(this.reportEvolution)) {
+      this.graphLabels.push(data);
+      this.graphData.push(numEncomendas.numeroEncomendas); // Só as que não foram canceladas
+    }
   },
   components: { DatePicker, Slider, ImpactDataCard, LineChart, BarChart },
 });

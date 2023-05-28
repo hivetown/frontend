@@ -58,6 +58,25 @@ export default {
           },
         },
       },
+      props: {
+        chartData: {
+          type: Object,
+          required: true,
+        },
+        chartOptions: {
+          type: Object,
+          required: true,
+        },
+      },
+      async beforeMount() {
+        console.log(this.chartData);
+      },
+      //   data() {
+      //     return {
+      //       chartData: this.data,
+      //       chartOptions: this.options,
+      //     };
+      //   },
     };
   },
 };
