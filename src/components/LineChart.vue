@@ -42,8 +42,5 @@ export default {
   components: {
     LineChart,
   },
-  mounted() {
-    // Componente montado
-  },
 };
 </script>

@@ -163,4 +163,13 @@ export interface ReportEvolution {
     comprasTotaisCancelados?: number;
     numeroEncomendas?: number;
     numeroEncomendasCancelados?: number;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+}
+
+export interface ReportProducts {
+    id: number;
+    nome: string;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
 }

@@ -47,11 +47,16 @@
             ></ImpactDataCard>
           </div>
         </div>
+        <!-- Período temporal -->
+        <div class="parent mt-4 mb-2">
+          <!-- TODO - por a alterar sozinho -->
+          <p>A mostrar dados entre: 2020-01-01 e 2023-12-31</p>
+        </div>
         <!-- Dados alteráveis -->
         <div style="background-color: ">
           <!-- Evolução -->
           <div class="parent d-flex" style="background-color: ; gap: 4%">
-            <div style="background-color: ; width: 48%">
+            <div style="background-color: ; width: 43%">
               <!-- Muda a cada view -->
               <h4 class="py-4 dgreen-txt">Histórico de gastos</h4>
               <!-- Gráfico de linhas -->
@@ -63,12 +68,15 @@
                 />
               </div>
             </div>
-            <div style="background-color: ; width: 48%">
+            <div style="background-color: ; width: 53%">
               <div>
                 <h4 class="py-4 dgreen-txt">Produtos encomendados</h4>
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
-                  <BarChart></BarChart>
+                  <BarChart
+                    :chart-data="barChartData"
+                    :chart-options="barChartOptions"
+                  ></BarChart>
                 </div>
               </div>
             </div>
@@ -83,10 +91,11 @@
             <!-- {{ reportMap }} -->
             <!-- {{ reportEvolution }} -->
             <!-- MUDAR O TIPO PARA OBJETO DE OBJETOS EM TODO O LADO -->
-            <div v-for="(comprasTotais, data) in reportEvolution" :key="data">
+            <div v-for="(totalProdutos, data) in reportBarChart" :key="data">
               <!-- TRANSFORMAR O ID EM MÊS E USAR APENAS O DATA.NUMEROENCOMENDAS -->
               <!-- {{ data }} - -->
-              <!-- {{ comprasTotais }} -->
+              <!-- {{ totalProdutos }} -->
+              <!-- {{ totalProdutos }} -->
             </div>
           </div>
         </div>
@@ -108,6 +117,7 @@ import {
   fetchConsumerReportCards,
   fetchConsumerReportMap,
   fetchConsumerReportEvolution,
+  fetchConsumerReportProducts,
 } from '@/api';
 
 export default defineComponent({
@@ -123,16 +133,38 @@ export default defineComponent({
       // Reports
       reportCards: {} as ReportCard,
       reportMap: {} as ReportMap[],
-      reportEvolution: {} as ReportEvolution,
+      reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
+      reportBarChart: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
 
       // Gráfico de linhas
-      graphLabels: [] as string[],
-      graphData: [] as number[],
+      lineGraphLabels: [] as string[],
+      lineGraphData: [] as number[],
       lineChartData: {
-        labels: ['no data'],
-        datasets: [],
+        labels: ['no data'] as string[],
+        datasets: [] as string[],
       } as any,
-      lineChartOptions: {},
+      lineChartOptions: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
+
+      // Gráfico de barras
+      barGraphLabels: [] as string[],
+      barGraphData: [] as number[],
+      barChartData: {
+        labels: ['no data'] as string[],
+        datasets: [] as string[],
+      } as any,
+      barChartOptions: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
     };
   },
   // A fazer antes de montar o componente
@@ -172,7 +204,7 @@ export default defineComponent({
     );
     this.reportMap = reportMap.data;
 
-    // Ir buscar os dados da evolução
+    // Ir buscar os dados da evolução (gráfico de linhas)
     // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
     const reportEvolution = await fetchConsumerReportEvolution(
       1,
@@ -182,34 +214,77 @@ export default defineComponent({
       'comprasTotais'
     );
     this.reportEvolution = reportEvolution.data;
-    this.updateGraphData();
+    this.updateGraphData('comprasTotais', 'line');
+
+    // Ir buscar os dados do gráfico de barras
+    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
+    const reportBarChart = await fetchConsumerReportProducts(
+      1,
+      '2020-01-01',
+      '2023-12-31',
+      700,
+      'totalProdutos'
+    );
+    this.reportBarChart = reportBarChart.data;
+    this.updateGraphData('totalProdutos', 'bar');
   },
   methods: {
     // Atualizar os dados do gráfico de linhas
     // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
-    updateGraphData() {
+    updateGraphData(view: string, grapthType: string) {
       // Limpar os arrays de dados
-      this.graphLabels = [];
-      this.graphData = [];
+      if (grapthType == 'line') {
+        this.lineGraphLabels = [];
+        this.lineGraphData = [];
 
-      // Preparar os dados para o gráfico de linhas (Evolução)
-      for (const [data, comprasTotais] of Object.entries(
-        this.reportEvolution
-      )) {
-        this.graphLabels.push(String(data));
-        this.graphData.push(comprasTotais.comprasTotais); // Só as que não foram canceladas
+        // Preparar os dados para o gráfico de linhas (Evolução)
+        for (const [data, string] of Object.entries(this.reportEvolution)) {
+          this.lineGraphLabels.push(String(data));
+          if (view == 'comprasTotais') {
+            this.lineGraphData.push(string.comprasTotais); // Só as que não foram canceladas
+          }
+        }
+        this.lineChartData = {
+          labels: this.lineGraphLabels,
+          datasets: [
+            {
+              label: 'Produtos comprados',
+              backgroundColor: '#9DC88D',
+              data: this.lineGraphData,
+            },
+          ],
+        };
+      } else if (grapthType == 'bar') {
+        // Limpar os arrays de dados
+        this.barGraphLabels = [];
+        this.barGraphData = [];
+
+        // Preparar os dados para o gráfico de barras
+        for (const string of this.reportBarChart) {
+          // Reduzir o nome para caber no gráfico
+          const nomeOriginal = string.nome.split(' ');
+          console.log(nomeOriginal);
+          let nomeReduzido = nomeOriginal[0];
+          for (let i = 1; i < nomeOriginal.length; i++) {
+            nomeReduzido += ` ${nomeOriginal[i].charAt(0)}.`;
+          }
+
+          this.barGraphLabels.push(nomeReduzido);
+          if (view == 'totalProdutos') {
+            this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+          }
+        }
+        this.barChartData = {
+          labels: this.barGraphLabels,
+          datasets: [
+            {
+              label: 'Quantidade',
+              backgroundColor: '#9DC88D',
+              data: this.barGraphData,
+            },
+          ],
+        };
       }
-
-      this.lineChartData = {
-        labels: this.graphLabels,
-        datasets: [
-          {
-            label: 'Valor gasto',
-            backgroundColor: '#9DC88D',
-            data: this.graphData,
-          },
-        ],
-      };
     },
   },
   components: { DatePicker, Slider, ImpactDataCard, LineChart, BarChart },

@@ -1,5 +1,5 @@
 <template>
-  <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
+  <Bar :data="chartData" :options="chartOptions" />
 </template>
 
 <script lang="ts">
@@ -25,24 +25,16 @@ ChartJS.register(
 
 export default {
   name: 'BarChart',
-  components: { Bar },
-  data() {
-    return {
-      chartData: {
-        labels: ['January', 'February', 'March'],
-        datasets: [
-          { data: [40, 20, 12], backgroundColor: '#9DC88D', borderWidth: 0 },
-        ],
-      },
-      chartOptions: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-      },
-    };
+  props: {
+    chartData: {
+      type: Object,
+      required: true,
+    },
+    chartOptions: {
+      type: Object,
+      required: true,
+    },
   },
+  components: { Bar },
 };
 </script>

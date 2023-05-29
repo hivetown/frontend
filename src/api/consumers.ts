@@ -44,3 +44,14 @@ export const fetchConsumerReportEvolution = (
     api.get<ReportEvolution>(
         `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
+
+export const fetchConsumerReportProducts = (
+    id: number,
+    dataInicio?: string,
+    dataFim?: string,
+    raio?: number,
+    view?: string
+) =>
+    api.get<ReportEvolution>(
+        `/reports/${id}/products?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
+    );
