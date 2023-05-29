@@ -10,7 +10,6 @@ import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import { store } from '@/store';
-import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
 
@@ -118,4 +117,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-
