@@ -3,19 +3,20 @@
   <div class="card-container">
     <div v-for="idx in qtd" :key="idx">
       <!--TODO trocar para users.image-->
+
       <b-card
         id="b-card"
-        :title="users['items'][idx - 1]['name']"
-        :img-src="users['items'][idx - 1]['image']['url']"
-        :img-alt="users['items'][idx - 1]['image']['alt']"
+        :title="users['items'][idx - 1]['user']['name']"
+        :img-src="users['items'][idx - 1]['user']['image']['url']"
+        :img-alt="users['items'][idx - 1]['user']['image']['alt']"
         img-top
         tag="article"
         style="max-width: 17rem"
         class="mb-2"
       >
         <b-card-text>
-          {{ users['items'][idx - 1]['email'] }} <br />
-          {{ users['items'][idx - 1]['type'] }}
+          {{ users['items'][idx - 1]['user']['email'] }} <br />
+          {{ users['items'][idx - 1]['user']['type'] }}
         </b-card-text>
         <b-button
           :href="'admin/producer/' + users['items'][idx - 1]['id']"

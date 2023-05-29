@@ -6,19 +6,19 @@
     <div id="titulo">
       <h1>Vendedor {{ $route.params.id }}</h1>
     </div>
-
     <div class="cart">
       <b-card
+        v-if="users['user']"
         id="b-card"
-        :title="users['name']"
+        :title="users['user']['name']"
         :img-src="
-          users['image'] && users['image']['url']
-            ? users['image']['url']
+          users['user']['image'] && users['user']['image']['url']
+            ? users['user']['image']['url']
             : '../../public/semimagem.png'
         "
         :img-alt="
-          users['image'] && users['image']['alt']
-            ? users['image']['alt']
+          users['user']['image'] && users['user']['image']['alt']
+            ? users['user']['image']['alt']
             : 'Default image'
         "
         img-top
@@ -27,9 +27,10 @@
         class="mb-2"
       >
         <b-card-text>
-          <strong>Email: </strong>{{ users['email'] || 'Não definido' }}
+          <strong>Email: </strong>{{ users['user']['email'] || 'Não definido' }}
           <br />
-          <strong>Telemóvel: </strong>{{ users['phone'] || 'Não definido' }}
+          <strong>Telemóvel: </strong
+          >{{ users['user']['phone'] || 'Não definido' }}
           <br />
           <strong>Morada: </strong>
           {{
@@ -71,18 +72,18 @@
           <strong>Unidades de produção: </strong>
           <div v-if="qtd > 0" v-for="idx in qtd" :key="idx">
             <p>
-              <strong>ID:</strong>
-              {{ users['productionUnits'][idx - 1]['id'] }} <br />
-              Nome: {{ users['productionUnits'][idx - 1]['name'] }}, <br />
-              Rua: {{ responseList[idx - 1]['data']['address']['street'] }}, nº
-              {{ responseList[idx - 1]['data']['address']['number'] }}
-              {{ responseList[idx - 1]['data']['address']['door'] }}
+              <strong v-if="productionUnitIds.items">ID: </strong
+              >{{ productionUnitIds.items[idx - 1]['id'] }} Nome:
+              {{ productionUnitIds.items[idx - 1]['name'] }}, <br />
+              Rua: {{ productionUnitIds.items[idx - 1]['address']['street'] }},
+              nº {{ productionUnitIds.items[idx - 1]['address']['number'] }},
+              {{ productionUnitIds.items[idx - 1]['address']['door'] }}
               <br />
-              Cidade: {{ responseList[idx - 1]['data']['address']['city'] }}
+              Cidade: {{ productionUnitIds.items[idx - 1]['address']['city'] }}
               <br />Latitude:
-              {{ responseList[idx - 1]['data']['address']['latitude'] }},
+              {{ productionUnitIds.items[idx - 1]['address']['latitude'] }} ,
               Longitude:
-              {{ responseList[idx - 1]['data']['address']['longitude'] }}
+              {{ productionUnitIds.items[idx - 1]['address']['longitude'] }}
             </p>
           </div>
           <div v-else>
@@ -90,7 +91,6 @@
           </div>
           <!-- {{ users['productionUnits'] }}-->
         </b-card-text>
-
         <div class="editarConta">
           <button
             href="#"
@@ -176,46 +176,44 @@ export default {
     let formData = {};
     const id = ref(0);
     const qtd = ref(0);
+    const prod = ref(0);
     const collapsed = ref(true);
     const users = ref<Consumer>({});
-    const productionUnitIds = ref<Consumer>({});
+    const productionUnitIds = ref();
     const responseList = ref<Consumer>([]);
 
     onMounted(async () => {
       id.value = window.location.pathname.split('/').pop()?.toString();
-      console.log(id.value);
-
       try {
         const response = await getProducerId(id.value);
         users.value = response.data;
-        qtd.value = users.value.productionUnits.length;
-        console.log(qtd.value);
-        productionUnitIds.value = users.value.productionUnits.map(
-          (unit) => unit.id
-        );
-        console.log(productionUnitIds.value);
-        for (let i = 0; i < productionUnitIds.value.length; i++) {
-          const addressId = productionUnitIds.value[i];
-          // Aqui você pode usar o valor de addressId na chamada de função
-          const responseAddressesPU = await getAddressPU(id.value, addressId);
-          responseList.value.push(responseAddressesPU);
-        }
-        console.log(responseList.value[0].data['address']);
+
+        const responseAddressesPU = await getAddressPU(id.value);
+        productionUnitIds.value = responseAddressesPU.data;
+        qtd.value = productionUnitIds.value.totalItems;
       } catch (error) {
         console.error(error);
       }
     });
 
-    return { users, id, collapsed, formData, qtd, responseList };
+    return {
+      users,
+      id,
+      collapsed,
+      formData,
+      qtd,
+      responseList,
+      productionUnitIds,
+    };
   },
 
   methods: {
     saveChanges() {
       // Define valores padrão para campos não preenchidos
       const defaults = {
-        name: this.users.name,
-        email: this.users.email,
-        phone: this.users.phone,
+        name: this.users.user.name,
+        email: this.users.user.email,
+        phone: this.users.user.phone,
       };
 
       // Mescla valores padrão com valores do formulário

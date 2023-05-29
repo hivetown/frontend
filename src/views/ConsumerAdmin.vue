@@ -9,16 +9,17 @@
 
     <div class="cart">
       <b-card
+        v-if="users['user']"
         id="b-card"
-        :title="users['name']"
+        :title="users['user']['name']"
         :img-src="
-          users['image'] && users['image']['url']
-            ? users['image']['url']
+          users['user']['image'] && users['user']['image']['url']
+            ? users['user']['image']['url']
             : '../../public/semimagem.png'
         "
         :img-alt="
-          users['image'] && users['image']['alt']
-            ? users['image']['alt']
+          users['user']['image'] && users['user']['image']['alt']
+            ? users['user']['image']['alt']
             : 'Default image'
         "
         img-top
@@ -27,9 +28,10 @@
         class="mb-2"
       >
         <b-card-text>
-          <strong>Email: </strong>{{ users['email'] || 'Não definido' }}
+          <strong>Email: </strong>{{ users['user']['email'] || 'Não definido' }}
           <br />
-          <strong>Telemóvel: </strong>{{ users['phone'] || 'Não definido' }}
+          <strong>Telemóvel: </strong
+          >{{ users['user']['phone'] || 'Não definido' }}
           <br />
           <strong>Morada: </strong>
           {{
@@ -172,9 +174,9 @@ export default {
     saveChanges() {
       // Define valores padrão para campos não preenchidos
       const defaults = {
-        name: this.users.name,
-        email: this.users.email,
-        phone: this.users.phone,
+        name: this.users.user.name,
+        email: this.users.user.email,
+        phone: this.users.user.phone,
       };
 
       // Mescla valores padrão com valores do formulário

@@ -5,18 +5,18 @@
       <!--TODO trocar para users.image-->
       <b-card
         id="b-card"
-        :title="users['items'][idx - 1]['name']"
+        :title="users['items'][idx - 1]['user']['name']"
         :img-src="
-          users['items'][idx - 1]['image']
-            ? users['items'][idx - 1]['image']['url']
-              ? users['items'][idx - 1]['image']['url']
+          users['items'][idx - 1]['user']['image']
+            ? users['items'][idx - 1]['user']['image']['url']
+              ? users['items'][idx - 1]['user']['image']['url']
               : '../../public/semimagem.png'
             : '../../public/semimagem.png'
         "
         :img-alt="
-          users['items'][idx - 1]['image']
-            ? users['items'][idx - 1]['image']['alt']
-              ? users['items'][idx - 1]['image']['alt']
+          users['items'][idx - 1]['user']['image']
+            ? users['items'][idx - 1]['user']['image']['alt']
+              ? users['items'][idx - 1]['user']['image']['alt']
               : 'sem imagem'
             : 'sem imagem'
         "
@@ -26,11 +26,11 @@
         class="mb-2"
       >
         <b-card-text>
-          {{ users['items'][idx - 1]['email'] }} <br />
-          {{ users['items'][idx - 1]['type'] }}
+          {{ users['items'][idx - 1]['user']['email'] }} <br />
+          {{ users['items'][idx - 1]['user']['type'] }}
         </b-card-text>
         <b-button
-          :href="'admin/consumer/' + users['items'][idx - 1]['id']"
+          :href="'admin/consumer/' + users['items'][idx - 1]['user']['id']"
           class="custom-button"
           >Ver perfil</b-button
         >
@@ -65,7 +65,6 @@ export default {
         page.value = responseItems.data.page;
         const urlSearchParams = new URLSearchParams(window.location.search);
         page.value = parseInt(urlSearchParams.get('page'));
-        // page.value = 1;
         pageSize.value = responseItems.data.pageSize;
         totalItems.value = responseItems.data.totalItems;
         const response = await getConsumers(page.value, pageSize.value);

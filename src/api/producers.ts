@@ -5,24 +5,20 @@ import { api } from './_base';
 export const createProducer = async (producer: CreateProducer) =>
     api.post('/producers', producer);
 
-// consumer is consumer or supplier
-export const postConsumer = (producer: Producer) =>
-    api.post('/producer', producer);
-
 export const getProducersValues = (search?: string) =>
     api.get<Producer[]>('/producers', { params: { search } });
-
+//nao da com o includeall
 export const getProducers = (
     page?: number,
     pageSize?: number,
     search?: string
 ) =>
-    api.get<Producer[]>('/producers?includeAll=true', {
+    api.get<Producer[]>('/producers', {
         params: { page, pageSize, search },
     });
-
+//nao da com o include all
 export const getProducerId = (producerId: number, search?: string) =>
-    api.get<Producer[]>(`/producers/${producerId}?includeAll=true`, {
+    api.get<Producer[]>(`/producers/${producerId}`, {
         params: { search },
     });
 
@@ -38,11 +34,7 @@ export const updateProducer = (
     search?: string
 ) => api.put(`/producers/${producerId}`, formData, { params: { search } });
 
-export const getAddressPU = (
-    producerId: number,
-    AddressId: number,
-    search?: string
-) =>
-    api.get<Producer[]>(`/producers/${producerId}/units/${AddressId}`, {
+export const getAddressPU = (producerId: number, search?: string) =>
+    api.get<Producer[]>(`/producers/${producerId}/units`, {
         params: { search },
     });
