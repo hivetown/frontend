@@ -27,7 +27,7 @@
             <b-col>
               <b-form-group
                 id="input-group-2"
-                label="Capacidade:"
+                label="Morada:"
                 label-for="input-2"
                 label-cols="3"
                 label-cols-sm="3"
@@ -49,10 +49,45 @@
         </b-form>
       </div>
 
-      <br />
       <hr />
 
       <h3 class="parent dgreen-txt">Gestão de Unidades de Produção</h3>
+
+      <br />
+
+      <b-input-group size="sm">
+        Filtros:
+        <b-form-input
+          id="filter-input"
+          v-model="filter"
+          type="search"
+          placeholder="Escrever ID"
+        ></b-form-input>
+
+        <b-input-group-append>
+          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+        </b-input-group-append>
+        <b-form-input
+          id="filter-input"
+          v-model="filter"
+          type="search"
+          placeholder="Escrever Marca"
+        ></b-form-input>
+
+        <b-input-group-append>
+          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+        </b-input-group-append>
+        <b-form-input
+          id="filter-input"
+          v-model="filter"
+          type="search"
+          placeholder="Escrever Morada"
+        ></b-form-input>
+
+        <b-input-group-append>
+          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+        </b-input-group-append>
+      </b-input-group>
 
       <div>
         <b-table
@@ -61,7 +96,26 @@
           v-model:sort-by="sortBy"
           v-model:sort-desc="sortDesc"
           responsive="sm"
-        ></b-table>
+        >
+          <template #cell(name)="row">
+            {{ row.value.first }} {{ row.value }}
+          </template>
+
+          <template #cell(Acoes)="row">
+            <b-button size="sm" @click="showModal" class="mr-1">
+              Gerir<i class="bi bi-pencil-square"></i>
+            </b-button>
+            <b-modal
+              v-model="showModalDialog"
+              title="Gerenciamento de Veículos"
+            >
+              <b-dropdown text="Button text via Prop">
+                <b-dropdown-item href="#">An item</b-dropdown-item>
+                <b-dropdown-item href="#">Another item</b-dropdown-item>
+              </b-dropdown>
+            </b-modal>
+          </template>
+        </b-table>
 
         <div>
           Sorting By: <b>{{ sortBy }}</b
@@ -69,40 +123,7 @@
           <b>{{ sortDesc ? 'Descending' : 'Ascending' }}</b>
         </div>
       </div>
-
-      <br />
-      <hr />
-
-      <h3 class="parent dgreen-txt">Zona de Teste</h3>
-
-      <hr />
     </div>
-  </div>
-
-  <hr />
-  <div>
-    <b-form inline>
-      <label class="sr-only" for="inline-form-input-name">Name</label>
-      <b-form-input
-        id="inline-form-input-name"
-        class="mb-2 mr-sm-2 mb-sm-0"
-        placeholder="Jane Doe"
-      ></b-form-input>
-
-      <label class="sr-only" for="inline-form-input-username">Username</label>
-      <b-input-group prepend="@" class="mb-2 mr-sm-2 mb-sm-0">
-        <b-form-input
-          id="inline-form-input-username"
-          placeholder="Username"
-        ></b-form-input>
-      </b-input-group>
-
-      <b-form-checkbox class="mb-2 mr-sm-2 mb-sm-0"
-        >Remember me</b-form-checkbox
-      >
-
-      <b-button variant="primary">Save</b-button>
-    </b-form>
   </div>
 </template>
 
@@ -206,17 +227,44 @@ export default {
         { key: 'ID', sortable: true },
         { key: 'Marca', sortable: true },
         { key: 'Morada', sortable: true },
+        { key: 'Acoes', label: 'Ações', sortable: false },
       ],
 
       items: {},
+
+      showModalDialog: false,
+      inputValue: '',
     };
   },
 
   async beforeMount() {
-    await this.getPUnit(1);
+    await this.getPUnit(15);
   },
 
   methods: {
+    showModal() {
+      this.showModalDialog = true;
+    },
+
+    submitForm() {
+      console.log('Insira novo nome:', this.inputValue);
+      this.showModalDialog = false;
+    },
+    changeBrand(brand: string, unitid: number, address: Address) {
+      console.log('Nova marca:', brand);
+      console.log('Unit id:', unitid);
+      console.log('Morada:', address);
+      updateProductionUnit(15, unitid, brand, address);
+    },
+    changeAddress() {
+      console.log('Insira a nova morada:', this.inputValue);
+      this.showModalDialog = false;
+    },
+    changeID() {
+      console.log('Insira o novo ID:', this.inputValue);
+      this.showModalDialog = false;
+    },
+
     getPUs() {
       this.getPUnit(1);
       return this.userProdUnit;
@@ -235,6 +283,7 @@ export default {
             Morada: `${this.userProdUnit[i].address?.county}, ${this.userProdUnit[i].address?.city},
 				${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
 				${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
+            Acoes: this.userProdUnit[i].id,
           };
           opts.push(build);
         }
