@@ -8,6 +8,7 @@ import Cart from '@/views/Cart.vue';
 import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
+import Admin from '@/views/Admin.vue';
 import Register from '@/views/Register.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
@@ -56,6 +57,11 @@ const routes = [
         meta: {
             requiresAuth: true,
         },
+    },
+    {
+        path: '/admin',
+        name: 'Admin',
+        component: Admin,
     },
     {
         path: '/login',
