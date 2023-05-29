@@ -15,6 +15,7 @@
         },
       }"
       input-class="placeholder-small"
+      @date-select="emitDateSelect"
     ></Calendar>
     <!-- <p>Value: '{{ value }}'</p> -->
   </div>
@@ -26,6 +27,22 @@ export default {
     return {
       value: '',
     };
+  },
+  emits: ['date'],
+  methods: {
+    emitDateSelect() {
+      const dataFormatada = new Date(this.value);
+      const day = dataFormatada.getDate();
+      const month = dataFormatada.getMonth() + 1; // Os meses são indexados a partir de zero, portanto, adicionamos 1
+      const year = dataFormatada.getFullYear();
+      this.$emit('date', [`${day}-${month}-${year}`, this.id]);
+    },
+  },
+  props: {
+    id: {
+      type: String,
+      default: 'datePicker1',
+    },
   },
 };
 </script>

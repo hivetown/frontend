@@ -2,21 +2,32 @@
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
       <!-- Barra lateral -->
-      <div style="width: 20%; border: 1px solid black">
+      <div style="width: 20%; border-right: 2px solid #f3f3f3; padding: 0.5vh">
         <div class="parent">
-          <p>Escolha as datas a visualizar:</p>
-          <!-- Datas -->
-          <div class="d-flex gap-2 align-items-center">
-            <DatePicker
-              style="display: flex; justify-content: center"
-            ></DatePicker>
-            <i
-              class="bi bi-arrow-right-short dgreen-txt"
-              style="font-size: 1.5em"
-            ></i>
-            <DatePicker
-              style="display: flex; justify-content: center"
-            ></DatePicker>
+          <!-- Views -->
+          <div class="mt-4 mb-4">
+            <p>Escolha o que deseja visualizar:</p>
+            <DropdownCustom />
+          </div>
+          <div>
+            <p>Escolha as datas a visualizar:</p>
+            <!-- Datas -->
+            <div class="d-flex gap-2 align-items-center">
+              <DatePicker
+                style="display: flex; justify-content: center"
+                @date="handleDateSelect"
+                :id="'datePicker1'"
+              ></DatePicker>
+              <i
+                class="bi bi-arrow-right-short dgreen-txt"
+                style="font-size: 1.5em"
+              ></i>
+              <DatePicker
+                style="display: flex; justify-content: center"
+                @date="handleDateSelect"
+                :id="'datePicker2'"
+              ></DatePicker>
+            </div>
           </div>
           <p class="mt-4">Indique o raio a visualizar:</p>
           <!-- Slider do raio -->
@@ -26,17 +37,17 @@
                 border: 1px solid #ced4da;
                 padding: 0.5vh;
                 border-radius: 10%;
-                width: 8vh;
+                width: 12vh;
                 height: 4vh;
               "
             >
-              <p class="text-center" style="color: #5a5a5a">{{ raio }}</p>
+              <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
             </div>
             <Slider
               v-model="raio"
               :max="100000"
               :pt="{
-                root: { class: 'w-14rem' },
+                root: { style: 'width:60%;' },
                 handle: {
                   style:
                     'background-color: #F1B24A; border: 1px solid #F1B24A;',
@@ -46,11 +57,7 @@
               class="slider-raio"
             />
           </div>
-
-          <div class="mt-4">
-            <p>Escolha o que deseja visualizar:</p>
-            <CascadeSelectCustom></CascadeSelectCustom>
-          </div>
+          <div class="mt-4"><button>Gerar gráficos</button></div>
         </div>
       </div>
       <div style="width: 80%; background-color: ">
@@ -88,7 +95,7 @@
         <!-- Período temporal -->
         <div class="parent mt-4 mb-2">
           <!-- TODO - por a alterar sozinho -->
-          <p>A mostrar dados entre: 2020-01-01 e 2023-12-31</p>
+          <p>A mostrar dados entre: {{ startDate }} e {{ endDate }}</p>
         </div>
         <!-- Dados alteráveis -->
         <div style="background-color: ">
@@ -124,17 +131,8 @@
             class="mt-5 parent"
             style="background-color: lightgray; height: 40vh"
           >
-            <!-- Reports -->
-            <!-- {{ reportCards }} -->
-            <!-- {{ reportMap }} -->
-            <!-- {{ reportEvolution }} -->
-            <!-- MUDAR O TIPO PARA OBJETO DE OBJETOS EM TODO O LADO -->
-            <div v-for="(totalProdutos, data) in reportBarChart" :key="data">
-              <!-- TRANSFORMAR O ID EM MÊS E USAR APENAS O DATA.NUMEROENCOMENDAS -->
-              <!-- {{ data }} - -->
-              <!-- {{ totalProdutos }} -->
-              <!-- {{ totalProdutos }} -->
-            </div>
+            TODO - fazer com que os gráficos só sejam gerados depois do user
+            alterar os dados
           </div>
         </div>
       </div>
@@ -145,7 +143,7 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
-import CascadeSelectCustom from '@/components/CascadeSelectCustom.vue';
+import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
@@ -168,6 +166,10 @@ export default defineComponent({
       userLoggedId: 0 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
+
+      // Datas
+      startDate: 'Indefinido' as string,
+      endDate: 'Indefinido' as string,
 
       // Reports
       reportCards: {} as ReportCard,
@@ -268,6 +270,13 @@ export default defineComponent({
     this.updateGraphData('totalProdutos', 'bar');
   },
   methods: {
+    handleDateSelect(selectedDate: string) {
+      if (selectedDate[1] == 'datePicker1') {
+        this.startDate = selectedDate[0];
+      } else if (selectedDate[1] == 'datePicker2') {
+        this.endDate = selectedDate[0];
+      }
+    },
     // Atualizar os dados do gráfico de linhas
     // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
@@ -331,7 +340,7 @@ export default defineComponent({
     ImpactDataCard,
     LineChart,
     BarChart,
-    CascadeSelectCustom,
+    DropdownCustom,
   },
 });
 </script>
