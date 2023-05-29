@@ -1,18 +1,56 @@
 <template>
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
+      <!-- Barra lateral -->
       <div style="width: 20%; border: 1px solid black">
-        <div>
-          <DatePicker></DatePicker>
-          <InputText v-model.number="raio" />
-          <Slider
-            v-model="raio"
-            :pt="{
-              root: { class: 'w-14rem' },
-              handle: { class: 'bg-orange-400 border-900' },
-              range: { class: 'bg-orange-400' },
-            }"
-          />
+        <div class="parent">
+          <p>Escolha as datas a visualizar:</p>
+          <!-- Datas -->
+          <div class="d-flex gap-2 align-items-center">
+            <DatePicker
+              style="display: flex; justify-content: center"
+            ></DatePicker>
+            <i
+              class="bi bi-arrow-right-short dgreen-txt"
+              style="font-size: 1.5em"
+            ></i>
+            <DatePicker
+              style="display: flex; justify-content: center"
+            ></DatePicker>
+          </div>
+          <p class="mt-4">Indique o raio a visualizar:</p>
+          <!-- Slider do raio -->
+          <div class="d-flex gap-3">
+            <div
+              style="
+                border: 1px solid #ced4da;
+                padding: 0.5vh;
+                border-radius: 10%;
+                width: 8vh;
+                height: 4vh;
+              "
+            >
+              <p class="text-center" style="color: #5a5a5a">{{ raio }}</p>
+            </div>
+            <Slider
+              v-model="raio"
+              :max="100000"
+              :pt="{
+                root: { class: 'w-14rem' },
+                handle: {
+                  style:
+                    'background-color: #F1B24A; border: 1px solid #F1B24A;',
+                },
+                range: { style: 'background-color: #F1B24A' },
+              }"
+              class="slider-raio"
+            />
+          </div>
+
+          <div class="mt-4">
+            <p>Escolha o que deseja visualizar:</p>
+            <CascadeSelectCustom></CascadeSelectCustom>
+          </div>
         </div>
       </div>
       <div style="width: 80%; background-color: ">
@@ -107,6 +145,7 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
+import CascadeSelectCustom from '@/components/CascadeSelectCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
@@ -263,7 +302,6 @@ export default defineComponent({
         for (const string of this.reportBarChart) {
           // Reduzir o nome para caber no gráfico
           const nomeOriginal = string.nome.split(' ');
-          console.log(nomeOriginal);
           let nomeReduzido = nomeOriginal[0];
           for (let i = 1; i < nomeOriginal.length; i++) {
             nomeReduzido += ` ${nomeOriginal[i].charAt(0)}.`;
@@ -287,7 +325,14 @@ export default defineComponent({
       }
     },
   },
-  components: { DatePicker, Slider, ImpactDataCard, LineChart, BarChart },
+  components: {
+    DatePicker,
+    Slider,
+    ImpactDataCard,
+    LineChart,
+    BarChart,
+    CascadeSelectCustom,
+  },
 });
 </script>
 
@@ -323,5 +368,11 @@ export default defineComponent({
   /* width: 40%;
   max-height: 35vh; */
   /* background-color: red; */
+}
+
+.slider-raio {
+  width: 70%;
+  margin-top: 2vh;
+  margin-left: 1vh;
 }
 </style>

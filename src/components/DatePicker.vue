@@ -5,19 +5,22 @@
       v-model="value"
       show-icon
       :date-format="'dd-mm-yy'"
-      class="mb-2"
+      class="mb-2 date-form-input"
       :pt="{
-        input: { class: 'w-16rem' },
         dropdownButton: {
-          root: { class: 'bg-teal-500 border-teal-500' },
+          root: {
+            style:
+              'background-color: transparent !important; border:1px solid #ced4da ;',
+          },
         },
       }"
+      input-class="placeholder-small"
     ></Calendar>
-    <p>Value: '{{ value }}'</p>
+    <!-- <p>Value: '{{ value }}'</p> -->
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   data() {
     return {
@@ -26,3 +29,13 @@ export default {
   },
 };
 </script>
+
+<style>
+.date-form-input {
+  height: 4vh;
+}
+
+.placeholder-small {
+  font-size: 14px !important;
+}
+</style>
