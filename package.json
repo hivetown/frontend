@@ -41,6 +41,7 @@
     "sass": "^1.56.0",
     "vue": "^3.2.41",
     "vue-router": "4",
+	"vue-slick-carousel": "^1.0.6",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
