@@ -7,7 +7,7 @@
           <!-- Views -->
           <div class="mt-4 mb-4">
             <p>Escolha o que deseja visualizar:</p>
-            <DropdownCustom />
+            <DropdownCustom @view="handleViewSelect" />
           </div>
           <div>
             <p>Escolha as datas a visualizar:</p>
@@ -57,7 +57,11 @@
               class="slider-raio"
             />
           </div>
-          <div class="mt-4"><button>Gerar gráficos</button></div>
+          <div class="mt-4">
+            <button v-if="allDataAvailable" @click="generateGraphs()">
+              Gerar gráficos
+            </button>
+          </div>
         </div>
       </div>
       <div style="width: 80%; background-color: ">
@@ -108,9 +112,11 @@
               <div class="graph-container">
                 <!-- <LineChart></LineChart> -->
                 <LineChart
+                  v-if="graficosGerados"
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
+                <Skeleton v-else width="100%" height="30vh"></Skeleton>
               </div>
             </div>
             <div style="background-color: ; width: 53%">
@@ -119,9 +125,11 @@
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
                   <BarChart
+                    v-if="graficosGerados"
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
+                  <Skeleton v-else width="100%" height="30vh"></Skeleton>
                 </div>
               </div>
             </div>
@@ -145,6 +153,7 @@ import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
+import Skeleton from 'primevue/skeleton';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import { ref, computed, defineComponent } from 'vue';
@@ -160,6 +169,9 @@ import {
 export default defineComponent({
   data() {
     return {
+      graficosGerados: false as boolean,
+
+      view: '' as string,
       raio: 0 as Ref<number>,
 
       // Informações do user
@@ -208,6 +220,18 @@ export default defineComponent({
       },
     };
   },
+  computed: {
+    allDataAvailable() {
+      // Verifica se todos os dados são diferentes de undefined
+      return (
+        this.userLoggedId !== 0 &&
+        this.startDate !== 'Indefinido' &&
+        this.endDate !== 'Indefinido' &&
+        this.raio !== 0 &&
+        this.view !== ''
+      );
+    },
+  },
   // A fazer antes de montar o componente
   async beforeMount() {
     // Valor do slider - Raio
@@ -224,52 +248,56 @@ export default defineComponent({
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
     }
+    // // TODO mudar para ser o id do user logado e o raio do slider e as datas
+    // const reportCards = await fetchConsumerReportCards(
+    //   1,
+    //   '2020-01-01',
+    //   '2023-12-31',
+    //   700
+    // );
+    // this.reportCards = reportCards.data;
 
-    // Ir buscar os dados dos cards
-    // TODO mudar para ser o id do user logado e o raio do slider e as datas
-    const reportCards = await fetchConsumerReportCards(
-      1,
-      '2020-01-01',
-      '2023-12-31',
-      700
-    );
-    this.reportCards = reportCards.data;
+    // // Ir buscar os dados do mapa
+    // // TODO mudar para ser o id do user logado e o raio do slider e as datas
+    // const reportMap = await fetchConsumerReportMap(
+    //   1,
+    //   '2020-01-01',
+    //   '2023-12-31',
+    //   700
+    // );
+    // this.reportMap = reportMap.data;
 
-    // Ir buscar os dados do mapa
-    // TODO mudar para ser o id do user logado e o raio do slider e as datas
-    const reportMap = await fetchConsumerReportMap(
-      1,
-      '2020-01-01',
-      '2023-12-31',
-      700
-    );
-    this.reportMap = reportMap.data;
+    // // Ir buscar os dados da evolução (gráfico de linhas)
+    // // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
+    // const reportEvolution = await fetchConsumerReportEvolution(
+    //   1,
+    //   '2020-01-01',
+    //   '2023-12-31',
+    //   700,
+    //   'comprasTotais'
+    // );
+    // this.reportEvolution = reportEvolution.data;
+    // this.updateGraphData('comprasTotais', 'line');
 
-    // Ir buscar os dados da evolução (gráfico de linhas)
-    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
-    const reportEvolution = await fetchConsumerReportEvolution(
-      1,
-      '2020-01-01',
-      '2023-12-31',
-      700,
-      'comprasTotais'
-    );
-    this.reportEvolution = reportEvolution.data;
-    this.updateGraphData('comprasTotais', 'line');
-
-    // Ir buscar os dados do gráfico de barras
-    // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
-    const reportBarChart = await fetchConsumerReportProducts(
-      1,
-      '2020-01-01',
-      '2023-12-31',
-      700,
-      'totalProdutos'
-    );
-    this.reportBarChart = reportBarChart.data;
-    this.updateGraphData('totalProdutos', 'bar');
+    // // Ir buscar os dados do gráfico de barras
+    // // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
+    // const reportBarChart = await fetchConsumerReportProducts(
+    //   1,
+    //   '2020-01-01',
+    //   '2023-12-31',
+    //   700,
+    //   'totalProdutos'
+    // );
+    // this.reportBarChart = reportBarChart.data;
+    // this.updateGraphData('totalProdutos', 'bar');
   },
   methods: {
+    generateGraphs() {
+      this.graficosGerados = true;
+      // Ir buscar os dados dos gráficos
+      // TODO - alerar o id
+      this.loadGraphs(1, this.startDate, this.endDate, this.raio, this.view);
+    },
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
         this.startDate = selectedDate[0];
@@ -277,6 +305,58 @@ export default defineComponent({
         this.endDate = selectedDate[0];
       }
     },
+    handleViewSelect(selectedView: Ref<null>) {
+      this.view = selectedView.code;
+    },
+
+    async loadGraphs(
+      id: number,
+      dataInicio: string,
+      dataFim: string,
+      raio: number,
+      view: string
+    ) {
+      // Ir buscar os dados dos cards
+      const reportCards = await fetchConsumerReportCards(
+        1,
+        dataInicio,
+        dataFim,
+        raio
+      );
+      this.reportCards = reportCards.data;
+
+      // Ir buscar os dados do mapa
+      const reportMap = await fetchConsumerReportMap(
+        1,
+        dataInicio,
+        dataFim,
+        raio
+      );
+      this.reportMap = reportMap.data;
+      // Ir buscar os dados da evolução (gráfico de linhas)
+      // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
+      const reportEvolution = await fetchConsumerReportEvolution(
+        1,
+        dataInicio,
+        dataFim,
+        raio,
+        view
+      );
+      this.reportEvolution = reportEvolution.data;
+      this.updateGraphData(view, 'line');
+
+      // Ir buscar os dados do gráfico de barras
+      const reportBarChart = await fetchConsumerReportProducts(
+        1,
+        dataInicio,
+        dataFim,
+        raio,
+        'totalProdutos'
+      );
+      this.reportBarChart = reportBarChart.data;
+      this.updateGraphData('totalProdutos', 'bar');
+    },
+
     // Atualizar os dados do gráfico de linhas
     // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
@@ -341,6 +421,7 @@ export default defineComponent({
     LineChart,
     BarChart,
     DropdownCustom,
+    Skeleton,
   },
 });
 </script>

@@ -19,16 +19,24 @@
       </div>
 
       <!-- number -->
-      <h1
-        v-if="title === 'Total gasto'"
-        class="text-center"
-        style="color: white"
-      >
-        {{ value }}€
-      </h1>
-      <h1 v-else class="text-center" style="color: white">{{ value }}</h1>
-      <!-- title -->
-      <p class="text-center py-2" style="color: white">{{ title }}</p>
+      <div v-if="value && title">
+        <h1
+          v-if="title === 'Total gasto'"
+          class="text-center"
+          style="color: white"
+        >
+          {{ value }}€
+        </h1>
+        <h1 v-else class="text-center" style="color: white">{{ value }}</h1>
+        <!-- title -->
+        <p class="text-center py-2" style="color: white">{{ title }}</p>
+      </div>
+      <div v-else>
+        <h1 class="text-center" style="color: white">-</h1>
+        <!-- title -->
+        <p class="text-center py-2" style="color: white">{{ title }}</p>
+      </div>
+
       <div class="d-flex gap-2 justify-content-center py-5">
         <!-- <i :class="icon"></i> -->
         <!-- <p class="grey-txt">{{ title }}</p> -->

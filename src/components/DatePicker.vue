@@ -35,7 +35,7 @@ export default {
       const day = dataFormatada.getDate();
       const month = dataFormatada.getMonth() + 1; // Os meses são indexados a partir de zero, portanto, adicionamos 1
       const year = dataFormatada.getFullYear();
-      this.$emit('date', [`${day}-${month}-${year}`, this.id]);
+      this.$emit('date', [`${year}-${month}-${day}`, this.id]);
     },
   },
   props: {
