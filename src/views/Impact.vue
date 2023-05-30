@@ -36,7 +36,7 @@
               style="
                 border: 1px solid #ced4da;
                 padding: 0.5vh;
-                border-radius: 10%;
+                border-radius: 7%;
                 width: 12vh;
                 height: 4vh;
               "
@@ -81,25 +81,48 @@
               title="Total gasto"
               :value="reportCards.comprasTotais"
               color="#7CA2C3"
+              :text-cancel="'Dinheiro devolvido:'"
+              :cancel-value="reportCards.comprasTotaisCanceladas"
             ></ImpactDataCard>
             <ImpactDataCard
               icon="bi bi-box-seam"
               title="Encomendas"
               :value="reportCards.numeroEncomendas"
               color="#DC6942"
+              :text-cancel="'Encomendas canceladas:'"
+              :cancel-value="reportCards.numeroEncomendasCanceladas"
             ></ImpactDataCard>
-            <ImpactDataCard
+            <!-- <ImpactDataCard
               icon="bi bi-bag"
-              title="Produtos comprados"
+              title="Tipos de produtoscomprados"
               :value="reportCards.numeroProdutosEncomendados"
               color="#F1B24A"
+            ></ImpactDataCard> -->
+            <ImpactDataCard
+              icon="bi bi-bag"
+              title="Total de produtos"
+              :value="reportCards.totalProdutos"
+              color="#F1B24A"
+              :text-cancel="'Produtos devolvidos:'"
+              :cancel-value="reportCards.totalProdutosCancelados"
             ></ImpactDataCard>
           </div>
         </div>
-        <!-- Período temporal -->
-        <div class="parent mt-4 mb-2">
+
+        <div class="parent mt-5 mb-2">
           <!-- TODO - por a alterar sozinho -->
-          <p>A mostrar dados entre: {{ startDate }} e {{ endDate }}</p>
+          <InlineMessage v-if="!graficosGerados" severity="warn" class="mb-5"
+            >Para visualizar os dados tem de escolher valores para os
+            filtros</InlineMessage
+          >
+
+          <!-- Período temporal -->
+          <p v-if="graficosGerados">
+            A mostrar dados entre: "
+            <span class="fw-bold">{{ startDate }}</span
+            >" e " <span class="fw-bold">{{ endDate }}</span
+            >"
+          </p>
         </div>
         <!-- Dados alteráveis -->
         <div style="background-color: ">
@@ -107,7 +130,30 @@
           <div class="parent d-flex" style="background-color: ; gap: 4%">
             <div style="background-color: ; width: 43%">
               <!-- Muda a cada view -->
-              <h4 class="py-4 dgreen-txt">Histórico de gastos</h4>
+              <h4
+                v-if="view == 'numeroEncomendas' && viewAtualizada"
+                class="py-4 dgreen-txt"
+              >
+                Histórico de encomendas
+              </h4>
+              <h4
+                v-if="view == 'totalProdutos' && viewAtualizada"
+                class="py-4 dgreen-txt"
+              >
+                Quantidade de produtos diferentes encomendados
+              </h4>
+              <h4
+                v-if="view == 'numeroProdutosEncomendados' && viewAtualizada"
+                class="py-4 dgreen-txt"
+              >
+                Quantidade de produtos encomendados
+              </h4>
+              <h4
+                v-if="view == 'comprasTotais' && viewAtualizada"
+                class="py-4 dgreen-txt"
+              >
+                Histórico de gastos
+              </h4>
               <!-- Gráfico de linhas -->
               <div class="graph-container">
                 <!-- <LineChart></LineChart> -->
@@ -121,7 +167,9 @@
             </div>
             <div style="background-color: ; width: 53%">
               <div>
-                <h4 class="py-4 dgreen-txt">Produtos encomendados</h4>
+                <h4 v-if="viewAtualizada" class="py-4 dgreen-txt">
+                  Produtos encomendados
+                </h4>
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
                   <BarChart
@@ -139,8 +187,9 @@
             class="mt-5 parent"
             style="background-color: lightgray; height: 40vh"
           >
-            TODO - fazer com que os gráficos só sejam gerados depois do user
-            alterar os dados
+            TODO - Implementar categorias - Items canelados nos dados se der -
+            Passar ao admin e fonecedor - Mostrar que o botão está lá mas deixar
+            desabled
           </div>
         </div>
       </div>
@@ -153,6 +202,7 @@ import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
+import InlineMessage from 'primevue/inlinemessage';
 import Skeleton from 'primevue/skeleton';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
@@ -170,6 +220,7 @@ export default defineComponent({
   data() {
     return {
       graficosGerados: false as boolean,
+      viewAtualizada: false as boolean,
 
       view: '' as string,
       raio: 0 as Ref<number>,
@@ -232,7 +283,7 @@ export default defineComponent({
       );
     },
   },
-  // A fazer antes de montar o componente
+
   async beforeMount() {
     // Valor do slider - Raio
     const raio = ref(0);
@@ -248,48 +299,6 @@ export default defineComponent({
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
     }
-    // // TODO mudar para ser o id do user logado e o raio do slider e as datas
-    // const reportCards = await fetchConsumerReportCards(
-    //   1,
-    //   '2020-01-01',
-    //   '2023-12-31',
-    //   700
-    // );
-    // this.reportCards = reportCards.data;
-
-    // // Ir buscar os dados do mapa
-    // // TODO mudar para ser o id do user logado e o raio do slider e as datas
-    // const reportMap = await fetchConsumerReportMap(
-    //   1,
-    //   '2020-01-01',
-    //   '2023-12-31',
-    //   700
-    // );
-    // this.reportMap = reportMap.data;
-
-    // // Ir buscar os dados da evolução (gráfico de linhas)
-    // // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
-    // const reportEvolution = await fetchConsumerReportEvolution(
-    //   1,
-    //   '2020-01-01',
-    //   '2023-12-31',
-    //   700,
-    //   'comprasTotais'
-    // );
-    // this.reportEvolution = reportEvolution.data;
-    // this.updateGraphData('comprasTotais', 'line');
-
-    // // Ir buscar os dados do gráfico de barras
-    // // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
-    // const reportBarChart = await fetchConsumerReportProducts(
-    //   1,
-    //   '2020-01-01',
-    //   '2023-12-31',
-    //   700,
-    //   'totalProdutos'
-    // );
-    // this.reportBarChart = reportBarChart.data;
-    // this.updateGraphData('totalProdutos', 'bar');
   },
   methods: {
     generateGraphs() {
@@ -306,7 +315,10 @@ export default defineComponent({
       }
     },
     handleViewSelect(selectedView: Ref<null>) {
+      // TODO -fazer debug da view atualizada para alterar a legendas dos gráficos
+      this.viewAtualizada = false;
       this.view = selectedView.code;
+      this.viewAtualizada = true;
     },
 
     async loadGraphs(
@@ -324,6 +336,7 @@ export default defineComponent({
         raio
       );
       this.reportCards = reportCards.data;
+      //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
       const reportMap = await fetchConsumerReportMap(
@@ -333,6 +346,8 @@ export default defineComponent({
         raio
       );
       this.reportMap = reportMap.data;
+      //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
+
       // Ir buscar os dados da evolução (gráfico de linhas)
       // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
       const reportEvolution = await fetchConsumerReportEvolution(
@@ -368,20 +383,30 @@ export default defineComponent({
         // Preparar os dados para o gráfico de linhas (Evolução)
         for (const [data, string] of Object.entries(this.reportEvolution)) {
           this.lineGraphLabels.push(String(data));
-          if (view == 'comprasTotais') {
-            this.lineGraphData.push(string.comprasTotais); // Só as que não foram canceladas
+          if (view == 'numeroEncomendas') {
+            this.lineGraphData.push(Object(string).numeroEncomendas);
+          } else if (view == 'totalProdutos') {
+            this.lineGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+          } else if (view == 'numeroProdutosEncomendados') {
+            this.lineGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+          } else if (view == 'comprasTotais') {
+            this.lineGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
           }
         }
         this.lineChartData = {
           labels: this.lineGraphLabels,
           datasets: [
             {
-              label: 'Produtos comprados',
+              // TODO - alterar para ser mais user friendly a label
+              label: view,
               backgroundColor: '#9DC88D',
               data: this.lineGraphData,
             },
           ],
         };
+        console.log(this.lineChartData);
+        console.log(this.lineGraphLabels);
+        console.log(this.view);
       } else if (grapthType == 'bar') {
         // Limpar os arrays de dados
         this.barGraphLabels = [];
@@ -422,6 +447,7 @@ export default defineComponent({
     BarChart,
     DropdownCustom,
     Skeleton,
+    InlineMessage,
   },
 });
 </script>

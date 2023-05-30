@@ -37,9 +37,17 @@
         <p class="text-center py-2" style="color: white">{{ title }}</p>
       </div>
 
-      <div class="d-flex gap-2 justify-content-center py-5">
-        <!-- <i :class="icon"></i> -->
-        <!-- <p class="grey-txt">{{ title }}</p> -->
+      <div>
+        <p
+          v-if="textCancel == 'Dinheiro devolvido:'"
+          style="font-size: 0.95em"
+          class="text-center"
+        >
+          {{ textCancel }} {{ cancelValue }} €
+        </p>
+        <p v-else style="font-size: 0.95em" class="text-center">
+          {{ textCancel }} {{ cancelValue }}
+        </p>
       </div>
     </div>
   </div>
@@ -74,6 +82,16 @@ export default {
       type: String,
       required: false,
       default: '#F1B24A',
+    },
+    textCancel: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    cancelValue: {
+      type: Number,
+      required: false,
+      default: undefined,
     },
   },
 };
