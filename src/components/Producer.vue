@@ -18,8 +18,9 @@
           {{ users['items'][idx - 1]['user']['email'] }} <br />
           {{ users['items'][idx - 1]['user']['type'] }}
         </b-card-text>
+
         <b-button
-          :href="'admin/producer/' + users['items'][idx - 1]['id']"
+          :href="'admin/producer/' + users['items'][idx - 1]['user']['id']"
           class="custom-button"
           >Ver perfil</b-button
         >

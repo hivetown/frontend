@@ -9,6 +9,8 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Admin from '@/views/Admin.vue';
+import ConsumerAdmin from '@/views/ConsumerAdmin.vue';
+import ProducerAdmin from '@/views/ProducerAdmin.vue';
 import Register from '@/views/Register.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
@@ -62,7 +64,31 @@ const routes = [
         path: '/admin',
         name: 'Admin',
         component: Admin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions:
+                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
     },
+    {
+        path: '/admin/consumer/:id',
+        name: 'Consumer',
+        component: ConsumerAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions: Permission.ALL_CONSUMER,
+        },
+    },
+    {
+        path: '/admin/producer/:id',
+        name: 'Producer',
+        component: ProducerAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions: Permission.ALL_PRODUCER,
+        },
+    },
+
     {
         path: '/login',
         name: 'Login',
@@ -124,4 +150,3 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
-
