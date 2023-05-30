@@ -29,7 +29,7 @@ export default {
       { name: 'Número de encomendas', code: 'numeroEncomendas' },
       { name: 'Total de produtos comprados', code: 'totalProdutos' },
       {
-        name: 'Totalde produtos diferentes comprados',
+        name: 'Total de produtos diferentes comprados',
         code: 'numeroProdutosEncomendados',
       },
       { name: 'Total gasto em compras', code: 'comprasTotais' },

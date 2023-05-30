@@ -131,25 +131,26 @@
             <div style="background-color: ; width: 43%">
               <!-- Muda a cada view -->
               <h4
-                v-if="view == 'numeroEncomendas' && viewAtualizada"
+                v-if="view == 'numeroEncomendas' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
                 Histórico de encomendas
               </h4>
+
               <h4
-                v-if="view == 'totalProdutos' && viewAtualizada"
+                v-if="view == 'totalProdutos' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
                 Quantidade de produtos diferentes encomendados
               </h4>
               <h4
-                v-if="view == 'numeroProdutosEncomendados' && viewAtualizada"
+                v-if="view == 'numeroProdutosEncomendados' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
                 Quantidade de produtos encomendados
               </h4>
               <h4
-                v-if="view == 'comprasTotais' && viewAtualizada"
+                v-if="view == 'comprasTotais' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
                 Histórico de gastos
@@ -162,12 +163,12 @@
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
-                <Skeleton v-else width="100%" height="30vh"></Skeleton>
+                <!-- <Skeleton v-else width="100%" height="30vh"></Skeleton> -->
               </div>
             </div>
             <div style="background-color: ; width: 53%">
               <div>
-                <h4 v-if="viewAtualizada" class="py-4 dgreen-txt">
+                <h4 v-if="graficosGerados" class="py-4 dgreen-txt">
                   Produtos encomendados
                 </h4>
                 <!-- Gráfico de barras -->
@@ -177,20 +178,20 @@
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
-                  <Skeleton v-else width="100%" height="30vh"></Skeleton>
+                  <!-- <Skeleton v-else width="100%" height="30vh"></Skeleton> -->
                 </div>
               </div>
             </div>
           </div>
           <!-- Mapa -->
-          <div
+          <!-- <div
             class="mt-5 parent"
             style="background-color: lightgray; height: 40vh"
           >
             TODO - Implementar categorias - Items canelados nos dados se der -
             Passar ao admin e fonecedor - Mostrar que o botão está lá mas deixar
-            desabled
-          </div>
+            desabled -->
+          <div class="mt-5 parent" style="height: 40vh"></div>
         </div>
       </div>
     </div>
@@ -220,7 +221,6 @@ export default defineComponent({
   data() {
     return {
       graficosGerados: false as boolean,
-      viewAtualizada: false as boolean,
 
       view: '' as string,
       raio: 0 as Ref<number>,
@@ -315,10 +315,8 @@ export default defineComponent({
       }
     },
     handleViewSelect(selectedView: Ref<null>) {
-      // TODO -fazer debug da view atualizada para alterar a legendas dos gráficos
-      this.viewAtualizada = false;
+      // TODO -fazer debug da view atualizada para alterar a legendas dos gráficos~
       this.view = selectedView.code;
-      this.viewAtualizada = true;
     },
 
     async loadGraphs(

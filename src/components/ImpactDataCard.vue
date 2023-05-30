@@ -37,7 +37,7 @@
         <p class="text-center py-2" style="color: white">{{ title }}</p>
       </div>
 
-      <div>
+      <div v-if="cancelValue">
         <p
           v-if="textCancel == 'Dinheiro devolvido:'"
           style="font-size: 0.95em"
