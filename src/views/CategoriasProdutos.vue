@@ -193,7 +193,6 @@ export default defineComponent({
       // Se não houver uma
       this.currentCategory = 'Todas as categorias';
     }
-    console.log(this.allCategories);
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
     const maxPriceProduct =

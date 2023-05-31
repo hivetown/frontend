@@ -74,7 +74,6 @@ export default {
         console.error(error);
       }
     });
-    console.log(page.value);
     return { users, qtd, page, pageSize, totalItems };
   },
   methods: {
@@ -86,12 +85,9 @@ export default {
       // sua função aqui
       const response = getConsumers(this.page, this.pageSize);
       this.users = response.data;
-      console.log(response);
-      console.log(this.page);
     },
     handlePageChange(value: number) {
       this.page = value;
-      console.log(value);
     },
   },
 };

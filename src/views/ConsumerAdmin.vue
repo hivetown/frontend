@@ -149,16 +149,16 @@ import {
 } from '../api/consumers';
 import { onMounted, ref } from 'vue';
 import { Consumer } from '../types/interfaces';
+import { useRoute } from 'vue-router';
 export default {
   setup() {
+    const route = useRoute();
     let formData = {};
     const id = ref(0);
     const collapsed = ref(true);
     const users = ref<Consumer>({});
     onMounted(async () => {
-      id.value = window.location.pathname.split('/').pop()?.toString();
-      console.log(id.value);
-
+      id.value = route.params.id;
       try {
         const response = await getConsumerId(id.value);
         users.value = response.data;
@@ -181,7 +181,6 @@ export default {
 
       // Mescla valores padrão com valores do formulário
       const data = { ...defaults, ...this.formData };
-      console.log(this.formData);
       if ((Object.keys(this.formData).length === 0) === true) {
         Swal.fire({
           icon: 'error',

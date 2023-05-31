@@ -31,21 +31,7 @@
           <br />
           <strong>Telemóvel: </strong
           >{{ users['user']['phone'] || 'Não definido' }}
-          <br />
-          <strong>Morada: </strong>
-          {{
-            users['addresses'] && users['addresses'][0]
-              ? users['addresses'][0]['street'] +
-                ', nº' +
-                users['addresses'][0]['number'] +
-                ', porta ' +
-                users['addresses'][0]['door'] +
-                ' ' +
-                users['addresses'][0]['zipCode'] +
-                ', ' +
-                users['addresses'][0]['city']
-              : 'Não definido'
-          }}
+
           <div
             v-for="num in Array.isArray(users['addresses']) &&
             users['addresses'].length > 0
@@ -171,8 +157,10 @@ import {
 } from '../api/producers';
 import { onMounted, ref } from 'vue';
 import { Consumer } from '../types/interfaces';
+import { useRoute } from 'vue-router';
 export default {
   setup() {
+    const route = useRoute();
     let formData = {};
     const id = ref(0);
     const qtd = ref(0);
@@ -183,7 +171,7 @@ export default {
     const responseList = ref<Consumer>([]);
 
     onMounted(async () => {
-      id.value = window.location.pathname.split('/').pop()?.toString();
+      id.value = route.params.id;
       try {
         const response = await getProducerId(id.value);
         users.value = response.data;
@@ -218,7 +206,6 @@ export default {
 
       // Mescla valores padrão com valores do formulário
       const data = { ...defaults, ...this.formData };
-      console.log(this.formData);
       if ((Object.keys(this.formData).length === 0) === true) {
         Swal.fire({
           icon: 'error',
