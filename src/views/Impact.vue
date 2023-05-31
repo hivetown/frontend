@@ -1,3 +1,4 @@
+<!-- TODO - validar os campos -->
 <template>
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
@@ -7,7 +8,7 @@
           <!-- Views -->
           <div class="mt-4 mb-4">
             <p>Escolha o que deseja visualizar:</p>
-            <DropdownCustom @view="handleViewSelect" />
+            <DropdownCustom class="required-field" @view="handleViewSelect" />
           </div>
           <div>
             <p>Escolha as datas a visualizar:</p>
@@ -36,10 +37,11 @@
               style="
                 border: 1px solid #ced4da;
                 padding: 0.5vh;
-                border-radius: 7%;
+                border-radius: 9%;
                 width: 12vh;
                 height: 4vh;
               "
+              class="slider-before"
             >
               <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
             </div>
@@ -57,10 +59,24 @@
               class="slider-raio"
             />
           </div>
+          <!-- Escolher categoria -->
+          <div>
+            <p class="mt-4">Escolha a categoria a visualizar:</p>
+            <CategoryFilter :categories="allCategories"></CategoryFilter>
+          </div>
           <div class="mt-4">
-            <button v-if="allDataAvailable" @click="generateGraphs()">
-              Gerar gráficos
-            </button>
+            <!-- Botão -->
+            <ButtonPV
+              :disabled="!allDataAvailable"
+              @click="generateGraphs()"
+              label="Gerar gráficos"
+              :pt="{
+                root: {
+                  style: 'background-color:#F1B24A; border:#F1B24A;',
+                },
+              }"
+              rounded
+            />
           </div>
         </div>
       </div>
@@ -207,10 +223,19 @@ import InlineMessage from 'primevue/inlinemessage';
 import Skeleton from 'primevue/skeleton';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
+import ButtonPV from 'primevue/button';
+import CategoryFilter from '@/components/CategoryFilter.vue';
 import { ref, computed, defineComponent } from 'vue';
 import { useStore } from '@/store';
-import { ReportCard, Image, ReportMap, ReportEvolution } from '@/types';
 import {
+  ReportCard,
+  Image,
+  ReportMap,
+  ReportEvolution,
+  Category,
+} from '@/types';
+import {
+  fetchAllCategories,
   fetchConsumerReportCards,
   fetchConsumerReportMap,
   fetchConsumerReportEvolution,
@@ -230,6 +255,9 @@ export default defineComponent({
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
 
+      // Categorias
+      allCategories: [] as Category[],
+
       // Datas
       startDate: 'Indefinido' as string,
       endDate: 'Indefinido' as string,
@@ -239,6 +267,7 @@ export default defineComponent({
       reportMap: {} as ReportMap[],
       reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
+      selectedCategory: 0 as number,
 
       // Gráfico de linhas
       lineGraphLabels: [] as string[],
@@ -299,13 +328,24 @@ export default defineComponent({
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
     }
+
+    // TODO - alterar a forma como as categorias são buscadas
+    // Ir buscar as categorias (só traz as 24 de uma página)
+    const allCategoriesData = await fetchAllCategories();
+    const allCategories = allCategoriesData.data.items;
+    this.allCategories = allCategories;
   },
   methods: {
     generateGraphs() {
       this.graficosGerados = true;
       // Ir buscar os dados dos gráficos
       // TODO - alerar o id
-      this.loadGraphs(1, this.startDate, this.endDate, this.raio, this.view);
+      if (this.selectedCategory != 0) {
+        // nada ainda
+        // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
+      } else {
+        this.loadGraphs(1, this.startDate, this.endDate, this.raio, this.view);
+      }
     },
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
@@ -446,6 +486,8 @@ export default defineComponent({
     DropdownCustom,
     Skeleton,
     InlineMessage,
+    ButtonPV,
+    CategoryFilter,
   },
 });
 </script>
@@ -484,9 +526,25 @@ export default defineComponent({
   /* background-color: red; */
 }
 
+.slider-before::before {
+  content: '*';
+  color: red;
+  position: absolute;
+  margin-left: -1rem;
+  margin-top: -0.3rem;
+}
+
 .slider-raio {
   width: 70%;
   margin-top: 2vh;
   margin-left: 1vh;
+}
+
+.required-field::before {
+  content: '*';
+  color: red;
+  position: absolute;
+  top: 0;
+  left: -0.7rem;
 }
 </style>

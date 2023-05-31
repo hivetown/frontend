@@ -5,7 +5,7 @@
       v-model="value"
       show-icon
       :date-format="'dd-mm-yy'"
-      class="mb-2 date-form-input"
+      class="mb-2 date-form-input required-field"
       :pt="{
         dropdownButton: {
           root: {
