@@ -5,6 +5,7 @@ import {
     ReportCard,
     ReportMap,
     ReportEvolution,
+    ReportBarChartProduct,
 } from '@/types';
 import { api } from './_base';
 
@@ -52,6 +53,6 @@ export const fetchConsumerReportProducts = (
     raio?: number,
     view?: string
 ) =>
-    api.get<ReportEvolution>(
+    api.get<ReportBarChartProduct[]>(
         `/reports/${id}/products?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );

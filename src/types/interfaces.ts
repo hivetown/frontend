@@ -167,9 +167,23 @@ export interface ReportEvolution {
     totalProdutosCancelados?: number;
 }
 
-export interface ReportProducts {
+export interface ReportBarChartProduct {
     id: number;
     nome: string;
     totalProdutos: number;
     totalProdutosCancelados: number;
+}
+
+// Ver se isto está a ser usado
+export interface ReportProducts {
+    id: number;
+    nome: string;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }

@@ -173,13 +173,11 @@
               </h4>
               <!-- Gráfico de linhas -->
               <div class="graph-container">
-                <!-- <LineChart></LineChart> -->
                 <LineChart
                   v-if="graficosGerados"
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
-                <!-- <Skeleton v-else width="100%" height="30vh"></Skeleton> -->
               </div>
             </div>
             <div style="background-color: ; width: 53%">
@@ -194,7 +192,6 @@
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
-                  <!-- <Skeleton v-else width="100%" height="30vh"></Skeleton> -->
                 </div>
               </div>
             </div>
@@ -205,8 +202,7 @@
             style="background-color: lightgray; height: 40vh"
           >
             TODO - Implementar categorias - Items canelados nos dados se der -
-            Passar ao admin e fonecedor - Mostrar que o botão está lá mas deixar
-            desabled -->
+           -->
           <div class="mt-5 parent" style="height: 40vh"></div>
         </div>
       </div>
@@ -217,10 +213,10 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
+import { ChartData } from 'chart.js';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import InlineMessage from 'primevue/inlinemessage';
-import Skeleton from 'primevue/skeleton';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
@@ -232,6 +228,7 @@ import {
   Image,
   ReportMap,
   ReportEvolution,
+  ReportBarChartProduct,
   Category,
 } from '@/types';
 import {
@@ -248,7 +245,7 @@ export default defineComponent({
       graficosGerados: false as boolean,
 
       view: '' as string,
-      raio: 0 as Ref<number>,
+      raio: 0 as any,
 
       // Informações do user
       userLoggedId: 0 as number,
@@ -266,7 +263,7 @@ export default defineComponent({
       reportCards: {} as ReportCard,
       reportMap: {} as ReportMap[],
       reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
-      reportBarChart: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
+      reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
 
       // Gráfico de linhas
@@ -287,10 +284,22 @@ export default defineComponent({
       // Gráfico de barras
       barGraphLabels: [] as string[],
       barGraphData: [] as number[],
+      //   barChartData: {
+      //     labels: ['no data'] as string[],
+      //     datasets: [] as string[],
+      //   } as Object,
       barChartData: {
-        labels: ['no data'] as string[],
-        datasets: [] as string[],
-      } as any,
+        labels: ['no data'],
+        datasets: [
+          {
+            label: 'Gráfico barras',
+            data: [] as number[],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+          },
+        ],
+      } as ChartData<'bar', (number | [number, number] | null)[], unknown>,
       barChartOptions: {
         plugins: {
           legend: {
@@ -354,8 +363,8 @@ export default defineComponent({
         this.endDate = selectedDate[0];
       }
     },
-    handleViewSelect(selectedView: Ref<null>) {
-      // TODO -fazer debug da view atualizada para alterar a legendas dos gráficos~
+    handleViewSelect(selectedView: any) {
+      // TODO - fazer debug da view atualizada para alterar a legendas dos gráficos
       this.view = selectedView.code;
     },
 
@@ -408,6 +417,7 @@ export default defineComponent({
       );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData('totalProdutos', 'bar');
+      console.log(this.reportBarChart);
     },
 
     // Atualizar os dados do gráfico de linhas
@@ -461,7 +471,9 @@ export default defineComponent({
 
           this.barGraphLabels.push(nomeReduzido);
           if (view == 'totalProdutos') {
-            this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+            if (string.totalProdutos) {
+              this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+            }
           }
         }
         this.barChartData = {
@@ -484,7 +496,6 @@ export default defineComponent({
     LineChart,
     BarChart,
     DropdownCustom,
-    Skeleton,
     InlineMessage,
     ButtonPV,
     CategoryFilter,
@@ -494,7 +505,6 @@ export default defineComponent({
 
 <style>
 .user-info {
-  /* background-color: pink; */
   width: 35%;
   padding: 3vh;
   gap: 2vh;
@@ -511,19 +521,11 @@ export default defineComponent({
 }
 
 .data-cards {
-  /* background-color: red; */
-  /* margin-left: 5vh; */
   display: flex;
   justify-content: flex-end;
   padding: 3vh;
   gap: 4vh;
   width: 65%;
-}
-
-.graph-container {
-  /* width: 40%;
-  max-height: 35vh; */
-  /* background-color: red; */
 }
 
 .slider-before::before {
