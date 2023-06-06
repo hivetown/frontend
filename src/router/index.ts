@@ -93,6 +93,7 @@ const routes = [
         component: ProductsProducer,
         meta: {
             requiresAuth: true,
+            requiredPermissions: Permission.ALL_PRODUCER,
         },
     },
     {
@@ -101,6 +102,7 @@ const routes = [
         component: ProductionUnits,
         meta: {
             requiresAuth: true,
+            requiredPermissions: Permission.ALL_PRODUCER,
         },
     },
 
@@ -108,6 +110,7 @@ const routes = [
         path: '/production-units/:producerId/:unitId/:unitName/products',
         name: 'ProductionUnitProducts',
         component: ProductionUnitProducts,
+        requiredPermissions: Permission.ALL_PRODUCER,
     },
 
     {
@@ -116,6 +119,7 @@ const routes = [
         component: Transports,
         meta: {
             requiresAuth: true,
+            requiredPermissions: Permission.ALL_PRODUCER,
         },
     },
     {

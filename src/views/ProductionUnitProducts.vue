@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">Produtos da UP: {{ $route.params.unitName }}</h1>
+    <h1 class="mb-5">Produtos da UP: {{ unitName }}</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <template
         v-if="
@@ -83,8 +83,13 @@
 <script lang="ts">
 import { fetchAllUnitProducts } from '@/api/unitProducts';
 import Pagination from '../components/Pagination.vue';
-import { Product } from '@/types/Product';
+import { Product } from '@/types';
 export default {
+  computed: {
+    unitName() {
+      return this.$route.params.unitName;
+    },
+  },
   components: {
     Pagination,
   },
@@ -92,17 +97,19 @@ export default {
   data() {
     return {
       unitProducts: [] as Product[],
+      allUnitProducts: {},
     };
   },
   async mounted() {
     try {
       console.log('Idddd', this.$route.params.unitId);
+      const producerId = this.$route.params.producerId;
       const unitId = this.$route.params.unitId;
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
       const allUnitProducts = await fetchAllUnitProducts(
-        2,
+        producerId,
         unitId,
         page,
         pageSize

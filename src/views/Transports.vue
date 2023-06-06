@@ -108,11 +108,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, inject } from 'vue';
 import { TransportVehicles } from '@/types/TransportVehicles';
 import { fetchAllTransports } from '@/api/transports';
-import { fetchAuth } from '../api/auth';
-import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
 export default {
@@ -137,7 +134,7 @@ export default {
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      const allTransportsData = await fetchAllTransports(id, page, pageSize);
+      const allTransportsData = await fetchAllTransports(2, page, pageSize);
 
       console.log('allTransportsData:', allTransportsData);
 

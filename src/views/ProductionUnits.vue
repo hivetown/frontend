@@ -93,21 +93,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, inject } from 'vue';
-import { Units } from '@/types/Units';
+import { ProductionUnits } from '@/types';
 import { fetchAllUnits } from '@/api/units';
-import { fetchAuth } from '../api/auth';
-import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
-import { computed } from 'vue';
+
 export default {
   components: {
     Pagination,
   },
   data() {
     return {
-      productionUnits: [] as Units[],
+      productionUnits: [] as ProductionUnits[],
       allUnitsData: {},
     };
   },

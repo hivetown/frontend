@@ -78,13 +78,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, inject } from 'vue';
-import { Product } from '@/types/Product';
 import { fetchAllProducts } from '@/api/producerProducts';
-import { fetchAuth } from '../api/auth';
-import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
+import { Product } from '@types';
 
 export default {
   components: {
