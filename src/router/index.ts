@@ -9,7 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import ProductsProducer from '@/views/ProductsProducer.vue';
 import ProductionUnits from '@/views/ProductionUnits.vue';
-import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue'
+import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
@@ -93,7 +93,7 @@ const routes = [
         component: ProductsProducer,
         meta: {
             requiresAuth: true,
-            requiredPermissions: Permission.ALL_PRODUCER,
+            requiredProducer: true,
         },
     },
     {
@@ -102,7 +102,7 @@ const routes = [
         component: ProductionUnits,
         meta: {
             requiresAuth: true,
-            requiredPermissions: Permission.ALL_PRODUCER,
+            requiredProducer: true,
         },
     },
 
@@ -110,7 +110,7 @@ const routes = [
         path: '/production-units/:producerId/:unitId/:unitName/products',
         name: 'ProductionUnitProducts',
         component: ProductionUnitProducts,
-        requiredPermissions: Permission.ALL_PRODUCER,
+        requiredProducer: true,
     },
 
     {
@@ -119,7 +119,7 @@ const routes = [
         component: Transports,
         meta: {
             requiresAuth: true,
-            requiredPermissions: Permission.ALL_PRODUCER,
+            requiredProducer: true,
         },
     },
     {
@@ -183,5 +183,44 @@ router.beforeEach(async (to, from, next) => {
 
     next();
 });
+
+export const checkProducerMiddleware = async (
+    producerId: number,
+    _to: { matched: { meta: { requiredProducer: boolean } }[] },
+    _next: () => void
+) => {
+    const store = useStore();
+    const userId = store.state.user!.user.id;
+    console.log('producerId', producerId);
+    console.log('userId', userId);
+    // console log requiredProducer before and after the loop
+    _to.matched.forEach((record: { meta: { requiredProducer: boolean } }) => {
+        console.log('requiredProducer1', record.meta.requiredProducer);
+    });
+
+    if (
+        producerId === userId &&
+        userId !== undefined &&
+        producerId !== undefined
+    ) {
+        // User is the producer, set requiredProducer to true
+        _to.matched.forEach(
+            (record: { meta: { requiredProducer: boolean } }) => {
+                record.meta.requiredProducer = true;
+                console.log('requiredProducer2', record.meta.requiredProducer);
+            }
+        );
+    } else {
+        // User is not the producer, set requiredProducer to false
+        _to.matched.forEach(
+            (record: { meta: { requiredProducer: boolean } }) => {
+                record.meta.requiredProducer = false;
+                console.log('requiredProducer3', record.meta.requiredProducer);
+            }
+        );
+    }
+
+    _next();
+};
 
 export default router;
