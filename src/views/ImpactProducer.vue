@@ -3,84 +3,97 @@
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
       <!-- Barra lateral -->
-      <div style="width: 20%; border-right: 2px solid #f3f3f3; padding: 0.5vh">
-        <div class="parent">
-          <!-- Views -->
-          <div class="mt-4 mb-4">
-            <p>Escolha o que deseja visualizar:</p>
-            <DropdownCustom class="required-field" @view="handleViewSelect" />
-          </div>
-          <div>
-            <p>Escolha as datas a visualizar:</p>
-            <!-- Datas -->
-            <div class="d-flex gap-2 align-items-center">
-              <DatePicker
-                style="display: flex; justify-content: center"
-                @date="handleDateSelect"
-                :id="'datePicker1'"
-              ></DatePicker>
-              <i
-                class="bi bi-arrow-right-short dgreen-txt"
-                style="font-size: 1.5em"
-              ></i>
-              <DatePicker
-                style="display: flex; justify-content: center"
-                @date="handleDateSelect"
-                :id="'datePicker2'"
-              ></DatePicker>
+      <div
+        class="reportSidebar"
+        style="
+          width: 20%;
+          border-right: 2px solid #f3f3f3;
+          padding: 0.5vh;
+          background-color: ;
+        "
+      >
+        <div class="">
+          <div class="parent">
+            <!-- Views -->
+            <div class="mt-4 mb-4">
+              <p>Escolha o que deseja visualizar:</p>
+              <DropdownCustom class="required-field" @view="handleViewSelect" />
             </div>
-          </div>
-          <p class="mt-4">Indique o raio a visualizar:</p>
-          <!-- Slider do raio -->
-          <div class="d-flex gap-3">
-            <div
-              style="
-                border: 1px solid #ced4da;
-                padding: 0.5vh;
-                border-radius: 9%;
-                width: 12vh;
-                height: 4vh;
-              "
-              class="slider-before"
-            >
-              <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
+            <div>
+              <p>Escolha as datas a visualizar:</p>
+              <!-- Datas -->
+              <div class="d-flex gap-2 align-items-center">
+                <DatePicker
+                  style="display: flex; justify-content: center"
+                  @date="handleDateSelect"
+                  :id="'datePicker1'"
+                ></DatePicker>
+                <i
+                  class="bi bi-arrow-right-short dgreen-txt"
+                  style="font-size: 1.5em"
+                ></i>
+                <DatePicker
+                  style="display: flex; justify-content: center"
+                  @date="handleDateSelect"
+                  :id="'datePicker2'"
+                ></DatePicker>
+              </div>
             </div>
-            <Slider
-              v-model="raio"
-              :max="100000"
-              :pt="{
-                root: { style: 'width:60%;' },
-                handle: {
-                  style:
-                    'background-color: #F1B24A; border: 1px solid #F1B24A;',
-                },
-                range: { style: 'background-color: #F1B24A' },
-              }"
-              class="slider-raio"
-            />
-          </div>
-          <!-- Escolher categoria -->
-          <div>
-            <p class="mt-4">Escolha a categoria a visualizar:</p>
-            <CategoryFilter :categories="allCategories"></CategoryFilter>
-          </div>
-          <div class="mt-4">
-            <!-- Botão -->
-            <ButtonPV
-              :disabled="!allDataAvailable"
-              @click="generateGraphs()"
-              label="Gerar gráficos"
-              :pt="{
-                root: {
-                  style: 'background-color:#F1B24A; border:#F1B24A;',
-                },
-              }"
-              rounded
-            />
+            <p class="mt-4">Indique o raio a visualizar:</p>
+            <!-- Slider do raio -->
+            <div class="d-flex gap-3">
+              <div
+                style="
+                  border: 1px solid #ced4da;
+                  padding: 0.5vh;
+                  border-radius: 9%;
+                  width: 12vh;
+                  height: 4vh;
+                "
+                class="slider-before"
+              >
+                <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
+              </div>
+              <Slider
+                v-model="raio"
+                :max="100000"
+                :pt="{
+                  root: { style: 'width:60%;' },
+                  handle: {
+                    style:
+                      'background-color: #F1B24A; border: 1px solid #F1B24A;',
+                  },
+                  range: { style: 'background-color: #F1B24A' },
+                }"
+                class="slider-raio"
+              />
+            </div>
+            <!-- Escolher categoria -->
+            <div>
+              <p class="mt-4">Escolha a categoria a visualizar:</p>
+              <CategoryFilter :categories="allCategories"></CategoryFilter>
+            </div>
+            <div class="mt-4 btn-report-mobile">
+              <!-- Botão -->
+              <ButtonPV
+                :disabled="!allDataAvailable"
+                @click="generateGraphs()"
+                label="Gerar gráficos"
+                :pt="{
+                  root: {
+                    style: 'background-color:#F1B24A; border:#F1B24A;',
+                  },
+                }"
+                rounded
+              />
+            </div>
           </div>
         </div>
       </div>
-      <div style="width: 80%; background-color: ">
+      <div
+        style="width: 80%; background-color: "
+        class="reportInfo d-none d-md-block"
+      >
         <div class="d-flex">
           <div class="user-info">
             <!-- Imagem do user -->
@@ -233,10 +246,11 @@ import {
 } from '@/types';
 import {
   fetchAllCategories,
-  fetchConsumerReportCards,
-  fetchConsumerReportMap,
-  fetchConsumerReportEvolution,
-  fetchConsumerReportProducts,
+  fetchReportCards,
+  fetchReportMap,
+  fetchReportEvolution,
+  fetchReportProducts,
+  fetchProducerReportClients,
 } from '@/api';
 
 export default defineComponent({
@@ -265,6 +279,7 @@ export default defineComponent({
       reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
+      producerClients: [] as any, // TODO - alterar para o tipo certo
 
       // Gráfico de linhas
       lineGraphLabels: [] as string[],
@@ -353,7 +368,13 @@ export default defineComponent({
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
       } else {
-        this.loadGraphs(1, this.startDate, this.endDate, this.raio, this.view);
+        this.loadGraphs(
+          1002,
+          this.startDate,
+          this.endDate,
+          this.raio,
+          this.view
+        );
       }
     },
     handleDateSelect(selectedDate: string) {
@@ -376,8 +397,8 @@ export default defineComponent({
       view: string
     ) {
       // Ir buscar os dados dos cards
-      const reportCards = await fetchConsumerReportCards(
-        1,
+      const reportCards = await fetchReportCards(
+        1002,
         dataInicio,
         dataFim,
         raio
@@ -386,19 +407,14 @@ export default defineComponent({
       //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
-      const reportMap = await fetchConsumerReportMap(
-        1,
-        dataInicio,
-        dataFim,
-        raio
-      );
+      const reportMap = await fetchReportMap(1002, dataInicio, dataFim, raio);
       this.reportMap = reportMap.data;
       //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
 
       // Ir buscar os dados da evolução (gráfico de linhas)
       // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
-      const reportEvolution = await fetchConsumerReportEvolution(
-        1,
+      const reportEvolution = await fetchReportEvolution(
+        1002,
         dataInicio,
         dataFim,
         raio,
@@ -408,8 +424,8 @@ export default defineComponent({
       this.updateGraphData(view, 'line');
 
       // Ir buscar os dados do gráfico de barras
-      const reportBarChart = await fetchConsumerReportProducts(
-        1,
+      const reportBarChart = await fetchReportProducts(
+        1002,
         dataInicio,
         dataFim,
         raio,
@@ -418,6 +434,16 @@ export default defineComponent({
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData('totalProdutos', 'bar');
       console.log(this.reportBarChart);
+
+      const producerClients = await fetchProducerReportClients(
+        1002,
+        dataInicio,
+        dataFim,
+        raio,
+        view
+      );
+      this.reportProducerClients = producerClients.data;
+      console.log(this.reportProducerClients);
     },
 
     // Atualizar os dados do gráfico de linhas
@@ -548,5 +574,22 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: -0.7rem;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .reportSidebar {
+    /* background-color: red; */
+    width: 100% !important;
+  }
+
+  .reportInfo {
+    display: none;
+  }
+
+  .btn-report-mobile {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>
