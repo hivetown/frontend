@@ -25,12 +25,7 @@
           <!-- Caso só um dos produtos tenha valores -->
           <div
             style="width: 25%"
-            v-if="
-              imprime(
-                Object.keys(categories.products).length,
-                categories.products
-              )
-            "
+            v-if="imprime(categories.products.length, categories.products)"
           >
             <div
               v-for="(productFields, idxProduct) in categories.products"
@@ -40,7 +35,7 @@
                 v-for="(fieldValue, idxField) in productFields.fieldValues"
                 :key="idxField"
               >
-                <sapn>{{ fieldValue.field.name }}:</sapn>
+                <span>{{ fieldValue.field.name }}:</span>
               </div>
             </div>
           </div>
@@ -92,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { ProductSpecFieldWithCategory, ProductSpecField } from '@types';
+import { ProductSpecFieldWithCategory, ProductSpecField } from '@/types';
 import { PropType, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -121,6 +116,7 @@ export default defineComponent({
       }
 
       return true;
+      //   return produto.some((p) => p.fieldValues.length);
     },
   },
 });

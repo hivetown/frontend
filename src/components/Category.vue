@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable class=" ">
+    <b-navbar toggleable>
       <b-navbar-nav class="w-100">
         <b-navbar-item
           v-for="(category, index) in categories"
@@ -16,7 +16,7 @@
                   'bi bi-chevron-up': category.showSubCategories,
                 }"
                 @click.stop="toggleCategory(category)"
-                style="color: ; font-size: 1.2em"
+                style="font-size: 1.2em"
               />
             </div>
 
@@ -47,6 +47,7 @@
   </div>
 </template>
 
+<!-- TODO - ver se pode ser retirado -->
 <style>
 .parent-cat {
   /* background-color: blue; */
@@ -66,7 +67,6 @@
 <script lang="ts">
 import { Category } from '@/types';
 import { fetchCategorySubCategories } from '@/api';
-import { onBeforeMount } from 'vue';
 
 export default {
   props: {
@@ -81,21 +81,11 @@ export default {
   },
   data() {
     return {
-      parentSubcategories: {} as Category[],
-      subCategoriesById: {} as Category[],
+      parentSubcategories: [] as Category[],
+      subCategoriesById: [] as Category[],
     };
   },
   methods: {
-    // async fetchSubCategories(id) {
-    //   const subCategories =
-    //     this.subCategoriesById[id] ||
-    //     (await fetchCategorySubCategories(id)).data.items.slice(0, 3);
-    //   this.subCategoriesById[id] = subCategories;
-    //   const category = this.categories.find((c) => c.id === id);
-    //   if (category) {
-    //     category.subCategories = subCategories;
-    //   }
-    // },
     async fetchSubCategories(id: number) {
       const subCategories =
         this.subCategoriesById[id] || (await fetchCategorySubCategories(id));

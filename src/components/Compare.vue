@@ -3,7 +3,9 @@
   <div class="parent mt-3">
     <div class="px-3">
       <h3 class="dgreen-txt">Comparador</h3>
-      <p class="grey-txt">A comparar <span>2</span> produtos</p>
+      <p class="grey-txt">
+        A comparar <span>{{ products.length }}</span> produtos
+      </p>
     </div>
     <!-- Produtos a comparar -->
     <div class="d-flex mt-5 px-3 justify-content-around">
@@ -50,9 +52,7 @@ export default defineComponent({
   data() {
     return {
       // Dados da BD
-      // Category[] for each product
       productsCategories: [] as Category[][],
-      // {idCategory: [{category, fields}] for each product}
       productsFields: {} as Record<number, ProductSpecFieldWithCategory>,
       loadingProductsFields: false,
     };

@@ -28,11 +28,12 @@
             style="position: relative"
             class="prod-container d-flex justify-content-center align-items-center"
           >
-            <i
+            <!-- <i
               class="bi bi-x-lg"
               style="position: absolute; color: red"
               @click="removeItem(product)"
-            ></i>
+            ></i> -->
+            <i class="bi bi-x-lg" style="position: absolute; color: red"></i>
             <img
               class="square-image"
               :src="product.images[0].url"
@@ -55,7 +56,8 @@
           <i style="color: #eeeeee" class="bi bi-arrow-left-right"></i> Comparar
         </button>
         <!-- TODO button? -->
-        <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a>
+        <!-- <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a> -->
+        <a href="#" id="limpar">Limpar tudo</a>
       </div>
     </div>
   </div>
@@ -134,17 +136,18 @@ export default {
     Compare,
   },
   methods: {
-    removeItem(produto: ProductSpec) {
-      const index = this.products.indexOf(produto);
-      if (index > -1) {
-        // TODO replace with emit
-        this.products.splice(index, 1);
-      }
-    },
-    removeAllItems() {
-      // TODO replace with emit
-      this.products.splice(0, this.products.length);
-    },
+    // TODO - adicionar um método de remover produtos
+    // removeItem(produto: ProductSpec) {
+    //   const index = this.products.indexOf(produto);
+    //   if (index > -1) {
+    //     // TODO replace with emit
+    //     this.products.splice(index, 1);
+    //   }
+    // },
+    // removeAllItems() {
+    //   // TODO replace with emit
+    //   this.products.splice(0, this.products.length);
+    // },
     openModal() {
       this.showModal = true;
     },
