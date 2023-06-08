@@ -214,9 +214,6 @@
                 ><p class="texto">Em andamento</p></a
               >
             </div>
-            <!--<div v-if="encomenda.estado === 'Em andamento'" class="inline"><i class="bi bi-truck"></i></div>
-              <div v-if="encomenda.estado === 'Em preparação'" class="inline"><i class="bi bi-box-seam"></i></div>-->
-            <!-- {{ orders['items'] && orders['items'][num-1] ? orders['items'][num-1]['generalStatus'] : '' }} -->
 
             <div
               v-if="
@@ -395,7 +392,6 @@ onMounted(async () => {
     }
     encomendasImage.value.push(encomendaX);
   }
-  console.log(encomendasImage)[1];
 });
 
 function cancelarEncomenda(num) {
@@ -430,7 +426,6 @@ function cancelarEncomenda(num) {
           })
           .catch((error) => {
             if (error.response && error.response.status === 400) {
-              console.log('entrou');
               Swal.fire({
                 icon: 'error',
                 title: 'Não é possível cancelar esta encomenda',
@@ -478,7 +473,6 @@ function rs(totalItems) {
     a = a + 1;
   }
   arr.reverse();
-  //console.log(arr);
 }
 
 function cancelarEncomendaImpossivel() {
@@ -499,7 +493,6 @@ import { useStore } from '@/store';
 import { Carousel, Slide } from 'vue-carousel';
 const orders = ref<Order[]>([]);
 const novo = ref<number[]>([]);
-import { fetchAuth } from '../api/auth';
 var idU = 0;
 export default {
   components: { MDBCarousel, Carousel, Slide },

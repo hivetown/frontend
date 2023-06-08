@@ -7,19 +7,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
-
 import { Order } from '../types/interfaces';
-import { fetchAuth } from '../api/auth';
-
+import { ref, watch, computed } from 'vue';
+import { useStore } from '@/store';
 const orders = ref<Order[]>([]);
 const search = ref('');
 var id = 0;
-onMounted(async () => {
-  const responseItem = await fetchAuth();
-  id = responseItem.data['id'];
-  console.log(id);
-});
+const store = useStore();
+const user2 = computed(() => store.state.user);
+id = user2.value['user']['id'];
 
 watch(search);
 </script>
