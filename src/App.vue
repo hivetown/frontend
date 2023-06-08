@@ -69,4 +69,12 @@ button a:hover {
   color: white;
   text-decoration: none !important;
 }
+
+.separator-top {
+  border-top: 1px solid #f3f3f3;
+}
+
+.separator-bottom {
+  border-bottom: 1px solid #f3f3f3;
+}
 </style>

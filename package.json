@@ -1,7 +1,7 @@
 {
   "name": "@pgp04/frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "author": "@PGP04",
   "license": "MIT",
@@ -20,7 +20,10 @@
     "cz": "git-cz",
     "postinstall": "husky install .github/husky",
     "prepack": "yarn build && pinst --disable",
-    "postpack": "pinst --enable"
+    "postpack": "pinst --enable",
+    "docker:build": "docker build -t hivetown/frontend .",
+    "docker:run": "docker run -p 8080:80 hivetown/frontend",
+    "docker:push": "docker push hivetown/frontend"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
@@ -38,6 +41,7 @@
     "sass": "^1.56.0",
     "vue": "^3.2.41",
     "vue-router": "4",
+    "vue-slick-carousel": "^1.0.6",
     "vuex": "^4.1.0"
   },
   "devDependencies": {
@@ -46,6 +50,7 @@
     "@sapphire/eslint-config": "^4.3.8",
     "@sapphire/prettier-config": "^1.4.4",
     "@sapphire/ts-config": "^3.3.4",
+    "@types/jest": "^29.5.1",
     "@types/js-cookie": "^3.0.3",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",

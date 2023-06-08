@@ -4,15 +4,20 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
+    // specification?: ProductSpec;
     specification?: ProductSpecification;
     producer?: Producer;
 }
 
-export interface ProductSpecification {
+export interface ProductSpec {
     id: number;
     name: string;
     description: string;
-    image: string;
+    deletedAt: Date;
+    minPrice: number;
+    maxPrice: number;
+    producersCount: number;
+    images: Image[];
     products?: Product[];
 }
 
@@ -22,6 +27,17 @@ export interface Image {
     url: string;
     alt: string;
 }
+
+// export interface ProducerProduct {
+//     id: number;
+//     currentPrice: number;
+//     productionDate: Date;
+//     stock: number;
+//     deletedAt: Date | null;
+//     producer?: Producer;
+//     productionUnit?: productionUnit;
+//     productSpec?: ProductSpec;
+// }
 
 export interface Role {
     id: number;
@@ -36,15 +52,22 @@ export interface User {
     phone: string;
     vat: string;
     role?: Role;
-    image?: {
-        url?: string;
-    };
+    image?: Image;
     type: 'PRODUCER' | 'CONSUMER';
 }
 
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+}
+
+export interface Category {
+    id: number;
+    name: string;
+    parent?: Category;
+    image: Image;
+    showSubCategories?: boolean;
+    subCategories?: Category;
 }
 
 export interface Consumer {
@@ -62,6 +85,14 @@ export interface CreateProducer {
     phone: string;
     vat: string;
 }
+
+// export interface productionUnit {
+//     id: number;
+//     name: string;
+//     address: Address;
+//     producer?: Producer;
+//     deletedAt: Date | null;
+// }
 
 export interface ApiRequest {
     headers?: Record<string, string>;
@@ -110,25 +141,24 @@ export interface ProducerProducts {
     producer?: Producer;
 }
 
-
 export interface ProductionUnits {
-	id: number;
-	name: string;
-	description: string;
-	producer: Producer;
-	products: Product[];
-	address: Address;
-	images: Image[];
+    id: number;
+    name: string;
+    description: string;
+    producer: Producer;
+    products: Product[];
+    address: Address;
+    images: Image[];
 }
 
 export interface Transport {
-	id: number;
-	name: string;
-	description: string;
-	producer: Producer;
-	products: Product[];
-	address: Address;
-	images: Image[];
+    id: number;
+    name: string;
+    description: string;
+    producer: Producer;
+    products: Product[];
+    address: Address;
+    images: Image[];
 }
 
 // export interface Producers {
@@ -170,3 +200,21 @@ export interface Image {
 }
 
 export type AuthenticatedUser = Consumer | Producer;
+
+export interface ProductSpecField {
+    field: Field;
+    value: string;
+}
+
+export interface Field {
+    id: number;
+    name: string;
+    unit: string;
+    type: string;
+    possibleValues: FieldPossibleValue[];
+}
+
+export interface FieldPossibleValue {
+    id: number;
+    value: string;
+}
