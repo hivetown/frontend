@@ -18,6 +18,7 @@ import Transports from '@/views/Transports.vue';
 import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
@@ -134,6 +135,11 @@ const routes = [
             // requiredPermissions:
             //     Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
         },
+    },
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
     },
 ];
 
