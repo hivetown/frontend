@@ -91,15 +91,15 @@ const routes = [
     //     name: 'AuthConsumer',
     //     component: AuthConsumer,
     // },
-    {
-        path: '/produtosprodutor',
-        name: 'produtosprodutor',
-        component: ProductsProducer,
-        meta: {
-            requiresAuth: true,
-            requiredProducer: true,
-        },
-    },
+    // {
+    //     path: '/produtosprodutor',
+    //     name: 'produtosprodutor',
+    //     component: ProductsProducer,
+    //     meta: {
+    //         requiresAuth: true,
+    //         requiredProducer: true,
+    //     },
+    // },
     {
         path: '/unidadesproducao',
         name: 'unidadesproducao',
