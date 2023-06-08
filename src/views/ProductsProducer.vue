@@ -83,6 +83,45 @@ import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
 import { Product } from '@types';
 import { checkProducerMiddleware } from '@/router/index';
+// export default {
+//   components: {
+//     Pagination,
+//   },
+//   data() {
+//     return {
+//       products: [] as Product[],
+//       allProductsData: {},
+//     };
+//   },
+//   async mounted() {
+//     try {
+//       const store = useStore();
+//       const id = store.state.user!.user.id;
+//       console.log('iddd', id);
+
+//       const page = parseInt(this.$route.query.page) || 1;
+//       const pageSize = parseInt(this.$route.query.pageSize) || 24;
+
+//       // checkProducerMiddleware(id);
+//       // const allProductsData = await fetchAllProducts(id, page, pageSize);
+//       await checkProducerMiddleware(id, this.$route, async () => {
+//         // Middleware logic executed
+//         console.log('Middleware executed');
+//         const allProductsData = await fetchAllProducts(id, page, pageSize);
+//         console.log('allProductsData:', allProductsData);
+
+//         const productsArray = allProductsData.data;
+//         console.log('Products:', productsArray);
+
+//         this.products = productsArray;
+//         this.allProductsData = allProductsData;
+//       });
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   },
+// };
+
 export default {
   components: {
     Pagination,
@@ -102,9 +141,12 @@ export default {
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      // checkProducerMiddleware(id);
-      // const allProductsData = await fetchAllProducts(id, page, pageSize);
-      await checkProducerMiddleware(2, this.$route, async () => {
+      // Update the route with the producerId parameter
+      const routeWithParams = Object.assign({}, this.$route, {
+        params: { producerId: id },
+      });
+
+      await checkProducerMiddleware(2, routeWithParams, async () => {
         // Middleware logic executed
         console.log('Middleware executed');
         const allProductsData = await fetchAllProducts(id, page, pageSize);

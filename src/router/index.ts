@@ -1,4 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import {
+    createRouter,
+    createWebHistory,
+    RouteLocationNormalizedLoaded,
+} from 'vue-router';
 
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
@@ -139,6 +143,110 @@ const router = createRouter({
     routes,
 });
 
+// router.beforeEach(async (to, from, next) => {
+//     let isAuthenticated = !!store.state.user;
+//     if (!isAuthenticated) {
+//         await store.dispatch('fetchAuthUser');
+//         isAuthenticated = !!store.state.user;
+//     }
+
+//     if (!isAuthenticated) await store.dispatch('fetchAuthUser');
+//     console.log('isAuthenticated', isAuthenticated);
+//     if (
+//         (to.path === '/login' || to.path === '/registration') &&
+//         isAuthenticated
+//     ) {
+//         // redirect to the home page if the user is already logged in
+//         next(from);
+//         return;
+//     }
+
+//     if (
+//         to.matched.some((record) => record.meta.requiresAuth) &&
+//         !isAuthenticated
+//     ) {
+//         // redirect to the login page if the user is not logged in
+//         next('/login');
+//         return;
+//     }
+
+//     if (
+//         to.matched.some((record) => record.meta.requiredPermissions) &&
+//         !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
+//     ) {
+//         // redirect back to the previous page if the user does not have the required permissions
+//         createPopup(
+//             `Você não tem permissão para aceder a ${
+//                 to.name?.toString() || 'página'
+//             }.`,
+//             'error'
+//         );
+//         next(from);
+//         return;
+//     }
+//     if (to.matched.some((record) => record.meta.requiredProducer)) {
+//         const producerId = to.params.producerId;
+
+//         // Perform the verification logic here
+//         // Example: Check if producerId matches the user's ID
+//         const userId = store.state.user!.user.id;
+//         console.log('producerId', producerId);
+//         console.log('userId', userId);
+//         if (producerId === userId) {
+//             // User is the producer, proceed to the route
+//             next();
+//         } else {
+//             // or
+//             createPopup(
+//                 'Você não tem permissão para aceder a esta página.',
+//                 'error'
+//             ); // Show an error message
+//         }
+//     } else {
+//         // Route does not require producer, proceed to the route
+//         next();
+//     }
+// });
+
+// export const checkProducerMiddleware = async (
+//     producerId: number,
+//     _to: { matched: { meta: { requiredProducer: boolean } }[] },
+//     _next: () => void
+// ) => {
+//     const store = useStore();
+//     const userId = store.state.user!.user.id;
+//     console.log('producerId', producerId);
+//     console.log('userId', userId);
+//     // console log requiredProducer before and after the loop
+//     _to.matched.forEach((record: { meta: { requiredProducer: boolean } }) => {
+//         console.log('requiredProducer1', record.meta.requiredProducer);
+//     });
+
+//     if (
+//         producerId === userId &&
+//         userId !== undefined &&
+//         producerId !== undefined
+//     ) {
+//         // User is the producer, set requiredProducer to true
+//         _to.matched.forEach(
+//             (record: { meta: { requiredProducer: boolean } }) => {
+//                 record.meta.requiredProducer = true;
+//                 console.log('requiredProducer2', record.meta.requiredProducer);
+//             }
+//         );
+//     } else {
+//         // User is not the producer, set requiredProducer to false
+//         _to.matched.forEach(
+//             (record: { meta: { requiredProducer: boolean } }) => {
+//                 record.meta.requiredProducer = false;
+//                 console.log('requiredProducer3', record.meta.requiredProducer);
+//             }
+//         );
+//     }
+
+//     _next();
+// };
+
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
     if (!isAuthenticated) {
@@ -186,7 +294,7 @@ router.beforeEach(async (to, from, next) => {
 
 export const checkProducerMiddleware = async (
     producerId: number,
-    _to: { matched: { meta: { requiredProducer: boolean } }[] },
+    _to: RouteLocationNormalizedLoaded & { params: { producerId: number } },
     _next: () => void
 ) => {
     const store = useStore();
@@ -222,5 +330,4 @@ export const checkProducerMiddleware = async (
 
     _next();
 };
-
 export default router;
