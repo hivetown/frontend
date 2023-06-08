@@ -143,7 +143,6 @@ import { onMounted, ref, computed } from 'vue';
 import { fetchAllItems } from '../api/orders';
 import { fetchAllOrders, getShipment } from '../api/orders';
 import { Order, Consumer } from '../types/interfaces';
-import { fetchAuth } from '../api/auth';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 var idU = 0;
@@ -153,8 +152,6 @@ var date = '';
 const orders = ref<Order[]>([]);
 const lista = [];
 const eventos = ref<Order[]>([]);
-const user = ref<Consumer[]>([]);
-const search = ref('');
 const route = useRoute();
 //obtem o id do link
 const store = useStore();

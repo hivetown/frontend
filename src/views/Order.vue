@@ -44,17 +44,13 @@ export default {
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useStore } from '@/store';
-import { fetchAllItems, fetchAllOrders, fetchOrder } from '../api/orders';
-import { fetchUser } from '../api/orders';
+import { fetchAllOrders, fetchOrder } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { Order, Consumer } from '../types/interfaces';
 const route = useRoute();
-import { fetchAuth } from '../api/auth';
 var idU = 0;
-const user = ref<Consumer[]>([]);
 const orderItem = ref<Order[]>([]); //array com os produtos
 const orders = ref<Order[]>([]);
-const search = ref('');
 const store = useStore();
 const user2 = computed(() => store.state.user);
 idU = user2.value['user']['id'];
