@@ -20,6 +20,31 @@
               <DropdownCustom class="required-field" @view="handleViewSelect" />
             </div>
             <div>
+              <div class="d-flex gap-4">
+                <div class="mb-4">
+                  <RadioButton
+                    v-model="barChartView"
+                    input-id="products"
+                    name="produtos"
+                    value="products"
+                    class="custom-radio-button required-field"
+                  />
+                  <label for="products" class="ml-2">Produtos</label>
+                </div>
+                <div>
+                  <RadioButton
+                    v-model="barChartView"
+                    input-id="clients"
+                    name="clientes"
+                    value="clients"
+                    class="custom-radio-button required-field"
+                  />
+                  <label for="clients" class="ml-2">Clientes</label>
+                </div>
+              </div>
+            </div>
+            {{ barChartView }}
+            <div>
               <p>Escolha as datas a visualizar:</p>
               <!-- Datas -->
               <div class="d-flex gap-2 align-items-center">
@@ -107,7 +132,7 @@
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
-              title="Total gasto"
+              title="Total ganho"
               :value="reportCards.comprasTotais"
               color="#7CA2C3"
               :text-cancel="'Dinheiro devolvido:'"
@@ -182,7 +207,7 @@
                 v-if="view == 'comprasTotais' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Histórico de gastos
+                Histórico de faturação
               </h4>
               <!-- Gráfico de linhas -->
               <div class="graph-container">
@@ -200,11 +225,22 @@
                 </h4>
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
-                  <BarChart
-                    v-if="graficosGerados"
-                    :chart-data="barChartData"
-                    :chart-options="barChartOptions"
-                  ></BarChart>
+                  <div v-if="barChartView == 'products'">
+                    <p>produto</p>
+                    <BarChart
+                      v-if="graficosGerados"
+                      :chart-data="barChartData"
+                      :chart-options="barChartOptions"
+                    ></BarChart>
+                  </div>
+                  <div v-if="barChartView == 'clients'">
+                    <p>cliente</p>
+                    <BarChart
+                      v-if="graficosGerados"
+                      :chart-data="barChartData"
+                      :chart-options="barChartOptions"
+                    ></BarChart>
+                  </div>
                 </div>
               </div>
             </div>
@@ -216,6 +252,7 @@
           >
             TODO - Implementar categorias - Items canelados nos dados se der -
            -->
+          {{ reportProducerClients }}
           <div class="mt-5 parent" style="height: 40vh"></div>
         </div>
       </div>
@@ -234,6 +271,7 @@ import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
+import RadioButton from 'primevue/radiobutton';
 import { ref, computed, defineComponent } from 'vue';
 import { useStore } from '@/store';
 import {
@@ -260,11 +298,13 @@ export default defineComponent({
 
       view: '' as string,
       raio: 0 as any,
+      barChartView: '' as string,
 
       // Informações do user
       userLoggedId: 0 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
+      userLoggedType: '' as string,
 
       // Categorias
       allCategories: [] as Category[],
@@ -279,7 +319,7 @@ export default defineComponent({
       reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
-      producerClients: [] as any, // TODO - alterar para o tipo certo
+      reportProducerClients: [] as any, // TODO - alterar para o tipo certo
 
       // Gráfico de linhas
       lineGraphLabels: [] as string[],
@@ -332,7 +372,8 @@ export default defineComponent({
         this.startDate !== 'Indefinido' &&
         this.endDate !== 'Indefinido' &&
         this.raio !== 0 &&
-        this.view !== ''
+        this.view !== '' &&
+        this.barChartView !== ''
       );
     },
   },
@@ -341,6 +382,8 @@ export default defineComponent({
     // Valor do slider - Raio
     const raio = ref(0);
     this.raio = raio;
+    const barChartView = ref('');
+    this.barChartView = barChartView.value;
 
     // Ir buscar o utilizador que está logado
     const store = useStore();
@@ -348,10 +391,14 @@ export default defineComponent({
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
       this.userLoggedName = userLoggedId.value['user']['name'];
+      this.userLoggedType = userLoggedId.value['user']['type'];
       if (userLoggedId.value['user']['image']) {
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
     }
+
+    // console.log('user: ' + this.userLoggedId);
+    // console.log(this.userLoggedType);
 
     // TODO - alterar a forma como as categorias são buscadas
     // Ir buscar as categorias (só traz as 24 de uma página)
@@ -369,7 +416,7 @@ export default defineComponent({
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
       } else {
         this.loadGraphs(
-          1002,
+          this.userLoggedId,
           this.startDate,
           this.endDate,
           this.raio,
@@ -398,7 +445,7 @@ export default defineComponent({
     ) {
       // Ir buscar os dados dos cards
       const reportCards = await fetchReportCards(
-        1002,
+        this.userLoggedId,
         dataInicio,
         dataFim,
         raio
@@ -407,14 +454,19 @@ export default defineComponent({
       //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
-      const reportMap = await fetchReportMap(1002, dataInicio, dataFim, raio);
+      const reportMap = await fetchReportMap(
+        this.userLoggedId,
+        dataInicio,
+        dataFim,
+        raio
+      );
       this.reportMap = reportMap.data;
       //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
 
       // Ir buscar os dados da evolução (gráfico de linhas)
       // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
       const reportEvolution = await fetchReportEvolution(
-        1002,
+        this.userLoggedId,
         dataInicio,
         dataFim,
         raio,
@@ -425,7 +477,7 @@ export default defineComponent({
 
       // Ir buscar os dados do gráfico de barras
       const reportBarChart = await fetchReportProducts(
-        1002,
+        this.userLoggedId,
         dataInicio,
         dataFim,
         raio,
@@ -433,21 +485,20 @@ export default defineComponent({
       );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData('totalProdutos', 'bar');
-      console.log(this.reportBarChart);
+      //   console.log(this.reportBarChart);
 
       const producerClients = await fetchProducerReportClients(
-        1002,
+        this.userLoggedId,
         dataInicio,
         dataFim,
         raio,
         view
       );
       this.reportProducerClients = producerClients.data;
-      console.log(this.reportProducerClients);
+      //   console.log(this.reportProducerClients);
     },
 
     // Atualizar os dados do gráfico de linhas
-    // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
       // Limpar os arrays de dados
       if (grapthType == 'line') {
@@ -478,40 +529,62 @@ export default defineComponent({
             },
           ],
         };
-        console.log(this.lineChartData);
-        console.log(this.lineGraphLabels);
-        console.log(this.view);
+        // console.log(this.lineChartData);
+        // console.log(this.lineGraphLabels);
+        // console.log(this.view);
+        // TODO - fazer com que o gráfico de linhas seja atualizado quando se muda o radio button (sem gerar novamente)
+        // Ou forçar a gerar novamente
       } else if (grapthType == 'bar') {
         // Limpar os arrays de dados
         this.barGraphLabels = [];
         this.barGraphData = [];
 
         // Preparar os dados para o gráfico de barras
-        for (const string of this.reportBarChart) {
-          // Reduzir o nome para caber no gráfico
-          const nomeOriginal = string.nome.split(' ');
-          let nomeReduzido = nomeOriginal[0];
-          for (let i = 1; i < nomeOriginal.length; i++) {
-            nomeReduzido += ` ${nomeOriginal[i].charAt(0)}.`;
-          }
+        if (this.barChartView == 'products') {
+          for (const string of this.reportBarChart) {
+            // Reduzir o nome para caber no gráfico
+            const nomeOriginal = string.nome.split(' ');
+            let nomeReduzido = nomeOriginal[0];
+            for (let i = 1; i < nomeOriginal.length; i++) {
+              nomeReduzido += ` ${nomeOriginal[i].charAt(0)}.`;
+            }
 
-          this.barGraphLabels.push(nomeReduzido);
-          if (view == 'totalProdutos') {
+            this.barGraphLabels.push(nomeReduzido);
+            if (view == 'totalProdutos') {
+              if (string.totalProdutos) {
+                this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+              }
+            }
+          }
+          this.barChartData = {
+            labels: this.barGraphLabels,
+            datasets: [
+              {
+                label: 'Quantidade',
+                backgroundColor: '#9DC88D',
+                data: this.barGraphData,
+              },
+            ],
+          };
+        } else if (this.barChartView == 'clients') {
+          for (const string of this.reportProducerClients) {
+            console.log(string.totalProdutos);
+            this.barGraphLabels.push(string.nome);
             if (string.totalProdutos) {
               this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
             }
           }
+          this.barChartData = {
+            labels: this.barGraphLabels,
+            datasets: [
+              {
+                label: 'Quantidade',
+                backgroundColor: '#9DC88D',
+                data: this.barGraphData,
+              },
+            ],
+          };
         }
-        this.barChartData = {
-          labels: this.barGraphLabels,
-          datasets: [
-            {
-              label: 'Quantidade',
-              backgroundColor: '#9DC88D',
-              data: this.barGraphData,
-            },
-          ],
-        };
       }
     },
   },
@@ -525,6 +598,7 @@ export default defineComponent({
     InlineMessage,
     ButtonPV,
     CategoryFilter,
+    RadioButton,
   },
 });
 </script>
