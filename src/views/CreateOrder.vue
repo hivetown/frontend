@@ -125,7 +125,6 @@ const items = ref<Order[]>([]);
 onMounted(async () => {
   //TODO trocar pelo id do user logado
   const addresses = await getAddresses(idU);
-  console.log(addresses.data.items);
   address2.value = addresses.data;
   //TODO trocar para user logado
   const gCart = await getCart(idU);
@@ -140,10 +139,7 @@ import AddAddress from '../components/AddAddress.vue';
 import { fetchAuth } from '../api/auth';
 
 var idU = 0;
-//aqui nao conseggui usar nao sei pq
-//const store2 = useStore();
-//const user3 = computed(() => store2.state.user);
-//idU = user3.value['user']['id'];
+
 onMounted(async () => {
   idU = (await fetchAuth()).data.user.id;
 });
@@ -160,20 +156,16 @@ export default {
     checkButtonDisabled() {
       // Verifica se algum checkbox está selecionado e atualiza o estado do botão
       this.isButtonDisabled = this.selectedItems.length === 0;
-      //console.log(this.selectedItems); // Exemplo de como acessar o valor selecionado
     },
     async submitOrder() {
       idU = (await fetchAuth()).data.user.id;
-      console.log(idU + 'ya');
 
       if (this.isButtonDisabled) {
         // Emitir um alerta
         alert('O botão está desabilitado!');
       }
       var id = this.selectedItems;
-      //console.log(id);
       try {
-        //TODO trocar o 1 para o id do usar logado
         const response = await postOrderPayment(idU, {
           shippingAddressId: id,
         });
@@ -190,9 +182,7 @@ export default {
             confirmButtonText: 'Ok',
           });
         }
-        console.log(idU + 'ya');
 
-        //console.error(error);
         console.log(
           'Erro ao enviar o pedido. Por favor, tente novamente mais tarde.'
         );

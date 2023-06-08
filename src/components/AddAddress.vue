@@ -229,7 +229,6 @@ export default {
         latitude,
         longitude,
       } = this.$refs;
-      console.log(this.$refs.door.value);
       // Verifique se todos os campos obrigatórios são preenchidos
       this.address = {
         door: door ? this.$refs.door.value : '',

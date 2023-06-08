@@ -14,11 +14,9 @@ const store = useStore();
 const user2 = computed(() => store.state.user);
 idU = user2.value['user']['id'];
 onMounted(async () => {
-  console.log(idU);
   let currentUrl = window.location.href;
   const pathSegments = currentUrl.split('/');
   const sessionId = pathSegments[5];
-  console.log(sessionId);
   //TODO trocar para user logado
   cancelPayment(idU, sessionId);
   Swal.fire({
