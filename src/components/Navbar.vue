@@ -10,8 +10,12 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto mt-4 mb-3">
-          <div @click="showModalFunction" class="d-flex nav-items-left">
-            <div v-if="$store.state.user" class="d-flex">
+          <div class="d-flex nav-items-left">
+            <div
+              @click="showModalFunction"
+              v-if="$store.state.user"
+              class="d-flex"
+            >
               <!--todo por se user logado-->
               <b-avatar
                 @click="showModalFunction"
@@ -239,17 +243,18 @@ export default {
     };
   },
   mounted() {
-    getUnreadNotifications()
-      .then((responseItem) => {
-        orderItem.value = responseItem.data;
-      })
-      .catch((error) => {
+    // Função para buscar as notificações não lidas
+    const fetchNotifications = async () => {
+      try {
+        const responseItem = await getUnreadNotifications();
+        this.orderItem = responseItem.data;
+      } catch (error) {
         console.error(error);
-        // Lide com o erro aqui
-      });
-    // if (this.notifications.length > 0) {
-    //  this.notifications[0].unread = false;
-    //}
+      }
+    };
+
+    // Atualiza as notificações a cada 5 segundos
+    setInterval(fetchNotifications, 1000);
   },
 };
 </script>

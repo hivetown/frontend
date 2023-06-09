@@ -14,12 +14,15 @@
       <small
         v-if="orderItem['items'][num - 1]['readAt'] == null"
         @click="marcarComoLida(orderItem['items'][num - 1]['id'])"
-        >Marcar como lida</small
       >
+        <u>Marcar como lida</u>
+      </small>
+
       <small
         v-else
         @click="marcarComoNaoLida(orderItem['items'][num - 1]['id'])"
-        >Marcar como não lida</small
+      >
+        <u>Marcar como não lida</u></small
       >
     </b-list-group-item>
   </b-list-group>
