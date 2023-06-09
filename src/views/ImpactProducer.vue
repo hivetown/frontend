@@ -27,7 +27,8 @@
                     input-id="products"
                     name="produtos"
                     value="products"
-                    class="custom-radio-button required-field"
+                    class="custom-radio-button"
+                    @click="updateBarChart()"
                   />
                   <label for="products" class="ml-2">Produtos</label>
                 </div>
@@ -37,13 +38,14 @@
                     input-id="clients"
                     name="clientes"
                     value="clients"
-                    class="custom-radio-button required-field"
+                    class="custom-radio-button"
+                    @click="updateBarChart()"
                   />
                   <label for="clients" class="ml-2">Clientes</label>
                 </div>
               </div>
             </div>
-            {{ barChartView }}
+            <!-- {{ barChartView }} -->
             <div>
               <p>Escolha as datas a visualizar:</p>
               <!-- Datas -->
@@ -164,10 +166,9 @@
         </div>
 
         <div class="parent mt-5 mb-2">
-          <!-- TODO - por a alterar sozinho -->
           <InlineMessage v-if="!graficosGerados" severity="warn" class="mb-5"
-            >Para visualizar os dados tem de escolher valores para os
-            filtros</InlineMessage
+            >Para visualizar os dados tem de escolher valores para todos os
+            filtros obrigatórios</InlineMessage
           >
 
           <!-- Período temporal -->
@@ -220,13 +221,21 @@
             </div>
             <div style="background-color: ; width: 53%">
               <div>
-                <h4 v-if="graficosGerados" class="py-4 dgreen-txt">
+                <h4
+                  v-if="graficosGerados && barChartView == 'products'"
+                  class="py-4 dgreen-txt"
+                >
                   Produtos encomendados
+                </h4>
+                <h4
+                  v-if="graficosGerados && barChartView == 'clients'"
+                  class="py-4 dgreen-txt"
+                >
+                  Produtos encomendados por consumidor
                 </h4>
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
                   <div v-if="barChartView == 'products'">
-                    <p>produto</p>
                     <BarChart
                       v-if="graficosGerados"
                       :chart-data="barChartData"
@@ -234,7 +243,6 @@
                     ></BarChart>
                   </div>
                   <div v-if="barChartView == 'clients'">
-                    <p>cliente</p>
                     <BarChart
                       v-if="graficosGerados"
                       :chart-data="barChartData"
@@ -281,6 +289,7 @@ import {
   ReportEvolution,
   ReportBarChartProduct,
   Category,
+  reportProducerClients,
 } from '@/types';
 import {
   fetchAllCategories,
@@ -294,6 +303,7 @@ import {
 export default defineComponent({
   data() {
     return {
+      nuncaGerados: true as boolean,
       graficosGerados: false as boolean,
 
       view: '' as string,
@@ -319,7 +329,7 @@ export default defineComponent({
       reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
-      reportProducerClients: [] as any, // TODO - alterar para o tipo certo
+      reportProducerClients: [] as reportProducerClients[],
 
       // Gráfico de linhas
       lineGraphLabels: [] as string[],
@@ -366,14 +376,14 @@ export default defineComponent({
   },
   computed: {
     allDataAvailable() {
-      // Verifica se todos os dados são diferentes de undefined
+      // Verifica se os dados obrigatórios já foram preenchidos
       return (
         this.userLoggedId !== 0 &&
         this.startDate !== 'Indefinido' &&
         this.endDate !== 'Indefinido' &&
         this.raio !== 0 &&
-        this.view !== '' &&
-        this.barChartView !== ''
+        this.view !== ''
+        // && this.barChartView !== ''
       );
     },
   },
@@ -382,7 +392,7 @@ export default defineComponent({
     // Valor do slider - Raio
     const raio = ref(0);
     this.raio = raio;
-    const barChartView = ref('');
+    const barChartView = ref('products');
     this.barChartView = barChartView.value;
 
     // Ir buscar o utilizador que está logado
@@ -408,9 +418,9 @@ export default defineComponent({
   },
   methods: {
     generateGraphs() {
+      this.nuncaGerados = false;
       this.graficosGerados = true;
       // Ir buscar os dados dos gráficos
-      // TODO - alerar o id
       if (this.selectedCategory != 0) {
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
@@ -422,6 +432,11 @@ export default defineComponent({
           this.raio,
           this.view
         );
+      }
+    },
+    updateBarChart() {
+      if (!this.nuncaGerados) {
+        this.generateGraphs();
       }
     },
     handleDateSelect(selectedDate: string) {
@@ -484,7 +499,7 @@ export default defineComponent({
         'totalProdutos'
       );
       this.reportBarChart = reportBarChart.data;
-      this.updateGraphData('totalProdutos', 'bar');
+      this.updateGraphData(view, 'bar');
       //   console.log(this.reportBarChart);
 
       const producerClients = await fetchProducerReportClients(
@@ -532,8 +547,6 @@ export default defineComponent({
         // console.log(this.lineChartData);
         // console.log(this.lineGraphLabels);
         // console.log(this.view);
-        // TODO - fazer com que o gráfico de linhas seja atualizado quando se muda o radio button (sem gerar novamente)
-        // Ou forçar a gerar novamente
       } else if (grapthType == 'bar') {
         // Limpar os arrays de dados
         this.barGraphLabels = [];
@@ -542,6 +555,7 @@ export default defineComponent({
         // Preparar os dados para o gráfico de barras
         if (this.barChartView == 'products') {
           for (const string of this.reportBarChart) {
+            console.log(string);
             // Reduzir o nome para caber no gráfico
             const nomeOriginal = string.nome.split(' ');
             let nomeReduzido = nomeOriginal[0];
@@ -550,10 +564,10 @@ export default defineComponent({
             }
 
             this.barGraphLabels.push(nomeReduzido);
-            if (view == 'totalProdutos') {
-              if (string.totalProdutos) {
-                this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
-              }
+            // if (view == 'totalProdutos') {
+            if (string.totalProdutos) {
+              this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+              //   }
             }
           }
           this.barChartData = {
@@ -567,13 +581,30 @@ export default defineComponent({
             ],
           };
         } else if (this.barChartView == 'clients') {
+          //   for (const string of this.reportProducerClients) {
+          //     this.barGraphLabels.push(string.nome);
+          //     if (string.totalProdutos) {
+          //       this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+          //     }
+          //   }
+
+          //   TODO - fazer com que não seja preciso carregar no gerar gráficos 2
+          // vezes para aparecerem os dados como aparece no gráfico da esquerda
           for (const string of this.reportProducerClients) {
-            console.log(string.totalProdutos);
-            this.barGraphLabels.push(string.nome);
-            if (string.totalProdutos) {
-              this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
+            // console.log('string');
+            // console.log(view);
+            this.barGraphLabels.push(Object(string).nome);
+            if (view == 'numeroEncomendas') {
+              this.barGraphData.push(Object(string).numeroEncomendas);
+            } else if (view == 'totalProdutos') {
+              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+            } else if (view == 'numeroProdutosEncomendados') {
+              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+            } else if (view == 'comprasTotais') {
+              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
             }
           }
+          console.log('data: ' + JSON.stringify(this.barGraphData));
           this.barChartData = {
             labels: this.barGraphLabels,
             datasets: [
@@ -584,6 +615,10 @@ export default defineComponent({
               },
             ],
           };
+          //   console.log('labels');
+          //   console.log('labels: ' + JSON.stringify(this.barGraphLabels));
+          // console.log('data');
+          //   console.log('data: ' + JSON.stringify(this.barChartData));
         }
       }
     },

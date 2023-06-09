@@ -187,3 +187,16 @@ export interface ReportProducts {
     numeroProdutosEncomendados?: number;
     numeroProdutosEncomendadosCancelados?: number;
 }
+
+export interface reportProducerClients {
+    id: number;
+    nome: string;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
+}
