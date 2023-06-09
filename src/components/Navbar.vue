@@ -96,6 +96,11 @@
               class="p-2 grey-txt text-decoration-none"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item
+                v-if="user.user.role != null"
+                href="/admin?page=1"
+                >Admin area</b-dropdown-item
+              >
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
