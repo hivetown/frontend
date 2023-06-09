@@ -14,75 +14,7 @@
   </div>
 </template>
 
-<!-- <script lang="ts">
-import { ref, onMounted } from 'vue';
-import { MapboxMap } from '@studiometa/vue-mapbox-gl';
-import axios from 'axios';
-import { fetchMapForUnit } from './maps';
-
-export default {
-  // Component options...
-  setup() {
-    const mapCenter = ref([0, 0]);
-
-    onMounted(async () => {
-      try {
-        const mapData = await fetchMapForUnit(
-          mapCenter.value[1], // Pass the latitude value
-          mapCenter.value[0] // Pass the longitude value
-        );
-        // Process and use the map data as needed
-        console.log(mapData);
-      } catch (error) {
-        console.error('Error fetching map data:', error);
-      }
-    });
-
-    return {
-      mapCenter,
-    };
-  },
-};
-</script> -->
-<!-- <script lang="ts">
-import { onMounted, PropType } from 'vue';
-import { fetchMapForUnit } from './maps';
-import mapboxgl from 'mapbox-gl';
-export default {
-  props: {
-    selectedUnit: {
-      type: Object as PropType<any>,
-      required: true,
-    },
-  },
-  setup(props) {
-    onMounted(async () => {
-      try {
-        const mapData = await fetchMapForUnit(
-          props.selectedUnit.address.latitude, // Pass the latitude value of the selected unit
-          props.selectedUnit.address.longitude // Pass the longitude value of the selected unit
-        );
-        // Process and use the map data as needed
-        console.log(mapData);
-      } catch (error) {
-        console.log('selectedUnit', props.selectedUnit);
-        console.error('Error fetching map data:', error);
-      }
-    });
-
-    return {};
-  },
-  methods: {
-    getMapCenter() {
-      return [
-        this.selectedUnit.address.longitude,
-        this.selectedUnit.address.latitude,
-      ];
-    },
-  },
-};
-</script> -->
-<script>
+<!-- <script>
 import { onMounted, ref } from 'vue';
 import { fetchMapForUnit } from './maps';
 import mapboxgl from 'mapbox-gl';
@@ -133,7 +65,74 @@ export default {
     };
   },
 };
+</script> -->
+
+<script>
+import { onMounted, ref, watch } from 'vue';
+import { fetchMapForUnit } from './maps';
+import mapboxgl from 'mapbox-gl';
+
+export default {
+  props: {
+    selectedUnit: {
+      type: Object,
+      required: true,
+    },
+  },
+  setup(props) {
+    const mapContainer = ref(null);
+    let mapInstance = null;
+
+    onMounted(async () => {
+      try {
+        await updateMap(props.selectedUnit);
+      } catch (error) {
+        console.error('Error updating map:', error);
+      }
+    });
+
+    watch(
+      () => props.selectedUnit,
+      async (newUnit, oldUnit) => {
+        try {
+          if (newUnit !== oldUnit) {
+            await updateMap(newUnit);
+          }
+        } catch (error) {
+          console.error('Error updating map:', error);
+        }
+      }
+    );
+
+    async function updateMap(unit) {
+      try {
+        if (mapInstance) {
+          mapInstance.remove();
+        }
+
+        mapboxgl.accessToken =
+          'pk.eyJ1IjoiaGl2ZXRvd24iLCJhIjoiY2xpbmI5NmJ1MHF5cjNtcGpsMnZibjdtZSJ9.76vplIvkyBQogSglqzp0Uw';
+
+        mapInstance = new mapboxgl.Map({
+          container: mapContainer.value,
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: [unit.address.longitude, unit.address.latitude],
+          zoom: 8,
+        });
+
+        // Add markers, layers, etc. to the map as needed
+      } catch (error) {
+        console.error('Error updating map:', error);
+      }
+    }
+
+    return {
+      mapContainer,
+    };
+  },
+};
 </script>
+
 <style scoped>
 @import 'mapbox-gl/dist/mapbox-gl.css';
 #map {
