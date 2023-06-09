@@ -3,7 +3,8 @@
     <div id="popup" class="sticky-bar" v-if="showPopup">
       <h5>Notificações</h5>
       <div class="content">
-        <b-list-group>
+        <p v-if="orderItem.totalItems == 0">Não existem notificações novas.</p>
+        <b-list-group v-else>
           <!-- _active mete a azul as nao lidas-->
           <b-list-group-item
             v-for="num in orderItem['totalItems']"
@@ -13,10 +14,10 @@
             class="flex-column align-items-start"
           >
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{ orderItem["items"][num - 1]["title"] }}</h5>
-              <small>{{ orderItem["items"][num - 1]["createdAt"] }}</small>
+              <h5 class="mb-1">{{ orderItem['items'][num - 1]['title'] }}</h5>
+              <small>{{ orderItem['items'][num - 1]['createdAt'] }}</small>
             </div>
-            <p class="mb-1">{{ orderItem["items"][num - 1]["message"] }}</p>
+            <p class="mb-1">{{ orderItem['items'][num - 1]['message'] }}</p>
             <hr />
           </b-list-group-item>
           <hr />

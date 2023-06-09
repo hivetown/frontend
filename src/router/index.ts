@@ -48,6 +48,9 @@ const routes = [
         path: '/notifications',
         name: 'Notifications',
         component: Notifications,
+        meta: {
+            requiresAuth: true,
+        },
     },
     // O link para o produto deveria ter o seu nome ou id
     {

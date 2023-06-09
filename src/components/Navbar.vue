@@ -11,7 +11,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div @click="showModalFunction" class="d-flex nav-items-left">
-            <div class="d-flex">
+            <div v-if="$store.state.user" class="d-flex">
               <!--todo por se user logado-->
               <b-avatar
                 @click="showModalFunction"
@@ -29,6 +29,7 @@
               </b-avatar>
               <!--numero de notificacoes-->
               <b-badge
+                v-if="orderItem.totalItems != 0"
                 @click="showModalFunctions"
                 variant="danger"
                 class="rounded-circle position-absolute"
@@ -39,7 +40,7 @@
                   height: 20px;
                   border-radius: 50%;
                 "
-                >{{ orderItem["totalItems"] }}</b-badge
+                >{{ orderItem['totalItems'] }}</b-badge
               >
               <Modal v-if="showModal" />
               <p
@@ -205,9 +206,9 @@
 </template>
 
 <script lang="ts">
-import { ref } from "vue";
-import { useStore } from "@/store";
-import { computed } from "vue";
+import { ref } from 'vue';
+import { useStore } from '@/store';
+import { computed } from 'vue';
 import Modal from '../components/Modal.vue';
 import { getUnreadNotifications } from '../api/notifications';
 const orderItem = ref([]);
@@ -222,7 +223,7 @@ export default {
     const user = computed(() => store.state.user);
 
     const logout = async () => {
-      await store.dispatch("logout");
+      await store.dispatch('logout');
     };
   },
   methods: {
@@ -259,7 +260,7 @@ export default {
 }
 
 .logo-txt {
-  font-family: "DM Serif Display", serif;
+  font-family: 'DM Serif Display', serif;
   font-size: 30px !important;
   color: #164a41 !important;
   letter-spacing: -0.03em;
