@@ -11,7 +11,6 @@ import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Notifications from '@/views/Notifications.vue';
 import { store } from '@/store';
-import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
 
