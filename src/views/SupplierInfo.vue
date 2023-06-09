@@ -73,15 +73,18 @@
         </div>
       </div>
       <div class="" style="background-color: lightgrey; width: 80%">
-        <div v-for="(unitData, index) in mapData" :key="unitData.unitId">
-          <div v-if="elementoSelecionado === index">
-            <Maps
-              :center="[
-                unitData.mapData.features[0]?.center[0],
-                unitData.mapData.features[0]?.center[1],
-              ]"
-            />
-          </div>
+        <div v-if="elementoSelecionado !== null && unidadesProd.items">
+          <Maps
+            v-if="unidadesProd.items[elementoSelecionado]"
+            :selected-unit="unidadesProd.items[elementoSelecionado]"
+            :map-data="
+              mapData.find(
+                (data) =>
+                  data.unitId ===
+                  (unidadesProd.items[elementoSelecionado]?.id || null)
+              )?.mapData
+            "
+          />
         </div>
       </div>
     </div>

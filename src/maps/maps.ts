@@ -13,7 +13,7 @@
 // }
 
 import axios from 'axios';
-
+import mapboxgl from 'mapbox-gl';
 export async function fetchMapForUnit(latitude: number, longitude: number) {
     try {
         const proximity = `${longitude},${latitude}`;
