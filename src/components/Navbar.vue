@@ -2,11 +2,12 @@
   <div class="parent">
     <b-navbar toggleable="lg" type="dark">
       <div id="logo" class="d-block d-sm mx-auto text-center">
-        <img src="logo.svg" />
+        <img src="/logo.svg" />
         <b-navbar-brand class="p-2 logo-txt" to="/">hiveTown</b-navbar-brand>
       </div>
 
       <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
+
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
@@ -86,7 +87,8 @@
                 class="nav-item"
                 :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
-              ></b-avatar>
+              >
+              </b-avatar>
               <span>{{ user.user.name }}</span>
             </router-link>
             <b-nav-item-dropdown
@@ -94,17 +96,6 @@
               class="p-2 grey-txt text-decoration-none"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <div v-if="user.user.type === 'PRODUCER'">
-                <b-dropdown-item href="/produtosprodutor"
-                  >Produtos</b-dropdown-item
-                >
-                <b-dropdown-item href="/unidadesproducao"
-                  >Unidades de Produção</b-dropdown-item
-                >
-                <b-dropdown-item href="/transportes"
-                  >Transportes</b-dropdown-item
-                >
-              </div>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
@@ -175,27 +166,19 @@
         </button>
       </b-nav-item>
     </b-nav>
-    <!-- <ProductsProducer :products="products" /> -->
   </div>
 </template>
-<!-- <div>
-  <ProductsProducer :products="products" />
-</div> -->
+
 <script lang="ts">
-import { Consumer, Producer, ProducerProducts } from '@types';
-import { computed, ref } from 'vue';
-// import { useStore } from 'vuex';
-// import { fetchAllProducts } from '../api/producerProducts';
-// import ProductsProducer from '../views/ProductsProducer.vue';
 import { useStore } from '@/store';
+import { computed } from 'vue';
+
 export default {
   setup() {
     const store = useStore();
-    console.log('store: ', store);
+
     // computed user
-    console.log('userNav: ', store.state.user);
-    const user = computed(() => store.state.user as Consumer | Producer);
-    setTimeout(() => console.log(user), 1000);
+    const user = computed(() => store.state.user);
 
     const logout = async () => {
       await store.dispatch('logout');

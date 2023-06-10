@@ -1,11 +1,8 @@
-// import type { DefineComponent } from 'vue';
-import ProductionUnits from '@/views/ProductionUnits.vue';
 export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    // specification?: ProductSpec;
-    specification?: ProductSpecification;
+    specification?: ProductSpec;
     producer?: Producer;
 }
 
@@ -21,23 +18,16 @@ export interface ProductSpec {
     products?: Product[];
 }
 
-export interface Image {
+export interface ProducerProduct {
     id: number;
-    name: string;
-    url: string;
-    alt: string;
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    deletedAt: Date | null;
+    producer?: Producer;
+    productionUnit?: productionUnit;
+    productSpec?: ProductSpec;
 }
-
-// export interface ProducerProduct {
-//     id: number;
-//     currentPrice: number;
-//     productionDate: Date;
-//     stock: number;
-//     deletedAt: Date | null;
-//     producer?: Producer;
-//     productionUnit?: productionUnit;
-//     productSpec?: ProductSpec;
-// }
 
 export interface Role {
     id: number;
@@ -86,13 +76,13 @@ export interface CreateProducer {
     vat: string;
 }
 
-// export interface productionUnit {
-//     id: number;
-//     name: string;
-//     address: Address;
-//     producer?: Producer;
-//     deletedAt: Date | null;
-// }
+export interface productionUnit {
+    id: number;
+    name: string;
+    address: Address;
+    producer?: Producer;
+    deletedAt: Date | null;
+}
 
 export interface ApiRequest {
     headers?: Record<string, string>;
@@ -100,30 +90,6 @@ export interface ApiRequest {
     data?: any;
 }
 
-export interface auth {
-    id: number;
-    name: string;
-    email: string;
-    phone: number;
-    vat: number;
-    authId: string;
-    image: string;
-    type: string;
-}
-
-export interface AddressConsumer {
-    number: number;
-    door: string;
-    floor: number;
-    zipCode: string;
-    street: string;
-    parish: string;
-    county: string;
-    city: string;
-    district: string;
-    latitude: number;
-    longitude: number;
-}
 export interface BaseItems<T> {
     items: T[];
     totalItems: number;
@@ -132,51 +98,6 @@ export interface BaseItems<T> {
     pageSize: number;
 }
 
-export interface ProducerProducts {
-    items: Product[];
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    specification?: ProductSpecification;
-    producer?: Producer;
-}
-
-export interface ProductionUnits {
-    id: number;
-    name: string;
-    description: string;
-    producer: Producer;
-    products: Product[];
-    address: Address;
-    images: Image[];
-}
-
-export interface Transport {
-    id: number;
-    name: string;
-    description: string;
-    producer: Producer;
-    products: Product[];
-    address: Address;
-    images: Image[];
-}
-
-// export interface Producers {
-//     id: number;
-//     name: string;
-//     email: string;
-//     phone: string;
-//     vat: string;
-//     products?: Product[];
-// }
-
-export interface ProducerProduct {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    producer?: Producer;
-    // productionUnit?: ProductionUnit;
-}
 export interface Address {
     id: number;
     number: number;
@@ -217,9 +138,4 @@ export interface Field {
 export interface FieldPossibleValue {
     id: number;
     value: string;
-}
-
-export interface coordinates {
-    latitude: number;
-    longitude: number;
 }
