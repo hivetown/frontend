@@ -8,7 +8,7 @@
     </div>
     <div class="cart">
       <b-card
-        v-if="users['user']"
+        v-if="users"
         id="b-card"
         :title="users['user']['name']"
         :img-src="
@@ -37,6 +37,7 @@
             users['addresses'].length > 0
               ? users['addresses'].length - 1
               : 0"
+            :key="num"
           >
             <strong>Morada: </strong>
             {{
@@ -56,24 +57,31 @@
           <br />
           <br />
           <strong>Unidades de produção: </strong>
-          <div v-if="qtd > 0" v-for="idx in qtd" :key="idx">
-            <p>
-              <strong v-if="productionUnitIds.items">ID: </strong
-              >{{ productionUnitIds.items[idx - 1]['id'] }} Nome:
-              {{ productionUnitIds.items[idx - 1]['name'] }}, <br />
-              Rua: {{ productionUnitIds.items[idx - 1]['address']['street'] }},
-              nº {{ productionUnitIds.items[idx - 1]['address']['number'] }},
-              {{ productionUnitIds.items[idx - 1]['address']['door'] }}
-              <br />
-              Cidade: {{ productionUnitIds.items[idx - 1]['address']['city'] }}
-              <br />Latitude:
-              {{ productionUnitIds.items[idx - 1]['address']['latitude'] }} ,
-              Longitude:
-              {{ productionUnitIds.items[idx - 1]['address']['longitude'] }}
-            </p>
-          </div>
-          <div v-else>
-            <p>Não existem unidades de produção associadas.</p>
+          <div>
+            <div v-if="qtd > 0">
+              <div v-for="idx in qtd" :key="idx">
+                <p>
+                  <strong v-if="productionUnitIds.items">ID: </strong
+                  >{{ productionUnitIds.items[idx - 1]['id'] }} Nome:
+                  {{ productionUnitIds.items[idx - 1]['name'] }}, <br />
+                  Rua:
+                  {{ productionUnitIds.items[idx - 1]['address']['street'] }},
+                  nº
+                  {{ productionUnitIds.items[idx - 1]['address']['number'] }},
+                  {{ productionUnitIds.items[idx - 1]['address']['door'] }}
+                  <br />
+                  Cidade:
+                  {{ productionUnitIds.items[idx - 1]['address']['city'] }}
+                  <br />Latitude:
+                  {{ productionUnitIds.items[idx - 1]['address']['latitude'] }}
+                  , Longitude:
+                  {{ productionUnitIds.items[idx - 1]['address']['longitude'] }}
+                </p>
+              </div>
+            </div>
+            <div v-else>
+              <p>Não existem unidades de produção associadas.</p>
+            </div>
           </div>
           <!-- {{ users['productionUnits'] }}-->
         </b-card-text>
@@ -156,26 +164,24 @@ import {
   getAddressPU,
 } from '../api/producers';
 import { onMounted, ref } from 'vue';
-import { Consumer } from '../types/interfaces';
 import { useRoute } from 'vue-router';
 export default {
   setup() {
     const route = useRoute();
-    let formData = {};
-    const id = ref(0);
-    const qtd = ref(0);
-    const prod = ref(0);
+    let formData = ref<any>(null);
+    const id = ref<any>(null);
+    const qtd = ref<any>(null);
     const collapsed = ref(true);
-    const users = ref<Consumer>({});
-    const productionUnitIds = ref();
-    const responseList = ref<Consumer>([]);
+    const users = ref<any>(null);
+    const productionUnitIds = ref<any>(null);
+    const responseList = ref<any>(null);
 
     onMounted(async () => {
       id.value = route.params.id;
       try {
         const response = await getProducerId(id.value);
         users.value = response.data;
-
+        console.log(users.value);
         const responseAddressesPU = await getAddressPU(id.value);
         productionUnitIds.value = responseAddressesPU.data;
         qtd.value = productionUnitIds.value.totalItems;
@@ -218,6 +224,7 @@ export default {
         // Chama a função de atualização com o objeto mesclado
         updateProducer(this.id, data)
           .then((response) => {
+            console.log(response);
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
               text: 'Poderá voltar a editar a conta caso se arrependa.',
@@ -229,6 +236,7 @@ export default {
               if (result.isConfirmed) {
                 updateProducer(this.id, data)
                   .then((response) => {
+                    console.log(response);
                     Swal.fire({
                       icon: 'success',
                       title: 'Alterações salvas!',
@@ -239,6 +247,7 @@ export default {
                     });
                   })
                   .catch((error) => {
+                    console.log(error);
                     Swal.fire({
                       icon: 'error',
                       title: 'Erro ao efetuar alterações',

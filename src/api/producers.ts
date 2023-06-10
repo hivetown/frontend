@@ -6,14 +6,14 @@ export const createProducer = async (producer: CreateProducer) =>
     api.post('/producers', producer);
 
 export const getProducersValues = (search?: string) =>
-    api.get<Producer[]>('/producers', { params: { search } });
+    api.get<any>('/producers', { params: { search } });
 //nao da com o includeall
 export const getProducers = (
     page?: number,
     pageSize?: number,
     search?: string
 ) =>
-    api.get<Producer[]>('/producers', {
+    api.get<any>('/producers', {
         params: { page, pageSize, search },
     });
 //nao da com o include all
@@ -25,7 +25,7 @@ export const getProducerId = (producerId: number, search?: string) =>
 export const desativarProducer = (producerId: number, search?: string) =>
     api.delete(`/producers/${producerId}`, { params: { search } });
 
-export const ativarProducer = (producerId: number, search?: string) =>
+export const ativarProducer = (producerId: number) =>
     api.post(`/producers/${producerId}/reativate`);
 
 export const updateProducer = (

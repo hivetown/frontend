@@ -9,7 +9,7 @@
 
     <div class="cart">
       <b-card
-        v-if="users['user']"
+        v-if="users"
         id="b-card"
         :title="users['user']['name']"
         :img-src="
@@ -47,11 +47,13 @@
                 users['addresses'][0]['city']
               : 'Não definido'
           }}
+
           <div
             v-for="num in Array.isArray(users['addresses']) &&
             users['addresses'].length > 0
               ? users['addresses'].length - 1
               : 0"
+            :key="num"
           >
             <strong>Morada: </strong>
             {{
@@ -148,15 +150,14 @@ import {
   updateConsumer,
 } from '../api/consumers';
 import { onMounted, ref } from 'vue';
-import { Consumer } from '../types/interfaces';
 import { useRoute } from 'vue-router';
 export default {
   setup() {
     const route = useRoute();
-    let formData = {};
-    const id = ref(0);
+    let formData = ref<any>(null);
+    const id = ref<any>(null);
     const collapsed = ref(true);
-    const users = ref<Consumer>({});
+    const users = ref<any>(null);
     onMounted(async () => {
       id.value = route.params.id;
       try {
@@ -193,6 +194,7 @@ export default {
         // Chama a função de atualização com o objeto mesclado
         updateConsumer(this.id, data)
           .then((response) => {
+            console.log(response);
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
               text: 'Poderá voltar a editar a conta caso se arrependa.',
@@ -204,6 +206,7 @@ export default {
               if (result.isConfirmed) {
                 updateConsumer(this.id, data)
                   .then((response) => {
+                    console.log(response);
                     Swal.fire({
                       icon: 'success',
                       title: 'Alterações salvas!',
@@ -214,6 +217,7 @@ export default {
                     });
                   })
                   .catch((error) => {
+                    console.log(error);
                     Swal.fire({
                       icon: 'error',
                       title: 'Erro ao efetuar alterações',

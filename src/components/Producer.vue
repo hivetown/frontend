@@ -39,11 +39,10 @@
 import Pagination from '../components/Pagination.vue';
 import { getProducers, getProducersValues } from '../api/producers';
 import { onMounted, ref } from 'vue';
-import { Consumer } from '../types/interfaces';
 export default {
   components: { Pagination },
   setup() {
-    const users = ref<Consumer[]>([]);
+    const users = ref<any>(null);
     const qtd = ref(0);
     const page = ref(1);
     const pageSize = ref(24);
