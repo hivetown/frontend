@@ -1,3 +1,8 @@
+com
+
+
+
+
 <template>
   <h3 class="semencoemndas" v-if="orders['totalItems'] === 0">
     <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
@@ -65,8 +70,8 @@
                         >
                           <img
                             style="width: 75px"
-                            :src="encomendasImage[1]"
-                            :alt="'Image ' + (index + 1)"
+                            :src="encomendasImage[1].toString()"
+                            :alt="'Image ' + orders?.items[num - 1]?.id"
                             v-if="
                               encomendasImage[1] &&
                               encomendasImage[1].length !== 0
@@ -113,11 +118,6 @@
                 </div>
 
                 <a :href="`/encomenda/id${orders['items'][num - 1]['id']}`">
-                  <!--  <p>encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images']</p>-->
-                  <!--<p>{{encomendaId[0][2]['items'][0]['producerProduct']['productSpec']['images'][0]['url']}}</p>-->
-                  <!-- <img v-if="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'].length > 0" 
-                  :src="encomendaId[num-1][orders['items'][num-1]['id']]['items'][0]['producerProduct']['productSpec']['images'][0]['url']" 
-                  alt="Imagem da encomenda"  style="max-width: 100px;">  -->
                 </a>
               </div>
             </div>
@@ -325,31 +325,30 @@
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, Ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
-import { Consumer, Order } from '../types/interfaces';
 import { useStore } from '@/store';
 var idU = 0;
-const orders = ref<Order[]>([]);
-const arr = ref([]); // Use a função ref para criar uma referência reativa do array
+const orders = ref<any>('');
+const arr: { value: number[] } = ref([]);
 const store = useStore();
-const encomendas = [];
-const encomendasImage = ref<Array>([]);
-const encomendaId = ref([]);
-const orderIds = ref<number[]>([]); //array com o id das encomendas
-const orderItem = ref<Order[]>([]); //array com os produtos
-const user = ref<Consumer[]>([]);
-const search = ref('');
-const user2 = computed(() => store.state.user);
-idU = user2.value['user']['id'];
-onMounted(async () => {
-  //TODO por user logado
+const encomendas: any[] = [];
+const encomendasImage: Ref<any[]> = ref([]);
 
+const encomendaId: Ref<any[]> = ref([]);
+
+const orderIds = ref<number[]>([]); //array com o id das encomendas
+const user2 = computed(() => store.state.user);
+if (user2.value && user2.value.user && user2.value.user.id) {
+  idU = user2.value.user.id;
+}
+onMounted(async () => {
   const response = await fetchAllOrders(idU);
   orders.value = response.data;
-  orders.value.items.forEach((item) => {
+  orders.value.items.forEach((item: { id: number }) => {
     orderIds.value.push(item.id);
   });
+
   for (let i = 0; i < orders.value.totalItems; i++) {
     encomendas.push(orders.value.items[i].id);
     arr.value.push(i);
@@ -361,7 +360,7 @@ onMounted(async () => {
     const response1 = await fetchAllItems(idU, encomendas[i]);
     const newEncomenda = { [encomendas[i]]: response1.data };
     encomendaId.value.push(newEncomenda);
-    const encomendaX = [];
+    const encomendaX: any[] = [];
     for (
       let j = 0;
       j < encomendaId.value[i][encomendas[i]]['items'].length - 1;
@@ -394,7 +393,7 @@ onMounted(async () => {
   }
 });
 
-function cancelarEncomenda(num) {
+function cancelarEncomenda(num: number) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
     title: 'Deseja cancelar a encomenda?',
@@ -445,34 +444,34 @@ function cancelarEncomenda(num) {
   });
 }
 function exportSelectedOrders() {
-  idU = user2.value['user']['id'];
+  //idU = user2.value['user']['id'];
+  if (user2.value && user2.value.user && user2.value.user.id) {
+    idU = user2.value.user.id;
+  }
+
   let arr = [];
-  let checkboxes = document.querySelectorAll('input[type=\'checkbox\']:checked');
+  let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
   for (let i = 0; i < checkboxes.length; i++) {
-    arr.push(checkboxes[i].value);
+    // arr.push(checkboxes[i].value);
+    arr.push((checkboxes[i] as HTMLInputElement).value);
   }
   //TODO trocar para user logado
   return exportOrders(idU, arr);
 }
 
 function onCheckboxChange() {
-  let checkboxes = document.querySelectorAll('input[type=\'checkbox\']:checked');
+  let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
   if (checkboxes.length == 0) {
     var button = document.getElementById('botao');
-    button.style.display = 'none';
+    if (button !== null) {
+      button.style.display = 'none';
+    }
   } else {
-    var button = document.getElementById('botao');
-    button.style.display = 'block';
+    var button2 = document.getElementById('botao');
+    if (button2 !== null) {
+      button2.style.display = 'block';
+    }
   }
-}
-function rs(totalItems) {
-  let arr = [];
-  var a = 0;
-  for (let i = 0; i < totalItems; i++) {
-    arr.push(i);
-    a = a + 1;
-  }
-  arr.reverse();
 }
 
 function cancelarEncomendaImpossivel() {
@@ -487,16 +486,8 @@ function cancelarEncomendaImpossivel() {
 </script>
 <script lang="ts">
 import { exportOrders } from '../api/orders';
-import { MDBCarousel } from 'mdb-vue-ui-kit';
-import { Component, Vue } from 'vue-property-decorator';
-import { useStore } from '@/store';
-import { Carousel, Slide } from 'vue-carousel';
-const orders = ref<Order[]>([]);
-const novo = ref<number[]>([]);
-var idU = 0;
-export default {
-  components: { MDBCarousel, Carousel, Slide },
 
+export default {
   data() {
     return {
       selectedOrders: [],
