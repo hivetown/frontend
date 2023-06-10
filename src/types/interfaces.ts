@@ -1,5 +1,3 @@
-// import type { DefineComponent } from 'vue';
-import ProductionUnits from '@/views/ProductionUnits.vue';
 export interface Product {
     id: number;
     currentPrice: number;
@@ -110,25 +108,24 @@ export interface ProducerProducts {
     producer?: Producer;
 }
 
-
 export interface ProductionUnits {
-	id: number;
-	name: string;
-	description: string;
-	producer: Producer;
-	products: Product[];
-	address: Address;
-	images: Image[];
+    id: number;
+    name: string;
+    description: string;
+    producer: Producer;
+    products: Product[];
+    address: Address;
+    images: Image[];
 }
 
 export interface Transport {
-	id: number;
-	name: string;
-	description: string;
-	producer: Producer;
-	products: Product[];
-	address: Address;
-	images: Image[];
+    id: number;
+    name: string;
+    description: string;
+    producer: Producer;
+    products: Product[];
+    address: Address;
+    images: Image[];
 }
 
 // export interface Producers {
@@ -160,13 +157,6 @@ export interface Address {
     district: string;
     latitude: number;
     longitude: number;
-}
-
-export interface Image {
-    id: number;
-    name: string;
-    url: string;
-    alt: string;
 }
 
 export type AuthenticatedUser = Consumer | Producer;

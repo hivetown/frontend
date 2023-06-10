@@ -33,6 +33,8 @@ import { onMounted, ref, watch } from 'vue';
 //     // console.log('store.state.auth', store.state.auth);
 //     return store.state.user !== null;
 // };
+
+
 const routes = [
     {
         path: '/',
@@ -114,7 +116,10 @@ const routes = [
         path: '/production-units/:producerId/:unitId/:unitName/products',
         name: 'ProductionUnitProducts',
         component: ProductionUnitProducts,
-        requiredProducer: true,
+        meta: {
+            requiresAuth: true,
+            requiredProducer: true,
+        },
     },
 
     {
@@ -142,111 +147,6 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 });
-
-// router.beforeEach(async (to, from, next) => {
-//     let isAuthenticated = !!store.state.user;
-//     if (!isAuthenticated) {
-//         await store.dispatch('fetchAuthUser');
-//         isAuthenticated = !!store.state.user;
-//     }
-
-//     if (!isAuthenticated) await store.dispatch('fetchAuthUser');
-//     console.log('isAuthenticated', isAuthenticated);
-//     if (
-//         (to.path === '/login' || to.path === '/registration') &&
-//         isAuthenticated
-//     ) {
-//         // redirect to the home page if the user is already logged in
-//         next(from);
-//         return;
-//     }
-
-//     if (
-//         to.matched.some((record) => record.meta.requiresAuth) &&
-//         !isAuthenticated
-//     ) {
-//         // redirect to the login page if the user is not logged in
-//         next('/login');
-//         return;
-//     }
-
-//     if (
-//         to.matched.some((record) => record.meta.requiredPermissions) &&
-//         !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
-//     ) {
-//         // redirect back to the previous page if the user does not have the required permissions
-//         createPopup(
-//             `Você não tem permissão para aceder a ${
-//                 to.name?.toString() || 'página'
-//             }.`,
-//             'error'
-//         );
-//         next(from);
-//         return;
-//     }
-//     if (to.matched.some((record) => record.meta.requiredProducer)) {
-//         const producerId = to.params.producerId;
-
-//         // Perform the verification logic here
-//         // Example: Check if producerId matches the user's ID
-//         const userId = store.state.user!.user.id;
-//         console.log('producerId', producerId);
-//         console.log('userId', userId);
-//         if (producerId === userId) {
-//             // User is the producer, proceed to the route
-//             next();
-//         } else {
-//             // or
-//             createPopup(
-//                 'Você não tem permissão para aceder a esta página.',
-//                 'error'
-//             ); // Show an error message
-//         }
-//     } else {
-//         // Route does not require producer, proceed to the route
-//         next();
-//     }
-// });
-
-// export const checkProducerMiddleware = async (
-//     producerId: number,
-//     _to: { matched: { meta: { requiredProducer: boolean } }[] },
-//     _next: () => void
-// ) => {
-//     const store = useStore();
-//     const userId = store.state.user!.user.id;
-//     console.log('producerId', producerId);
-//     console.log('userId', userId);
-//     // console log requiredProducer before and after the loop
-//     _to.matched.forEach((record: { meta: { requiredProducer: boolean } }) => {
-//         console.log('requiredProducer1', record.meta.requiredProducer);
-//     });
-
-//     if (
-//         producerId === userId &&
-//         userId !== undefined &&
-//         producerId !== undefined
-//     ) {
-//         // User is the producer, set requiredProducer to true
-//         _to.matched.forEach(
-//             (record: { meta: { requiredProducer: boolean } }) => {
-//                 record.meta.requiredProducer = true;
-//                 console.log('requiredProducer2', record.meta.requiredProducer);
-//             }
-//         );
-//     } else {
-//         // User is not the producer, set requiredProducer to false
-//         _to.matched.forEach(
-//             (record: { meta: { requiredProducer: boolean } }) => {
-//                 record.meta.requiredProducer = false;
-//                 console.log('requiredProducer3', record.meta.requiredProducer);
-//             }
-//         );
-//     }
-
-//     _next();
-// };
-
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
     if (!isAuthenticated) {
@@ -254,31 +154,58 @@ router.beforeEach(async (to, from, next) => {
         isAuthenticated = !!store.state.user;
     }
 
-    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
-    console.log('isAuthenticated', isAuthenticated);
+    // Check if the user is authenticated
+    if (!isAuthenticated) {
+        await store.dispatch('fetchAuthUser');
+        isAuthenticated = !!store.state.user;
+    }
+
+    // Check if the user is authenticated and has the correct type
+    const user = store.state.user?.user;
+    console.log('userrr', user);
+    const userType = store.state.user?.user?.type;
+
+    // Check if the user type is different from "PRODUCER" for routes that require it
     if (
-        (to.path === '/login' || to.path === '/registration') &&
-        isAuthenticated
+        to.matched.some((record) => record.meta.requiredProducer) &&
+        userType !== 'PRODUCER'
     ) {
-        // redirect to the home page if the user is already logged in
+        createPopup(
+            `Você não tem permissão para aceder a ${
+                to.name?.toString() || 'página'
+            }.`,
+            'error'
+        );
         next(from);
         return;
     }
 
+    // Check if the user is already logged in and trying to access login or registration pages
+    if (
+        (to.path === '/login' || to.path === '/registration') &&
+        isAuthenticated
+    ) {
+        // Redirect to the home page if the user is already logged in
+        next(from);
+        return;
+    }
+
+    // Check if the route requires authentication
     if (
         to.matched.some((record) => record.meta.requiresAuth) &&
         !isAuthenticated
     ) {
-        // redirect to the login page if the user is not logged in
+        // Redirect to the login page if the user is not logged in
         next('/login');
         return;
     }
 
+    // Check if the user has the required permissions
     if (
         to.matched.some((record) => record.meta.requiredPermissions) &&
-        !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
+        !hasPermission(user, to.meta.requiredPermissions!)
     ) {
-        // redirect back to the previous page if the user does not have the required permissions
+        // Redirect back to the previous page if the user does not have the required permissions
         createPopup(
             `Você não tem permissão para aceder a ${
                 to.name?.toString() || 'página'
@@ -292,42 +219,4 @@ router.beforeEach(async (to, from, next) => {
     next();
 });
 
-export const checkProducerMiddleware = async (
-    producerId: number,
-    _to: RouteLocationNormalizedLoaded & { params: { producerId: number } },
-    _next: () => void
-) => {
-    const store = useStore();
-    const userId = store.state.user!.user.id;
-    console.log('producerId', producerId);
-    console.log('userId', userId);
-    // console log requiredProducer before and after the loop
-    _to.matched.forEach((record: { meta: { requiredProducer: boolean } }) => {
-        console.log('requiredProducer1', record.meta.requiredProducer);
-    });
-
-    if (
-        producerId === userId &&
-        userId !== undefined &&
-        producerId !== undefined
-    ) {
-        // User is the producer, set requiredProducer to true
-        _to.matched.forEach(
-            (record: { meta: { requiredProducer: boolean } }) => {
-                record.meta.requiredProducer = true;
-                console.log('requiredProducer2', record.meta.requiredProducer);
-            }
-        );
-    } else {
-        // User is not the producer, set requiredProducer to false
-        _to.matched.forEach(
-            (record: { meta: { requiredProducer: boolean } }) => {
-                record.meta.requiredProducer = false;
-                console.log('requiredProducer3', record.meta.requiredProducer);
-            }
-        );
-    }
-
-    _next();
-};
 export default router;

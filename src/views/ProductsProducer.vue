@@ -78,49 +78,13 @@
 </template>
 
 <script lang="ts">
+import { defineComponent, ref, onMounted, inject } from 'vue';
+import { Product } from '@/types/Product';
 import { fetchAllProducts } from '@/api/producerProducts';
+import { fetchAuth } from '../api/auth';
+import { ProducerProducts } from '@types';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
-import { Product } from '@types';
-import { checkProducerMiddleware } from '@/router/index';
-// export default {
-//   components: {
-//     Pagination,
-//   },
-//   data() {
-//     return {
-//       products: [] as Product[],
-//       allProductsData: {},
-//     };
-//   },
-//   async mounted() {
-//     try {
-//       const store = useStore();
-//       const id = store.state.user!.user.id;
-//       console.log('iddd', id);
-
-//       const page = parseInt(this.$route.query.page) || 1;
-//       const pageSize = parseInt(this.$route.query.pageSize) || 24;
-
-//       // checkProducerMiddleware(id);
-//       // const allProductsData = await fetchAllProducts(id, page, pageSize);
-//       await checkProducerMiddleware(id, this.$route, async () => {
-//         // Middleware logic executed
-//         console.log('Middleware executed');
-//         const allProductsData = await fetchAllProducts(id, page, pageSize);
-//         console.log('allProductsData:', allProductsData);
-
-//         const productsArray = allProductsData.data;
-//         console.log('Products:', productsArray);
-
-//         this.products = productsArray;
-//         this.allProductsData = allProductsData;
-//       });
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   },
-// };
 
 export default {
   components: {
@@ -137,34 +101,20 @@ export default {
       const store = useStore();
       const id = store.state.user!.user.id;
       console.log('iddd', id);
-
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
-
-      // Update the route with the producerId parameter
-      const routeWithParams = Object.assign({}, this.$route, {
-        params: { producerId: id },
-      });
-
-      await checkProducerMiddleware(2, routeWithParams, async () => {
-        // Middleware logic executed
-        console.log('Middleware executed');
-        const allProductsData = await fetchAllProducts(id, page, pageSize);
-        console.log('allProductsData:', allProductsData);
-
-        const productsArray = allProductsData.data;
-        console.log('Products:', productsArray);
-
-        this.products = productsArray;
-        this.allProductsData = allProductsData;
-      });
+      const allProductsData = await fetchAllProducts(id, page, pageSize);
+      console.log('allProductsData:', allProductsData);
+      const productsArray = allProductsData.data;
+      console.log('Products:', productsArray);
+      this.products = productsArray;
+      this.allProductsData = allProductsData;
     } catch (error) {
       console.error(error);
     }
   },
 };
 </script>
-
 <style>
 .prod-card {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -173,29 +123,24 @@ export default {
   width: 130px;
   height: 250px;
 }
-
 .square-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .fav {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
 }
-
 .prod-category {
   background-color: #9dc88d;
   /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
-
 .grey-txt {
   color: #888;
   font-size: 0.9rem;
 }
-
 .circle-btn {
   width: 40px;
   height: 40px;

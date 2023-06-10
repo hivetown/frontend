@@ -134,7 +134,7 @@ export default {
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      const allTransportsData = await fetchAllTransports(2, page, pageSize);
+      const allTransportsData = await fetchAllTransports(id, page, pageSize);
 
       console.log('allTransportsData:', allTransportsData);
 
