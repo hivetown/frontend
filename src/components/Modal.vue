@@ -5,11 +5,10 @@
       <div class="content">
         <p v-if="orderItem.totalItems == 0">Não existem notificações novas.</p>
         <b-list-group v-else>
-          <!-- _active mete a azul as nao lidas-->
           <b-list-group-item
             v-for="num in orderItem['totalItems']"
             :key="num"
-            href="/notifications"
+            href="/notifications?page=1"
             :active="true"
             class="flex-column align-items-start"
           >
@@ -23,7 +22,7 @@
           <hr />
         </b-list-group>
       </div>
-      <a id="not" href="/notifications">Ver todas</a>
+      <a id="not" href="/notifications?page=1">Ver todas</a>
     </div>
   </div>
 </template>
@@ -46,7 +45,6 @@ export default {
     getUnreadNotifications()
       .then((responseItem) => {
         orderItem.value = responseItem.data;
-        console.log(orderItem.value);
       })
       .catch((error) => {
         console.error(error);
@@ -66,7 +64,11 @@ export default {
   },
 };
 </script>
-<style>
+
+<style scoped>
+hr {
+  color: black;
+}
 #popup {
   border-radius: 1%;
   position: absolute;
@@ -80,23 +82,10 @@ export default {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-#popup h2 {
+#popup h5 {
   margin-top: 0;
 }
 
-#popup ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#popup li {
-  margin-bottom: 5px;
-}
-
-#popup button {
-  margin-top: 10px;
-}
 .sticky-bar {
   position: sticky;
   top: 0;
@@ -105,12 +94,16 @@ export default {
   position: -moz-sticky;
   position: -ms-sticky;
   z-index: 2;
+  overflow-y: auto; /* Habilita a rolagem vertical */
+  max-height: 500px; /* Define a altura máxima da barra */
 }
+
 .content {
-  margin-top: 20px; /* adjust to the height of your sticky bar */
+  margin-top: 20px; /* Ajuste para a altura da barra sticky */
 }
+
 .active {
-  background-color: #d3e3e6 !important; /* set the background color for unread notifications */
+  background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
   border-color: #d3e3e6 !important;
 }
 </style>

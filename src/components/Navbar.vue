@@ -233,7 +233,6 @@ export default {
   methods: {
     showModalFunction() {
       this.showModal = !this.showModal;
-      console.log(this.showModal);
     },
   },
   data() {
