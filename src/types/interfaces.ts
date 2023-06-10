@@ -218,3 +218,8 @@ export interface FieldPossibleValue {
     id: number;
     value: string;
 }
+
+export interface coordinates {
+    latitude: number;
+    longitude: number;
+}

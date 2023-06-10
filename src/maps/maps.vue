@@ -71,6 +71,8 @@ export default {
 import { onMounted, ref, watch } from 'vue';
 import { fetchMapForUnit } from './maps';
 import mapboxgl from 'mapbox-gl';
+import { useStore } from '@/store';
+import { fetchConsumerLocation } from '@/api/consumerLocation';
 
 export default {
   props: {
@@ -82,7 +84,11 @@ export default {
   setup(props) {
     const mapContainer = ref(null);
     let mapInstance = null;
+    let marker = null;
 
+    const store = useStore();
+    const userType = store.state.user.user.type;
+    const userId = store.state.user.user.id;
     onMounted(async () => {
       try {
         await updateMap(props.selectedUnit);
@@ -119,8 +125,48 @@ export default {
           center: [unit.address.longitude, unit.address.latitude],
           zoom: 8,
         });
+        mapInstance.on('load', async () => {
+          console.log('Map style loaded');
+          marker = new mapboxgl.Marker({ color: 'red' })
+            .setLngLat([unit.address.longitude, unit.address.latitude])
+            .addTo(mapInstance);
 
-        // Add markers, layers, etc. to the map as needed
+          if (userType === 'CONSUMER') {
+            const consumerLocation = await fetchConsumerLocation(userId);
+            console.log(
+              'consumerLocation',
+              consumerLocation.data.items[0].latitude
+            );
+            const locationData = consumerLocation.data.items[0];
+            new mapboxgl.Marker({ color: 'blue' })
+              .setLngLat([locationData.longitude, locationData.latitude])
+              .addTo(mapInstance);
+
+            const lineCoordinates = [
+              [locationData.longitude, locationData.latitude],
+              [unit.address.longitude, unit.address.latitude],
+            ];
+            mapInstance.addLayer({
+              id: 'dashed-line',
+              type: 'line',
+              source: {
+                type: 'geojson',
+                data: {
+                  type: 'Feature',
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: lineCoordinates,
+                  },
+                },
+              },
+              paint: {
+                'line-color': 'blue',
+                'line-width': 2,
+                'line-dasharray': [2, 2],
+              },
+            });
+          }
+        });
       } catch (error) {
         console.error('Error updating map:', error);
       }
