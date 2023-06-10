@@ -67,8 +67,6 @@
               </p>
               <p class="text-center">{{ unidade.address.zipCode }}</p>
             </div>
-            <!-- TODO - por automatico -->
-            <p class="text-center mb-1">A 5km de si</p>
           </div>
         </div>
       </div>
