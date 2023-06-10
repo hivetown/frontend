@@ -23,7 +23,7 @@ export default {
   },
   data() {
     return {
-      currentPage: parseInt(this.$route.query.page) || 1,
+      currentPage: parseInt(this.$route.query.page as string) || 1,
     };
   },
   watch: {
