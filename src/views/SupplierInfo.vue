@@ -56,10 +56,8 @@
           <div
             :id="String(idU + 1)"
             @click="updateImage(idU + 1)"
-            :class="[
-              'production-unit',
-              { 'selected-unit': elementoSelecionado === String(idU + 1) },
-            ]"
+            class="production-unit"
+            :ref="String(idU + 1)"
           >
             <p class="text-center fw-bold">{{ unidade.name }}</p>
             <div class="d-flex gap-2 justify-content-center">
@@ -105,7 +103,11 @@ export default {
       mapImage: 1,
       dadosProdutor: {} as Producer,
       unidadesProd: {} as BaseItems<productionUnit>,
-      elementoSelecionado: '0' as string,
+      indiceUpSelecionada: 0 as number,
+
+      ultimaUp: [] as HTMLElement[],
+      ultimaUpId: 1 as number,
+      idUpDefault: 0 as number,
     };
   },
   props: {
@@ -116,17 +118,17 @@ export default {
   },
   methods: {
     updateImage(number: number) {
+      const idElemento = number - 1;
+      const upSelecionada = this.$refs[idElemento + 1] as HTMLElement[];
       this.mapImage = number;
-    },
-    selectUnit(id: string) {
-      const atual = this.elementoSelecionado;
-
-      if (id !== atual) {
-        this.elementoSelecionado = id;
+      // Compara o id da ultima UP selecionada com o id da UP
+      // selecionada atualmente
+      if (this.ultimaUpId != Number(upSelecionada[0].id)) {
+        this.ultimaUpId = Number(upSelecionada[0].id);
+        this.ultimaUp[0].classList.remove('selected-unit');
+        upSelecionada[0].classList.add('selected-unit');
+        this.ultimaUp = upSelecionada;
       }
-    },
-    isSelected(id: string) {
-      return id === this.elementoSelecionado;
     },
   },
   async beforeMount() {
@@ -140,9 +142,10 @@ export default {
     this.unidadesProd = unidadesProd.data;
 
     // Define a UP selecionada por default
-    if (this.unidadesProd.items.length > 0) {
-      this.elementoSelecionado = String(this.unidadesProd.items[0].id);
-    }
+    this.$nextTick(() => {
+      this.ultimaUp = this.$refs[1] as HTMLElement[];
+      this.ultimaUp[0].classList.add('selected-unit');
+    });
   },
   //components: { Pagination },
 };
