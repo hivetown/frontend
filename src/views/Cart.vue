@@ -19,7 +19,7 @@
           <td class="left-column">
             <div>
               <!---->
-              <div v-if="login">
+              <div v-if="nElementos != 0">
                 <CartItem
                   v-for="cartItem in itensCarrinho.items"
                   :cart-item="cartItem"
@@ -211,7 +211,7 @@ export default {
   // Buscar Info do Carrinho
   async beforeMount() {
     this.checkLogin();
-    if (this.login == true) {
+    if (this.login) {
       this.refreshValues();
     }
   },
