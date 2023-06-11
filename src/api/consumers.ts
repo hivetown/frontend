@@ -1,4 +1,4 @@
-import { Address, Consumer, CreateConsumer } from '@/types';
+import { Address, Consumer, CreateConsumer, Address2 } from '@/types';
 import { api } from './_base';
 
 export const createConsumer = async (consumer: CreateConsumer) =>
@@ -11,7 +11,7 @@ export const createConsumerAddress = (id: number, address: Address) =>
 export const postConsumer = (consumer: CreateConsumer) =>
     api.post('/consumers', consumer);
 
-export const postNewAdress = (consumerId: number, address: Address) =>
+export const postNewAdress = (consumerId: number, address: Address2) =>
     api.post(`/consumers/${consumerId}/addresses`, address);
 
 export const cancelPayment = (consumerId: number, sessionId: string) =>

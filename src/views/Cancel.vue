@@ -12,7 +12,9 @@ import { useStore } from '@/store';
 var idU = 0;
 const store = useStore();
 const user2 = computed(() => store.state.user);
-idU = user2.value['user']['id'];
+if (user2.value && user2.value.user && user2.value.user.id) {
+  idU = user2.value.user.id;
+}
 onMounted(async () => {
   let currentUrl = window.location.href;
   const pathSegments = currentUrl.split('/');

@@ -174,7 +174,7 @@
 import { computed } from 'vue';
 import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
-import { Address } from '../types/interfaces';
+import { Address2 } from '../types/interfaces';
 import { useStore } from '@/store';
 var idU = 0;
 
@@ -197,7 +197,7 @@ export default {
   data() {
     return {
       idU: idU, // Valor inicial de idU
-      address: {} as Address,
+      address2: {} as Address2,
       isChecked: false, // Inicialmente o checkbox não estará selecionado
       name: '', // Propriedade para validar o campo "Nome"
       door: '',
@@ -216,33 +216,47 @@ export default {
 
   methods: {
     handleSubmit() {
-      const {
-        door,
-        floor,
-        number,
-        zipCode,
-        street,
-        parish,
-        county,
-        city,
-        district,
-        latitude,
-        longitude,
-      } = this.$refs;
-      // Verifique se todos os campos obrigatórios são preenchidos
-      this.address = {
-        door: door ? this.$refs.door.value : '',
-        floor: floor ? this.$refs.floor.value : '',
-        number: number ? this.$refs.number.value : '',
-        zipCode: zipCode ? this.$refs.zipCode.value : '',
-        street: street ? this.$refs.street.value : '',
-        parish: parish ? this.$refs.parish.value : '',
-        county: county ? this.$refs.county.value : '',
-        city: city ? this.$refs.city.value : '',
-        district: district ? this.$refs.district.value : '',
-        latitude: latitude ? parseFloat(this.$refs.latitude.value) : 0,
-        longitude: longitude ? parseFloat(this.$refs.longitude.value) : 0,
-      };
+  const {
+    door,
+    floor,
+    number,
+    zipCode,
+    street,
+    parish,
+    county,
+    city,
+    district,
+    latitude,
+    longitude,
+  } = this.$refs as {
+    door: HTMLInputElement | undefined;
+    floor: HTMLInputElement | undefined;
+    number: HTMLInputElement | undefined;
+    zipCode: HTMLInputElement | undefined;
+    street: HTMLInputElement | undefined;
+    parish: HTMLInputElement | undefined;
+    county: HTMLInputElement | undefined;
+    city: HTMLInputElement | undefined;
+    district: HTMLInputElement | undefined;
+    latitude: HTMLInputElement | undefined;
+    longitude: HTMLInputElement | undefined;
+  };
+  
+  // Verifique se todos os campos obrigatórios são preenchidos
+  this.address2 = {
+    door: door ? door.value : '',
+    floor: floor ? parseFloat(floor.value) : 0,
+    number: number ? parseFloat(number.value) : 0,
+    zipCode: zipCode ? zipCode.value : '',
+    street: street ? street.value : '',
+    parish: parish ? parish.value : '',
+    county: county ? county.value : '',
+    city: city ? city.value : '',
+    district: district ? district.value : '',
+    latitude: latitude ? parseFloat(latitude.value) : 0,
+    longitude: longitude ? parseFloat(longitude.value) : 0,
+  };
+
 
       if (!this.name) {
         this.showError('Por favor, preencha o campo "Nome".');
@@ -334,7 +348,7 @@ export default {
       //adiciona o novo endereco
       //TODO trocar para user logado
 
-      postNewAdress(this.idU, this.address)
+      postNewAdress(this.idU, this.address2)
         .then((response) => {
           Swal.fire({
             title: 'Endereço salvo!',
@@ -365,20 +379,21 @@ export default {
               'É preciso preencher todos os campos para poder salvar o endereço!';
 
             // Adicionar a div ao DOM
-            const errorContainer = document.getElementById('error-container'); // substitua pelo ID do elemento onde deseja exibir a mensagem de erro
+            const errorContainer = document.getElementById('error-container'); 
+			if (errorContainer) {
             errorContainer.appendChild(errorDiv);
-            // Lançar uma exceção para interromper a execução do código
-            throw new Error('Erro de requisição: dados inválidos');
+            throw new Error('Erro de requisição: dados inválidos');}
           }
         });
     },
     showError(message: string) {
       const errorContainer = document.getElementById('error-container');
+	  if (errorContainer) {
       errorContainer.innerHTML = '';
       const alert = document.createElement('div');
       alert.classList.add('alert', 'alert-danger');
       alert.innerHTML = message;
-      errorContainer.appendChild(alert);
+      errorContainer.appendChild(alert);}
     },
   },
 };

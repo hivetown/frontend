@@ -82,7 +82,23 @@ export interface Address {
     latitude: number;
     longitude: number;
 }
-
+export interface Address2 { //necessitava sem o id para adicionar um novo
+    //id: number;
+    number: number;
+    door: string;
+    floor: number;
+    zipCode: string;
+    street: string;
+    parish: string;
+    county: string;
+    city: string;
+    district: string;
+    latitude: number;
+    longitude: number;
+}
+export interface ShippingAdress {
+    shippingAddressId: number;
+}
 export interface Order {
     id: number;
     items: Product[];

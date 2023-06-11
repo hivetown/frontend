@@ -69,7 +69,7 @@
         >
           <a href="/carrinho">
             <div style="display: inline-block">
-              <span
+              <span v-if="cart.totalItems > 0"
                 >{{ cart['items'][num - 1]['quantity'] }}X
                 {{
                   cart['items'][num - 1]['producerProduct']['productSpec'][
@@ -77,6 +77,7 @@
                   ]
                 }};
               </span>
+              <span v-else> O carrinho está vazio</span>
             </div>
           </a>
         </div>
@@ -103,33 +104,28 @@
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import CartItem from '@/components/CartItem.vue';
 import { onMounted, ref, computed } from 'vue';
 import {
   getAddresses,
   postOrderPayment,
   getCart,
-  getProduct,
-} from '../api/cart.ts';
+} from '../api/cart';
 import { useStore } from '@/store';
 var idU = 0;
 const store = useStore();
 const user2 = computed(() => store.state.user);
-idU = user2.value['user']['id'];
-const address2 = ref<Order[]>([]); //array com os produtos
+if (user2.value && user2.value.user && user2.value.user.id) {
+  idU = user2.value.user.id;
+}
+const address2 =  ref<any>('');
 const collapsed = ref(true);
-const cart = ref<Order[]>([]); //array com os produtos
-const item = ref<Order[]>([]);
-const items = ref<Order[]>([]);
+const cart = ref<any>('');
 
 onMounted(async () => {
-  //TODO trocar pelo id do user logado
   const addresses = await getAddresses(idU);
   address2.value = addresses.data;
-  //TODO trocar para user logado
   const gCart = await getCart(idU);
   cart.value = gCart.data;
-
   //item.value.push()
 });
 </script>
@@ -138,10 +134,10 @@ onMounted(async () => {
 import AddAddress from '../components/AddAddress.vue';
 import { fetchAuth } from '../api/auth';
 
-var idU = 0;
+var idU2 = 0;
 
 onMounted(async () => {
-  idU = (await fetchAuth()).data.user.id;
+  idU2 = (await fetchAuth()).data.user.id;
 });
 export default {
   components: { AddAddress },
@@ -158,7 +154,7 @@ export default {
       this.isButtonDisabled = this.selectedItems.length === 0;
     },
     async submitOrder() {
-      idU = (await fetchAuth()).data.user.id;
+      idU2 = (await fetchAuth()).data.user.id;
 
       if (this.isButtonDisabled) {
         // Emitir um alerta
@@ -166,14 +162,17 @@ export default {
       }
       var id = this.selectedItems;
       try {
-        const response = await postOrderPayment(idU, {
+		if (typeof id === 'number') {
+
+        const response = await postOrderPayment(idU2, {
           shippingAddressId: id,
         });
         console.log(response);
         window.location.href = response.data['checkout_url'];
         console.log('Pedido enviado com sucesso!');
+	}
       } catch (error) {
-        if (error.response.status === 400) {
+        if (error){//} error.response.status === 400) {
           Swal.fire({
             title: 'Oops... Falta de stock!',
             text: 'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
@@ -183,9 +182,8 @@ export default {
           });
         }
 
-        console.log(
-          'Erro ao enviar o pedido. Por favor, tente novamente mais tarde.'
-        );
+       
+	
       }
     },
   },
