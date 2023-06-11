@@ -170,8 +170,12 @@ export interface ReportEvolution {
 export interface ReportBarChartProduct {
     id: number;
     nome: string;
-    totalProdutos: number;
-    totalProdutosCancelados: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
 }
 
 // Ver se isto está a ser usado

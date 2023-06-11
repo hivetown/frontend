@@ -1,4 +1,5 @@
 <!-- TODO - validar os campos -->
+<!-- TODO - mostrar as encomendas canceladas de alguma forma -->
 <template>
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
@@ -20,6 +21,7 @@
               <DropdownCustom class="required-field" @view="handleViewSelect" />
             </div>
             <div>
+              <!-- Produtos ou clientes -->
               <div class="d-flex gap-4">
                 <div class="mb-4">
                   <RadioButton
@@ -45,10 +47,9 @@
                 </div>
               </div>
             </div>
-            <!-- {{ barChartView }} -->
             <div>
-              <p>Escolha as datas a visualizar:</p>
               <!-- Datas -->
+              <p>Escolha as datas a visualizar:</p>
               <div class="d-flex gap-2 align-items-center">
                 <DatePicker
                   style="display: flex; justify-content: center"
@@ -66,8 +67,8 @@
                 ></DatePicker>
               </div>
             </div>
-            <p class="mt-4">Indique o raio a visualizar:</p>
             <!-- Slider do raio -->
+            <p class="mt-4">Indique o raio a visualizar:</p>
             <div class="d-flex gap-3">
               <div
                 style="
@@ -96,12 +97,13 @@
               />
             </div>
             <!-- Escolher categoria -->
+            <!-- TODO - tornar funcional -->
             <div>
               <p class="mt-4">Escolha a categoria a visualizar:</p>
               <CategoryFilter :categories="allCategories"></CategoryFilter>
             </div>
             <div class="mt-4 btn-report-mobile">
-              <!-- Botão -->
+              <!-- Botão gerar gráficos -->
               <ButtonPV
                 :disabled="!allDataAvailable"
                 @click="generateGraphs()"
@@ -117,6 +119,7 @@
           </div>
         </div>
       </div>
+      <!-- Lado esquerdo da barra -->
       <div
         style="width: 80%; background-color: "
         class="reportInfo d-none d-md-block"
@@ -129,8 +132,10 @@
               :src="userLoggedNImage.url"
               :alt="userLoggedNImage.alt"
             />
+            <!-- Nome do user -->
             <h3 class="main-txt dgreen-txt">{{ userLoggedName }}</h3>
           </div>
+          <!-- Cards coloridos -->
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
@@ -221,6 +226,7 @@
             </div>
             <div style="background-color: ; width: 53%">
               <div>
+                <!-- Muda a cada tipo: produtos ou clientes -->
                 <h4
                   v-if="graficosGerados && barChartView == 'products'"
                   class="py-4 dgreen-txt"
@@ -260,7 +266,7 @@
           >
             TODO - Implementar categorias - Items canelados nos dados se der -
            -->
-          {{ reportProducerClients }}
+          <!-- {{ reportProducerClients }} -->
           <div class="mt-5 parent" style="height: 40vh"></div>
         </div>
       </div>
@@ -383,7 +389,6 @@ export default defineComponent({
         this.endDate !== 'Indefinido' &&
         this.raio !== 0 &&
         this.view !== ''
-        // && this.barChartView !== ''
       );
     },
   },
@@ -392,10 +397,11 @@ export default defineComponent({
     // Valor do slider - Raio
     const raio = ref(0);
     this.raio = raio;
+    // Valor dos radio buttons - Vista
     const barChartView = ref('products');
     this.barChartView = barChartView.value;
 
-    // Ir buscar o utilizador que está logado
+    // Ir buscar os dados do utilizador que está logado
     const store = useStore();
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
@@ -407,9 +413,6 @@ export default defineComponent({
       }
     }
 
-    // console.log('user: ' + this.userLoggedId);
-    // console.log(this.userLoggedType);
-
     // TODO - alterar a forma como as categorias são buscadas
     // Ir buscar as categorias (só traz as 24 de uma página)
     const allCategoriesData = await fetchAllCategories();
@@ -417,6 +420,7 @@ export default defineComponent({
     this.allCategories = allCategories;
   },
   methods: {
+    // Gerar os gráficos
     generateGraphs() {
       this.nuncaGerados = false;
       this.graficosGerados = true;
@@ -435,10 +439,12 @@ export default defineComponent({
       }
     },
     updateBarChart() {
+      // Se nunca foi gerado nenhuma vez, gera o gráfico de barras
       if (!this.nuncaGerados) {
         this.generateGraphs();
       }
     },
+    // Define as datas de início e fim (usa um emit)
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
         this.startDate = selectedDate[0];
@@ -446,11 +452,12 @@ export default defineComponent({
         this.endDate = selectedDate[0];
       }
     },
+    // Define a view selecionana no dropdown (usa um emit)
     handleViewSelect(selectedView: any) {
-      // TODO - fazer debug da view atualizada para alterar a legendas dos gráficos
       this.view = selectedView.code;
     },
 
+    // Carrega os dados usados nos gráficos
     async loadGraphs(
       id: number,
       dataInicio: string,
@@ -466,7 +473,6 @@ export default defineComponent({
         raio
       );
       this.reportCards = reportCards.data;
-      //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
       const reportMap = await fetchReportMap(
@@ -479,7 +485,6 @@ export default defineComponent({
       //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
 
       // Ir buscar os dados da evolução (gráfico de linhas)
-      // TODO mudar para ser o id do user logado e o raio do slider + o valor certo da view e as datas
       const reportEvolution = await fetchReportEvolution(
         this.userLoggedId,
         dataInicio,
@@ -491,17 +496,18 @@ export default defineComponent({
       this.updateGraphData(view, 'line');
 
       // Ir buscar os dados do gráfico de barras
+      // Produtos
       const reportBarChart = await fetchReportProducts(
         this.userLoggedId,
         dataInicio,
         dataFim,
         raio,
-        'totalProdutos'
+        view
       );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData(view, 'bar');
-      //   console.log(this.reportBarChart);
 
+      // Clientes
       const producerClients = await fetchProducerReportClients(
         this.userLoggedId,
         dataInicio,
@@ -510,12 +516,12 @@ export default defineComponent({
         view
       );
       this.reportProducerClients = producerClients.data;
-      //   console.log(this.reportProducerClients);
+      this.updateGraphData(view, 'bar');
     },
 
-    // Atualizar os dados do gráfico de linhas
+    // Atualizar os dados dos gráficos
     updateGraphData(view: string, grapthType: string) {
-      // Limpar os arrays de dados
+      // Gráfico de linhas
       if (grapthType == 'line') {
         this.lineGraphLabels = [];
         this.lineGraphData = [];
@@ -544,30 +550,30 @@ export default defineComponent({
             },
           ],
         };
-        // console.log(this.lineChartData);
-        // console.log(this.lineGraphLabels);
-        // console.log(this.view);
-      } else if (grapthType == 'bar') {
-        // Limpar os arrays de dados
+      } // Gráfico de barras
+      else if (grapthType == 'bar') {
         this.barGraphLabels = [];
         this.barGraphData = [];
 
         // Preparar os dados para o gráfico de barras
         if (this.barChartView == 'products') {
           for (const string of this.reportBarChart) {
-            console.log(string);
             // Reduzir o nome para caber no gráfico
             const nomeOriginal = string.nome.split(' ');
             let nomeReduzido = nomeOriginal[0];
             for (let i = 1; i < nomeOriginal.length; i++) {
               nomeReduzido += ` ${nomeOriginal[i].charAt(0)}.`;
             }
-
             this.barGraphLabels.push(nomeReduzido);
-            // if (view == 'totalProdutos') {
-            if (string.totalProdutos) {
-              this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
-              //   }
+
+            if (view == 'numeroEncomendas') {
+              this.barGraphData.push(Object(string).numeroEncomendas);
+            } else if (view == 'totalProdutos') {
+              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+            } else if (view == 'numeroProdutosEncomendados') {
+              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+            } else if (view == 'comprasTotais') {
+              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
             }
           }
           this.barChartData = {
@@ -581,30 +587,23 @@ export default defineComponent({
             ],
           };
         } else if (this.barChartView == 'clients') {
-          //   for (const string of this.reportProducerClients) {
-          //     this.barGraphLabels.push(string.nome);
-          //     if (string.totalProdutos) {
-          //       this.barGraphData.push(string.totalProdutos); // Só as que não foram canceladas
-          //     }
-          //   }
-
-          //   TODO - fazer com que não seja preciso carregar no gerar gráficos 2
-          // vezes para aparecerem os dados como aparece no gráfico da esquerda
           for (const string of this.reportProducerClients) {
-            // console.log('string');
-            // console.log(view);
             this.barGraphLabels.push(Object(string).nome);
+
             if (view == 'numeroEncomendas') {
+              console.log('numeroEncomendas');
               this.barGraphData.push(Object(string).numeroEncomendas);
             } else if (view == 'totalProdutos') {
+              console.log('totalProdutos');
               this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
             } else if (view == 'numeroProdutosEncomendados') {
+              console.log('numeroProdutosEncomendados');
               this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
             } else if (view == 'comprasTotais') {
+              console.log('comprasTotais');
               this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
             }
           }
-          console.log('data: ' + JSON.stringify(this.barGraphData));
           this.barChartData = {
             labels: this.barGraphLabels,
             datasets: [
@@ -615,10 +614,6 @@ export default defineComponent({
               },
             ],
           };
-          //   console.log('labels');
-          //   console.log('labels: ' + JSON.stringify(this.barGraphLabels));
-          // console.log('data');
-          //   console.log('data: ' + JSON.stringify(this.barChartData));
         }
       }
     },
