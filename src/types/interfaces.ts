@@ -111,6 +111,7 @@ export interface Address {
     district: string;
     latitude: number;
     longitude: number;
+    consumer?: Consumer;
 }
 
 export interface Image {
@@ -138,4 +139,51 @@ export interface Field {
 export interface FieldPossibleValue {
     id: number;
     value: string;
+}
+
+export interface ReportCard {
+    id: number;
+    numeroEncomendas: number;
+    numeroEncomendasCanceladas: number;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
+    comprasTotais: number;
+    comprasTotaisCanceladas: number;
+    numeroProdutosEncomendados: number;
+    numeroProdutosEncomendadosCancelados: number;
+}
+
+export interface ReportMap {
+    shippingAddress: Address;
+    productionUnitAddress: Address;
+}
+
+export interface ReportEvolution {
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+}
+
+export interface ReportBarChartProduct {
+    id: number;
+    nome: string;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
+}
+
+// Ver se isto está a ser usado
+export interface ReportProducts {
+    id: number;
+    nome: string;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }

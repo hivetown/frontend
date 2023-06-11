@@ -50,6 +50,7 @@ export default {
     return {
       categories: [
         {
+          id: 1,
           name: 'Categoria 1',
           subCategories: [
             { name: 'Subcategoria 1', link: '/subcategoria1' },
@@ -58,6 +59,7 @@ export default {
           showSubCategories: false,
         },
         {
+          id: 2,
           name: 'Categoria 2',
           subCategories: [
             { name: 'Subcategoria 3', link: '/subcategoria3' },
@@ -66,6 +68,7 @@ export default {
           showSubCategories: false,
         },
         {
+          id: 3,
           name: 'Categoria 3',
           subCategories: [
             { name: 'Subcategoria 5', link: '/subcategoria5' },
@@ -74,6 +77,7 @@ export default {
           showSubCategories: false,
         },
         {
+          id: 4,
           name: 'Categoria 4',
           subCategories: [
             { name: 'Subcategoria 7', link: '/subcategoria7' },
@@ -82,6 +86,7 @@ export default {
           showSubCategories: false,
         },
         {
+          id: 5,
           name: 'Categoria 5',
           subCategories: [
             { name: 'Subcategoria 9', link: '/subcategoria9' },

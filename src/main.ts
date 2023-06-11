@@ -4,6 +4,10 @@ import App from './App.vue';
 import { key, store } from '@/store';
 import router from './router';
 
+// Ver se está tudo ok
+import PrimeVue from 'primevue/config';
+import Calendar from 'primevue/calendar';
+///////////////////////////////////////////
 import BootstrapVue3, { BCarousel, BCarouselSlide } from 'bootstrap-vue-3';
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -20,7 +24,13 @@ app.use(BootstrapVue3);
 app.use(BootstrapIconsPlugin);
 app.use(router);
 
+// Aqui tb
+app.use(PrimeVue);
+
 app.component('BCarousel', BCarousel);
 app.component('BCarouselSlide', BCarouselSlide);
+
+// Aqui tb
+app.component('Calendar', Calendar);
 
 app.mount('#app');
