@@ -18,18 +18,18 @@
         <tr>
           <td class="left-column">
             <div>
-              <!--{{ itensCarrinho }}-->
-
-              <CartItem
-                v-for="cartItem in itensCarrinho.items"
-                :cart-item="cartItem"
-                @deleteCartItem="itemRemoved"
-                @updateCartItem="refreshValues"
-              ></CartItem
-              ><!--   -->
-              <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
-
-              <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
+              <!---->
+              <div v-if="login">
+                <CartItem
+                  v-for="cartItem in itensCarrinho.items"
+                  :cart-item="cartItem"
+                  @deleteCartItem="itemRemoved"
+                  @updateCartItem="refreshValues"
+                ></CartItem>
+              </div>
+              <div v-else>
+                <p>Não possui itens no carrinho.</p>
+              </div>
             </div>
           </td>
 
@@ -111,13 +111,12 @@ import { deleteCartItem, fetchCartItems } from '../api/consumers';
 //import { defineComponent } from 'vue';
 import { Cart } from '@types'; //TODO: Pode dar erro
 //import { getSystemErrorMap } from 'util';
-import { useStore } from '@/store';
 
 export default {
   data() {
     return {
       itensCarrinho: {} as Cart,
-      store: {} as useStore,
+      login: false,
 
       selected: null,
       options: [
@@ -150,11 +149,19 @@ export default {
     },
 
     getItems() {
-      return this.nElementos;
+      if (this.login == true) {
+        return this.nElementos;
+      } else {
+        return 0;
+      }
     },
 
     getPrice() {
-      return this.precoTotal;
+      if (this.login == true) {
+        return this.precoTotal;
+      } else {
+        return 0;
+      }
     },
 
     countItems() {
@@ -193,12 +200,20 @@ export default {
       this.precoTotal = parseInt(this.countPrice());
       console.log(this.nElementos, this.precoTotal);
     },
+
+    checkLogin() {
+      if (this.$store.state.user != undefined) {
+        this.login = true;
+      }
+    },
   },
 
   // Buscar Info do Carrinho
   async beforeMount() {
-    //this.refreshValues();
-    console.log(this.store.state);
+    this.checkLogin();
+    if (this.login == true) {
+      this.refreshValues();
+    }
   },
 };
 </script>
