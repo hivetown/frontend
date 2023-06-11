@@ -9,7 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
-import Impact from '@/views/Impact.vue';
+import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -69,9 +69,9 @@ const routes = [
         component: Register,
     },
     {
-        path: '/impact',
-        name: 'Impact',
-        component: Impact,
+        path: '/impactConsumer',
+        name: 'ImpactConsumer',
+        component: ImpactConsumer,
     },
 ];
 
