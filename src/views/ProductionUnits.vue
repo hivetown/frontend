@@ -109,10 +109,15 @@
               v-model="showModalDialog"
               title="Gerenciamento de Veículos"
             >
-              <b-dropdown text="Button text via Prop">
-                <b-dropdown-item href="#">An item</b-dropdown-item>
-                <b-dropdown-item href="#">Another item</b-dropdown-item>
-              </b-dropdown>
+              <b-col col lg="5">
+                <b-form-select
+                  v-model="selectedValue"
+                  :options="items"
+                  size="sm"
+                  class="mt-3"
+                  @input="updateQnt"
+                ></b-form-select>
+              </b-col>
             </b-modal>
           </template>
         </b-table>
