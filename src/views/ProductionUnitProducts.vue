@@ -84,7 +84,7 @@
 import { fetchAllUnitProducts } from '@/api/unitProducts';
 import Pagination from '../components/Pagination.vue';
 import { Product } from '@/types';
-import { useRoute } from 'vue-router';
+import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 export default {
   computed: {
     unitName(): string {
@@ -103,16 +103,23 @@ export default {
   data() {
     return {
       unitProducts: [] as Product[],
-      allUnitProducts: {},
+      allUnitProducts: {
+        data: {
+          totalItems: 0,
+          pageSize: 0,
+          page: 0,
+        },
+      },
     };
   },
   async mounted() {
     try {
-      console.log('Idddd', this.$route.params.unitId);
-      const producerId = this.$route.params.producerId;
-      const unitId = this.$route.params.unitId;
-      const page = parseInt(this.$route.query.page) || 1;
-      const pageSize = parseInt(this.$route.query.pageSize) || 24;
+      const route = useRoute() as RouteLocationNormalizedLoaded;
+      console.log('Idddd', route.params.unitId);
+      const producerId = route.params.producerId;
+      const unitId = route.params.unitId;
+      const page = parseInt(route.query.page as string) || 1;
+      const pageSize = parseInt(route.query.pageSize as string) || 24;
 
       const allUnitProducts = await fetchAllUnitProducts(
         producerId,

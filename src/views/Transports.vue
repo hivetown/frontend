@@ -106,7 +106,13 @@ export default {
   data() {
     return {
       transportVehicles: [] as TransportVehicles[],
-      allTransportsData: {},
+      allTransportsData: {
+        data: {
+          totalItems: 0,
+          pageSize: 0,
+          page: 0,
+        },
+      },
       transport: {
         status: 'AVAILABLE', // Set the initial status value here
       },

@@ -97,7 +97,7 @@ import { ProductionUnits } from '@/types';
 import { fetchAllUnits } from '@/api/units';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
-
+import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 export default {
   components: {
     Pagination,
@@ -105,7 +105,13 @@ export default {
   data() {
     return {
       productionUnits: [] as ProductionUnits[],
-      allUnitsData: {},
+      allUnitsData: {
+        data: {
+          totalItems: 0,
+          pageSize: 0,
+          page: 0,
+        },
+      },
     };
   },
   async mounted() {
@@ -114,10 +120,11 @@ export default {
       const id = store.state.user!.user.id;
       console.log('iddd', id);
 
-      const page = parseInt(this.$route.query.page) || 1;
-      const pageSize = parseInt(this.$route.query.pageSize) || 24;
+      const route = useRoute() as RouteLocationNormalizedLoaded;
+      const page = parseInt(route.query.page as string) || 1;
+      const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allUnitsData = await fetchAllUnits(6, page, pageSize);
+      const allUnitsData = await fetchAllUnits(4, page, pageSize);
 
       console.log('allUnitsData:', allUnitsData);
 

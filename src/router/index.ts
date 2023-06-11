@@ -1,8 +1,4 @@
-import {
-    createRouter,
-    createWebHistory,
-    RouteLocationNormalizedLoaded,
-} from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 
 import Home from '@/views/Home.vue';
 import About from '@/views/About.vue';
@@ -15,25 +11,12 @@ import ProductsProducer from '@/views/ProductsProducer.vue';
 import ProductionUnits from '@/views/ProductionUnits.vue';
 import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
-import Testes from '@/views/Testes.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
-
-// import { store, useStore } from '@/store';
-import { useStore } from '@/store';
-import { onMounted, ref, watch } from 'vue';
-
-// import { store } from '../store';
-
-// const isAuthenticated = () => {
-//     // console.log('store.state.auth', store.state.auth);
-//     return store.state.user !== null;
-// };
-
 
 const routes = [
     {

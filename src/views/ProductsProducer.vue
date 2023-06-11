@@ -78,11 +78,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, inject } from 'vue';
-import { Product } from '@/types/Product';
+import { Product } from '@/types';
 import { fetchAllProducts } from '@/api/producerProducts';
-import { fetchAuth } from '../api/auth';
-import { ProducerProducts } from '@types';
+import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
 
@@ -93,7 +91,13 @@ export default {
   data() {
     return {
       products: [] as Product[],
-      allProductsData: {},
+      allProductsData: {
+        data: {
+          totalItems: 0,
+          pageSize: 0,
+          page: 0,
+        },
+      },
     };
   },
   async mounted() {
@@ -101,9 +105,10 @@ export default {
       const store = useStore();
       const id = store.state.user!.user.id;
       console.log('iddd', id);
-      const page = parseInt(this.$route.query.page) || 1;
-      const pageSize = parseInt(this.$route.query.pageSize) || 24;
-      const allProductsData = await fetchAllProducts(id, page, pageSize);
+      const route = useRoute() as RouteLocationNormalizedLoaded;
+      const page = parseInt(route.query.page as string) || 1;
+      const pageSize = parseInt(route.query.pageSize as string) || 24;
+      const allProductsData = await fetchAllProducts(4, page, pageSize);
       console.log('allProductsData:', allProductsData);
       const productsArray = allProductsData.data;
       console.log('Products:', productsArray);
