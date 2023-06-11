@@ -84,16 +84,22 @@
 import { fetchAllUnitProducts } from '@/api/unitProducts';
 import Pagination from '../components/Pagination.vue';
 import { Product } from '@/types';
+import { useRoute } from 'vue-router';
 export default {
   computed: {
-    unitName() {
+    unitName(): string {
       return this.$route.params.unitName;
     },
   },
   components: {
     Pagination,
   },
-  props: ['id'],
+  props: {
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       unitProducts: [] as Product[],

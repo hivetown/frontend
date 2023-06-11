@@ -117,7 +117,7 @@ export default {
       const page = parseInt(this.$route.query.page) || 1;
       const pageSize = parseInt(this.$route.query.pageSize) || 24;
 
-      const allUnitsData = await fetchAllUnits(id, page, pageSize);
+      const allUnitsData = await fetchAllUnits(6, page, pageSize);
 
       console.log('allUnitsData:', allUnitsData);
 

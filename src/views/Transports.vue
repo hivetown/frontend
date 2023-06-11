@@ -14,13 +14,7 @@
           :key="transport.id"
           class="col"
         >
-          <!-- <div v-for="product in products" :key="product.id" class="col"> -->
           <b-card class="prod-card position-relative">
-            <!-- <img
-            :src="product.productSpec.images[0].url"
-            class="square-image"
-            alt="Imagem do produto"
-          /> -->
             <img
               :src="transport.image.url"
               class="square-image"
@@ -51,14 +45,6 @@
               <p>
                 {{ transport.productionUnit.name }}
               </p>
-
-              <!-- <p>{{ transport.address.county }}</p>
-            <p class="grey-txt mt-3">
-              {{ transport.address.floor }}, {{ transport.address.door }}
-            </p>
-            <div class="d-flex gap-2">
-              <h4 class="mb-3">{{ transport.address.floor }}º Andar</h4>
-            </div> -->
               <div class="d-flex gap-2">
                 <router-link :to="'/product/edit/' + transport.id">
                   <button
@@ -108,10 +94,11 @@
 </template>
 
 <script lang="ts">
-import { TransportVehicles } from '@/types/TransportVehicles';
+import { TransportVehicles } from './TransportVehicles.vue';
 import { fetchAllTransports } from '@/api/transports';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
+import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 export default {
   components: {
     Pagination,
@@ -131,8 +118,9 @@ export default {
       const id = store.state.user!.user.id;
       console.log('iddd', id);
 
-      const page = parseInt(this.$route.query.page) || 1;
-      const pageSize = parseInt(this.$route.query.pageSize) || 24;
+      const route = useRoute() as RouteLocationNormalizedLoaded;
+      const page = parseInt(route.query.page as string) || 1;
+      const pageSize = parseInt(route.query.pageSize as string) || 24;
 
       const allTransportsData = await fetchAllTransports(id, page, pageSize);
 
