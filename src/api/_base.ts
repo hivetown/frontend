@@ -1,6 +1,8 @@
-import { ApiRequest } from "../types/interfaces";
-import axios from "axios";
-import store from "../store";
+import router from '@/router';
+import { store } from '@/store';
+import { ApiRequest } from '@/types';
+import { createPopup } from '@/utils/popup';
+import axios, { AxiosError } from 'axios';
 
 function makeApi(baseURL: string, options: ApiRequest = {}) {
     const headers = { ...options?.headers };
@@ -12,15 +14,44 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     });
 
     api.interceptors.request.use((config) => {
-        // Inject the token into the headers
+        // Inject token into request headers
         const { token } = store.state;
-        console.log(token)
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
 
         return config;
     });
+
+    api.interceptors.response.use(
+        (response) => response,
+
+        (error: AxiosError) => {
+            if (
+                error.response?.status === 401 &&
+                router.currentRoute.value.meta.requiresAuth
+            ) {
+                createPopup(
+                    `Erro ${error.response.status}: É necessário autenticar-se para realizar esta operação`,
+                    'error'
+                );
+            } else if (error.response?.status === 403) {
+                createPopup(
+                    `Erro ${error.response.status}: Não tem permissões para esta operação`,
+                    'error'
+                );
+            } else if (error.response?.status === 404) {
+                createPopup(
+                    `Erro ${error.response.status}: Página não encontrada`,
+                    'warning'
+                );
+            } else {
+                /* empty */
+            }
+
+            return Promise.reject(error);
+        }
+    );
 
     return api;
 }

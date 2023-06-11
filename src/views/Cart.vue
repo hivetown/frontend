@@ -1,60 +1,69 @@
-<template >
-    <div class="root">
-      <button @click="goBack" type="button" class="btn btn-outline-secondary btn-sm" style="float:">
-            Voltar
-          </button>
-      <div class="wrapper-mains">
-
-      
-      
+<template>
+  <div class="root">
+    <button
+      @click="goBack"
+      type="button"
+      class="btn btn-outline-secondary btn-sm"
+      style="float: "
+    >
+      Voltar
+    </button>
+    <div class="wrapper-mains">
       <h1>Carrinho</h1>
-      <h5>Aqui poderá consultar os itens que estão atualmente no seu carrinho:</h5>
+      <h5>
+        Aqui poderá consultar os itens que estão atualmente no seu carrinho:
+      </h5>
 
       <table class="table table-responsive-md">
-          <tr>
-              <td class="left-column">
-              <div>
+        <tr>
+          <td class="left-column">
+            <div>
+              <!--{{ itensCarrinho }}-->
 
-                  <!--{{ itensCarrinho }}-->
+              <CartItem
+                v-for="cartItem in itensCarrinho.items"
+                :cart-item="cartItem"
+                @deleteCartItem="itemRemoved"
+                @updateCartItem="refreshValues"
+              ></CartItem
+              ><!--   -->
+              <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
 
-                  <CartItem v-for="cartItem in itensCarrinho.items" :cartItem="cartItem" @deleteCartItem="itemRemoved" @updateCartItem="refreshValues"></CartItem><!--   -->
-                  <!--<CartItem v-for="id in nElementos" :key="id" :itensCarrinho.items="[id]"></CartItem>-->
-
-                  <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
-              </div>
-              </td>
-
-              <td class="right-column">
-              <div>
-                <h2>Totais</h2>
-                  <div style="height:2vh"></div>
-
-                  <p style="text-align: justify; font-size: 1.3em;">
-                    Total de items: <span class="checkout">{{ getItems() }}</span><br>
-                    Preço Total: <span class="checkout">{{ getPrice() }}</span><br>
-                  </p>
-                  <div style="text-align: center;">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" style="text-align: center;">
-                      Processeguir para Pagamento & Envio
-                    </button>
-                  </div>
-              </div>
+              <!--<CartItem :productId="produto.id" :productTitle="produto.name" :productDescription="produto.description"></CartItem>-->
+            </div>
           </td>
-          </tr>
+
+          <td class="right-column">
+            <div>
+              <h2>Totais</h2>
+              <div style="height: 2vh"></div>
+
+              <p style="text-align: justify; font-size: 1.3em">
+                Total de items: <span class="checkout">{{ getItems() }}</span
+                ><br />
+                Preço Total: <span class="checkout">{{ getPrice() }}</span
+                ><br />
+              </p>
+              <div style="text-align: center">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  style="text-align: center"
+                >
+                  Processeguir para Pagamento & Envio
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
       </table>
     </div>
-    </div>
-
-
-
-    
+  </div>
 </template>
-
-
 
 <style>
 .container {
-    display: flex;
+  display: flex;
   align-items: center;
 }
 
@@ -92,111 +101,122 @@ table {
 }
 </style>
 
-<script setup lang="ts"> 
-  import CartItem from "@/components/CartItem.vue";
+<script setup lang="ts">
+import CartItem from '@/components/CartItem.vue';
 </script>
 
 <script lang="ts">
-  import { deleteCartItem, fetchCartItems } from "../api/consumers"
-  import { Product } from "@/types";
-  import { defineComponent } from "vue";
-  import { Cart } from '@types/interfaces';
-  import { getSystemErrorMap } from "util";
+import { deleteCartItem, fetchCartItems } from '../api/consumers';
+//import { Product } from '@/types';
+//import { defineComponent } from 'vue';
+import { Cart } from '@types'; //TODO: Pode dar erro
+//import { getSystemErrorMap } from 'util';
+import { useStore } from '@/store';
 
-  export default {
+export default {
+  data() {
+    return {
+      itensCarrinho: {} as Cart,
+      store: {} as useStore,
 
-    data(){
-      return {
-        itensCarrinho: {} as Cart,
+      selected: null,
+      options: [
+        { value: null, text: '--Escolha o local de recolha--', disabled: true },
+        { value: 1, text: 'Morada nº1' },
+        { value: 2, text: 'Morada nº2' },
+        { value: 3, text: 'Ponto de Recolha' },
+        { value: 4, text: 'Loja' },
+      ],
 
-        selected: null,
-        options: [
-          { value: null, text: '--Escolha o local de recolha--', disabled: true},
-          { value: 1, text: 'Morada nº1' },
-          { value: 2, text: 'Morada nº2' },
-          { value: 3, text: 'Ponto de Recolha' },
-          { value: 4, text: 'Loja' },
-        ],
+      nElementos: 0,
+      precoTotal: 0.0,
+    };
+  },
 
-        nElementos: 0,
-        precoTotal: 0.0,
-      };
+  // Botão "Voltar"
+  methods: {
+    goBack() {
+      window.history.back();
     },
 
-    // Botão "Voltar"
-    methods: {
-        goBack() {
-          window.history.back();
-        },
-
-        itemRemoved(idToRmv: number) {
-          const indexToRemove = this.itensCarrinho.items.findIndex(item => item.producerProduct!.id === idToRmv);
-          if (indexToRemove !== -1) {
-            this.itensCarrinho.items.splice(indexToRemove, 1);
-            this.refreshValues();
-          }
-        },
-
-        getItems() {
-          return this.nElementos;
-        },
-        
-        getPrice() {
-          return this.precoTotal;
-        },
-
-        countItems() {
-          let totalQtd = 0;
-          for (let i=0; i < this.itensCarrinho["items"].length; i++) {
-            totalQtd += parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity));
-          }
-          return totalQtd
-        },
-
-        countPrice() {
-          let totalSum = 0;
-          for (let i=0; i < this.itensCarrinho["items"].length; i++) {
-            totalSum += (parseFloat(JSON.stringify(this.itensCarrinho["items"][i].producerProduct?.currentPrice))*parseFloat(JSON.stringify(this.itensCarrinho["items"][i].quantity)));
-          }
-          totalSum = parseInt(totalSum.toFixed(2));
-          const toCurrency = totalSum.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
-          return toCurrency;
-        },
-
-        async refreshValues() {
-          const itensCarrinho=await fetchCartItems(9);
-          this.itensCarrinho=itensCarrinho.data;
-          this.nElementos = this.countItems();
-          this.precoTotal = this.countPrice();
-          console.log(this.nElementos, this.precoTotal)
-        },
-    },
-    
-    // Buscar Info do Carrinho
-    async beforeMount(){
-      this.refreshValues();
+    itemRemoved(idToRmv: number) {
+      const indexToRemove = this.itensCarrinho.items.findIndex(
+        (item) => item.producerProduct!.id === idToRmv
+      );
+      if (indexToRemove !== -1) {
+        this.itensCarrinho.items.splice(indexToRemove, 1);
+        this.refreshValues();
+      }
     },
 
+    getItems() {
+      return this.nElementos;
+    },
 
-  };
-  
+    getPrice() {
+      return this.precoTotal;
+    },
 
+    countItems() {
+      let totalQtd = 0;
+      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
+        totalQtd += parseFloat(
+          JSON.stringify(this.itensCarrinho['items'][i].quantity)
+        );
+      }
+      return totalQtd;
+    },
+
+    countPrice() {
+      let totalSum = 0;
+      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
+        totalSum +=
+          parseFloat(
+            JSON.stringify(
+              this.itensCarrinho['items'][i].producerProduct?.currentPrice
+            )
+          ) *
+          parseFloat(JSON.stringify(this.itensCarrinho['items'][i].quantity));
+      }
+      totalSum = parseInt(totalSum.toFixed(2));
+      const toCurrency = totalSum.toLocaleString('pt-PT', {
+        style: 'currency',
+        currency: 'EUR',
+      });
+      return toCurrency;
+    },
+
+    async refreshValues() {
+      const itensCarrinho = await fetchCartItems(999);
+      this.itensCarrinho = itensCarrinho.data;
+      this.nElementos = this.countItems();
+      this.precoTotal = parseInt(this.countPrice());
+      console.log(this.nElementos, this.precoTotal);
+    },
+  },
+
+  // Buscar Info do Carrinho
+  async beforeMount() {
+    //this.refreshValues();
+    console.log(this.store.state);
+  },
+};
 </script>
 <style scoped>
-.wrapper-mains{
+.wrapper-mains {
   height: auto;
   background: white;
   text-align: center;
   margin: auto;
-  padding: 20px  ;
+  padding: 20px;
 }
-.textarea{
+.textarea {
   display: block;
   width: 100%;
   height: 70px;
   border-radius: 5px;
 }
-.tabela{
+.tabela {
   margin-top: 180px;
 }
 .titulo {
@@ -204,14 +224,13 @@ table {
 }
 @media (max-width: 660px) {
   .titulo {
-  font-size: 25px;
-  text-align: center !important;
+    font-size: 25px;
+    text-align: center !important;
+  }
+  .resumo {
+    margin-top: 10px;
+    text-align: right;
+    margin-right: 40px;
+  }
 }
-.resumo {
-  margin-top: 10px;
-  text-align: right;
-  margin-right: 40px;
-}
-}
-
 </style>

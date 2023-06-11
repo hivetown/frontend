@@ -1,9 +1,10 @@
-import { Cart, Consumer, CreateConsumer } from "../types/interfaces";
-import { api } from "./_base";
+import { Cart } from '../types/interfaces';
+import { Address, Consumer, CreateConsumer } from '@/types';
+import { api } from './_base';
 
 // consumer is consumer or supplier
 export const postConsumer = (consumer: CreateConsumer) =>
-    api.post("/consumers", consumer);
+    api.post('/consumers', consumer);
 
 // Cart Stuff
 export const fetchCartItems = (consumer: number) =>
@@ -26,3 +27,9 @@ export const updateQuantityCartItem = (
     producerProduct: number,
     quantity: number
 ) => api.put(`/consumers/${consumer}/cart/${producerProduct}`, quantity);
+
+export const createConsumer = async (consumer: CreateConsumer) =>
+    api.post<Consumer>('/consumers', consumer);
+
+export const createConsumerAddress = (id: number, address: Address) =>
+    api.post(`/consumers/${id}/addresses`, address);

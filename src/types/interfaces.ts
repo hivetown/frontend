@@ -10,38 +10,78 @@ export interface ProductSpec {
     id: number;
     name: string;
     description: string;
+    deletedAt: Date;
+    minPrice: number;
+    maxPrice: number;
+    producersCount: number;
     images: Image[];
     products?: Product[];
 }
 
-export interface Image {
+export interface ProducerProduct {
+    id: number;
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    deletedAt: Date | null;
+    producer?: Producer;
+    productionUnit?: productionUnit;
+    productSpec?: ProductSpec;
+}
+
+export interface Role {
     id: number;
     name: string;
-    url: string;
-    alt: string;
+    permissions: number;
+}
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+    vat: string;
+    role?: Role;
+    image?: Image;
+    type: 'PRODUCER' | 'CONSUMER';
 }
 
 export interface Producer {
+    user: User & { type: 'PRODUCER' };
+    imageShowcase: Image[];
+}
+
+export interface Category {
     id: number;
     name: string;
-    email: string;
-    phone: string;
-    vat: string;
-    products?: Product[];
+    parent?: Category;
+    image: Image;
+    showSubCategories?: boolean;
+    subCategories?: Category;
 }
 
 export interface Consumer {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-    vat: string;
+    user: User & { type: 'CONSUMER' };
 }
 
 export interface CreateConsumer {
     name: string;
     phone: string;
     vat: string;
+}
+
+export interface CreateProducer {
+    name: string;
+    phone: string;
+    vat: string;
+}
+
+export interface productionUnit {
+    id: number;
+    name: string;
+    address: Address;
+    producer?: Producer;
+    deletedAt: Date | null;
 }
 
 export interface ApiRequest {
@@ -58,32 +98,52 @@ export interface BaseItems<T> {
     pageSize: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface Address {
+    id: number;
+    number: number;
+    door: string;
+    floor: number;
+    zipCode: string;
+    street: string;
+    parish: string;
+    county: string;
+    city: string;
+    district: string;
+    latitude: number;
+    longitude: number;
+}
+
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
+}
+
+export type AuthenticatedUser = Consumer | Producer;
+
+export interface ProductSpecField {
+    field: Field;
+    value: string;
+}
+
+export interface Field {
+    id: number;
+    name: string;
+    unit: string;
+    type: string;
+    possibleValues: FieldPossibleValue[];
+}
+
+export interface FieldPossibleValue {
+    id: number;
+    value: string;
+}
+
 export interface Cart extends BaseItems<CartItem> {}
 
 export interface CartItem {
     producerProduct?: ProducerProduct;
     consumer: Consumer;
     quantity: number;
-}
-
-export interface ProducerProduct {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    stock: number;
-    producer?: Producer; //Meto o ? para referir outra interface
-    productionUnit?: ProductionUnit;
-    productSpec?: ProductSpec;
-}
-
-export interface ProductionUnit {
-    id: number;
-    name: string;
-    address?: Address;
-    producer?: Producer;
-}
-
-export interface Address {
-    // TODO
 }

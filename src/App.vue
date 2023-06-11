@@ -21,8 +21,8 @@ import InputText from "primevue/inputtext";
 * {
   /* font-family: 'Roboto', sans-serif; */
   /* font-family: 'DM Serif Display', serif; */
-  color:#232323;
-  font-family: "Inter", sans-serif;
+  color: #232323;
+  font-family: 'Inter', sans-serif;
 }
 
 .grey-txt {
@@ -64,14 +64,21 @@ import InputText from "primevue/inputtext";
   color: #a9a9a9 !important;
 }
 
-button a{
-  color:#5A5A5A;
+button a {
+  color: #5a5a5a;
   text-decoration: none !important;
 }
 
-button a:hover{
+button a:hover {
   color: white;
   text-decoration: none !important;
 }
 
+.separator-top {
+  border-top: 1px solid #f3f3f3;
+}
+
+.separator-bottom {
+  border-bottom: 1px solid #f3f3f3;
+}
 </style>
