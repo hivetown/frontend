@@ -142,23 +142,24 @@ a
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllItems } from '../api/orders';
 import { fetchAllOrders, getShipment } from '../api/orders';
-import { Order, Consumer } from '../types/interfaces';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 var idU = 0;
-const orderItem = ref<Order[]>([]); //array com os produtos
+const orderItem =  ref<any>('');
 var totalSum = 0;
 var date = '';
-const orders = ref<Order[]>([]);
-const lista = [];
-const eventos = ref<Order[]>([]);
+const orders =  ref<any>('');
+const lista: number[] = [];
+const eventos = ref<any[]>([]);
 const route = useRoute();
 //obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
-idU = user2.value['user']['id'];
+if (user2.value && user2.value.user && user2.value.user.id) {
+  idU = user2.value.user.id;
+}
 onMounted(async () => {
-  const idO: string = route.params.id;
+  const idO: string = route.params.id as string;
   //TODO por user logado
   const responseItem = await fetchAllItems(idU, idO);
   orderItem.value = responseItem.data;
@@ -172,14 +173,14 @@ onMounted(async () => {
     lista.push(orderItem.value.items[i]['producerProduct']['id']);
   }
   for (let x = 0; x < lista.length; x++) {
-    //TODO por user logado
-    const responseShipment = await getShipment(idU, idO, lista[x]);
-    //queremos o ultimo evento
+    const responseShipment = await getShipment(idU, parseInt(idO), (lista[x]));
+	console.log(responseShipment)
     eventos.value.push(
       responseShipment.data['events'][
         responseShipment.data['events'].length - 1
-      ]
+      ] 
     );
+
   }
 
   const totalSumElement = document.getElementById('totalSum');
@@ -189,8 +190,11 @@ onMounted(async () => {
   for (let i = 0; i < orders.value.items.length; i++) {
     if (orders.value.items[i].id == idO) {
       date = orders.value.items[i].orderDate.substring(0, 10);
-      document.getElementById('data').textContent =
-        'Encomenda efetuada em: ' + date;
+	  const element = document.getElementById('data');
+if (element !== null) {
+  element.textContent =   'Encomenda efetuada em: ' + date;
+}
+      
     }
   }
 });

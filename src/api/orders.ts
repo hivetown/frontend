@@ -27,7 +27,7 @@ export const getShipment = (
     producerProduct: number,
     search?: string
 ) =>
-    api.get<Order[]>(
+    api.get(
         `/consumers/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`,
         { params: { search } }
     );
