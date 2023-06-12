@@ -21,11 +21,11 @@
       <div id="info" class="mb-4">
         <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
         <!-- <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
-          veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
-          reiciendis placeat corrupti odio consequatur alias nisi deserunt
-          laudantium a doloremque!
-        </p> -->
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
+            veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
+            reiciendis placeat corrupti odio consequatur alias nisi deserunt
+            laudantium a doloremque!
+          </p> -->
         <div class="">
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-telephone-fill yellow-txt"></i>
@@ -55,31 +55,27 @@
       <div class="units-container" style="width: 20%">
         <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
           <div
-            :id="String(idU)"
-            @click="updateImage(idU + 1)"
-            class="production-unit"
+            :id="String(idU + 1)"
+            @click="updateImage(idU)"
+            :class="['production-unit', { 'selected-unit': mapImage === idU }]"
           >
             <p class="text-center fw-bold">{{ unidade.name }}</p>
             <div class="d-flex gap-2 justify-content-center">
               <p class="text-center mb-1">nº{{ unidade.address.number }},</p>
-              <p class="text-center mb-1">
-                {{ unidade.address.floor }} {{ unidade.address.door }}
-              </p>
-              <p class="text-center">{{ unidade.address.zipCode }}</p>
+              <p class="text-center mb-1">{{ unidade.address.city }}</p>
             </div>
           </div>
         </div>
       </div>
       <div class="" style="background-color: lightgrey; width: 80%">
-        <div v-if="elementoSelecionado !== null && unidadesProd.items">
+        <div v-if="mapImage !== null && unidadesProd.items">
           <Maps
-            v-if="unidadesProd.items[elementoSelecionado]"
-            :selected-unit="unidadesProd.items[elementoSelecionado]"
+            v-if="unidadesProd.items[mapImage]"
+            :selected-unit="unidadesProd.items[mapImage]"
             :map-data="
               mapData.find(
                 (data) =>
-                  data.unitId ===
-                  (unidadesProd.items[elementoSelecionado]?.id || null)
+                  data.unitId === (unidadesProd.items[mapImage]?.id || null)
               )?.mapData
             "
           />
@@ -89,104 +85,6 @@
   </div>
 </template>
 
-<!-- <script lang="ts">
-import { BaseItems, Producer, productionUnit } from '@/types';
-import { fetchProducer, fetchProducerProductionUnits } from '@/api';
-import Pagination from '@/components/Pagination.vue';
-import { fetchMapForUnit } from '@/maps/maps';
-export default {
-  data() {
-    return {
-      mapImage: 1,
-      dadosProdutor: {} as Producer,
-      unidadesProd: {} as BaseItems<productionUnit>,
-      elementoSelecionado: 0 as number,
-      mapData: [] as { unitId: number; mapData: any }[],
-    };
-  },
-  props: {
-    // producerId: {
-    //   type: Number,
-    //   required: true,
-    // },
-  },
-  methods: {
-    updateImage(number: number) {
-      this.mapImage = number;
-      const idElemento = number - 1;
-      const elemento = document.getElementById(String(idElemento));
-      const atual = document.getElementById(String(this.elementoSelecionado));
-      if (elemento && idElemento != this.elementoSelecionado) {
-        elemento.classList.add('selected-unit');
-        atual?.classList.remove('selected-unit');
-        this.elementoSelecionado = idElemento;
-      }
-    },
-  },
-  //   async beforeMount() {
-  //     // Dados do produtor
-  //     const producerId = Number(this.$route.params.id);
-  //     const dadosProdutor = await fetchProducer(producerId);
-  //     this.dadosProdutor = dadosProdutor.data;
-  //     // Unidades de produção do produtor
-  //     const unidadesProd = await fetchProducerProductionUnits(producerId);
-  //     this.unidadesProd = unidadesProd.data;
-  //     console.log(this.unidadesProd);
-
-  //     // Define a UP selecionada por default
-  //     let atualSelecionado = document.getElementById(
-  //       String(this.elementoSelecionado)
-  //     );
-  //     if (atualSelecionado) {
-  //       atualSelecionado.classList.add('selected-unit');
-  //     }
-  //   },
-  //   components: { Pagination },
-  // };
-
-  async beforeMount() {
-    // Dados do produtor
-    const producerId = Number(this.$route.params.id);
-    const dadosProdutor = await fetchProducer(producerId);
-    this.dadosProdutor = dadosProdutor.data;
-    console.log('dadosProdutor', this.dadosProdutor);
-    // Unidades de produção do produtor
-    const unidadesProd = await fetchProducerProductionUnits(producerId);
-    this.unidadesProd = unidadesProd.data;
-    console.log(this.unidadesProd);
-
-    // Fetch maps for each production unit
-    const fetchMapPromises = this.unidadesProd.items.map(
-      async (unit: productionUnit) => {
-        const mapData = await fetchMapForUnit(
-          unit.address.latitude,
-          unit.address.longitude
-        );
-        return {
-          unitId: unit.id,
-          mapData,
-        };
-      }
-    );
-
-    // Wait for all map requests to finish
-    const maps = await Promise.all(fetchMapPromises);
-
-    // Store the map data in the component's data
-    this.mapData = maps;
-    console.log('mapData', this.mapData);
-
-    // Define a UP selecionada por default
-    let atualSelecionado = document.getElementById(
-      String(this.elementoSelecionado)
-    );
-    if (atualSelecionado) {
-      atualSelecionado.classList.add('selected-unit');
-    }
-  },
-  components: { Pagination },
-};
-</script> -->
 <script lang="ts">
 import { BaseItems, Producer, productionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
@@ -200,7 +98,11 @@ export default {
       mapImage: 1,
       dadosProdutor: {} as Producer,
       unidadesProd: {} as BaseItems<productionUnit>,
-      elementoSelecionado: 0 as number,
+      indiceUpSelecionada: 0 as number,
+
+      ultimaUp: [] as HTMLElement[],
+      ultimaUpId: 1 as number,
+      idUpDefault: 0 as number,
       mapData: [] as { unitId: number; mapData: any }[],
     };
   },
@@ -212,14 +114,16 @@ export default {
   },
   methods: {
     updateImage(number: number) {
-      this.mapImage = number;
       const idElemento = number - 1;
-      const elemento = document.getElementById(String(idElemento));
-      const atual = document.getElementById(String(this.elementoSelecionado));
-      if (elemento && idElemento !== this.elementoSelecionado) {
-        elemento.classList.add('selected-unit');
-        atual?.classList.remove('selected-unit');
-        this.elementoSelecionado = idElemento;
+      const upSelecionada = this.$refs[idElemento + 1] as HTMLElement[];
+      this.mapImage = number;
+      // Compara o id da ultima UP selecionada com o id da UP
+      // selecionada atualmente
+      if (this.ultimaUpId !== Number(upSelecionada[0].id)) {
+        this.ultimaUpId = Number(upSelecionada[0].id);
+        this.ultimaUp[0].classList.remove('selected-unit');
+        upSelecionada[0].classList.add('selected-unit');
+        this.ultimaUp = upSelecionada;
       }
     },
   },
@@ -234,6 +138,11 @@ export default {
     const unidadesProd = await fetchProducerProductionUnits(producerId);
     this.unidadesProd = unidadesProd.data;
     console.log(this.unidadesProd);
+
+    this.$nextTick(() => {
+      this.ultimaUp = this.$refs[1] as HTMLElement[];
+      this.ultimaUp[0].classList.add('selected-unit');
+    });
 
     // Fetch maps for each production unit
     const fetchMapPromises = this.unidadesProd.items.map(
@@ -255,14 +164,6 @@ export default {
     // Store the map data in the component's data
     this.mapData = maps;
     console.log('mapData', this.mapData);
-
-    // Define a UP selecionada por default
-    let atualSelecionado = document.getElementById(
-      String(this.elementoSelecionado)
-    );
-    if (atualSelecionado) {
-      atualSelecionado.classList.add('selected-unit');
-    }
   },
   components: { Pagination, Maps },
 };
