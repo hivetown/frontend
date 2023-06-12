@@ -11,6 +11,7 @@ import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import ImpactProducer from '@/views/ImpactProducer.vue';
+import ImpactAdmin from '@/views/ImpactAdmin.vue';
 import { store } from '@/store';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
@@ -77,6 +78,11 @@ const routes = [
         path: '/impactProducer',
         name: 'ImpactProducer',
         component: ImpactProducer,
+    },
+    {
+        path: '/impactAdmin',
+        name: 'ImpactAdmin',
+        component: ImpactAdmin,
     },
 ];
 
