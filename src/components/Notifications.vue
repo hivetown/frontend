@@ -36,16 +36,16 @@
 </template>
 <script lang="ts">
 import Pagination from '../components/Pagination.vue';
-import { ref, setup } from 'vue';
+import { ref } from 'vue';
 import {
   postRead,
   postUnread,
   getAllNotifications,
 } from '../api/notifications';
 import { useRoute } from 'vue-router';
-const orderItem = ref([]);
-const quantidade = ref([]);
-let intervalId = null; // Variável para armazenar o ID do intervalo
+const orderItem = ref<any>('');
+const quantidade = ref<any>('');
+let intervalId: any = 5000; // Variável para armazenar o ID do intervalo
 const pageSize = ref(5);
 const totalItems = ref(0);
 const page = ref(1);
@@ -66,7 +66,7 @@ export default {
     page.value = responseItems.data.page;
     //nao consegui usar o route, dava me sempre undefined
     const urlSearchParams = new URLSearchParams(window.location.search);
-    page.value = parseInt(urlSearchParams.get('page'));
+	page.value = parseInt(urlSearchParams.get('page') ?? '') || 1;
     pageSize.value = 5;
     totalItems.value = responseItems.data.totalItems;
     await this.loadNotifications();
@@ -78,8 +78,8 @@ export default {
       this.page = newPageNumber;
       this.myFunction(); // chame sua função aqui
     },
-    myFunction(): void {
-      const response = getAllNotifications(this.page, this.pageSize);
+    async myFunction() {
+      const response = await getAllNotifications(this.page, this.pageSize);
       this.orderItem = response.data;
     },
     handlePageChange(value: number) {
@@ -97,11 +97,11 @@ export default {
         console.error(error);
       }
     },
-    async marcarComoLida(id) {
+    async marcarComoLida(id:number) {
       await postRead(id);
       await this.reloadPage();
     },
-    async marcarComoNaoLida(id) {
+    async marcarComoNaoLida(id:number) {
       await postUnread(id);
       await this.reloadPage();
     },

@@ -4,7 +4,7 @@
       <div class="">
         <!-- Imagem do produtor -->
         <img
-          v-if="dadosProdutor && dadosProdutor.user && dadosProdutor.user.image"
+          v-if="dadosProdutor.user.image"
           class="producer-image d-block mx-auto"
           :src="dadosProdutor.user.image.url"
           :alt="dadosProdutor.user.image.alt"
@@ -18,7 +18,7 @@
     >
       <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
       <div id="info" class="mb-4">
-        <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
+        <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user.name }}</h3>
         <!-- <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
           veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
@@ -29,17 +29,17 @@
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-telephone-fill yellow-txt"></i>
             <p class="fw-bold">Telefone:</p>
-            <span>{{ dadosProdutor.user?.phone }}</span>
+            <span>{{ dadosProdutor.user.phone }}</span>
           </div>
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-envelope-fill yellow-txt"></i>
             <p class="fw-bold">Email:</p>
-            <span>{{ dadosProdutor.user?.email }}</span>
+            <span>{{ dadosProdutor.user.email }}</span>
           </div>
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-receipt yellow-txt"></i>
             <p class="fw-bold">VAT:</p>
-            <span>{{ dadosProdutor.user?.vat }}</span>
+            <span>{{ dadosProdutor.user.vat }}</span>
           </div>
         </div>
       </div>
@@ -54,10 +54,9 @@
       <div class="units-container" style="width: 20%">
         <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
           <div
-            :id="String(idU + 1)"
+            :id="String(idU)"
             @click="updateImage(idU + 1)"
             class="production-unit"
-            :ref="String(idU + 1)"
           >
             <p class="text-center fw-bold">{{ unidade.name }}</p>
             <div class="d-flex gap-2 justify-content-center">
@@ -93,21 +92,18 @@
     ></Pagination> -->
   </div>
 </template>
+
 <script lang="ts">
 import { BaseItems, Producer, productionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
-//import Pagination from '@/components/Pagination.vue';
+import Pagination from '@/components/Pagination.vue';
 export default {
   data() {
     return {
       mapImage: 1,
       dadosProdutor: {} as Producer,
       unidadesProd: {} as BaseItems<productionUnit>,
-      indiceUpSelecionada: 0 as number,
-
-      ultimaUp: [] as HTMLElement[],
-      ultimaUpId: 1 as number,
-      idUpDefault: 0 as number,
+      elementoSelecionado: 0 as number,
     };
   },
   props: {
@@ -121,13 +117,12 @@ export default {
       const idElemento = number - 1;
       const upSelecionada = this.$refs[idElemento + 1] as HTMLElement[];
       this.mapImage = number;
-      // Compara o id da ultima UP selecionada com o id da UP
-      // selecionada atualmente
-      if (this.ultimaUpId != Number(upSelecionada[0].id)) {
-        this.ultimaUpId = Number(upSelecionada[0].id);
-        this.ultimaUp[0].classList.remove('selected-unit');
-        upSelecionada[0].classList.add('selected-unit');
-        this.ultimaUp = upSelecionada;
+      const elemento = document.getElementById(String(idElemento));
+      const atual = document.getElementById(String(this.elementoSelecionado));
+      if (elemento && idElemento != this.elementoSelecionado) {
+        elemento.classList.add('selected-unit');
+        atual?.classList.remove('selected-unit');
+        this.elementoSelecionado = idElemento;
       }
     },
   },
@@ -136,18 +131,20 @@ export default {
     const producerId = Number(this.$route.params.id);
     const dadosProdutor = await fetchProducer(producerId);
     this.dadosProdutor = dadosProdutor.data;
-
     // Unidades de produção do produtor
     const unidadesProd = await fetchProducerProductionUnits(producerId);
     this.unidadesProd = unidadesProd.data;
+    console.log(this.unidadesProd);
 
     // Define a UP selecionada por default
-    this.$nextTick(() => {
-      this.ultimaUp = this.$refs[1] as HTMLElement[];
-      this.ultimaUp[0].classList.add('selected-unit');
-    });
+    let atualSelecionado = document.getElementById(
+      String(this.elementoSelecionado)
+    );
+    if (atualSelecionado) {
+      atualSelecionado.classList.add('selected-unit');
+    }
   },
-  //components: { Pagination },
+  components: { Pagination },
 };
 </script>
 

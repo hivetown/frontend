@@ -34,7 +34,7 @@
               <!--numero de notificacoes-->
               <b-badge
                 v-if="orderItem.totalItems != 0"
-                @click="showModalFunctions"
+                @click="showModalFunction"
                 variant="danger"
                 class="rounded-circle position-absolute"
                 style="
@@ -215,7 +215,7 @@ import { useStore } from '@/store';
 import { computed } from 'vue';
 import Modal from '../components/Modal.vue';
 import { getUnreadNotifications } from '../api/notifications';
-const orderItem = ref([]);
+const orderItem = ref<any>('');;
 export default {
   components: {
     Modal,

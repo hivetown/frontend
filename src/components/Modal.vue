@@ -22,18 +22,18 @@
           <hr />
         </b-list-group>
       </div>
-      <a id="not" v-if="orderItem.totalItems != 0 " href="/notifications?page=1">Ver todas</a>
+      <a id="not" href="/notifications?page=1">Ver todas</a>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { onMounted, ref } from 'vue';
+import {  ref } from 'vue';
 import {
   getUnreadNotifications,
-  getAllNotifications,
+  
 } from '../api/notifications';
-const orderItem = ref([]);
+const orderItem = ref<any>('');
 export default {
   data() {
     return {
