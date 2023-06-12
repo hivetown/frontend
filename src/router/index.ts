@@ -12,9 +12,6 @@ import Register from '@/views/Register.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 
-import { hasPermission } from '@/utils/permissions';
-import { createPopup } from '@/utils/popup';
-
 const routes = [
     {
         path: '/',
