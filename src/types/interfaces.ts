@@ -23,10 +23,10 @@ export interface ProducerProduct {
     currentPrice: number;
     productionDate: Date;
     stock: number;
-    deletedAt: Date;
-    producer: Producer;
-    productionUnit: productionUnit;
-    productSpec: number;
+    deletedAt: Date | null;
+    producer?: Producer;
+    productionUnit?: productionUnit;
+    productSpec?: ProductSpec;
 }
 
 export interface Role {
@@ -42,10 +42,7 @@ export interface User {
     phone: string;
     vat: string;
     role?: Role;
-    image?: {
-        url?: string;
-        alt?: string;
-    };
+    image?: Image;
     type: 'PRODUCER' | 'CONSUMER';
 }
 
@@ -63,12 +60,6 @@ export interface Category {
     subCategories?: Category;
 }
 
-// export interface SubCategory {
-//     id: number;
-//     name: string;
-//     parent: Category;
-//     image: Image;
-// }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
 }
@@ -88,9 +79,9 @@ export interface CreateProducer {
 export interface productionUnit {
     id: number;
     name: string;
-    address: string;
-    producer: Producer;
-    deletedAt: Date;
+    address: Address;
+    producer?: Producer;
+    deletedAt: Date | null;
 }
 
 export interface ApiRequest {
