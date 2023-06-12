@@ -22,7 +22,7 @@
           <hr />
         </b-list-group>
       </div>
-      <a id="not" href="/notifications?page=1">Ver todas</a>
+      <a id="not" v-if="orderItem.totalItems != 0 " href="/notifications?page=1">Ver todas</a>
     </div>
   </div>
 </template>
