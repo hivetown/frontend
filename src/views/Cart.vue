@@ -109,7 +109,8 @@ import CartItem from '@/components/CartItem.vue';
 import { deleteCartItem, fetchCartItems } from '../api/consumers';
 //import { Product } from '@/types';
 //import { defineComponent } from 'vue';
-import { Cart } from '@types'; //TODO: Pode dar erro
+import { Cart, Image } from '@types'; //TODO: Pode dar erro
+import { computed } from 'vue';
 //import { getSystemErrorMap } from 'util';
 
 export default {
@@ -128,7 +129,12 @@ export default {
       ],
 
       nElementos: 0,
-      precoTotal: 0.0,
+      precoTotal: '0,00 €',
+
+      userLoggedId: 0 as number,
+      userLoggedName: '' as string,
+      userLoggedNImage: {} as Image,
+      userLoggedType: '' as string,
     };
   },
 
@@ -160,7 +166,7 @@ export default {
       if (this.login == true) {
         return this.precoTotal;
       } else {
-        return 0;
+        return '0,00 €';
       }
     },
 
@@ -194,26 +200,33 @@ export default {
     },
 
     async refreshValues() {
-      const itensCarrinho = await fetchCartItems(999);
+      //Guardar em Vars informação do User    const store = useStore();
+      const userLoggedId = computed(() => this.$store.state.user);
+      if (userLoggedId.value) {
+        this.login = true;
+        this.userLoggedId = userLoggedId.value['user']['id'];
+        this.userLoggedName = userLoggedId.value['user']['name'];
+        this.userLoggedType = userLoggedId.value['user']['type'];
+        if (userLoggedId.value['user']['image']) {
+          this.userLoggedNImage = userLoggedId.value['user']['image'];
+        }
+      }
+      const itensCarrinho = await fetchCartItems(this.userLoggedId);
       this.itensCarrinho = itensCarrinho.data;
       this.nElementos = this.countItems();
-      this.precoTotal = parseInt(this.countPrice());
-      console.log(this.nElementos, this.precoTotal);
+      this.precoTotal = this.countPrice();
     },
 
     checkLogin() {
       if (this.$store.state.user != undefined) {
-        this.login = true;
+        this.refreshValues();
       }
     },
   },
 
   // Buscar Info do Carrinho
   async beforeMount() {
-    this.checkLogin();
-    if (this.login) {
-      this.refreshValues();
-    }
+    this.refreshValues();
   },
 };
 </script>

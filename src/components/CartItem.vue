@@ -21,7 +21,7 @@
         <div class="d-flex gap-2">
           <p class="mt-3">Quantidade:</p>
           <div class="d-flex" style="margin-top: -10px">
-            <b-col col lg="5">
+            <b-col col lg="20">
               <b-form-select
                 v-model="selectedValue"
                 :options="options"
@@ -81,8 +81,8 @@
 // --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
 import { addCartItem } from '../api/consumers';
 //-----------------------------------------------
-import { CartItem } from '@/types';
-import { PropType } from 'vue';
+import { CartItem, Image } from '@/types';
+import { PropType, computed } from 'vue';
 import { deleteCartItem } from '@/api'; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
 import { updateQuantityCartItem } from '@/api';
 
@@ -93,6 +93,11 @@ export default {
       selectedValueBackup: this.selectedValue,
       options: this.setupQts(),
       cartItemPrice: this.priceCalc(),
+
+      userLoggedId: 0 as number,
+      userLoggedName: '' as string,
+      userLoggedNImage: {} as Image,
+      userLoggedType: '' as string,
     };
   },
 
@@ -107,15 +112,18 @@ export default {
   methods: {
     // --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
     async itemAdded(idToAdd: number) {
+      this.getLoginInfo();
       console.log(idToAdd);
-      await addCartItem(9, idToAdd, 10);
+      await addCartItem(this.userLoggedId, idToAdd, 1);
     },
     async itemAddedTest() {
-      await addCartItem(9, 11527, 10);
+      this.getLoginInfo();
+      await addCartItem(this.userLoggedId, 11527, 1);
     },
     //-----------------------------------------------
 
     setupQts() {
+      this.getLoginInfo();
       const opts: { value: number; text: string }[] = [];
       for (let i = 1; i < this.cartItem.producerProduct!.stock; i++) {
         const build = { value: i, text: i.toString() };
@@ -132,7 +140,8 @@ export default {
 
     async removeCartItem(): Promise<void> {
       try {
-        if (confirm('Tem a certeza chavalo?')) {
+        this.getLoginInfo();
+        if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
           //TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
           //TODO: Desativar botão aqui
           await deleteCartItem(9, this.cartItem.producerProduct!.id);
@@ -153,8 +162,9 @@ export default {
     async updateQnt(): Promise<void> {
       try {
         //console.log('Entrou updateQnt')
+        this.getLoginInfo();
         await updateQuantityCartItem(
-          9,
+          this.userLoggedId,
           this.cartItem.producerProduct!.id,
           this.selectedValue
         );
@@ -170,6 +180,19 @@ export default {
           }
         }
       }
+    },
+    // Buscar Info do Carrinho
+    getLoginInfo() {
+      const userLoggedId = computed(() => this.$store.state.user);
+      if (userLoggedId.value) {
+        this.userLoggedId = userLoggedId.value['user']['id'];
+        this.userLoggedName = userLoggedId.value['user']['name'];
+        this.userLoggedType = userLoggedId.value['user']['type'];
+        if (userLoggedId.value['user']['image']) {
+          this.userLoggedNImage = userLoggedId.value['user']['image'];
+        }
+      }
+      console.log(this.userLoggedId);
     },
   },
 };
