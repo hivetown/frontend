@@ -59,7 +59,6 @@ export interface Category {
     showSubCategories?: boolean;
     subCategories?: Category;
 }
-
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
 }
