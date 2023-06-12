@@ -11,36 +11,50 @@
         />
       </div>
     </div>
-
-    <!-- Sobre -->
     <div
       class="w-75 p-4 px-5"
       style="background-color: ; height: ; flex-direction: column"
     >
-      <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
-      <div id="info" class="mb-4">
-        <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
-        <!-- <p>
+      <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4">
+        <h4 class="mb-4">Sobre</h4>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
+          veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
+          reiciendis placeat corrupti odio consequatur alias nisi deserunt
+          laudantium a doloremque!
+        </p>
+      </div>
+
+      <!-- Sobre -->
+      <div
+        class="w-75 p-4 px-5"
+        style="background-color: ; height: ; flex-direction: column"
+      >
+        <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
+        <div id="info" class="mb-4">
+          <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
+          <!-- <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
             veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
             reiciendis placeat corrupti odio consequatur alias nisi deserunt
             laudantium a doloremque!
           </p> -->
-        <div class="">
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-telephone-fill yellow-txt"></i>
-            <p class="fw-bold">Telefone:</p>
-            <span>{{ dadosProdutor.user?.phone }}</span>
-          </div>
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-envelope-fill yellow-txt"></i>
-            <p class="fw-bold">Email:</p>
-            <span>{{ dadosProdutor.user?.email }}</span>
-          </div>
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-receipt yellow-txt"></i>
-            <p class="fw-bold">VAT:</p>
-            <span>{{ dadosProdutor.user?.vat }}</span>
+          <div class="">
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-telephone-fill yellow-txt"></i>
+              <p class="fw-bold">Telefone:</p>
+              <span>{{ dadosProdutor.user?.phone }}</span>
+            </div>
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-envelope-fill yellow-txt"></i>
+              <p class="fw-bold">Email:</p>
+              <span>{{ dadosProdutor.user?.email }}</span>
+            </div>
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-receipt yellow-txt"></i>
+              <p class="fw-bold">VAT:</p>
+              <span>{{ dadosProdutor.user?.vat }}</span>
+            </div>
           </div>
         </div>
       </div>

@@ -134,6 +134,9 @@
                   </button> -->
           </div>
         </div>
+        <div class="mt-3 mb-3">
+          <a href="#">ver unidade de produção</a>
+        </div>
       </div>
 
       <!-- Detalhes do produto -->
@@ -184,6 +187,12 @@
             :class="{ 'active-view': currentPage === 'vendedores' }"
           >
             <h5 class="grey-txt">Outros vendedores</h5>
+          </b-nav-item>
+          <b-nav-item
+            @click="currentPage = 'unidade'"
+            :class="{ 'active-view': currentPage === 'unidade' }"
+          >
+            <h5 class="grey-txt">Unidade de produção</h5>
           </b-nav-item>
         </b-nav>
       </b-navbar>
@@ -260,13 +269,9 @@
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
-              v-if="
-                producerProduct.producer &&
-                producerProduct.id != defaultProduct.id
-              "
+              v-if="producerProduct.id != defaultProduct.id"
             >
               <router-link
-                v-if="producerProduct.producer"
                 :to="'/producer/' + producerProduct.producer.user.id"
               >
                 <b-avatar
@@ -281,7 +286,7 @@
                 >
                 </b-avatar>
               </router-link>
-              <div class="seller" v-if="producerProduct.producer">
+              <div class="seller">
                 <h5>{{ producerProduct.producer.user.name }}</h5>
                 <router-link
                   :to="'/producer/' + producerProduct.producer.user.id"
@@ -312,6 +317,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-4" v-if="currentPage === 'unidade'">
+    <div style="background-color: ">
+      <div class="mt-4">
+        <h4>Unidade de produção do produto</h4>
+
+        <div class="parent" style="background-color: green; height: 30vh">
+          colocar o mapa aqui
         </div>
       </div>
     </div>
