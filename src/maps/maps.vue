@@ -31,6 +31,7 @@ export default {
     const distance = ref('');
     onMounted(async () => {
       try {
+        console.log('props.selectedUnit', props.selectedUnit);
         await updateMap(props.selectedUnit);
       } catch (error) {
         console.error('Error updating map:', error);

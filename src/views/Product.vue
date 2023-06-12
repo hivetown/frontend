@@ -300,35 +300,53 @@
                     <h5>{{ producerProduct.currentPrice }}€</h5>
                   </span>
                   <div>
-                    <b-button class="buy-btn rounded-pill" style="scale: 0.85"
-                      >Comprar agora</b-button
-                    >
-                    <button
-                      type="button"
-                      style="scale: 1.1"
-                      class="btn btn-outline-secondary circle-btn"
-                      v-b-tooltip.hover
-                      title="Adicionar ao carrinho"
-                    >
-                      <i class="bi bi-cart"></i>
-                    </button>
+                    <div>
+                      <b-button
+                        class="buy-btn rounded-pill"
+                        style="scale: 0.85"
+                      >
+                        Comprar agora
+                      </b-button>
+                      <b-button
+                        v-if="
+                          selectedUnit &&
+                          selectedUnit === producerProduct.productionUnit?.id
+                        "
+                        class="buy-btn rounded-pill"
+                        style="scale: 0.85"
+                        @click="selectedUnit = null"
+                      >
+                        Fechar Mapa
+                      </b-button>
+                      <b-button
+                        v-else
+                        class="buy-btn rounded-pill"
+                        style="scale: 0.85"
+                        @click="
+                          selectProducer(producerProduct.productionUnit?.id)
+                        "
+                      >
+                        Mapa
+                      </b-button>
+
+                      <!-- Map div -->
+                      <div
+                        v-if="
+                          selectedUnit &&
+                          selectedUnit === producerProduct.productionUnit?.id
+                        "
+                      >
+                        <Maps
+                          :selected-unit="selectedUnit"
+                          :map-data="selectedUnit.mapData"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="px-4" v-if="currentPage === 'unidade'">
-    <div style="background-color: ">
-      <div class="mt-4">
-        <h4>Unidade de produção do produto</h4>
-
-        <div class="parent" style="background-color: green; height: 30vh">
-          colocar o mapa aqui
         </div>
       </div>
     </div>
@@ -406,7 +424,7 @@
 <script lang="ts">
 // Componentes
 import PathComponent from '@/components/PathComponent.vue';
-
+import Maps from '../maps/maps.vue';
 import {
   fetchProduct,
   fetchProducerProducts,
@@ -431,6 +449,10 @@ export default defineComponent({
       required: true,
       validator: (v: number) => v >= 0 && v <= 5,
     },
+    initialSelectedUnit: {
+      type: Object as PropType<any>,
+      default: null,
+    },
   },
   data() {
     return {
@@ -444,7 +466,6 @@ export default defineComponent({
       // Dados da BD
       producerProducts: {} as BaseItems<ProducerProduct>,
       defaultProduct: {} as ProducerProduct,
-      //   defaultProduct: {} as ProductSpec,
       productDetails: {} as ProductSpec,
       lowestPrice: 0,
       highestPrice: 0,
@@ -453,10 +474,11 @@ export default defineComponent({
 
       productCategories: {} as BaseItems<Category>,
       productCategoriesFields: [] as ProductSpecField[][],
-      //   fields: {} as BaseItems<Category>,
       fields: [] as ProductSpecField[][],
+      selectedUnit: null,
     };
   },
+
   methods: {
     // Aumentar e diminuir a quantidade de produtos
     increment() {
@@ -471,6 +493,14 @@ export default defineComponent({
     selectImage(index: number) {
       this.selectedImage = this.productDetails.images[index].url;
       this.selectedImageAlt = this.productDetails.images[index].alt;
+    },
+    selectProducer(productionUnitId) {
+      console.log('productionUnitId', productionUnitId);
+      if (this.selectedUnit === productionUnitId) {
+        this.selectedUnit = null; // Close the map div if already selected
+      } else {
+        this.selectedUnit = productionUnitId; // Set the selected production unit
+      }
     },
   },
 
@@ -529,6 +559,6 @@ export default defineComponent({
     console.log(this.fields);
     this.productCategoriesFields = this.fields;
   },
-  components: { PathComponent },
+  components: { PathComponent, Maps },
 });
 </script>
