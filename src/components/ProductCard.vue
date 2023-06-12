@@ -1,28 +1,47 @@
 <template>
-  <!-- TODO fazer com que os dados sejam automáticos -->
   <div class="mb-5 product">
-    <router-link to="/produto">
-      <b-card class="prod-card">
-        <span class="position-absolute top-0 end-0 p-3 fav">
-          <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
-        </span>
-        <!-- <img src="https://placehold.jp/150x150.png" class="square-image"> -->
-        <img src="/mac.png" class="square-image" />
-      </b-card>
-    </router-link>
-    <b-card-text class="">
+    <!-- Imagem do produto -->
+    <b-card class="prod-card">
+      <span class="position-absolute fav">
+        <i
+          :class="[isFavorite ? 'bi-heart-fill' : 'bi-heart']"
+          @click="isFavorite = !isFavorite"
+        >
+        </i>
+      </span>
+      <router-link :to="'/products/' + productId">
+        <img :src="productImage" class="square-image" />
+      </router-link>
+    </b-card>
+
+    <!-- Informação do produto -->
+    <b-card-text>
       <div>
-        <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">
-          Tecnologia
+        <!-- Categoria -->
+        <!-- <div class="rounded-pill text-center mt-3 mb-3 w-50 prod-category">{{ productCategory.name}}</div> -->
+        <div
+          v-if="productCategory && productCategory.name"
+          class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
+        >
+          {{ productCategory.name }}
         </div>
-        <h5>Apple MacBook</h5>
-        <p class="grey-txt mt-3">16GB RAM | 1TB | Placa gráfica</p>
+
+        <h5>{{ productTitle }}</h5>
+        <p class="grey-txt mt-3">{{ productDescription }}</p>
         <div class="d-flex gap-2">
-          <h4 class="mb-3">999€</h4>
-          <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
-          <p class="mt-1 grey-txt text-decoration-line-through">1025€</p>
+          <h4 class="mb-3">
+            {{
+              productPrice && productPrice.length > 1
+                ? productPrice[0] + '€ - ' + productPrice[1] + '€'
+                : ''
+            }}
+          </h4>
+          <!-- TODO, fazer com que seja  -->
+          <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
         </div>
-        <div class="d-flex gap-2">
+
+        <!-- Botões -->
+        <div class="d-flex gap-2 buttons">
           <button
             type="button"
             class="btn btn-outline-secondary circle-btn"
@@ -31,7 +50,7 @@
           >
             <i class="bi bi-cart"></i>
           </button>
-          <router-link to="/produto">
+          <router-link :to="'/products/' + productId">
             <button
               type="button"
               class="btn btn-outline-secondary circle-btn"
@@ -57,7 +76,7 @@
 
 <style>
 .product {
-  width: 15%;
+  max-width: 18%;
 }
 
 .prod-card {
@@ -66,14 +85,86 @@
   cursor: pointer;
 }
 
+.prod-card .card-body {
+  padding: 0 !important;
+}
+
 .square-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ajusta a imagem para preencher todo o espaço disponível */
+  object-fit: cover;
+  /* Ajusta a imagem para preencher todo o espaço disponível */
+  border-radius: 1.3em !important;
+}
+
+.fav {
+  right: 4%;
+  top: 4%;
+  width: 3vh;
+  height: 3vh;
+  background-color: #f3f3f3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav i {
+  color: #dc6942;
+  cursor: pointer;
 }
 
 .prod-category {
-  background-color: #9dc88d; /* A cor irá variar de acordo com a categoria */
+  background-color: #9dc88d;
+  /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
 </style>
+
+<script setup lang="ts">
+// import { Category } from '@/types';
+import { fetchProductCategories } from '@/api';
+import { Category } from '@/types';
+</script>
+
+<script lang="ts">
+export default {
+  data() {
+    return {
+      isFavorite: false, // Se o produto está nos favoritos
+      productCategory: {} as Category, // Categoria do produto
+    };
+  },
+  props: {
+    productId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    productTitle: {
+      type: String,
+      required: true,
+    },
+    productDescription: {
+      type: String,
+      required: true,
+    },
+    productImage: {
+      type: String,
+      required: true,
+    },
+    productPrice: {
+      type: Array,
+      required: false,
+      default: null,
+    },
+  },
+  async beforeMount() {
+    if (this.productId != undefined) {
+      const productCategory = await fetchProductCategories(this.productId);
+      this.productCategory = productCategory.data.items[0];
+    }
+    // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
+  },
+};
+</script>

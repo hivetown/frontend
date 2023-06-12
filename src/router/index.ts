@@ -10,9 +10,8 @@ import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Notifications from '@/views/Notifications.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
-import { hasPermission } from '@/utils/permissions';
-import { createPopup } from '@/utils/popup';
 
 const routes = [
     {
@@ -75,6 +74,11 @@ const routes = [
         name: 'Registration',
         component: Register,
     },
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
+    },
 ];
 
 const router = createRouter({
@@ -83,11 +87,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    let isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) {
-        await store.dispatch('fetchAuthUser');
-        isAuthenticated = !!store.state.user;
-    }
+    const isAuthenticated = !!store.state.user;
+    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
 
     if (
         (to.path === '/login' || to.path === '/registration') &&
@@ -104,21 +105,6 @@ router.beforeEach(async (to, from, next) => {
     ) {
         // redirect to the login page if the user is not logged in
         next('/login');
-        return;
-    }
-
-    if (
-        to.matched.some((record) => record.meta.requiredPermissions) &&
-        !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
-    ) {
-        // redirect back to the previous page if the user does not have the required permissions
-        createPopup(
-            `Você não tem permissão para aceder a ${
-                to.name?.toString() || 'página'
-            }.`,
-            'error'
-        );
-        next(from);
         return;
     }
 
