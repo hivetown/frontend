@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/hivetown/frontend/compare/v1.0.0...v1.0.1) (2023-06-12)
+
+
+### Bug Fixes
+
+* yellow border arround up ([d93b5ac](https://github.com/hivetown/frontend/commit/d93b5acbc345a485abb7f9aa102538b2a2581940))
+
 ## 1.0.0 (2023-05-30)
 
 
