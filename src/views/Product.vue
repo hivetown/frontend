@@ -266,6 +266,7 @@
               "
             >
               <router-link
+                v-if="producerProduct.producer"
                 :to="'/producer/' + producerProduct.producer.user.id"
               >
                 <b-avatar
@@ -280,7 +281,7 @@
                 >
                 </b-avatar>
               </router-link>
-              <div class="seller">
+              <div class="seller" v-if="producerProduct.producer">
                 <h5>{{ producerProduct.producer.user.name }}</h5>
                 <router-link
                   :to="'/producer/' + producerProduct.producer.user.id"

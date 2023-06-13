@@ -56,8 +56,7 @@
           <i style="color: #eeeeee" class="bi bi-arrow-left-right"></i> Comparar
         </button>
         <!-- TODO button? -->
-        <!-- <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a> -->
-        <a href="#" id="limpar">Limpar tudo</a>
+        <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a>
       </div>
     </div>
   </div>
@@ -104,7 +103,6 @@
 .modal-content {
   height: 80vh;
 }
-
 .square-image {
   border-radius: 0.5em !important;
 }
@@ -135,21 +133,28 @@ export default {
   components: {
     Compare,
   },
-  methods: {
-    // TODO - adicionar um método de remover produtos
-    // removeItem(produto: ProductSpec) {
-    //   const index = this.products.indexOf(produto);
-    //   if (index > -1) {
-    //     // TODO replace with emit
-    //     this.products.splice(index, 1);
-    //   }
-    // },
-    // removeAllItems() {
-    //   // TODO replace with emit
-    //   this.products.splice(0, this.products.length);
-    // },
+ methods: {
+    removeItem(produto: ProductSpec) {
+      const index = this.products.indexOf(produto);
+      if (index > -1) {
+        // TODO replace with emit
+        this.products.splice(index, 1);
+      }
+    },
+    removeAllItems() {
+      // TODO replace with emit
+      this.products.splice(0, this.products.length);
+    },
     openModal() {
       this.showModal = true;
+    },
+  },
+  watch: {
+    products: {
+      immediate: true,
+      handler() {
+        console.log('products changed');
+      },
     },
   },
 };
