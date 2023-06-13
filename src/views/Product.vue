@@ -328,22 +328,21 @@
                       </b-button>
 
                       <!-- Map div -->
-                      <div
-                        v-if="
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit
-                        "
-                      >
-                        <Maps
-                          :selected-unit="selectedUnit"
-                          :map-data="selectedUnit.mapData"
-                          :producer-id="producerProduct.producer?.user.id"
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+            <div
+              v-if="
+                selectedUnit && selectedUnit === producerProduct.productionUnit
+              "
+            >
+              <Maps
+                :selected-unit="selectedUnit"
+                :map-data="selectedUnit.mapData"
+                :producer-id="producerProduct.producer?.user.id"
+              />
             </div>
           </div>
         </div>
