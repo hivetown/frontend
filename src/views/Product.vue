@@ -322,9 +322,7 @@
                         v-else
                         class="buy-btn rounded-pill"
                         style="scale: 0.85"
-                        @click="
-                          selectProducer(producerProduct.productionUnit?.id)
-                        "
+                        @click="selectProducer(producerProduct.productionUnit)"
                       >
                         Mapa
                       </b-button>
@@ -333,12 +331,13 @@
                       <div
                         v-if="
                           selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit?.id
+                          selectedUnit === producerProduct.productionUnit
                         "
                       >
                         <Maps
                           :selected-unit="selectedUnit"
                           :map-data="selectedUnit.mapData"
+                          :producer-id="producerProduct.producer?.user.id"
                         />
                       </div>
                     </div>

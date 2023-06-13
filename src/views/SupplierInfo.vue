@@ -133,11 +133,15 @@ export default {
       this.mapImage = number;
       // Compara o id da ultima UP selecionada com o id da UP
       // selecionada atualmente
-      if (this.ultimaUpId !== Number(upSelecionada[0].id)) {
-        this.ultimaUpId = Number(upSelecionada[0].id);
-        this.ultimaUp[0].classList.remove('selected-unit');
-        upSelecionada[0].classList.add('selected-unit');
-        this.ultimaUp = upSelecionada;
+      if (upSelecionada && upSelecionada.length > 0) {
+        if (this.ultimaUpId !== Number(upSelecionada[0].id)) {
+          this.ultimaUpId = Number(upSelecionada[0].id);
+          if (this.ultimaUp[0]) {
+            this.ultimaUp[0].classList.remove('selected-unit');
+          }
+          upSelecionada[0].classList.add('selected-unit');
+          this.ultimaUp = upSelecionada;
+        }
       }
     },
   },
@@ -154,8 +158,11 @@ export default {
     console.log(this.unidadesProd);
 
     this.$nextTick(() => {
-      this.ultimaUp = this.$refs[1] as HTMLElement[];
-      this.ultimaUp[0].classList.add('selected-unit');
+      const ultimaUpRef = this.$refs[1] as HTMLElement | HTMLElement[];
+      if (ultimaUpRef instanceof HTMLElement) {
+        this.ultimaUp = [ultimaUpRef];
+        this.ultimaUp[0].classList.add('selected-unit');
+      }
     });
 
     // Fetch maps for each production unit
