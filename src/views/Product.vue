@@ -254,19 +254,21 @@
         </div>
       </div>
       <!-- Página dos outros vendedores -->
-      <div class="px-4" v-if="currentPage === 'vendedores'">
+	  
+		<div class="px-4" v-if="currentPage === 'vendedores'">
+  <!-- Conteúdo que será exibido quando 'currentPage' for igual a 'vendedores' e a checkbox estiver marcada -->
+
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
 		<div v-if="$store.state.user">
-			{{ $store.state.user }}
 		<div class="d-flex justify-content-start align-items-center">
 			<input @change="onCheckboxChange()" type="checkbox" id="local-products-checkbox" style="float: left; width: auto; padding: 2px; margin: 2px;">
-			<label style="margin-left: 2px;">Apenas produtos locais</label>
+			<label style="margin-left: 2px;" class="moradaTitulo" title="Com base na morada definida por si na criação do perfil">Apenas vendedores locais</label>
 		</div>
 		</div>
         <!-- TODO - ver qual é o certo -->
         <!-- {{ producerProducts.items.length }} -->
 
-        <div
+        <div v-if="!checkboxValue"
           v-for="(producerProduct, index) in producerProducts.items"
           :key="index"
         >
@@ -327,6 +329,74 @@
             </div>
           </div>
         </div>
+		<div v-else > 
+			<div v-if="producerLocalProducts.data.totalItems!==0">
+				<p>Vendedores encontrados num raio de 30km para o produto selecionado:</p>
+				<div 
+          v-for="(producerProduct, index) in producerLocalProducts.data.items"
+          :key="index"
+        >
+		
+          <div class="mt-4" style="background-color: ">
+            <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
+            <div
+              class="mt-5 d-flex align-items-center gap-3"
+              style="background-color: ; width: 70%"
+              v-if="producerProduct.id != defaultProduct.id"
+            >
+              <router-link
+
+                v-if="producerProduct.producer"
+
+                :to="'/producer/' + producerProduct.producer.user.id"
+              >
+                <b-avatar
+                  v-if="producerProduct.producer.user.image"
+                  class="nav-item"
+                  :src="producerProduct.producer.user.image.url"
+                  :alt="producerProduct.producer.user.image.alt"
+                  style="
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                    scale: 1.2;
+                  "
+                >
+                </b-avatar>
+              </router-link>
+              <div class="seller" v-if="producerProduct.producer">
+                <h5>{{ producerProduct.producer.user.name }}</h5>
+                <router-link
+                  :to="'/producer/' + producerProduct.producer.user.id"
+                >
+                  <a href="#" class="grey-txt">Sobre o vendedor</a>
+                </router-link>
+              </div>
+              <div style="margin-left: 30%; position: absolute">
+                <div class="d-flex gap-5 align-items-center">
+                  <span>
+                    <h5>{{ producerProduct.currentPrice }}€</h5>
+                  </span>
+                  <div>
+                    <b-button class="buy-btn rounded-pill" style="scale: 0.85"
+                      >Comprar agora</b-button
+                    >
+                    <button
+                      type="button"
+                      style="scale: 1.1"
+                      class="btn btn-outline-secondary circle-btn"
+                      v-b-tooltip.hover
+                      title="Adicionar ao carrinho"
+                    >
+                      <i class="bi bi-cart"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+			</div>
+			<div v-else><p>O produto selecionado não se encontra disponível para venda num raio de 30km de si.</p></div>
+			</div>
       </div>
       <div class="px-4" v-if="currentPage === 'unidade'">
         <div style="background-color: ">
@@ -402,6 +472,44 @@
 </style>
 
 <style scoped>
+.moradaTitulo {
+  position: relative;
+}
+
+.moradaTitulo:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background-color: #ccc;
+  color: #333;
+  border-radius: 10px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+.moradaTitulo:hover::before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #ccc transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.moradaTitulo:hover::after,
+.moradaTitulo:hover::before {
+  opacity: 1;
+}
+
 .active-view {
   border-bottom: 3px solid #4d774e;
 }
@@ -430,9 +538,9 @@ import {
   Category,
   ProductSpecField,
 } from '@/types';
-import { defineComponent, PropType, computed } from 'vue';
-
-export default defineComponent({
+import { defineComponent, PropType, computed, ref } from 'vue';
+const producerLocalProducts= ref<any>('');
+	export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
   props: {
@@ -442,17 +550,21 @@ export default defineComponent({
       validator: (v: number) => v >= 0 && v <= 5,
     },
   },
+ 
   data() {
     return {
+		userLogado:0,
+	  producerLocalProducts,
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
       quantity: 0, // Quantidade de produtos a comprar
       currentPage: 'detalhes', // Página atual das tabs do produto
       lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
-
       // Dados da BD
       producerProducts: {} as BaseItems<ProducerProduct>,
+	
+
       defaultProduct: {} as ProducerProduct,
       //   defaultProduct: {} as ProductSpec,
       productDetails: {} as ProductSpec,
@@ -465,6 +577,9 @@ export default defineComponent({
       productCategoriesFields: [] as ProductSpecField[][],
       //   fields: {} as BaseItems<Category>,
       fields: [] as ProductSpecField[][],
+
+	  //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
+	  checkboxValue: false,
     };
   },
   methods: {
@@ -483,22 +598,18 @@ export default defineComponent({
       this.selectedImageAlt = this.productDetails.images[index].alt;
     },
 	async onCheckboxChange() {
+	this.checkboxValue = !this.checkboxValue;
 	const checkbox = document.getElementById('local-products-checkbox') as HTMLInputElement;
-	const store = useStore();
-	const user2 = computed(() => store);
-	//TODO por id logado
-	const address = await getConsumerAddress(1001);
+	const address = await getConsumerAddress(this.userLogado);
 	const addressId = (address.data.items[0].id);
-	console.log(Number(this.$route.params.specid))
 	if (checkbox.checked) {
-		const producerProducts  = await fetchLocalProducts(
+		this.producerLocalProducts  = await fetchLocalProducts(
 			Number(this.$route.params.specid),//specid
 			addressId, //ADDRESSID
-			60,//raio
+			30,//raio
 			parseInt(String(this.$route.query.page)) || 1,
     		parseInt(String(this.$route.query.pageSize)) || 24,
     );
-	console.log(producerProducts);
 
     } 
 	},
@@ -506,6 +617,12 @@ export default defineComponent({
 
   // A fazer antes de montar o componente
   async beforeMount() {
+	const store = useStore();
+
+	const userLogado = computed(() => store.state.user);
+	if (userLogado.value && userLogado.value.user && userLogado.value.user.id) {
+		this.userLogado = userLogado.value.user.id;
+	}
     // SpecId escolhida
     const specId = Number(this.$route.params.specid);
 

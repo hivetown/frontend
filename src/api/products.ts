@@ -38,5 +38,5 @@ export const fetchLocalProducts =  (
     pageSize?: number,
    
 ) =>
-api.get<BaseItems<ProductSpec>>(`/products/${specId}/products?addressId=${addressId}&raio=${raio}`, { params: { page, pageSize }},
+api.get<BaseItems<ProducerProduct>>(`/products/${specId}/products?addressId=${addressId}&raio=${raio}`, { params: { page, pageSize }},
 );
