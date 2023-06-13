@@ -73,6 +73,15 @@
   >
     <i class="bi bi-bag-plus-fill"></i>
   </button>
+  <button
+    @click="itemAddedNAU(cartItem.producerProduct!.id, 1)"
+    variant="danger"
+    type="button"
+    class="btn btn-outline-secondary circle-btn"
+    title="Remover do carrinho"
+  >
+    <i class="bi bi-bag-plus-fill"></i>
+  </button>
 
   <!-------------------------------------------->
 </template>
@@ -85,6 +94,11 @@ import { CartItem, Image } from '@/types';
 import { PropType, computed } from 'vue';
 import { deleteCartItem } from '@/api'; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
 import { updateQuantityCartItem } from '@/api';
+// --- Non-Aut-User TESTE ---
+import { CartNAU, CartItemNAU } from '@/utils/cartItemNAU.js';
+// Use the CartItemNAU class as needed
+
+// --------------------------
 
 export default {
   data() {
@@ -98,6 +112,8 @@ export default {
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
       userLoggedType: '' as string,
+
+      CartNAU: new CartNAU(),
     };
   },
 
@@ -110,6 +126,13 @@ export default {
   },
 
   methods: {
+    // --- Non-Aut-User TESTE ---
+    itemAddedNAU(idToAdd: number, quantity: number) {
+      this.CartNAU.buildCartNonAut(new CartItemNAU(idToAdd, quantity));
+      console.log(this.CartNAU);
+    },
+    // --------------------------
+
     // --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
     async itemAdded(idToAdd: number) {
       this.getLoginInfo();
