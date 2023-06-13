@@ -139,3 +139,26 @@ export interface FieldPossibleValue {
     id: number;
     value: string;
 }
+
+export interface SelectedUnit {
+    id: number;
+    name: string;
+    address: Address;
+    producer: Producer;
+    deletedAt: Date | null;
+}
+
+export interface Location {
+    city: string;
+    county: string;
+    district: string;
+    door: string;
+    floor: number;
+    id: number;
+    latitude: number;
+    longitude: number;
+    number: number;
+    parish: string;
+    street: string;
+    zipCode: string;
+}

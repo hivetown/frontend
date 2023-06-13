@@ -124,14 +124,6 @@
             >
               <i class="bi bi-cart"></i>
             </button>
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Ver produto" >
-                          <i class="bi bi-eye"></i>
-                  </button> -->
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Comparar produto">
-                          <i class="bi bi-arrow-left-right"></i>
-                  </button> -->
           </div>
         </div>
         <div class="mt-3 mb-3">
@@ -186,13 +178,7 @@
             @click="currentPage = 'vendedores'"
             :class="{ 'active-view': currentPage === 'vendedores' }"
           >
-            <h5 class="grey-txt">Outros vendedores</h5>
-          </b-nav-item>
-          <b-nav-item
-            @click="currentPage = 'unidade'"
-            :class="{ 'active-view': currentPage === 'unidade' }"
-          >
-            <h5 class="grey-txt">Unidade de produção</h5>
+            <h5 class="grey-txt">Vendedores</h5>
           </b-nav-item>
         </b-nav>
       </b-navbar>
@@ -257,39 +243,34 @@
       <div class="px-4" v-if="currentPage === 'vendedores'">
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
 
-        <!-- TODO - ver qual é o certo -->
-        <!-- {{ producerProducts.items.length }} -->
-
         <div
           v-for="(producerProduct, index) in producerProducts.items"
           :key="index"
         >
           <div class="mt-4" style="background-color: ">
-            <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
               v-if="producerProduct.id != defaultProduct.id"
             >
               <router-link
-                :to="'/producer/' + producerProduct.producer.user.id"
+                :to="'/producer/' + producerProduct.producer?.user.id"
               >
                 <b-avatar
-                  v-if="producerProduct.producer.user.image"
+                  v-if="producerProduct.producer?.user.image"
                   class="nav-item"
-                  :src="producerProduct.producer.user.image.url"
-                  :alt="producerProduct.producer.user.image.alt"
+                  :src="producerProduct.producer?.user.image.url"
+                  :alt="producerProduct.producer?.user.image.alt"
                   style="
                     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
                     scale: 1.2;
                   "
-                >
-                </b-avatar>
+                ></b-avatar>
               </router-link>
               <div class="seller">
-                <h5>{{ producerProduct.producer.user.name }}</h5>
+                <h5>{{ producerProduct.producer?.user.name }}</h5>
                 <router-link
-                  :to="'/producer/' + producerProduct.producer.user.id"
+                  :to="'/producer/' + producerProduct?.producer?.user.id"
                 >
                   <a href="#" class="grey-txt">Sobre o vendedor</a>
                 </router-link>
@@ -312,7 +293,7 @@
                           selectedUnit &&
                           selectedUnit === producerProduct.productionUnit?.id
                         "
-                        class="buy-btn rounded-pill"
+                        class="buy-btn rounded-pill close-map-btn"
                         style="scale: 0.85"
                         @click="selectedUnit = null"
                       >
@@ -320,14 +301,17 @@
                       </b-button>
                       <b-button
                         v-else
-                        class="buy-btn rounded-pill"
+                        class="buy-btn rounded-pill map-btn"
                         style="scale: 0.85"
                         @click="selectProducer(producerProduct.productionUnit)"
                       >
-                        Mapa
+                        {{
+                          selectedUnit &&
+                          selectedUnit === producerProduct.productionUnit
+                            ? 'Fechar Mapa'
+                            : 'Mapa'
+                        }}
                       </b-button>
-
-                      <!-- Map div -->
                     </div>
                   </div>
                 </div>
@@ -340,8 +324,7 @@
             >
               <Maps
                 :selected-unit="selectedUnit"
-                :map-data="selectedUnit.mapData"
-                :producer-id="producerProduct.producer?.user.id"
+                :producer-id="producerProduct.producer?.user.id || 0"
               />
             </div>
           </div>
@@ -437,6 +420,7 @@ import {
   ProductSpecField,
 } from '@/types';
 import { defineComponent, PropType } from 'vue';
+import { SelectedUnit } from '../types/interfaces';
 
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
@@ -448,8 +432,12 @@ export default defineComponent({
       validator: (v: number) => v >= 0 && v <= 5,
     },
     initialSelectedUnit: {
-      type: Object as PropType<any>,
+      type: Object as PropType<SelectedUnit | null>,
       default: null,
+    },
+    producerId: {
+      type: Number as PropType<number | undefined>,
+      default: undefined,
     },
   },
   data() {
@@ -473,7 +461,7 @@ export default defineComponent({
       productCategories: {} as BaseItems<Category>,
       productCategoriesFields: [] as ProductSpecField[][],
       fields: [] as ProductSpecField[][],
-      selectedUnit: null,
+      selectedUnit: null as object | null | undefined | Number,
     };
   },
 
@@ -492,8 +480,7 @@ export default defineComponent({
       this.selectedImage = this.productDetails.images[index].url;
       this.selectedImageAlt = this.productDetails.images[index].alt;
     },
-    selectProducer(productionUnitId) {
-      console.log('productionUnitId', productionUnitId);
+    selectProducer(productionUnitId: object | null | undefined) {
       if (this.selectedUnit === productionUnitId) {
         this.selectedUnit = null; // Close the map div if already selected
       } else {

@@ -8,8 +8,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, ref, watch, computed } from 'vue';
-import { fetchMapForUnit } from './maps';
+import { onMounted, ref, watch } from 'vue';
 import mapboxgl from 'mapbox-gl';
 import { useStore } from '@/store';
 import { fetchConsumerLocation } from '@/api/consumerLocation';
@@ -22,12 +21,12 @@ export default {
     },
     producerId: {
       type: Number,
-      required: true,
+      default: 0,
     },
   },
   setup(props) {
     const mapContainer = ref(null);
-    let mapInstance = null;
+    let mapInstance: mapboxgl.Map | null = null;
     let marker = null;
     const store = useStore();
     const userType = store.state.user?.user.type;
@@ -35,7 +34,6 @@ export default {
     const distance = ref('');
     onMounted(async () => {
       try {
-        console.log('props.selectedUnit', props.selectedUnit);
         await updateMap(props.selectedUnit);
       } catch (error) {
         console.error('Error updating map:', error);
@@ -47,7 +45,6 @@ export default {
       async (newUnit, oldUnit) => {
         try {
           if (newUnit !== oldUnit) {
-            console.log('newUnit', newUnit);
             await updateMap(newUnit);
           }
         } catch (error) {
@@ -56,10 +53,8 @@ export default {
       }
     );
 
-    async function updateMap(unit) {
+    async function updateMap(unit: Record<string, any>) {
       try {
-        console.log('unit', unit);
-        console.log('unit.address', unit.address);
         if (mapInstance) {
           mapInstance.remove();
         }
@@ -69,21 +64,13 @@ export default {
         let longitude = 0;
         let latitude = 0;
         if (typeof unit.address === 'number') {
-          console.log('props.producerId', props.producerId);
           const fetchedUnit = await fetchUnit(props.producerId, unit.address);
-          console.log('fetchedUnit', fetchedUnit);
-          console.log(
-            'fetchedUnit.data.address.longitude',
-            fetchedUnit.data.address.longitude
-          );
           longitude = fetchedUnit.data.address.longitude;
           latitude = fetchedUnit.data.address.latitude;
         } else {
           longitude = unit.address.longitude;
           latitude = unit.address.latitude;
         }
-        console.log('unit.address.longitude', unit.address.longitude);
-        console.log('unit.address.latitude', unit.address.latitude);
         mapInstance = new mapboxgl.Map({
           container: mapContainer.value,
           style: 'mapbox://styles/mapbox/streets-v11',
@@ -97,63 +84,60 @@ export default {
             .addTo(mapInstance);
 
           if (userType === 'CONSUMER') {
-            console.log('userId', userId);
-            const consumerLocation = await fetchConsumerLocation(userId);
-            console.log(
-              'consumerLocation',
-              consumerLocation.data.items[0].latitude
-            );
-            const locationData = consumerLocation.data.items[0];
-            new mapboxgl.Marker({ color: 'blue' })
-              .setLngLat([locationData.longitude, locationData.latitude])
-              .addTo(mapInstance);
+            if (typeof userId !== 'undefined') {
+              const consumerLocation = await fetchConsumerLocation(userId);
+              const locationData = consumerLocation.data.items[0];
+              new mapboxgl.Marker({ color: 'blue' })
+                .setLngLat([locationData.longitude, locationData.latitude])
+                .addTo(mapInstance);
 
-            console.log('locationData.longitude', locationData.longitude);
-            console.log('locationData.latitude', locationData.latitude);
-            console.log('unit.address.longitude', longitude);
-            console.log('unit.address.latitude', latitude);
-            const lineCoordinates = [
-              [locationData.longitude, locationData.latitude],
-              [longitude, latitude],
-            ];
-            mapInstance.addLayer({
-              id: 'dashed-line',
-              type: 'line',
-              source: {
-                type: 'geojson',
-                data: {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'LineString',
-                    coordinates: lineCoordinates,
-                  },
-                },
-              },
-              paint: {
-                'line-color': 'blue',
-                'line-width': 2,
-                'line-dasharray': [2, 2],
-              },
-            });
+              const lineCoordinates = [
+                [locationData.longitude, locationData.latitude],
+                [longitude, latitude],
+              ];
+              if (mapInstance) {
+                if (mapInstance) {
+                  mapInstance.addLayer({
+                    id: 'dashed-line',
+                    type: 'line',
+                    source: {
+                      type: 'geojson',
+                      data: {
+                        type: 'Feature',
+                        geometry: {
+                          type: 'LineString',
+                          coordinates: lineCoordinates,
+                        },
+                        properties: {}, // Add an empty object for properties
+                      },
+                    },
+                    paint: {
+                      'line-color': 'blue',
+                      'line-width': 2,
+                      'line-dasharray': [2, 2],
+                    },
+                  });
+                }
+              }
+              const earthRadius = 6371; // in kilometers
+              const lat1 = locationData.latitude;
+              const lon1 = locationData.longitude;
+              const lat2 = latitude;
+              const lon2 = longitude;
 
-            const earthRadius = 6371; // in kilometers
-            const lat1 = locationData.latitude;
-            const lon1 = locationData.longitude;
-            const lat2 = latitude;
-            const lon2 = longitude;
+              const dLat = ((lat2 - lat1) * Math.PI) / 180;
+              const dLon = ((lon2 - lon1) * Math.PI) / 180;
+              const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos((lat1 * Math.PI) / 180) *
+                  Math.cos((lat2 * Math.PI) / 180) *
+                  Math.sin(dLon / 2) *
+                  Math.sin(dLon / 2);
+              const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+              const distanceValue = earthRadius * c;
 
-            const dLat = ((lat2 - lat1) * Math.PI) / 180;
-            const dLon = ((lon2 - lon1) * Math.PI) / 180;
-            const a =
-              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-              Math.cos((lat1 * Math.PI) / 180) *
-                Math.cos((lat2 * Math.PI) / 180) *
-                Math.sin(dLon / 2) *
-                Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distanceValue = earthRadius * c;
-
-            distance.value = distanceValue.toFixed(2);
+              distance.value = distanceValue.toFixed(2);
+            }
           }
         });
       } catch (error) {

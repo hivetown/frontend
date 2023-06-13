@@ -102,7 +102,6 @@
 <script lang="ts">
 import { BaseItems, Producer, productionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
-import Pagination from '@/components/Pagination.vue';
 import { fetchMapForUnit } from '@/maps/maps';
 import Maps from '../maps/maps.vue';
 
@@ -186,7 +185,7 @@ export default {
     this.mapData = maps;
     console.log('mapData', this.mapData);
   },
-  components: { Pagination, Maps },
+  components: { Maps },
 };
 </script>
 
