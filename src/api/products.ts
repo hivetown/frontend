@@ -30,3 +30,13 @@ export const fetchProductCategoriesFields = (specId: number, catId: number) =>
     api.get<BaseItems<ProductSpecField>>(
         `/products/${specId}/categories/${catId}/fields`
     );
+export const fetchLocalProducts =  (
+	specId: number,
+	addressId: number,
+	raio: number,
+    page?: number,
+    pageSize?: number,
+   
+) =>
+api.get<BaseItems<ProductSpec>>(`/products/${specId}/products?addressId=${addressId}&raio=${raio}`, { params: { page, pageSize }},
+);

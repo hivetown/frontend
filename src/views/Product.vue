@@ -256,7 +256,13 @@
       <!-- Página dos outros vendedores -->
       <div class="px-4" v-if="currentPage === 'vendedores'">
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
-
+		<div v-if="$store.state.user">
+			{{ $store.state.user }}
+		<div class="d-flex justify-content-start align-items-center">
+			<input @change="onCheckboxChange()" type="checkbox" id="local-products-checkbox" style="float: left; width: auto; padding: 2px; margin: 2px;">
+			<label style="margin-left: 2px;">Apenas produtos locais</label>
+		</div>
+		</div>
         <!-- TODO - ver qual é o certo -->
         <!-- {{ producerProducts.items.length }} -->
 
@@ -408,12 +414,14 @@
 <script lang="ts">
 // Componentes
 import PathComponent from '@/components/PathComponent.vue';
-
+import { useStore } from '@/store';
 import {
   fetchProduct,
   fetchProducerProducts,
   fetchProductCategories,
   fetchProductCategoriesFields,
+  fetchLocalProducts,
+  getConsumerAddress
 } from '@/api';
 import {
   ProductSpec,
@@ -422,7 +430,7 @@ import {
   Category,
   ProductSpecField,
 } from '@/types';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
 
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
@@ -474,6 +482,26 @@ export default defineComponent({
       this.selectedImage = this.productDetails.images[index].url;
       this.selectedImageAlt = this.productDetails.images[index].alt;
     },
+	async onCheckboxChange() {
+	const checkbox = document.getElementById('local-products-checkbox') as HTMLInputElement;
+	const store = useStore();
+	const user2 = computed(() => store);
+	//TODO por id logado
+	const address = await getConsumerAddress(1001);
+	const addressId = (address.data.items[0].id);
+	console.log(Number(this.$route.params.specid))
+	if (checkbox.checked) {
+		const producerProducts  = await fetchLocalProducts(
+			Number(this.$route.params.specid),//specid
+			addressId, //ADDRESSID
+			60,//raio
+			parseInt(String(this.$route.query.page)) || 1,
+    		parseInt(String(this.$route.query.pageSize)) || 24,
+    );
+	console.log(producerProducts);
+
+    } 
+	},
   },
 
   // A fazer antes de montar o componente
