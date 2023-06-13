@@ -20,12 +20,22 @@
             <div>
               <!---->
               <div v-if="nElementos != 0">
-                <CartItem
-                  v-for="cartItem in itensCarrinho.items"
-                  :cart-item="cartItem"
-                  @deleteCartItem="itemRemoved"
-                  @updateCartItem="refreshValues"
-                ></CartItem>
+                <div v-if="login">
+                  <CartItem
+                    v-for="cartItem in itensCarrinho.items"
+                    :cart-item="cartItem"
+                    @deleteCartItem="itemRemoved"
+                    @updateCartItem="refreshValues"
+                  ></CartItem>
+                </div>
+                <div v-else>
+                  <CartItem
+                    v-for="cartItem in itensCarrinhoNAU"
+                    :cart-item="cartItem"
+                    @deleteCartItem="itemRemoved"
+                    @updateCartItem="refreshValues"
+                  ></CartItem>
+                </div>
               </div>
               <div v-else>
                 <p>Não possui itens no carrinho.</p>
@@ -59,6 +69,56 @@
       </table>
     </div>
   </div>
+
+  <!--------------------DIV DE TESTE-------------------->
+  <div>
+    <button
+      @click="itemAddedNAU(1)"
+      variant="danger"
+      type="button"
+      class="btn btn-outline-secondary circle-btn"
+      title="Remover do carrinho"
+    >
+      <i class="bi bi-bag-plus-fill"></i>
+    </button>
+    <button
+      @click="itemAddedNAU(2)"
+      variant="danger"
+      type="button"
+      class="btn btn-outline-secondary circle-btn"
+      title="Remover do carrinho"
+    >
+      <i class="bi bi-bag-plus-fill"></i>
+    </button>
+    <button
+      @click="itemAddedNAU(3)"
+      variant="danger"
+      type="button"
+      class="btn btn-outline-secondary circle-btn"
+      title="Remover do carrinho"
+    >
+      <i class="bi bi-bag-plus-fill"></i>
+    </button>
+    <button
+      @click="rmvCart()"
+      variant="danger"
+      type="button"
+      class="btn btn-outline-secondary circle-btn"
+      title="Remover do carrinho"
+    >
+      <i class="bi bi-bag-plus-fill"></i>
+    </button>
+    <button
+      @click="fetchItemsFromBD()"
+      variant="danger"
+      type="button"
+      class="btn btn-outline-secondary circle-btn"
+      title="Remover do carrinho"
+    >
+      <i class="bi bi-bag-plus-fill"></i>
+    </button>
+  </div>
+  <!--------------------DIV DE TESTE-------------------->
 </template>
 
 <style>
@@ -109,9 +169,14 @@ import CartItem from '@/components/CartItem.vue';
 import { deleteCartItem, fetchCartItems } from '../api/consumers';
 //import { Product } from '@/types';
 //import { defineComponent } from 'vue';
-import { Cart, Image } from '@types'; //TODO: Pode dar erro
+import { Cart, Image } from '@/types'; //TODO: Pode dar erro
 import { computed } from 'vue';
 //import { getSystemErrorMap } from 'util';
+// --- Non-Aut-User TESTE ---
+import { CartNAU, CartItemNAU } from '@/utils/cartItemNAU.js';
+import { ProducerProduct } from '@types';
+import { fetchProduct, fetchProducerProducts } from '@/api/products';
+// Use the CartItemNAU class as needed
 
 export default {
   data() {
@@ -119,38 +184,49 @@ export default {
       itensCarrinho: {} as Cart,
       login: false,
 
-      selected: null,
-      options: [
-        { value: null, text: '--Escolha o local de recolha--', disabled: true },
-        { value: 1, text: 'Morada nº1' },
-        { value: 2, text: 'Morada nº2' },
-        { value: 3, text: 'Ponto de Recolha' },
-        { value: 4, text: 'Loja' },
-      ],
-
-      nElementos: 0,
+      nElementos: 1,
       precoTotal: '0,00 €',
 
-      userLoggedId: 0 as number,
+      userLoggedId: 2 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
       userLoggedType: '' as string,
+
+      CartNAU: new CartNAU(),
+      itensCarrinhoNAU: [],
     };
   },
 
   // Botão "Voltar"
   methods: {
+    // --- Non-Aut-User TESTE ---
+    async itemAddedNAU(idToAdd: number) {
+      const itemInfo = await fetchProduct(155);
+      const itemInfo2 = await fetchProducerProducts(idToAdd);
+      console.log(itemInfo.data);
+      console.log(itemInfo2);
+
+      console.log(this.CartNAU);
+    },
+
+    rmvCart() {
+      this.CartNAU.cleanCart();
+    },
+    // --------------------------
+
     goBack() {
       window.history.back();
     },
 
     itemRemoved(idToRmv: number) {
-      const indexToRemove = this.itensCarrinho.items.findIndex(
-        (item) => item.producerProduct!.id === idToRmv
-      );
-      if (indexToRemove !== -1) {
-        this.itensCarrinho.items.splice(indexToRemove, 1);
-        this.refreshValues();
+      if (this.login == true) {
+        const indexToRemove = this.itensCarrinho.items.findIndex(
+          (item) => item.producerProduct!.id === idToRmv
+        );
+        if (indexToRemove !== -1) {
+          this.itensCarrinho.items.splice(indexToRemove, 1);
+          this.refreshValues();
+        }
       }
     },
 
@@ -171,32 +247,39 @@ export default {
     },
 
     countItems() {
-      let totalQtd = 0;
-      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
-        totalQtd += parseFloat(
-          JSON.stringify(this.itensCarrinho['items'][i].quantity)
-        );
+      if (this.login == true) {
+        let totalQtd = 0;
+        for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
+          totalQtd += parseFloat(
+            JSON.stringify(this.itensCarrinho['items'][i].quantity)
+          );
+        }
+        return totalQtd;
+      } else {
+        return 0;
       }
-      return totalQtd;
     },
 
     countPrice() {
-      let totalSum = 0;
-      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
-        totalSum +=
-          parseFloat(
-            JSON.stringify(
-              this.itensCarrinho['items'][i].producerProduct?.currentPrice
-            )
-          ) *
-          parseFloat(JSON.stringify(this.itensCarrinho['items'][i].quantity));
+      if (this.login == true) {
+        let totalSum = 0;
+        for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
+          totalSum +=
+            parseFloat(
+              JSON.stringify(
+                this.itensCarrinho['items'][i].producerProduct?.currentPrice
+              )
+            ) *
+            parseFloat(JSON.stringify(this.itensCarrinho['items'][i].quantity));
+        }
+        totalSum = parseInt(totalSum.toFixed(2));
+        const toCurrency = totalSum.toLocaleString('pt-PT', {
+          style: 'currency',
+          currency: 'EUR',
+        });
+        return toCurrency;
       }
-      totalSum = parseInt(totalSum.toFixed(2));
-      const toCurrency = totalSum.toLocaleString('pt-PT', {
-        style: 'currency',
-        currency: 'EUR',
-      });
-      return toCurrency;
+      return 0;
     },
 
     async refreshValues() {
@@ -211,10 +294,13 @@ export default {
           this.userLoggedNImage = userLoggedId.value['user']['image'];
         }
       }
-      const itensCarrinho = await fetchCartItems(this.userLoggedId);
-      this.itensCarrinho = itensCarrinho.data;
-      this.nElementos = this.countItems();
-      this.precoTotal = this.countPrice();
+      if (this.login == true) {
+        const itensCarrinho = await fetchCartItems(this.userLoggedId);
+        this.itensCarrinho = itensCarrinho.data;
+        console.log(itensCarrinho);
+        this.nElementos = this.countItems();
+        this.precoTotal = this.countPrice();
+      }
     },
 
     checkLogin() {

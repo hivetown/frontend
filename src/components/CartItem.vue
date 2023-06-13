@@ -86,6 +86,8 @@ import { PropType, computed } from 'vue';
 import { deleteCartItem } from '@/api'; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
 import { updateQuantityCartItem } from '@/api';
 
+// --------------------------
+
 export default {
   data() {
     return {
@@ -94,7 +96,7 @@ export default {
       options: this.setupQts(),
       cartItemPrice: this.priceCalc(),
 
-      userLoggedId: 0 as number,
+      userLoggedId: 1 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
       userLoggedType: '' as string,
@@ -113,7 +115,6 @@ export default {
     // --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
     async itemAdded(idToAdd: number) {
       this.getLoginInfo();
-      console.log(idToAdd);
       await addCartItem(this.userLoggedId, idToAdd, 1);
     },
     async itemAddedTest() {
@@ -125,7 +126,8 @@ export default {
     setupQts() {
       this.getLoginInfo();
       const opts: { value: number; text: string }[] = [];
-      for (let i = 1; i < this.cartItem.producerProduct!.stock; i++) {
+      for (let i = 1; i <= this.cartItem.producerProduct!.stock; i++) {
+        //console.log(this.cartItem);
         const build = { value: i, text: i.toString() };
         opts.push(build);
       }
@@ -144,13 +146,16 @@ export default {
         if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
           //TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
           //TODO: Desativar botão aqui
-          await deleteCartItem(9, this.cartItem.producerProduct!.id);
+          await deleteCartItem(
+            this.userLoggedId,
+            this.cartItem.producerProduct!.id
+          );
           //TODO: Mudar o 1 para o id do cliente
           //console.log('test');
           this.$emit('deleteCartItem', this.cartItem.producerProduct!.id);
           //console.log('id:',this.cartItem.producerProduct!.id);
         } else {
-          /* do nothing */
+          // do nothing
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -192,7 +197,6 @@ export default {
           this.userLoggedNImage = userLoggedId.value['user']['image'];
         }
       }
-      console.log(this.userLoggedId);
     },
   },
 };
