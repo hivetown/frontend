@@ -23,7 +23,7 @@
             <div>
               <!-- Produtos ou clientes -->
               <div class="d-flex gap-4">
-                <!-- <div class="mb-4">
+                <div class="mb-4">
                   <RadioButton
                     v-model="barChartView"
                     input-id="products"
@@ -44,7 +44,7 @@
                     @click="updateBarChart()"
                   />
                   <label for="clients" class="ml-2">Clientes</label>
-                </div> -->
+                </div>
               </div>
             </div>
             <div>
@@ -179,7 +179,7 @@
           <!-- Evolução -->
           <!-- <div class="parent d-flex" style="background-color: ; gap: 4%"> -->
           <div class="parent">
-            <div style="width: 70%">
+            <div style="width: 100%">
               <!-- Muda a cada view -->
               <h4
                 v-if="view == 'numeroEncomendas' && graficosGerados"
@@ -192,13 +192,13 @@
                 v-if="view == 'totalProdutos' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Quantidade de produtos diferentes encomendados
+                Quantidade de produtos encomendados
               </h4>
               <h4
                 v-if="view == 'numeroProdutosEncomendados' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Quantidade de produtos encomendados
+                Quantidade de produtos diferentes encomendados
               </h4>
               <h4
                 v-if="view == 'comprasTotais' && graficosGerados"
@@ -209,6 +209,7 @@
               <!-- Gráfico de linhas -->
               <div class="graph-container">
                 <LineChart
+                  style="max-height: 400px !important"
                   v-if="graficosGerados"
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
@@ -217,7 +218,7 @@
             </div>
           </div>
           <div class="parent">
-            <div style="width: 70%">
+            <div style="width: 100%">
               <div>
                 <!-- Muda a cada tipo: produtos ou clientes -->
                 <h4
@@ -236,6 +237,7 @@
                 <div class="graph-container">
                   <div v-if="barChartView == 'products'">
                     <BarChart
+                      style="max-height: 400px !important"
                       v-if="graficosGerados"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
@@ -243,6 +245,7 @@
                   </div>
                   <div v-if="barChartView == 'clients'">
                     <BarChart
+                      style="max-height: 400px !important"
                       v-if="graficosGerados"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
@@ -633,7 +636,6 @@ export default defineComponent({
 
 .data-cards {
   display: flex;
-  justify-content: flex-end;
   padding: 3vh;
   gap: 4vh;
   width: 65%;
