@@ -26,6 +26,7 @@ export const fetchAdminReportCards = (
     );
 
 export const fetchReportMap = (
+    id: number,
     dataInicio?: string,
     dataFim?: string,
     raio?: number

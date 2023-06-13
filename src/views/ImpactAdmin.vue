@@ -23,7 +23,7 @@
             <div>
               <!-- Produtos ou clientes -->
               <div class="d-flex gap-4">
-                <div class="mb-4">
+                <!-- <div class="mb-4">
                   <RadioButton
                     v-model="barChartView"
                     input-id="products"
@@ -44,7 +44,7 @@
                     @click="updateBarChart()"
                   />
                   <label for="clients" class="ml-2">Clientes</label>
-                </div>
+                </div> -->
               </div>
             </div>
             <div>
@@ -125,40 +125,30 @@
         class="reportInfo d-none d-md-block"
       >
         <div class="d-flex">
-          <div class="user-info">
-            <!-- Imagem do user -->
-            <img
-              class="producer-image d-block mx-auto"
-              :src="userLoggedNImage.url"
-              :alt="userLoggedNImage.alt"
-            />
-            <!-- Nome do user -->
-            <h3 class="main-txt dgreen-txt">{{ userLoggedName }}</h3>
-          </div>
           <!-- Cards coloridos -->
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
-              title="Total ganho"
+              title="Total gasto"
               :value="reportCards.comprasTotais"
               color="#7CA2C3"
               :text-cancel="'Dinheiro devolvido:'"
               :cancel-value="reportCards.comprasTotaisCanceladas"
             ></ImpactDataCard>
+            <!-- <ImpactDataCard
+              icon="bi bi-currency-euro"
+              title="Total ganho"
+              :value="0"
+              color="#9DC88D"
+            ></ImpactDataCard> -->
             <ImpactDataCard
               icon="bi bi-box-seam"
-              title="Encomendas"
+              title="Total de encomendas"
               :value="reportCards.numeroEncomendas"
               color="#DC6942"
-              :text-cancel="'Encomendas canceladas:'"
+              :text-cancel="'Enc. canceladas:'"
               :cancel-value="reportCards.numeroEncomendasCanceladas"
             ></ImpactDataCard>
-            <!-- <ImpactDataCard
-              icon="bi bi-bag"
-              title="Tipos de produtoscomprados"
-              :value="reportCards.numeroProdutosEncomendados"
-              color="#F1B24A"
-            ></ImpactDataCard> -->
             <ImpactDataCard
               icon="bi bi-bag"
               title="Total de produtos"
@@ -187,8 +177,9 @@
         <!-- Dados alteráveis -->
         <div style="background-color: ">
           <!-- Evolução -->
-          <div class="parent d-flex" style="background-color: ; gap: 4%">
-            <div style="background-color: ; width: 43%">
+          <!-- <div class="parent d-flex" style="background-color: ; gap: 4%"> -->
+          <div class="parent">
+            <div style="width: 70%">
               <!-- Muda a cada view -->
               <h4
                 v-if="view == 'numeroEncomendas' && graficosGerados"
@@ -224,7 +215,9 @@
                 />
               </div>
             </div>
-            <div style="background-color: ; width: 53%">
+          </div>
+          <div class="parent">
+            <div style="width: 70%">
               <div>
                 <!-- Muda a cada tipo: produtos ou clientes -->
                 <h4
@@ -267,7 +260,7 @@
             TODO - Implementar categorias - Items canelados nos dados se der -
            -->
           <!-- {{ reportProducerClients }} -->
-          <div class="mt-5 parent" style="height: 40vh"></div>
+          <div class="mt-5 parent" style="height: 10vh"></div>
         </div>
       </div>
     </div>
@@ -492,6 +485,9 @@ export default defineComponent({
       );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData(view, 'bar');
+      console.log(
+        'Dados do gráfico de barras: ' + JSON.stringify(this.reportBarChart)
+      );
 
       // Clientes
       const producerClients = await fetchAdminReportClients(

@@ -13,6 +13,7 @@ import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import ImpactProducer from '@/views/ImpactProducer.vue';
 import ImpactAdmin from '@/views/ImpactAdmin.vue';
 import { store } from '@/store';
+import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
 
@@ -83,6 +84,11 @@ const routes = [
         path: '/impactAdmin',
         name: 'ImpactAdmin',
         component: ImpactAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions:
+                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
     },
 ];
 
