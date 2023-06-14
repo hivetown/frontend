@@ -104,15 +104,6 @@ export interface Transport {
     images: Image[];
 }
 
-// export interface Producers {
-//     id: number;
-//     name: string;
-//     email: string;
-//     phone: string;
-//     vat: string;
-//     products?: Product[];
-// }
-
 export interface ProducerProduct {
     id: number;
     currentPrice: number;
