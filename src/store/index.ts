@@ -29,7 +29,6 @@ export const store = createStore<State>({
     },
     mutations: {
         SET_USER(state, user: AuthenticatedUser) {
-            console.log('user', user);
             state.user = user;
         },
         CLEAR_USER(state) {
