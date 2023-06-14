@@ -175,7 +175,6 @@
         </button>
       </b-nav-item>
     </b-nav>
-    <!-- <ProductsProducer :products="products" /> -->
   </div>
 </template>
 <!-- <div>
