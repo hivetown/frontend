@@ -184,9 +184,6 @@
 <script lang="ts">
 import { Consumer, Producer, ProducerProducts } from '@/types';
 import { computed, ref } from 'vue';
-// import { useStore } from 'vuex';
-// import { fetchAllProducts } from '../api/producerProducts';
-// import ProductsProducer from '../views/ProductsProducer.vue';
 import { useStore } from '@/store';
 export default {
   setup() {
