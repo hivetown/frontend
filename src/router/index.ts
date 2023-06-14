@@ -139,9 +139,8 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Check if the user is authenticated and has the correct type
-    const user = store.state.user?.user;
-    console.log('userrr', user);
-    const userType = store.state.user?.user?.type;
+    const user = store.state.user!.user;
+    const userType = user.type;
 
     // Check if the user type is different from "PRODUCER" for routes that require it
     if (
