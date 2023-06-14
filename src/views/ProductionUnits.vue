@@ -118,7 +118,6 @@ export default {
     try {
       const store = useStore();
       const id = store.state.user!.user.id;
-      console.log('iddd', id);
 
       const route = useRoute() as RouteLocationNormalizedLoaded;
       const page = parseInt(route.query.page as string) || 1;
