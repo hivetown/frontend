@@ -191,7 +191,6 @@ import { useStore } from '@/store';
 export default {
   setup() {
     const store = useStore();
-    console.log('store: ', store);
     // computed user
     console.log('userNav: ', store.state.user);
     const user = computed(() => store.state.user as Consumer | Producer);
