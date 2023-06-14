@@ -141,14 +141,6 @@ export default {
   text-decoration: none;
 }
 
-.prod-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: none;
-  overflow: hidden;
-  width: 130px;
-  height: 250px;
-}
-
 .square-image {
   width: 100%;
   height: 100%;

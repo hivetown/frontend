@@ -127,7 +127,7 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allTransportsData = await fetchAllTransports(8, page, pageSize);
+      const allTransportsData = await fetchAllTransports(id, page, pageSize);
 
       const transportVehiclesArray = allTransportsData.data;
 
@@ -153,14 +153,6 @@ export default {
 </script>
 
 <style scoped>
-.prod-card {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: none;
-  overflow: hidden;
-  width: 130px;
-  height: 250px;
-}
-
 .square-image {
   width: 100%;
   height: 100%;

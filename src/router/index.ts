@@ -13,6 +13,7 @@ import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -30,8 +31,8 @@ const routes = [
         component: About,
     },
     {
-        path: '/produtos',
-        name: 'Produtos',
+        path: '/products',
+        name: 'Products',
         component: CategoriasProdutos,
     },
     {
@@ -49,8 +50,8 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: '/produto',
-        name: 'Produto',
+        path: '/products/:specid',
+        name: 'ProductDetails',
         component: Product,
     },
     {
@@ -119,6 +120,11 @@ const routes = [
                 Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
         },
     },
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
+    },
 ];
 
 const router = createRouter({
@@ -127,10 +133,7 @@ const router = createRouter({
 });
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) {
-        await store.dispatch('fetchAuthUser');
-        isAuthenticated = !!store.state.user;
-    }
+    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
 
     // Check if the user is authenticated
     if (!isAuthenticated) {

@@ -178,8 +178,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Consumer, Producer, ProducerProducts } from '@/types';
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from '@/store';
 export default {
   setup() {

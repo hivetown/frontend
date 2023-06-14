@@ -11,4 +11,7 @@
 	"editor.defaultFormatter": "Vue.volar",
 	// Disable vetur
 	"vetur.validation.template": false,
+	"[nginx]": {
+		"editor.defaultFormatter": "ahmadalli.vscode-nginx-conf"
+	},
 }
