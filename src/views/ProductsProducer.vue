@@ -108,9 +108,7 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
       const allProductsData = await fetchAllProducts(4, page, pageSize);
-      console.log('allProductsData:', allProductsData);
       const productsArray = allProductsData.data;
-      console.log('Products:', productsArray);
       this.products = productsArray;
       this.allProductsData = allProductsData;
     } catch (error) {
