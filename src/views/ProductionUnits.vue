@@ -125,7 +125,6 @@ export default {
 
       const allUnitsData = await fetchAllUnits(4, page, pageSize);
 
-      console.log('allUnitsData:', allUnitsData);
 
       const productionUnitsArray = allUnitsData.data;
       //   console.log('Production Units:', productionUnitsArray);
