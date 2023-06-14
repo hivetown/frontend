@@ -185,9 +185,7 @@ export default {
   setup() {
     const store = useStore();
     // computed user
-    console.log('userNav: ', store.state.user);
     const user = computed(() => store.state.user as Consumer | Producer);
-    setTimeout(() => console.log(user), 1000);
 
     const logout = async () => {
       await store.dispatch('logout');
