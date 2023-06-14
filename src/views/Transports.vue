@@ -18,7 +18,7 @@
             <img
               :src="transport.image.url"
               class="square-image"
-              alt="Imagem do veículo"
+              :alt="transport.image.alt"
             />
           </b-card>
           <b-card-text class="">
@@ -51,7 +51,7 @@
                     type="button"
                     class="btn btn-outline-secondary circle-btn"
                     v-b-tooltip.hover
-                    title="Editar produto"
+                    title="Editar veículo"
                   >
                     <i class="bi bi-pencil"></i>
                   </button>
@@ -60,7 +60,7 @@
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
                   v-b-tooltip.hover
-                  title="Remover produto"
+                  title="Remover veículo"
                 >
                   <i class="bi bi-trash"></i>
                 </button>
@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { TransportVehicles } from './TransportVehicles.vue';
+import { Transport } from '@/types';
 import { fetchAllTransports } from '@/api/transports';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
@@ -105,7 +105,7 @@ export default {
   },
   data() {
     return {
-      transportVehicles: [] as TransportVehicles[],
+      transportVehicles: [] as Transport[],
       allTransportsData: {
         data: {
           totalItems: 0,
@@ -122,17 +122,17 @@ export default {
     try {
       const store = useStore();
       const id = store.state.user!.user.id;
-      console.log('iddd', id);
 
       const route = useRoute() as RouteLocationNormalizedLoaded;
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allTransportsData = await fetchAllTransports(id, page, pageSize);
+      const allTransportsData = await fetchAllTransports(8, page, pageSize);
 
       const transportVehiclesArray = allTransportsData.data;
 
       this.transportVehicles = transportVehiclesArray;
+      console.log('this.transportVehicles', this.transportVehicles);
       this.allTransportsData = allTransportsData;
     } catch (error) {
       console.error(error);
@@ -152,7 +152,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .prod-card {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: none;

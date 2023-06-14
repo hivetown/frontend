@@ -1,3 +1,4 @@
+import { productionUnit } from '@/types';
 export interface Product {
     id: number;
     currentPrice: number;
@@ -88,7 +89,7 @@ export interface ProductionUnits {
     id: number;
     name: string;
     description: string;
-    producer: Producer;
+    productionUnit: productionUnit;
     products: Product[];
     address: Address;
     images: Image[];
@@ -99,7 +100,6 @@ export interface Transport {
     name: string;
     description: string;
     producer: Producer;
-    products: Product[];
     address: Address;
     images: Image[];
 }

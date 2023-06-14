@@ -123,11 +123,9 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allUnitsData = await fetchAllUnits(4, page, pageSize);
-
+      const allUnitsData = await fetchAllUnits(id, page, pageSize);
 
       const productionUnitsArray = allUnitsData.data;
-      //   console.log('Production Units:', productionUnitsArray);
 
       this.productionUnits = productionUnitsArray;
       this.allUnitsData = allUnitsData;
@@ -138,7 +136,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .production-unit-card a {
   text-decoration: none;
 }

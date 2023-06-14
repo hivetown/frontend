@@ -16,7 +16,7 @@
             <img
               :src="product.productSpec.images[0].url"
               class="square-image"
-              alt="Imagem do produto"
+              :alt="product.productSpec.images[0].alt"
             />
           </b-card>
           <b-card-text class="">
@@ -127,11 +127,9 @@ export default {
         pageSize
       );
 
-
       const unitProductsArray = allUnitProducts.data;
 
       this.unitProducts = unitProductsArray;
-      // console.log('Production Units:', this.unitProducts);
       this.allUnitProducts = allUnitProducts;
     } catch (error) {
       console.error(error);

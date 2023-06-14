@@ -12,7 +12,7 @@
             <img
               :src="product.productSpec.images[0].url"
               class="square-image"
-              alt="Imagem do produto"
+              :alt="product.productSpec.images[0].alt"
             />
           </b-card>
           <b-card-text class="">
@@ -107,7 +107,7 @@ export default {
       const route = useRoute() as RouteLocationNormalizedLoaded;
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
-      const allProductsData = await fetchAllProducts(4, page, pageSize);
+      const allProductsData = await fetchAllProducts(id, page, pageSize);
       const productsArray = allProductsData.data;
       this.products = productsArray;
       this.allProductsData = allProductsData;
@@ -117,7 +117,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .prod-card {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: none;
