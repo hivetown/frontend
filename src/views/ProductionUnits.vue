@@ -130,7 +130,6 @@ export default {
       //   console.log('Production Units:', productionUnitsArray);
 
       this.productionUnits = productionUnitsArray;
-      console.log('Production Units:', this.productionUnits);
       this.allUnitsData = allUnitsData;
     } catch (error) {
       console.error(error);
