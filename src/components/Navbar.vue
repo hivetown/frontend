@@ -177,9 +177,6 @@
     </b-nav>
   </div>
 </template>
-<!-- <div>
-  <ProductsProducer :products="products" />
-</div> -->
 <script lang="ts">
 import { Consumer, Producer, ProducerProducts } from '@/types';
 import { computed, ref } from 'vue';
