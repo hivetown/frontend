@@ -71,11 +71,6 @@ const routes = [
         name: 'Registration',
         component: Register,
     },
-    // {
-    //     path: '/authconsumer',
-    //     name: 'AuthConsumer',
-    //     component: AuthConsumer,
-    // },
     {
         path: '/produtosprodutor',
         name: 'produtosprodutor',
