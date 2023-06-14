@@ -127,7 +127,6 @@ export default {
         pageSize
       );
 
-      console.log('allUnitProducts:', allUnitProducts);
 
       const unitProductsArray = allUnitProducts.data;
 
