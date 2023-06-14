@@ -325,23 +325,23 @@ com
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
+import { Order } from '../types/interfaces';
 import { onMounted, ref, Ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
 var idU = 0;
-const orders = ref<any>('');
 const arr: { value: number[] } = ref([]);
 const store = useStore();
-const encomendas: any[] = [];
+const encomendas: number[] = [];
 const encomendasImage: Ref<any[]> = ref([]);
-
-const encomendaId: Ref<any[]> = ref([]);
-
 const orderIds = ref<number[]>([]); //array com o id das encomendas
+const encomendaId: Ref<any[]> = ref([]);
 const user2 = computed(() => store.state.user);
 if (user2.value && user2.value.user && user2.value.user.id) {
   idU = user2.value.user.id;
 }
+const orders = ref<any>('');
+
 onMounted(async () => {
   const response = await fetchAllOrders(idU);
   orders.value = response.data;
@@ -357,11 +357,12 @@ onMounted(async () => {
 
   for (let i = 0; i < encomendas.length; i++) {
     //TODO por user logado
-    const response1 = await fetchAllItems(idU, encomendas[i]);
+    const response1 = await fetchAllItems(idU, encomendas[i].toString());
     const newEncomenda = { [encomendas[i]]: response1.data };
     encomendaId.value.push(newEncomenda);
-    const encomendaX: any[] = [];
-    for (
+    const encomendaX: Order[] = [];
+
+	for (
       let j = 0;
       j < encomendaId.value[i][encomendas[i]]['items'].length - 1;
       j++
@@ -390,9 +391,10 @@ onMounted(async () => {
       );
     }
     encomendasImage.value.push(encomendaX);
+
+
   }
 });
-
 function cancelarEncomenda(num: number) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
