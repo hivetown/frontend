@@ -182,7 +182,7 @@
   <ProductsProducer :products="products" />
 </div> -->
 <script lang="ts">
-import { Consumer, Producer, ProducerProducts } from '@types';
+import { Consumer, Producer, ProducerProducts } from '@/types';
 import { computed, ref } from 'vue';
 // import { useStore } from 'vuex';
 // import { fetchAllProducts } from '../api/producerProducts';
