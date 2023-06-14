@@ -130,13 +130,9 @@ export default {
 
       const allTransportsData = await fetchAllTransports(id, page, pageSize);
 
-      console.log('allTransportsData:', allTransportsData);
-
       const transportVehiclesArray = allTransportsData.data;
-      //   console.log('Production Units:', transportVehiclesArray);
 
       this.transportVehicles = transportVehiclesArray;
-      console.log('Transportes:', this.transportVehicles);
       this.allTransportsData = allTransportsData;
     } catch (error) {
       console.error(error);
