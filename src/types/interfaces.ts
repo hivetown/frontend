@@ -67,30 +67,6 @@ export interface ApiRequest {
     data?: any;
 }
 
-export interface auth {
-    id: number;
-    name: string;
-    email: string;
-    phone: number;
-    vat: number;
-    authId: string;
-    image: string;
-    type: string;
-}
-
-export interface AddressConsumer {
-    number: number;
-    door: string;
-    floor: number;
-    zipCode: string;
-    street: string;
-    parish: string;
-    county: string;
-    city: string;
-    district: string;
-    latitude: number;
-    longitude: number;
-}
 export interface BaseItems<T> {
     items: T[];
     totalItems: number;
