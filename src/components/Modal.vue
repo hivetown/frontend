@@ -14,7 +14,7 @@
           >
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">{{ orderItem['items'][num - 1]['title'] }}</h5>
-              <small>{{ orderItem['items'][num - 1]['createdAt'] }}</small>
+              <small>{{ orderItem['items'][num - 1]['createdAt'].substring(0,10) }} {{ orderItem['items'][num - 1]['createdAt'].substring(11,19) }}</small>
             </div>
             <p class="mb-1">{{ orderItem['items'][num - 1]['message'] }}</p>
             <hr />
