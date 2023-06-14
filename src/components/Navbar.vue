@@ -185,7 +185,7 @@ export default {
   setup() {
     const store = useStore();
     // computed user
-    const user = computed(() => store.state.user as Consumer | Producer);
+    const user = computed(() => store.state.user);
 
     const logout = async () => {
       await store.dispatch('logout');
