@@ -75,7 +75,7 @@ a
             <p id="texto">{{ orderItem['items'][num - 1]['quantity'] }}</p>
           </td>
           <td>
-            <p id="texto">Última verificação: {{ eventos[num - 1]['date'] }}</p>
+            <p id="texto">Última verificação: {{ eventos[num - 1]['date'].substring(0,10) }} {{ eventos[num - 1]['date'].substring(11,19) }} </p>
             <p id="texto">
               Encontra-se em: {{ eventos[num - 1]['address']['street'] }},
               {{ eventos[num - 1]['address']['parish'] }},
