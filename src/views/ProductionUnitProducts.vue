@@ -115,7 +115,6 @@ export default {
   async mounted() {
     try {
       const route = useRoute() as RouteLocationNormalizedLoaded;
-      console.log('Idddd', route.params.unitId);
       const producerId = route.params.producerId;
       const unitId = route.params.unitId;
       const page = parseInt(route.query.page as string) || 1;
