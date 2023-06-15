@@ -154,7 +154,7 @@ import { useRoute } from 'vue-router';
 export default {
   setup() {
     const route = useRoute();
-    let formData = ref<any>(null);
+    let formData = {};
     const id = ref<any>(null);
     const collapsed = ref(true);
     const users = ref<any>(null);
@@ -173,31 +173,51 @@ export default {
 
   methods: {
     saveChanges() {
-      // Define valores padrão para campos não preenchidos
-      const defaults = {
-        name: this.users.user.name,
-        email: this.users.user.email,
-        phone: this.users.user.phone,
-      };
+  // Define valores padrão para campos não preenchidos
+  const defaults = {
+    name: this.users.user.name,
+    email: this.users.user.email,
+    phone: this.users.user.phone,
+  };
 
-      // Mescla valores padrão com valores do formulário
-      const data = { ...defaults, ...this.formData };
-      if ((Object.keys(this.formData).length === 0) === true) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Sem alterações a efetuar',
-          text: 'Precisa preenhcer pelo menos um campo para efetuar alterações',
-          showConfirmButton: false,
-          timer: 3500,
-        });
-      } else {
-        // Chama a função de atualização com o objeto mesclado
+  // Mescla valores padrão com valores do formulário
+  const data = { ...defaults, ...this.formData };
+  if (Object.keys(this.formData).length === 0) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Sem alterações a efetuar',
+      text: 'Precisa preencher pelo menos um campo para efetuar alterações',
+      showConfirmButton: false,
+      timer: 3500,
+    });
+  } else {
+    Swal.fire({
+      title: 'Digite a password de administrador:',
+      input: 'password',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Confirmar',
+      showLoaderOnConfirm: false,
+      preConfirm: (password) => {
+        // Verificar se a senha está correta
+        if (password === 'Hivetown2023') {
+          return true; // Senha correta, avança para o próximo diálogo
+        } else {
+          Swal.showValidationMessage('Password incorreta');
+          return false; // Senha incorreta, mantém a caixa de diálogo aberta
+        }
+      },
+      allowOutsideClick: false
+    }).then((result) => {
+      if (result.isConfirmed) {
         updateConsumer(this.id, data)
           .then((response) => {
             console.log(response);
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
-              text: 'Poderá voltar a editar a conta caso se arrependa.',
+              text: 'Você poderá voltar a editar a conta caso se arrependa.',
               icon: 'question',
               showCancelButton: true,
               confirmButtonText: 'Sim',
@@ -221,7 +241,7 @@ export default {
                     Swal.fire({
                       icon: 'error',
                       title: 'Erro ao efetuar alterações',
-                      text: 'Tente mais tarde',
+                      text: 'Tente novamente mais tarde',
                       showConfirmButton: false,
                       timer: 1500,
                     });
@@ -233,11 +253,35 @@ export default {
             console.log(error);
           });
       }
-    },
+    });
+  }
+},
 
     showCancelDialog(): void {
+		Swal.fire({
+    title: 'Digite a password de administrador:',
+    input: 'password',
+    inputAttributes: {
+      autocapitalize: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Confirmar',
+    showLoaderOnConfirm: false,
+    preConfirm: (password) => {
+      // Verificar se a senha está correta
+      if (password === 'Hivetown2023') {
+        return true; // Senha correta, avança para o próximo diálogo
+      } else {
+        Swal.showValidationMessage('Password incorreta');
+        return false; // Senha incorreta, mantém a caixa de diálogo aberta
+      }
+    },
+    // Remova a propriedade allowOutsideClick
+  })
+  .then((result) => {
+    if (result.isConfirmed) {
       Swal.fire({
-        title: 'Dasativar conta?',
+        title: 'Desativar conta?',
         text: 'A conta pode voltar a ser ativada.',
         icon: 'warning',
         showCancelButton: true,
@@ -245,12 +289,13 @@ export default {
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
         confirmButtonText: 'Sim, desativar!',
-      }).then(async (result) => {
+      })
+      .then(async (result) => {
         if (result.isConfirmed) {
           desativarConsumer(this.id)
             .then(() => {
               Swal.fire(
-                'Desativa!',
+                'Desativado!',
                 'A conta encontra-se desativada.',
                 'success'
               ).then(() => {
@@ -276,8 +321,30 @@ export default {
             });
         }
       });
+    }
+  });
     },
-    reativar(): void {
+	reativar(): void {
+  Swal.fire({
+    title: 'Digite a password:',
+    input: 'password',
+    inputAttributes: {
+      autocapitalize: 'off'
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Confirmar',
+    showLoaderOnConfirm: false,
+    preConfirm: (password) => {
+      // Verificar se a senha está correta
+      if (password === 'Hivetown2023') {
+        return true; // Senha correta, avança para o próximo diálogo
+      } else {
+        Swal.showValidationMessage('Password incorreta');
+        return false; // Senha incorreta, mantém a caixa de diálogo aberta
+      }
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
       Swal.fire({
         title: 'Reativar conta?',
         text: 'A conta pode voltar a ser desativada.',
@@ -286,14 +353,14 @@ export default {
         cancelButtonText: 'Cancelar',
         confirmButtonColor: '#d33',
         cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, reativar!',
-      }).then(async (result) => {
+        confirmButtonText: 'Sim, reativar!'
+      }).then((result) => {
         if (result.isConfirmed) {
           ativarConsumer(this.id)
             .then(() => {
               Swal.fire(
-                'Reativa!',
-                'A conta encontra-se ativa novamente.',
+                'Reativado!',
+                'A conta foi reativada com sucesso.',
                 'success'
               ).then(() => {
                 location.reload();
@@ -304,7 +371,7 @@ export default {
               if (error.response && error.response.status === 400) {
                 Swal.fire(
                   'Erro ao reativar a conta',
-                  'Ocorreu um erro na requisição, não foi possível concluir a requisição de ativar a conta.',
+                  'Ocorreu um erro na requisição. Não foi possível concluir a solicitação de reativação da conta.',
                   'error'
                 );
               } else {
@@ -317,7 +384,10 @@ export default {
             });
         }
       });
-    },
+    }
+  });
+}
+
   },
 };
 </script>
