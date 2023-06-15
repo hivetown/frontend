@@ -248,7 +248,6 @@ function cancelarEncomenda(order: Order) {
     cancelButtonText: 'Não, voltar',
   }).then((result) => {
     if (result.isConfirmed) {
-      //TODO trocar p user logado
       if (user2.value && user2.value.user && user2.value.user.id) {
         cancelOrder(user2.value.user.id, order.id)
           .then(() => {
@@ -260,7 +259,7 @@ function cancelarEncomenda(order: Order) {
             }).then((result) => {
               if (result.isConfirmed) {
                 // Redirecionar para a página desejada
-                window.location.href = '/encomendas'; // Substitua com a URL da página desejada
+                window.location.reload();
               }
             });
           })

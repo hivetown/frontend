@@ -341,7 +341,7 @@ export default {
             }).then((result) => {
               if (result.isConfirmed) {
                 try {
-                  window.location.href = '/createOrder';
+                  window.location.reload();
                   // Lógica adicional após confirmação
                 } catch (error) {
                   console.log('erro ao redirecionar para o carrinho');

@@ -95,15 +95,13 @@
               right
               class="p-2 grey-txt text-decoration-none"
             >
-              <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item>Definições</b-dropdown-item>
               <b-dropdown-item>
                 <router-link to="/encomendas" class="linkcolor"
                   >Encomendas</router-link
                 >
               </b-dropdown-item>
-              <b-dropdown-item @click="logout" href="#"
-                >Terminar Sessão</b-dropdown-item
-              >
+              <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>

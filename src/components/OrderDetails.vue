@@ -22,8 +22,8 @@ a
           <!-- Typescript (it has productSpec but typings) -->
           <td>
             <!-- TOOD URL do producerproduct -->
-            <a
-              :href="
+            <router-link
+              :to="
                 '/products/' +
                 orderItem.producerProduct.productSpec!.id +
                 '/products/' +
@@ -35,23 +35,23 @@ a
                 :alt="orderItem.producerProduct.productSpec!.images[0].alt"
                 style="height: 50px"
               />
-              <p class="texto" v-else>Imagem <br />indisponível</p></a
+              <p class="texto" v-else>Imagem <br />indisponível</p></router-link
             >
           </td>
           <td>
-            <a
+            <router-link
               class="texto"
-              :href="'/products/' + orderItem.producerProduct.productSpec!.id"
-              >{{ orderItem.producerProduct.productSpec!.name }}</a
+              :to="'/products/' + orderItem.producerProduct.productSpec!.id"
+              >{{ orderItem.producerProduct.productSpec!.name }}</router-link
             >
           </td>
           <td>
-            <a
+            <router-link
               class="texto"
-              :href="'/producer/'+orderItem.producerProduct.producer!.user.id"
+              :to="'/producer/'+orderItem.producerProduct.producer!.user.id"
               ><p class="texto">
                 {{ orderItem.producerProduct.producer!.user.name }}
-              </p></a
+              </p></router-link
             >
           </td>
           <td>
