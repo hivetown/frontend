@@ -9,6 +9,7 @@ import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import OrderHistory from '@/views/OrderHistory.vue';
 import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
@@ -64,6 +65,14 @@ const routes = [
         path: '/products/:specid',
         name: 'ProductDetails',
         component: Product,
+    },
+    {
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
+        meta: {
+            // requiresAuth: true,
+        },
     },
     {
         path: '/conta',

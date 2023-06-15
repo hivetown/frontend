@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpec;
+    productSpec?: ProductSpec;
     producer?: Producer;
 }
 
@@ -25,7 +25,7 @@ export interface ProducerProduct {
     stock: number;
     deletedAt: Date | null;
     producer?: Producer;
-    productionUnit?: productionUnit;
+    productionUnit?: ProductionUnit;
     productSpec?: ProductSpec;
 }
 
@@ -75,7 +75,7 @@ export interface CreateProducer {
     vat: string;
 }
 
-export interface productionUnit {
+export interface ProductionUnit {
     id: number;
     name: string;
     address: Address;
@@ -111,29 +111,25 @@ export interface Address {
     latitude: number;
     longitude: number;
 }
-export interface Address2 {
-    //necessitava sem o id para adicionar um novo
-    //id: number;
-    number: number;
-    door: string;
-    floor: number;
-    zipCode: string;
-    street: string;
-    parish: string;
-    county: string;
-    city: string;
-    district: string;
-    latitude: number;
-    longitude: number;
-}
+
+export type CreateAddress = Omit<Address, 'id'>;
+
 export interface ShippingAdress {
     shippingAddressId: number;
 }
 export interface Order {
     id: number;
-    items: Product[];
     shippingAddress: Address;
-    consumer?: User;
+    orderDate: string;
+    generalStatus: string;
+    totalPrice: number;
+}
+
+export interface OrderItem {
+    price: number;
+    producerProduct: ProducerProduct;
+    quantity: number;
+    status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface Image {
@@ -168,4 +164,10 @@ export interface ProductSpecFieldWithCategory {
     products: {
         fieldValues: ProductSpecField[];
     }[];
+}
+
+export interface CartItem {
+    producerProduct: ProducerProduct;
+    consumer?: Consumer;
+    quantity: number;
 }
