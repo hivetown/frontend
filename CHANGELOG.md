@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/hivetown/frontend/compare/v1.0.2...v1.1.0) (2023-06-15)
+
+
+### Features
+
+* use router-links in favor of hrefs ([10b28f9](https://github.com/hivetown/frontend/commit/10b28f984d23e7a2c05a3c4fee950837e7b9094b))
+
 ## [1.0.2](https://github.com/hivetown/frontend/compare/v1.0.1...v1.0.2) (2023-06-15)
 
 

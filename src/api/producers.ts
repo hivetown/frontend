@@ -1,4 +1,4 @@
-import { BaseItems, CreateProducer, Producer, productionUnit } from '@/types';
+import { BaseItems, CreateProducer, Producer, ProductionUnit } from '@/types';
 import { api } from './_base';
 
 export const createProducer = async (producer: CreateProducer) =>

@@ -95,7 +95,7 @@
   </div>
 </template>
 <script lang="ts">
-import { BaseItems, Producer, productionUnit } from '@/types';
+import { BaseItems, Producer, ProductionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
 //import Pagination from '@/components/Pagination.vue';
 
@@ -104,7 +104,7 @@ export default {
     return {
       mapImage: 1,
       dadosProdutor: {} as Producer,
-      unidadesProd: {} as BaseItems<productionUnit>,
+      unidadesProd: {} as BaseItems<ProductionUnit>,
       indiceUpSelecionada: 0 as number,
 
       ultimaUp: [] as HTMLElement[],
