@@ -138,3 +138,10 @@ export interface FieldPossibleValue {
     id: number;
     value: string;
 }
+
+export interface ProductSpecFieldWithCategory {
+    category: Category;
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
+}

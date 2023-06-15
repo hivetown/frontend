@@ -20,6 +20,7 @@
       <div id="info" class="mb-4">
         <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
         <!-- <p>
+
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
           veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
           reiciendis placeat corrupti odio consequatur alias nisi deserunt
@@ -97,6 +98,7 @@
 import { BaseItems, Producer, productionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
 //import Pagination from '@/components/Pagination.vue';
+
 export default {
   data() {
     return {
@@ -131,6 +133,7 @@ export default {
       }
     },
   },
+
   async beforeMount() {
     // Dados do produtor
     const producerId = Number(this.$route.params.id);
@@ -162,7 +165,6 @@ export default {
   font-family: 'DM Serif Display', serif;
   font-size: 3.5vh;
 }
-
 .producer-image {
   width: 20vh;
   height: 20vh;
