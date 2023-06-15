@@ -50,6 +50,7 @@
           >
             <i class="bi bi-cart"></i>
           </button>
+
           <router-link :to="'/products/' + productSpec.id">
             <button
               type="button"
@@ -117,12 +118,14 @@
 }
 
 .prod-category {
-  background-color: #9dc88d; /* A cor irá variar de acordo com a categoria */
+  background-color: #9dc88d;
+  /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
 </style>
 
 <script setup lang="ts">
+
 import { fetchProductCategories } from '@/api';
 import { Category, ProductSpec } from '@/types';
 import { PropType } from 'vue';

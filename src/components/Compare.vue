@@ -53,7 +53,7 @@ export default defineComponent({
     return {
       // Dados da BD
       productsCategories: [] as Category[][],
-      productsFields: {} as Record<number, ProductSpecFieldWithCategory>,
+      productsFields: [] as Record<number, ProductSpecFieldWithCategory>,
       loadingProductsFields: false,
     };
   },

@@ -59,7 +59,6 @@
         >
           <i style="color: #eeeeee" class="bi bi-arrow-left-right"></i> Comparar
         </button>
-        <!-- TODO button? -->
         <!-- <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a> -->
         <button id="limpar" @click="removeAll">Limpar tudo</button>
       </div>
@@ -108,7 +107,6 @@
 .modal-content {
   height: 80vh;
 }
-
 .square-image {
   border-radius: 0.5em !important;
 }
@@ -155,6 +153,14 @@ export default {
     },
     openModal() {
       this.showModal = true;
+    },
+  },
+  watch: {
+    products: {
+      immediate: true,
+      handler() {
+        console.log('products changed');
+      },
     },
   },
 };
