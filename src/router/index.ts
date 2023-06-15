@@ -10,6 +10,7 @@ import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import ProductionUnits from '@/views/ProductionUnits.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 
 const routes = [
@@ -24,8 +25,8 @@ const routes = [
         component: About,
     },
     {
-        path: '/produtos',
-        name: 'Produtos',
+        path: '/products',
+        name: 'Products',
         component: CategoriasProdutos,
     },
     {
@@ -43,8 +44,8 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: '/produto',
-        name: 'Produto',
+        path: '/products/:specid',
+        name: 'ProductDetails',
         component: Product,
     },
     {
@@ -69,6 +70,11 @@ const routes = [
         path: '/unidadesproducao',
         name: 'Unidades de Produção',
         component: ProductionUnits,
+    },
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
     },
 ];
 
