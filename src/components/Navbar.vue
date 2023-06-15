@@ -96,7 +96,11 @@
               class="p-2 grey-txt text-decoration-none"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item href="/encomendas">Encomendas</b-dropdown-item>
+              <b-dropdown-item>
+                <router-link to="/encomendas" class="linkcolor"
+                  >Encomendas</router-link
+                >
+              </b-dropdown-item>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
@@ -193,6 +197,15 @@ export default {
 };
 </script>
 <style>
+.linkcolor {
+  color: var(--bs-dropdown-link-color);
+}
+
+.linkcolor:hover {
+  color: var(--bs-dropdown-link-color);
+  background: none;
+}
+
 #logo img {
   width: 2.6em;
   margin-top: -0.5em;

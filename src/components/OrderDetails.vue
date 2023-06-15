@@ -1,7 +1,7 @@
 a
 <template>
   <div class="table-container" style="overflow: auto">
-    <table class="table table-striped">
+    <table class="table table-striped" v-if="orderItems">
       <thead>
         <tr>
           <th id="col" scope="col">Artigo</th>
@@ -15,117 +15,105 @@ a
         </tr>
       </thead>
       <tbody>
-        <tr v-for="num in orderItem['totalItems']" :key="num">
+        <tr
+          v-for="orderItem in orderItems.items"
+          :key="orderItem.producerProduct.id"
+        >
+          <!-- Typescript (it has productSpec but typings) -->
           <td>
+            <!-- TOOD URL do producerproduct -->
             <a
               :href="
                 '/products/' +
-                orderItem?.items[num - 1]?.producerProduct?.productSpec?.id
+                orderItem.producerProduct.productSpec!.id +
+                '/products/' +
+                orderItem.producerProduct.id
               "
               ><img
-                v-if="
-                  orderItem['items'][num - 1]['producerProduct']['productSpec'][
-                    'images'
-                  ].length !== 0
-                "
-                :src="
-                  orderItem?.items[num - 1]?.producerProduct?.productSpec
-                    ?.images[0]?.url
-                "
-                :alt="
-                  orderItem?.items[num - 1]?.producerProduct?.productSpec
-                    ?.images[0]?.alt
-                "
+                v-if="orderItem.producerProduct.productSpec!.images"
+                :src="orderItem.producerProduct.productSpec!.images[0].url"
+                :alt="orderItem.producerProduct.productSpec!.images[0].alt"
                 style="height: 50px"
               />
-              <p id="texto1" v-else>Imagem <br />indisponível</p></a
+              <p class="texto" v-else>Imagem <br />indisponível</p></a
             >
           </td>
-          <!--TODO por marcas e produto como links-->
-          <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
           <td>
             <a
-              id="texto2"
-              :href="
-                '/products/' +
-                orderItem?.items[num - 1]?.producerProduct?.productSpec?.id
-              "
-              >{{
-                orderItem['items'][num - 1]['producerProduct']['productSpec'][
-                  'name'
-                ]
-              }}</a
+              class="texto"
+              :href="'/products/' + orderItem.producerProduct.productSpec!.id"
+              >{{ orderItem.producerProduct.productSpec!.name }}</a
             >
           </td>
           <td>
-            <a id="texto3" :href="'/producer/'"
-              ><p id="texto4">
-                {{
-                  orderItem['items'][num - 1]['producerProduct']['producer'][
-                    'name'
-                  ]
-                }}
+            <a
+              class="texto"
+              :href="'/producer/'+orderItem.producerProduct.producer!.user.id"
+              ><p class="texto">
+                {{ orderItem.producerProduct.producer!.user.name }}
               </p></a
             >
           </td>
           <td>
-            <p id="texto5">{{ orderItem['items'][num - 1]['price'] }} €</p>
+            <p class="texto">{{ orderItem['price'] }} €</p>
           </td>
           <td>
-            <p id="texto6">{{ orderItem['items'][num - 1]['quantity'] }}</p>
+            <p class="texto">{{ orderItem['quantity'] }}</p>
           </td>
           <td>
-            <p id="texto7">Última verificação: {{ eventos[num - 1]['date'].substring(0,10) }} {{ eventos[num - 1]['date'].substring(11,19) }} </p>
-            <p id="texto8">
-              Encontra-se em: {{ eventos[num - 1]['address']['street'] }},
-              {{ eventos[num - 1]['address']['parish'] }},
-              {{ eventos[num - 1]['address']['city'] }}
+            <p class="texto">
+              Última verificação:
+              {{ eventos[orderItem.producerProduct.id].date.substring(0, 10) }}
+              {{ eventos[orderItem.producerProduct.id].date.substring(11, 19) }}
+            </p>
+            <p class="texto">
+              Encontra-se em:
+              {{ eventos[orderItem.producerProduct.id].address.street }},
+              {{ eventos[orderItem.producerProduct.id].address.parish }},
+              {{ eventos[orderItem.producerProduct.id].address.city }}
             </p>
           </td>
           <td>
             <div
-              v-if="orderItem['items'][num - 1]['status'] === 'Delivered'"
+              v-if="orderItem['status'] === 'Delivered'"
               style="display: inline-flex"
             >
               <i class="bi bi-check-all"></i>
-              <p id="texto9">Entregue</p>
+              <p class="texto">Entregue</p>
             </div>
             <div
-              v-if="orderItem['items'][num - 1]['status'] === 'Processing'"
+              v-if="orderItem['status'] === 'Processing'"
               style="display: inline-flex"
             >
               <i class="bi bi-arrow-repeat"></i>
-              <p id="texto10">Em processamento</p>
+              <p class="texto">Em processamento</p>
             </div>
             <div
-              v-if="orderItem['items'][num - 1]['status'] === 'Paid'"
+              v-if="orderItem['status'] === 'Paid'"
               style="display: inline-flex"
             >
               <i class="bi bi-cash-coin"></i>
-              <p id="texto">Pago</p>
+              <p class="texto">Pago</p>
             </div>
             <div
-              v-if="orderItem['items'][num - 1]['status'] === 'Canceled'"
+              v-if="orderItem['status'] === 'Canceled'"
               style="display: inline-flex"
             >
               <i class="bi bi-x-lg"></i>
-              <p id="texto11">Cancelado</p>
+              <p class="texto">Cancelado</p>
             </div>
             <div
-              v-if="orderItem['items'][num - 1]['status'] === 'Shipped'"
+              v-if="orderItem['status'] === 'Shipped'"
               style="display: inline-flex"
             >
               <i class="bi bi-truck"></i>
-              <p id="texto12">Em andamento</p>
+              <p class="texto">Em andamento</p>
             </div>
           </td>
 
           <td>
-            <p id="texto13">
-              {{
-                orderItem['items'][num - 1]['quantity'] *
-                orderItem['items'][num - 1]['price']
-              }}
+            <p class="texto">
+              {{ orderItem['quantity'] * orderItem['price'] }}
               €
             </p>
           </td>
@@ -134,66 +122,53 @@ a
     </table>
   </div>
   <br />
-  <h5 class="resumo" id="data"></h5>
-  <h3 class="resumo" id="totalSum"></h3>
+  <h5 class="resumo" id="data">Encomenda efetuada em: {{ date }}</h5>
+  <h3 class="resumo">Total: {{ totalSum }}€</h3>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllItems } from '../api/orders';
-import { fetchAllOrders, getShipment } from '../api/orders';
+import { fetchOrder, getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
-const orderItem =  ref<any>('');
-var totalSum = 0;
-var date = '';
-const orders =  ref<any>('');
-const lista: number[] = [];
-const eventos = ref<any[]>([]);
+import { BaseItems, Order, OrderItem, ShipmentEvent } from '@/types';
+const orderItems = ref<BaseItems<OrderItem>>();
+const totalSum = ref(0);
+const date = ref('');
+const order = ref<Order>();
+const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
 //obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
+
 onMounted(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
-  const responseItem = await fetchAllItems(user2.value.user.id, idO);
-  orderItem.value = responseItem.data;
+    const responseItem = await fetchAllItems(user2.value.user.id, idO);
+    orderItems.value = responseItem.data;
 
-  //TODO por user logado
-  const response = await fetchAllOrders(user2.value.user.id);
-  orders.value = response.data;
-  
-  for (let i = 0; i < orderItem.value.items.length; i++) {
-    totalSum +=
-      orderItem.value.items[i]['price'] * orderItem.value.items[i]['quantity'];
-    lista.push(orderItem.value.items[i]['producerProduct']['id']);
-  }
-  for (let x = 0; x < lista.length; x++) {
-    const responseShipment = await getShipment(user2.value.user.id, parseInt(idO), (lista[x]));
-	console.log(responseShipment)
-    eventos.value.push(
-      responseShipment.data['events'][
-        responseShipment.data['events'].length - 1
-      ] 
-    );
+    const response = await fetchOrder(user2.value.user.id, idO);
+    order.value = response.data;
 
-  }
-}
-  const totalSumElement = document.getElementById('totalSum');
-  if (totalSumElement instanceof HTMLElement) {
-    totalSumElement.innerHTML = `Total: ${totalSum}€`;
-  }
-  for (let i = 0; i < orders.value.items.length; i++) {
-    if (orders.value.items[i].id == idO) {
-      date = orders.value.items[i].orderDate.substring(0, 10);
-	  const element = document.getElementById('data');
-if (element !== null) {
-  element.textContent =   'Encomenda efetuada em: ' + date;
-}
-      
+    for (const orderItem of orderItems.value.items) {
+      totalSum.value += orderItem['price'] * orderItem['quantity'];
+
+      const responseShipment = (
+        await getShipment(
+          user2.value.user.id,
+          parseInt(idO),
+          orderItem.producerProduct.id
+        )
+      ).data;
+
+      eventos.value[orderItem.producerProduct.id] =
+        responseShipment.events[responseShipment.events.length - 1];
     }
   }
+
+  date.value = order.value!.orderDate.substring(0, 10);
 });
 </script>
 <style scoped>
@@ -222,7 +197,7 @@ if (element !== null) {
     transform: rotate(360deg);
   }
 }
-#texto1, #texto2, #texto3, #texto4, #texto5, #texto6, #texto7,#texto8,#texto9,#texto10,#texto11,#texto12,#texto13{
+.texto {
   font-size: 13px;
 }
 

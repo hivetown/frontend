@@ -43,8 +43,8 @@
           </td>
 
           <td>
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
             >
               <img
@@ -54,74 +54,28 @@
                 v-if="!!ordersImage[order.id]"
               />
               <p class="texto" v-else>Produtos sem <br />imagem</p>
-            </a>
+            </router-link>
           </td>
 
           <td>
-            <a
+            <router-link
+              :to="'/encomenda/id' + order.id"
               class="texto"
-              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              >{{ order.id }}</a
+              >{{ order.id }}</router-link
             >
           </td>
 
           <td>
-            <div
-              v-if="order.generalStatus === 'Delivered'"
-              style="display: inline-flex"
-            >
+            <div style="display: inline-flex">
               <i class="bi bi-check-all"></i>
-              <a
-                :href="'/encomenda/id' + order.id"
+              <router-link
+                :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
-                <p class="texto">Entregue</p></a
-              >
-            </div>
-            <div
-              v-if="order.generalStatus === 'Processing'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-box-seam"></i>
-              <a
-                :href="'/encomenda/id' + order.id"
-                style="text-decoration: none; color: black"
-              >
-                <p class="texto">Em processamento</p></a
-              >
-            </div>
-            <div
-              v-if="order.generalStatus === 'Paid'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-cash-coin"></i>
-              <a
-                :href="'/encomenda/id' + order.id"
-                style="text-decoration: none; color: black"
-                ><p class="texto">Pago</p>
-              </a>
-            </div>
-            <div
-              v-if="order.generalStatus === 'Canceled'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-x-lg"></i>
-              <a
-                :href="'/encomenda/id' + order.id"
-                style="text-decoration: none; color: black"
-                ><p class="texto">Cancelada</p></a
-              >
-            </div>
-            <div
-              v-if="order.generalStatus === 'Shipped'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-truck"></i>
-              <a
-                :href="'/encomenda/id' + order.id"
-                style="text-decoration: none; color: black"
-                ><p class="texto">Em andamento</p></a
+                <p class="texto">
+                  {{ orderStatusTranslation(order.generalStatus) }}
+                </p></router-link
               >
             </div>
 
@@ -149,49 +103,49 @@
             </div>
           </td>
           <td>
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
                 {{ order.shippingAddress.street }}, nº{{
                   order.shippingAddress.number
                 }}, andar {{ order.shippingAddress.floor }}
-              </p></a
+              </p></router-link
             >
 
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
                 {{ order.shippingAddress.zipCode }},
                 {{ order.shippingAddress.city }}
-              </p></a
+              </p></router-link
             >
 
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
                 {{ order.shippingAddress.latitude }},
                 {{ order.shippingAddress.longitude }}
-              </p></a
+              </p></router-link
             >
           </td>
 
           <td>
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               class="texto"
-              >{{ order.orderDate.substring(0, 10) }}</a
+              >{{ order.orderDate.substring(0, 10) }}</router-link
             >
           </td>
           <td>
-            <a
-              :href="'/encomenda/id' + order.id"
+            <router-link
+              :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               class="texto"
-              >{{ order.totalPrice }}€</a
+              >{{ order.totalPrice }}€</router-link
             >
           </td>
 
@@ -227,6 +181,22 @@ import { useStore } from '@/store';
 const store = useStore();
 const user2 = computed(() => store.state.user);
 
+const orderStatusTranslation = (status: string) => {
+  switch (status) {
+    case 'Delivered':
+      return 'Entregue';
+    case 'Paid':
+      return 'Pago';
+    case 'Processing':
+      return 'Em processamento';
+    case 'Shipped':
+      return 'Em andamento';
+    case 'Canceled':
+      return 'Cancelada';
+    default:
+      return 'Desconhecido';
+  }
+};
 const orders = ref<BaseItems<Order>>();
 /**
  * {
