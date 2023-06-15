@@ -113,8 +113,8 @@
   <CompareBanner
     v-if="isCompareBannerVisible"
     :products="productsToCompare"
-    @removeItem="removeProductFromCompare"
-    @removeAllItems="removeAllProductsFromCompare"
+    @remove-item="removeProductFromCompare"
+    @remove-all-items="removeAllProductsFromCompare"
   ></CompareBanner>
 </template>
 

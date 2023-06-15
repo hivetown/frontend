@@ -125,6 +125,11 @@ import Compare from '@/components/Compare.vue';
 import { ProductSpec } from '@/types';
 
 export default {
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    removeItem: (productSpec: ProductSpec) => true,
+    removeAllItems: () => true,
+  },
   data() {
     return {
       showModal: false,

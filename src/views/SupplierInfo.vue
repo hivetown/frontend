@@ -95,7 +95,6 @@
   </div>
 </template>
 <script lang="ts">
-
 import { BaseItems, Producer, productionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
 //import Pagination from '@/components/Pagination.vue';

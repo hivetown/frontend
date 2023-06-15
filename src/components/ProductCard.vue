@@ -125,7 +125,6 @@
 </style>
 
 <script setup lang="ts">
-
 import { fetchProductCategories } from '@/api';
 import { Category, ProductSpec } from '@/types';
 import { PropType } from 'vue';
