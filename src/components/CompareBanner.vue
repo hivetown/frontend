@@ -33,7 +33,11 @@
               style="position: absolute; color: red"
               @click="removeItem(product)"
             ></i> -->
-            <i class="bi bi-x-lg" style="position: absolute; color: red"></i>
+            <i
+              class="bi bi-x-lg"
+              style="position: absolute; color: red"
+              @click="removeItem(product)"
+            ></i>
             <img
               class="square-image"
               :src="product.images[0].url"
@@ -57,7 +61,7 @@
         </button>
         <!-- TODO button? -->
         <!-- <a href="#" id="limpar" @click="removeAllItems">Limpar tudo</a> -->
-        <a href="#" id="limpar">Limpar tudo</a>
+        <button id="limpar" @click="removeAll">Limpar tudo</button>
       </div>
     </div>
   </div>
@@ -108,6 +112,13 @@
 .square-image {
   border-radius: 0.5em !important;
 }
+
+#limpar {
+  border: none;
+  text-decoration: underline;
+  color: blue;
+  background-color: none;
+}
 </style>
 
 <script lang="ts">
@@ -136,18 +147,12 @@ export default {
     Compare,
   },
   methods: {
-    // TODO - adicionar um método de remover produtos
-    // removeItem(produto: ProductSpec) {
-    //   const index = this.products.indexOf(produto);
-    //   if (index > -1) {
-    //     // TODO replace with emit
-    //     this.products.splice(index, 1);
-    //   }
-    // },
-    // removeAllItems() {
-    //   // TODO replace with emit
-    //   this.products.splice(0, this.products.length);
-    // },
+    removeItem(produto: ProductSpec) {
+      this.$emit('removeItem', produto);
+    },
+    removeAll() {
+      this.$emit('removeAllItems');
+    },
     openModal() {
       this.showModal = true;
     },

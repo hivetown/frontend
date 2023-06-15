@@ -67,11 +67,12 @@
 <script lang="ts">
 import { Category } from '@/types';
 import { fetchCategorySubCategories } from '@/api';
+import { PropType, defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   props: {
     categories: {
-      type: Array as () => Category[],
+      type: Object as PropType<Category[]>,
       required: true,
     },
     depth: {
@@ -103,5 +104,5 @@ export default {
       category.showSubCategories = nextState;
     },
   },
-};
+});
 </script>

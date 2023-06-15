@@ -113,6 +113,8 @@
   <CompareBanner
     v-if="isCompareBannerVisible"
     :products="productsToCompare"
+    @removeItem="removeProductFromCompare"
+    @removeAllItems="removeAllProductsFromCompare"
   ></CompareBanner>
 </template>
 
@@ -156,6 +158,17 @@ export default defineComponent({
     addProductToCompare(productSpec: ProductSpec) {
       if (!this.productsToCompare.find((spec) => spec.id === productSpec.id))
         this.productsToCompare.push(productSpec);
+    },
+    removeProductFromCompare(productSpec: ProductSpec) {
+      const index = this.productsToCompare.findIndex(
+        (spec) => spec.id === productSpec.id
+      );
+      this.productsToCompare.splice(index, 1);
+      console.log(index);
+    },
+    removeAllProductsFromCompare() {
+      console.log('da');
+      this.productsToCompare = [];
     },
   },
   computed: {
