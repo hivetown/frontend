@@ -7,7 +7,6 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import OrderHistory from '../components/OrderHistory.vue';
 
