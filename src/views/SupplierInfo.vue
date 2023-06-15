@@ -149,12 +149,9 @@ export default {
     const producerId = Number(this.$route.params.id);
     const dadosProdutor = await fetchProducer(producerId);
     this.dadosProdutor = dadosProdutor.data;
-    console.log('dadosProdutor', this.dadosProdutor);
-
     // Unidades de produção do produtor
     const unidadesProd = await fetchProducerProductionUnits(producerId);
     this.unidadesProd = unidadesProd.data;
-    console.log(this.unidadesProd);
 
     this.$nextTick(() => {
       const ultimaUpRef = this.$refs[1] as HTMLElement | HTMLElement[];
@@ -183,7 +180,6 @@ export default {
 
     // Store the map data in the component's data
     this.mapData = maps;
-    console.log('mapData', this.mapData);
   },
   components: { Maps },
 };

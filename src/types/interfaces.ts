@@ -162,8 +162,7 @@ export interface Location {
         street: string;
         zipCode: string;
     }[];
-    totalItems: number;
-    totalPages: number;
-    page: number;
-    pageSize: number;
+    baseItems: BaseItems<{
+        address: Address;
+    }>;
 }
