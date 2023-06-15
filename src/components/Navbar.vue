@@ -33,7 +33,7 @@
               </b-avatar>
               <!--numero de notificacoes-->
               <b-badge
-                v-if="orderItem.totalItems != 0"
+                v-if="notificacoes.totalItems != 0"
                 @click="showModalFunction"
                 variant="danger"
                 class="rounded-circle position-absolute"
@@ -44,7 +44,7 @@
                   height: 20px;
                   border-radius: 50%;
                 "
-                >{{ orderItem['totalItems'] }}</b-badge
+                >{{ notificacoes['totalItems'] }}</b-badge
               >
               <Modal v-if="showModal" />
               <p
@@ -213,9 +213,9 @@
 import { ref } from 'vue';
 import { useStore } from '@/store';
 import { computed } from 'vue';
-import Modal from '../components/Modal.vue';
+import Modal from '../components/ModalNotifications.vue';
 import { getUnreadNotifications } from '../api/notifications';
-const orderItem = ref<any>('');;
+const notificacoes = ref<any>('');
 export default {
   components: {
     Modal,
@@ -238,7 +238,7 @@ export default {
   data() {
     return {
       showModal: false,
-      orderItem,
+      notificacoes,
     };
   },
   mounted() {
@@ -246,14 +246,14 @@ export default {
     const fetchNotifications = async () => {
       try {
         const responseItem = await getUnreadNotifications();
-        this.orderItem = responseItem.data;
+        this.notificacoes = responseItem.data;
       } catch (error) {
         console.error(error);
       }
     };
 
-    // Atualiza as notificações a cada 5 segundos
-    setInterval(fetchNotifications, 1000);
+    // Atualiza as notificações a cada 45 segundos
+    setInterval(fetchNotifications, 45000);
   },
 };
 </script>

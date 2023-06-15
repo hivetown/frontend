@@ -1,27 +1,27 @@
 <template>
   <b-list-group>
     <b-list-group-item
-      v-for="num in orderItem['totalItems']"
+      v-for="num in notificacoes['totalItems']"
       :key="num"
-      :active="orderItem?.items?.[num - 1]?.readAt == null"
+      :active="notificacoes?.items?.[num - 1]?.readAt == null"
       class="flex-column align-items-start"
     >
       <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">{{ orderItem['items'][num - 1]['title'] }}</h5>
-		<small>{{ orderItem['items'][num - 1]['createdAt'].substring(0,10) }} {{ orderItem['items'][num - 1]['createdAt'].substring(11,19) }}</small>
+        <h5 class="mb-1">{{ notificacoes['items'][num - 1]['title'] }}</h5>
+		<small>{{ notificacoes['items'][num - 1]['createdAt'].substring(0,10) }} {{ notificacoes['items'][num - 1]['createdAt'].substring(11,19) }}</small>
 
       </div>
-      <p class="mb-1">{{ orderItem['items'][num - 1]['message'] }}</p>
+      <p class="mb-1">{{ notificacoes['items'][num - 1]['message'] }}</p>
       <small
-        v-if="orderItem['items'][num - 1]['readAt'] == null"
-        @click="marcarComoLida(orderItem['items'][num - 1]['id'])"
+        v-if="notificacoes['items'][num - 1]['readAt'] == null"
+        @click="marcarComoLida(notificacoes['items'][num - 1]['id'])"
       >
         <u>Marcar como lida</u>
       </small>
 
       <small
         v-else
-        @click="marcarComoNaoLida(orderItem['items'][num - 1]['id'])"
+        @click="marcarComoNaoLida(notificacoes['items'][num - 1]['id'])"
       >
         <u>Marcar como não lida</u></small
       >
@@ -44,9 +44,9 @@ import {
   getAllNotifications,
 } from '../api/notifications';
 import { useRoute } from 'vue-router';
-const orderItem = ref<any>('');
+const notificacoes = ref<any>('');
 const quantidade = ref<any>('');
-let intervalId: any = 5000; // Variável para armazenar o ID do intervalo
+let intervalId: any = 2000; // Variável para armazenar o ID do intervalo
 const pageSize = ref(5);
 const totalItems = ref(0);
 const page = ref(1);
@@ -55,7 +55,7 @@ export default {
   components: { Pagination },
   data() {
     return {
-      orderItem,
+	  notificacoes,
       page,
       pageSize,
       totalItems,
@@ -81,7 +81,7 @@ export default {
     },
     async myFunction() {
       const response = await getAllNotifications(this.page, this.pageSize);
-      this.orderItem = response.data;
+      this.notificacoes = response.data;
     },
     handlePageChange(value: number) {
       this.page = value;
@@ -92,7 +92,7 @@ export default {
           page.value,
           pageSize.value
         );
-        orderItem.value = responseItem.data;
+        notificacoes.value = responseItem.data;
         quantidade.value = responseItem.data.totalItems;
       } catch (error) {
         console.error(error);
@@ -119,7 +119,7 @@ export default {
     startAutoReload() {
       intervalId = setInterval(() => {
         this.loadNotifications();
-      }, 5000);
+      }, 45000);
     },
     stopAutoReload() {
       clearInterval(intervalId);

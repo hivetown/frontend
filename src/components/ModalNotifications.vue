@@ -3,20 +3,20 @@
     <div id="popup" class="sticky-bar" v-if="showPopup">
       <h5>Notificações</h5>
       <div class="content">
-        <p v-if="orderItem.totalItems == 0">Não existem notificações novas.</p>
+        <p v-if="notificacoes.totalItems == 0">Não existem notificações novas.</p>
         <b-list-group v-else>
           <b-list-group-item
-            v-for="num in orderItem['totalItems']"
+            v-for="num in notificacoes['totalItems']"
             :key="num"
             href="/notifications?page=1"
             :active="true"
             class="flex-column align-items-start"
           >
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1">{{ orderItem['items'][num - 1]['title'] }}</h5>
-              <small>{{ orderItem['items'][num - 1]['createdAt'].substring(0,10) }} {{ orderItem['items'][num - 1]['createdAt'].substring(11,19) }}</small>
+              <h5 class="mb-1">{{ notificacoes['items'][num - 1]['title'] }}</h5>
+              <small>{{ notificacoes['items'][num - 1]['createdAt'].substring(0,10) }} {{ notificacoes['items'][num - 1]['createdAt'].substring(11,19) }}</small>
             </div>
-            <p class="mb-1">{{ orderItem['items'][num - 1]['message'] }}</p>
+            <p class="mb-1">{{ notificacoes['items'][num - 1]['message'] }}</p>
             <hr />
           </b-list-group-item>
           <hr />
@@ -33,26 +33,23 @@ import {
   getUnreadNotifications,
   
 } from '../api/notifications';
-const orderItem = ref<any>('');
+const notificacoes = ref<any>('');
 export default {
   data() {
     return {
-      orderItem,
+		notificacoes,
       showPopup: true,
     };
   },
   mounted() {
     getUnreadNotifications()
       .then((responseItem) => {
-        orderItem.value = responseItem.data;
+        notificacoes.value = responseItem.data;
       })
       .catch((error) => {
         console.error(error);
-        // Lide com o erro aqui
       });
-    // if (this.notifications.length > 0) {
-    //  this.notifications[0].unread = false;
-    //}
+
   },
   methods: {
     openPopup() {
