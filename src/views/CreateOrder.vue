@@ -111,84 +111,65 @@ import {
   getCart,
 } from '../api/cart';
 import { useStore } from '@/store';
-var idU = 0;
+import AddAddress from '../components/AddAddress.vue';
+const selectedItems = ref([]); // Variável de dados para armazenar os checkboxes selecionados
+const isButtonDisabled = ref(true); // Variável de dados para controlar o estado do botão
 const store = useStore();
 const user2 = computed(() => store.state.user);
 if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
 }
 const address2 =  ref<any>('');
 const collapsed = ref(true);
 const cart = ref<any>('');
 
 onMounted(async () => {
-  const addresses = await getAddresses(idU);
+if (user2.value && user2.value.user && user2.value.user.id) {
+
+  const addresses = await getAddresses(user2.value.user.id);
   address2.value = addresses.data;
-  const gCart = await getCart(idU);
+  const gCart = await getCart(user2.value.user.id);
   cart.value = gCart.data;
+}
   //item.value.push()
 });
-</script>
+function checkButtonDisabled() {
+  // Verifica se algum checkbox está selecionado e atualiza o estado do botão
+  isButtonDisabled.value = selectedItems.value.length === 0;
+}
 
-<script lang="ts">
-import AddAddress from '../components/AddAddress.vue';
-import { fetchAuth } from '../api/auth';
-
-var idU2 = 0;
-
-onMounted(async () => {
-  idU2 = (await fetchAuth()).data.user.id;
-});
-export default {
-  components: { AddAddress },
-  data() {
-    return {
-      selectedItems: [], // Variável de dados para armazenar os checkboxes selecionados
-      isButtonDisabled: true, // Variável de dados para controlar o estado do botão
-    };
-  },
-
-  methods: {
-    checkButtonDisabled() {
-      // Verifica se algum checkbox está selecionado e atualiza o estado do botão
-      this.isButtonDisabled = this.selectedItems.length === 0;
-    },
-    async submitOrder() {
-      idU2 = (await fetchAuth()).data.user.id;
-
-      if (this.isButtonDisabled) {
-        // Emitir um alerta
-        alert('O botão está desabilitado!');
-      }
-      var id = this.selectedItems;
-      try {
-		if (typeof id === 'number') {
-
-        const response = await postOrderPayment(idU2, {
+async function submitOrder() {
+  if (isButtonDisabled.value) {
+    // Emitir um alerta
+    alert('O botão está desabilitado!');
+  }
+  const id = selectedItems.value;
+  try {
+    if (typeof id === 'number') {
+      if (user2.value && user2.value.user && user2.value.user.id) {
+        const response = await postOrderPayment(user2.value.user.id, {
           shippingAddressId: id,
         });
+
         console.log(response);
         window.location.href = response.data['checkout_url'];
         console.log('Pedido enviado com sucesso!');
-	}
-      } catch (error) {
-        if (error){//} error.response.status === 400) {
-          Swal.fire({
-            title: 'Oops... Falta de stock!',
-            text: 'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
-            icon: 'error',
-            confirmButtonColor: '#797dc3',
-            confirmButtonText: 'Ok',
-          });
-        }
-
-       
-	
       }
-    },
-  },
-};
+    }
+  } catch (error) {
+    if (error) {
+      Swal.fire({
+        title: 'Oops... Falta de stock!',
+        text:
+          'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
+        icon: 'error',
+        confirmButtonColor: '#797dc3',
+        confirmButtonText: 'Ok',
+      });
+    }
+  }
+}
 </script>
+
 <style scoped>
 #adc {
   font-size: 20px;

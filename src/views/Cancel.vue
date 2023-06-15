@@ -9,18 +9,15 @@ import { onMounted, ref } from 'vue';
 import Swal from 'sweetalert2';
 import { cancelPayment } from '../api/consumers';
 import { useStore } from '@/store';
-var idU = 0;
 const store = useStore();
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
-}
+
 onMounted(async () => {
   let currentUrl = window.location.href;
   const pathSegments = currentUrl.split('/');
   const sessionId = pathSegments[5];
-  //TODO trocar para user logado
-  cancelPayment(idU, sessionId);
+  if (user2.value && user2.value.user && user2.value.user.id) {
+  cancelPayment(user2.value.user.id, sessionId);
   Swal.fire({
     icon: 'error',
     title: 'Pagamento cancelado',
@@ -44,6 +41,7 @@ onMounted(async () => {
       // Redirecionar para a página desejada
       window.location.href = '/'; // Substitua com a URL da página desejada
     });
+}
 });
 </script>
 <style scoped>

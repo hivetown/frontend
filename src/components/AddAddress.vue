@@ -176,8 +176,8 @@ import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { Address2 } from '../types/interfaces';
 import { useStore } from '@/store';
-var idU = 0;
-
+var user2;
+var store;
 export default {
   props: {
     endereco: {
@@ -186,17 +186,16 @@ export default {
     },
   },
   setup() {
-    const store = useStore();
-    const user2 = computed(() => store.state.user);
-    const idU = computed(() => user2.value?.user?.id || 0);
-
+	 store = useStore();
+	 user2 = computed(() => store.state.user);
     return {
-      idU,
+      user2,
+	  store
     };
   },
   data() {
     return {
-      idU: idU, // Valor inicial de idU
+
       address2: {} as Address2,
       isChecked: false, // Inicialmente o checkbox não estará selecionado
       name: '', // Propriedade para validar o campo "Nome"
@@ -347,8 +346,8 @@ export default {
 
       //adiciona o novo endereco
       //TODO trocar para user logado
-
-      postNewAdress(this.idU, this.address2)
+	  if (user2.value && user2.value.user && user2.value.user.id) {
+      postNewAdress(user2.value.user.id, this.address2)
         .then((response) => {
           Swal.fire({
             title: 'Endereço salvo!',
@@ -385,6 +384,7 @@ export default {
             throw new Error('Erro de requisição: dados inválidos');}
           }
         });
+	}
     },
     showError(message: string) {
       const errorContainer = document.getElementById('error-container');
