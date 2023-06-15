@@ -10,6 +10,7 @@ import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
+import Notifications from '@/views/Notifications.vue';
 import { store } from '@/store';
 
 const routes = [
@@ -41,6 +42,12 @@ const routes = [
         name: 'Cart',
         component: Cart,
     },
+	{
+        path: '/getAllNotifications',
+        name: 'Notifications',
+        component: Notifications,
+		
+	},
     // O link para o produto deveria ter o seu nome ou id
     {
         path: '/products/:specid',

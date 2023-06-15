@@ -11,6 +11,53 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ms-auto mt-4 mb-3">
           <div class="d-flex nav-items-left">
+            <div
+              @click="showModalFunction"
+              v-if="$store.state.user"
+              class="d-flex"
+            >
+			
+              <!--todo por se user logado-->
+			  
+              <b-avatar
+                @click="showModalFunction"
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+				  margin-top: 5%;
+                "
+              >
+                <i
+                  class="bi bi-bell"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <!--numero de notificacoes-->
+              <b-badge
+                v-if="notificacoes.totalItems != 0"
+                @click="showModalFunction"
+                variant="danger"
+                class="rounded-circle position-absolute"
+                style="
+                  top: 30px;
+                  right: 675px;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                "
+                >{{ notificacoes['totalItems'] }}</b-badge
+              >
+              <Modal v-if="showModal" />
+              <p
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500; margin-top: 5%;"
+              >
+                Notificações
+              </p>
+              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/favoritos">Favoritos</p> -->
+            </div>
             <div class="d-flex">
               <router-link
                 to="/favoritos"
@@ -172,8 +219,14 @@
 <script lang="ts">
 import { useStore } from '@/store';
 import { computed } from 'vue';
-
+import Modal from '../components/ModalNotifications.vue';
+import { getUnreadNotifications } from '../api/notifications';
+import { ref } from 'vue';
+const notificacoes = ref<any>('');
 export default {
+components: {
+    Modal,
+  },
   setup() {
     const store = useStore();
 
@@ -189,6 +242,32 @@ export default {
       logout,
     };
   },
+  methods: {
+    showModalFunction() {
+      this.showModal = !this.showModal;
+    },
+  },
+  data() {
+    return {
+      showModal: false,
+      notificacoes,
+    };
+  },
+  mounted() {
+    // Função para buscar as notificações não lidas
+    const fetchNotifications = async () => {
+      try {
+        const responseItem = await getUnreadNotifications();
+        this.notificacoes = responseItem.data;
+      } catch (error) {
+        console.error(error);
+      }
+    };
+	fetchNotifications();
+    // Atualiza as notificações a cada 45 segundos
+    setInterval(fetchNotifications, 45000);
+  },
+
 };
 </script>
 <style>
