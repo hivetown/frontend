@@ -48,16 +48,14 @@ import { fetchAllOrders, fetchOrder } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { Order, Consumer } from '../types/interfaces';
 const route = useRoute();
-var idU = 0;
 const orderItem = ref<any>(''); //array com os produtos
 const orders =  ref<any>('');
 const store = useStore();
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
-}
 onMounted(async () => {
-  const responseOrder = await fetchAllOrders(idU);
+	if (user2.value && user2.value.user && user2.value.user.id) {
+
+  const responseOrder = await fetchAllOrders(user2.value.user.id);
   orders.value = responseOrder.data;
   let id: string;
 
@@ -66,10 +64,11 @@ if (typeof route.params.id === 'string') {
 
   //const id: string = route.params.id;
   //TODO por user logado
-  const responseItem = await fetchOrder(idU, id);
+  const responseItem = await fetchOrder(user2.value.user.id, id);
 
   orderItem.value = responseItem.data;
 }
+	}
 });
 </script>
 <style scoped>

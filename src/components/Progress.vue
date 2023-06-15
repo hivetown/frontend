@@ -58,13 +58,10 @@ import { useStore } from '@/store';
 import { fetchOrder } from '../api/orders';
 import { useRoute } from 'vue-router';
 
-var idU = 0;
 const orderItem = ref<any>('');//array com os produtos
 const store = useStore();
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
-}
+
 const route = useRoute();
 let id: string;
 
@@ -74,8 +71,10 @@ if (typeof route.params.id === 'string') {
 //const id: string = route.params.id;
 //const id = window.location.pathname.split('/id').pop()?.toString();
 onMounted(async () => {
-  const responseItem = await fetchOrder(idU, id); 
-  orderItem.value = responseItem.data;
+	if (user2.value && user2.value.user && user2.value.user.id) {
+  	const responseItem = await fetchOrder(user2.value.user.id, id); 
+ 	 orderItem.value = responseItem.data;
+	}
 });
 </script>
 

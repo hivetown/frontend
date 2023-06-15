@@ -38,14 +38,14 @@ a
                 "
                 style="height: 50px"
               />
-              <p id="texto" v-else>Imagem <br />indisponível</p></a
+              <p id="texto1" v-else>Imagem <br />indisponível</p></a
             >
           </td>
           <!--TODO por marcas e produto como links-->
           <!-- <td><img src="https://i.imgur.com/o2fKskJ.jpg"></td> -->
           <td>
             <a
-              id="texto"
+              id="texto2"
               :href="
                 '/products/' +
                 orderItem?.items[num - 1]?.producerProduct?.productSpec?.id
@@ -58,8 +58,8 @@ a
             >
           </td>
           <td>
-            <a id="texto" :href="'/producer/'"
-              ><p id="texto">
+            <a id="texto3" :href="'/producer/'"
+              ><p id="texto4">
                 {{
                   orderItem['items'][num - 1]['producerProduct']['producer'][
                     'name'
@@ -69,14 +69,14 @@ a
             >
           </td>
           <td>
-            <p id="texto">{{ orderItem['items'][num - 1]['price'] }} €</p>
+            <p id="texto5">{{ orderItem['items'][num - 1]['price'] }} €</p>
           </td>
           <td>
-            <p id="texto">{{ orderItem['items'][num - 1]['quantity'] }}</p>
+            <p id="texto6">{{ orderItem['items'][num - 1]['quantity'] }}</p>
           </td>
           <td>
-            <p id="texto">Última verificação: {{ eventos[num - 1]['date'].substring(0,10) }} {{ eventos[num - 1]['date'].substring(11,19) }} </p>
-            <p id="texto">
+            <p id="texto7">Última verificação: {{ eventos[num - 1]['date'].substring(0,10) }} {{ eventos[num - 1]['date'].substring(11,19) }} </p>
+            <p id="texto8">
               Encontra-se em: {{ eventos[num - 1]['address']['street'] }},
               {{ eventos[num - 1]['address']['parish'] }},
               {{ eventos[num - 1]['address']['city'] }}
@@ -88,14 +88,14 @@ a
               style="display: inline-flex"
             >
               <i class="bi bi-check-all"></i>
-              <p id="texto">Entregue</p>
+              <p id="texto9">Entregue</p>
             </div>
             <div
               v-if="orderItem['items'][num - 1]['status'] === 'Processing'"
               style="display: inline-flex"
             >
               <i class="bi bi-arrow-repeat"></i>
-              <p id="texto">Em processamento</p>
+              <p id="texto10">Em processamento</p>
             </div>
             <div
               v-if="orderItem['items'][num - 1]['status'] === 'Paid'"
@@ -109,19 +109,19 @@ a
               style="display: inline-flex"
             >
               <i class="bi bi-x-lg"></i>
-              <p id="texto">Cancelado</p>
+              <p id="texto11">Cancelado</p>
             </div>
             <div
               v-if="orderItem['items'][num - 1]['status'] === 'Shipped'"
               style="display: inline-flex"
             >
               <i class="bi bi-truck"></i>
-              <p id="texto">Em andamento</p>
+              <p id="texto12">Em andamento</p>
             </div>
           </td>
 
           <td>
-            <p id="texto">
+            <p id="texto13">
               {{
                 orderItem['items'][num - 1]['quantity'] *
                 orderItem['items'][num - 1]['price']
@@ -144,7 +144,6 @@ import { fetchAllItems } from '../api/orders';
 import { fetchAllOrders, getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
-var idU = 0;
 const orderItem =  ref<any>('');
 var totalSum = 0;
 var date = '';
@@ -155,25 +154,23 @@ const route = useRoute();
 //obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
-}
 onMounted(async () => {
   const idO: string = route.params.id as string;
-  //TODO por user logado
-  const responseItem = await fetchAllItems(idU, idO);
+  if (user2.value && user2.value.user && user2.value.user.id) {
+  const responseItem = await fetchAllItems(user2.value.user.id, idO);
   orderItem.value = responseItem.data;
 
   //TODO por user logado
-  const response = await fetchAllOrders(idU);
+  const response = await fetchAllOrders(user2.value.user.id);
   orders.value = response.data;
+  
   for (let i = 0; i < orderItem.value.items.length; i++) {
     totalSum +=
       orderItem.value.items[i]['price'] * orderItem.value.items[i]['quantity'];
     lista.push(orderItem.value.items[i]['producerProduct']['id']);
   }
   for (let x = 0; x < lista.length; x++) {
-    const responseShipment = await getShipment(idU, parseInt(idO), (lista[x]));
+    const responseShipment = await getShipment(user2.value.user.id, parseInt(idO), (lista[x]));
 	console.log(responseShipment)
     eventos.value.push(
       responseShipment.data['events'][
@@ -182,7 +179,7 @@ onMounted(async () => {
     );
 
   }
-
+}
   const totalSumElement = document.getElementById('totalSum');
   if (totalSumElement instanceof HTMLElement) {
     totalSumElement.innerHTML = `Total: ${totalSum}€`;
@@ -225,7 +222,7 @@ if (element !== null) {
     transform: rotate(360deg);
   }
 }
-#texto {
+#texto1, #texto2, #texto3, #texto4, #texto5, #texto6, #texto7,#texto8,#texto9,#texto10,#texto11,#texto12,#texto13{
   font-size: 13px;
 }
 
