@@ -127,7 +127,7 @@ a
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, PropType, onBeforeMount } from 'vue';
+import { ref, computed, PropType, onBeforeMount } from 'vue';
 import { fetchAllItems } from '../api/orders';
 import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';

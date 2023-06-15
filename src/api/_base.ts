@@ -16,8 +16,9 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     api.interceptors.request.use((config) => {
         // Inject token into request headers
         const { token } = store.state;
-		//ATENCAO
-        if (token && config && config.headers) { //&& config && config.headers) { tive de por isso pq dava erro sem isso no yarn build!!!!
+        //ATENCAO
+        if (token && config && config.headers) {
+            //&& config && config.headers) { tive de por isso pq dava erro sem isso no yarn build!!!!
             config.headers.Authorization = `Bearer ${token}`;
         }
 
