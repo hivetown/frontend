@@ -150,12 +150,11 @@
           </td>
 
           <td>
-            <BButton
-              class="botao2"
-              variant="outline-primary"
-              :href="'/encomenda/id' + order.id"
-              >Ver detalhes</BButton
-            >
+            <router-link :to="'/encomenda/id' + order.id">
+              <BButton class="botao2" variant="outline-primary"
+                >Ver detalhes</BButton
+              >
+            </router-link>
           </td>
         </tr>
       </tbody>

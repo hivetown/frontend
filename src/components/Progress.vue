@@ -4,11 +4,11 @@
       <ul class="progressbar">
         <li
           :class="
-            orderItem['status'] === 'Processing' ||
-            orderItem['status'] === 'Delivered' ||
-            orderItem['status'] === 'Shipped' ||
-            orderItem['status'] === 'Paid' ||
-            orderItem['status'] === 'Cancelled'
+            props.order.generalStatus === 'Processing' ||
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Paid' ||
+            props.order.generalStatus === 'Cancelled'
               ? 'active step1'
               : 'step1'
           "
@@ -17,10 +17,10 @@
         </li>
         <li
           :class="
-            orderItem['status'] === 'Shipped' ||
-            orderItem['status'] === 'Delivered' ||
-            orderItem['status'] === 'Processing' ||
-            orderItem['status'] === 'Cancelled'
+            props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Processing' ||
+            props.order.generalStatus === 'Cancelled'
               ? 'active step2'
               : 'step2'
           "
@@ -29,9 +29,9 @@
         </li>
         <li
           :class="
-            orderItem['status'] === 'Delivered' ||
-            orderItem['status'] === 'Shipped' ||
-            orderItem['status'] === 'Cancelled'
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Cancelled'
               ? 'active step3'
               : 'step3'
           "
@@ -40,8 +40,8 @@
         </li>
         <li
           :class="
-            orderItem['status'] === 'Delivered' ||
-            orderItem['status'] === 'Cancelled'
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Cancelled'
               ? 'active step4'
               : 'step4'
           "
@@ -53,28 +53,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
-import { useStore } from '@/store';
-import { fetchOrder } from '../api/orders';
-import { useRoute } from 'vue-router';
+import { Order } from '@types';
+import { PropType } from 'vue';
 
-const orderItem = ref<any>('');//array com os produtos
-const store = useStore();
-const user2 = computed(() => store.state.user);
-
-const route = useRoute();
-let id: string;
-
-if (typeof route.params.id === 'string') {
-  id = route.params.id;
-}
-//const id: string = route.params.id;
-//const id = window.location.pathname.split('/id').pop()?.toString();
-onMounted(async () => {
-	if (user2.value && user2.value.user && user2.value.user.id) {
-  	const responseItem = await fetchOrder(user2.value.user.id, id); 
- 	 orderItem.value = responseItem.data;
-	}
+const props = defineProps({
+  order: {
+    type: Object as PropType<Order>,
+    required: true,
+  },
 });
 </script>
 

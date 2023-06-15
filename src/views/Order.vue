@@ -2,73 +2,47 @@
   <div class="root">
     <div class="wrapper-mains">
       <div id="principal">
-        <p class="titulo" v-if="orders['totalItems'] === 0">
-          Ainda não foi realizada nenhuma encomenda
-        </p>
-        <p class="titulo" v-if="orders['totalItems'] !== 0">
-          Estado da encomenda {{ $route.params.id }}
-        </p>
-        <Progresso
+        <p class="titulo">Estado da encomenda {{ $route.params.id }}</p>
+        <Progress
+          :order="order"
           :length="4"
-          v-if="
-            orders['totalItems'] !== 0 && orderItem['status'] !== 'Canceled'
-          "
-        ></Progresso>
-        <i v-if="orderItem['status'] === 'Canceled'" class="bi bi-x-circle"
-          >Encomenda cancelada</i
-        >
+          v-if="order.generalStatus !== 'Canceled'"
+        ></Progress>
+        <i v-else class="bi bi-x-circle">Encomenda cancelada</i>
       </div>
       <div
         class="tabela"
-        v-if="orders['totalItems'] !== 0"
         :style="{
-          marginTop: orderItem['status'] === 'Canceled' ? '20px' : '',
+          marginTop: order.generalStatus === 'Canceled' ? '20px' : '',
         }"
       >
-        <OrderDetails />
+        <OrderDetails :order="order" />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import Progresso from '../components/Progress.vue';
-import OrderDetails from '../components/OrderDetails.vue';
-export default {
-  components: {
-    Progresso,
-    OrderDetails,
-  },
-};
-</script>
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import Progress from '../components/Progress.vue';
+import OrderDetails from '../components/OrderDetails.vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { useStore } from '@/store';
-import { fetchAllOrders, fetchOrder } from '../api/orders';
+import { fetchOrder } from '../api/orders';
 import { useRoute } from 'vue-router';
-import { Order, Consumer } from '../types/interfaces';
+import { Order } from '@/types';
 const route = useRoute();
-const orderItem = ref<any>(''); //array com os produtos
-const orders =  ref<any>('');
+const order = ref<Order>({} as Order);
 const store = useStore();
 const user2 = computed(() => store.state.user);
-onMounted(async () => {
-	if (user2.value && user2.value.user && user2.value.user.id) {
+onBeforeMount(async () => {
+  if (user2.value && user2.value.user && user2.value.user.id) {
+    if (typeof route.params.id === 'string') {
+      const id = route.params.id;
 
-  const responseOrder = await fetchAllOrders(user2.value.user.id);
-  orders.value = responseOrder.data;
-  let id: string;
-
-if (typeof route.params.id === 'string') {
-  id = route.params.id;
-
-  //const id: string = route.params.id;
-  //TODO por user logado
-  const responseItem = await fetchOrder(user2.value.user.id, id);
-
-  orderItem.value = responseItem.data;
-}
-	}
+      const responseItem = await fetchOrder(user2.value.user.id, id);
+      order.value = responseItem.data;
+    }
+  }
 });
 </script>
 <style scoped>

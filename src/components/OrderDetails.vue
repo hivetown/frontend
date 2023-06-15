@@ -60,7 +60,7 @@ a
           <td>
             <p class="texto">{{ orderItem['quantity'] }}</p>
           </td>
-          <td>
+          <td v-if="eventos[orderItem.producerProduct.id]">
             <p class="texto">
               Última verificação:
               {{ eventos[orderItem.producerProduct.id].date.substring(0, 10) }}
@@ -127,30 +127,35 @@ a
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, PropType, onBeforeMount } from 'vue';
 import { fetchAllItems } from '../api/orders';
-import { fetchOrder, getShipment } from '../api/orders';
+import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 import { BaseItems, Order, OrderItem, ShipmentEvent } from '@/types';
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
 const date = ref('');
-const order = ref<Order>();
 const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
 //obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
 
-onMounted(async () => {
+const props = defineProps({
+  order: {
+    type: Object as PropType<Order>,
+    required: true,
+  },
+});
+
+onBeforeMount(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
     const responseItem = await fetchAllItems(user2.value.user.id, idO);
     orderItems.value = responseItem.data;
 
-    const response = await fetchOrder(user2.value.user.id, idO);
-    order.value = response.data;
+    date.value = props.order.orderDate.substring(0, 10);
 
     for (const orderItem of orderItems.value.items) {
       totalSum.value += orderItem['price'] * orderItem['quantity'];
@@ -167,8 +172,6 @@ onMounted(async () => {
         responseShipment.events[responseShipment.events.length - 1];
     }
   }
-
-  date.value = order.value!.orderDate.substring(0, 10);
 });
 </script>
 <style scoped>
