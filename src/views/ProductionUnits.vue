@@ -13,13 +13,13 @@
             <b-col>
               <b-form-group
                 id="input-group-1"
-                label="Marca:"
+                label="Nome:"
                 label-for="input-2"
                 label-cols="3"
               >
                 <b-form-input
                   id="input-1"
-                  placeholder="Insira a Marca do transporte"
+                  placeholder="Insira o Nome do transporte"
                   required
                 ></b-form-input>
               </b-form-group>
@@ -71,7 +71,7 @@
           id="filter-input"
           v-model="filter"
           type="search"
-          placeholder="Escrever Marca"
+          placeholder="Escrever Nome"
         ></b-form-input>
 
         <b-input-group-append>
@@ -91,7 +91,7 @@
 
       <div>
         <b-table
-          :items="items"
+          :items="listOfPUs"
           :fields="fields"
           v-model:sort-by="sortBy"
           v-model:sort-desc="sortDesc"
@@ -109,14 +109,71 @@
               v-model="showModalDialog"
               title="Gerenciamento de Veículos"
             >
-              <b-col col lg="5">
+              <b-col col lg="15">
                 <b-form-select
                   v-model="selectedValue"
-                  :options="items"
+                  :options="listOfPUsIDs"
                   size="sm"
                   class="mt-3"
                   @input="updateQnt"
+                  @change="changePUtoEdit"
                 ></b-form-select>
+              </b-col>
+              <b-col>
+                <p>Edite os detalhes de: {{ puToEditIndex }}</p>
+                <p>Deixe em branco o que não pretende alterar</p>
+                <b-form @submit="submitNewBrand">
+                  <b-form-group label="Nome">
+                    <b-form-input v-model="input1" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-button type="submit" variant="primary"
+                    >Submeter novo Nome</b-button
+                  >
+                </b-form>
+                <b-form @submit="submitNewAddress">
+                  <b-form-group label="Número">
+                    <b-form-input v-model="input1" type="number"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Porta">
+                    <b-form-input v-model="input2" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Andar">
+                    <b-form-input v-model="input3" type="number"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Código Postal">
+                    <b-form-input v-model="input4" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Rua">
+                    <b-form-input v-model="input5" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Freguesia">
+                    <b-form-input v-model="input6" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="País">
+                    <b-form-input v-model="input7" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Cidade">
+                    <b-form-input v-model="input8" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Distrito">
+                    <b-form-input v-model="input9" type="text"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Latitude">
+                    <b-form-input
+                      v-model="input10"
+                      type="number"
+                    ></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Longitude">
+                    <b-form-input
+                      v-model="input11"
+                      type="number"
+                    ></b-form-input>
+                  </b-form-group>
+                  <b-button type="submit" variant="primary"
+                    >Submeter nova Morada</b-button
+                  >
+                </b-form>
               </b-col>
             </b-modal>
           </template>
@@ -217,28 +274,35 @@ import {
   createProductionUnit,
   updateProductionUnit,
   deleteProductionUnit,
-} from '../api/producers';
-import { Address, ProdUnit, ProductionUnit } from '@types';
+} from '@/api/producers';
+import { Address, ProdUnit, ProductionUnit, Image } from '@types';
 
 export default {
   data() {
     return {
       userProdUnit: {} as Array<Object>,
-      teste: this.getPUs(),
 
       sortBy: 'ID',
       sortDesc: false,
       fields: [
         { key: 'ID', sortable: true },
-        { key: 'Marca', sortable: true },
+        { key: 'Nome', sortable: true },
         { key: 'Morada', sortable: true },
         { key: 'Acoes', label: 'Ações', sortable: false },
       ],
 
-      items: {},
+      listOfPUs: [],
+      listOfPUsIDs: [] as string[],
 
       showModalDialog: false,
       inputValue: '',
+
+      puToEditIndex: -1,
+
+      userLoggedId: 1 as number,
+      userLoggedName: '' as string,
+      userLoggedNImage: {} as Image,
+      userLoggedType: '' as string,
     };
   },
 
@@ -249,6 +313,44 @@ export default {
   methods: {
     showModal() {
       this.showModalDialog = true;
+    },
+
+    changePUtoEdit(selectedPU: string) {
+      const wantedIndex = this.listOfPUsIDs.indexOf(selectedPU as string);
+      this.puToEditIndex = wantedIndex;
+      //this.listOfPUs[wantedIndex]['ID'];
+    },
+
+    submitNewAddress() {
+      console.log(this.input1);
+      const newAddres: Address = {
+        id: this.listOfPUs[this.puToEditIndex]['ID'],
+        number: this.input1 as number,
+        door: this.input2,
+        floor: this.input3 as number,
+        zipCode: this.input4,
+        street: this.input5,
+        parish: this.input6,
+        country: this.input7,
+        city: this.input8,
+        district: this.input9,
+        latitude: this.input10 as number,
+        longitude: this.input11 as number,
+      };
+      if (this.puToEditIndex !== -1) {
+        console.log(
+          15,
+          this.listOfPUs[this.puToEditIndex]['ID'],
+          this.listOfPUs[this.puToEditIndex]['Nome'],
+          newAddres
+        );
+        updateProductionUnit(
+          15,
+          this.listOfPUs[this.puToEditIndex]['ID'],
+          { name: this.listOfPUs[this.puToEditIndex]['Nome'] },
+          { address: newAddres }
+        );
+      }
     },
 
     submitForm() {
@@ -270,30 +372,38 @@ export default {
       this.showModalDialog = false;
     },
 
-    getPUs() {
-      this.getPUnit(1);
-      return this.userProdUnit;
-    },
-
     async getPUnit(producerId: number) {
       try {
         this.userProdUnit = (await fetchProductionUnits(producerId)).data.items;
+        console.log('UP', this.userProdUnit[1].address?.id);
 
-        const opts: { id: number; marca: string; morada: string }[] = [];
+        const opts: {
+          id: number;
+          nome: string;
+          morada: string;
+          acoes: number;
+        }[] = [];
 
         for (let i = 0; i < Object.entries(this.userProdUnit).length; i++) {
           const build = {
             ID: this.userProdUnit[i].id,
-            Marca: this.userProdUnit[i].name,
+            Nome: this.userProdUnit[i].name,
             Morada: `${this.userProdUnit[i].address?.county}, ${this.userProdUnit[i].address?.city},
-				${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
-				${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
+				  ${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
+				  ${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
             Acoes: this.userProdUnit[i].id,
           };
           opts.push(build);
         }
-        console.log(opts);
-        this.items = opts;
+
+        console.log('options', opts);
+        this.listOfPUs = opts;
+        for (let i = 0; i < this.listOfPUs.length; i++) {
+          this.listOfPUsIDs.push(
+            `ID: ${this.listOfPUs[i]['ID']} - Nome: ${this.listOfPUs[i]['Nome']}`
+          );
+        }
+        console.log('itemIDs', this.listOfPUsIDs);
       } catch (error) {
         console.error(error);
       }

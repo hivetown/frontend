@@ -105,7 +105,7 @@ export interface Address {
     zipCode: string;
     street: string;
     parish: string;
-    county: string;
+    country: string;
     city: string;
     district: string;
     latitude: number;
