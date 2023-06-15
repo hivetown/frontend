@@ -1,7 +1,7 @@
 <template>
   <div class="form">
     <div class="form-group">
-      <p class="titulo">Adicionar novo endereço de envioo</p>
+      <p class="titulo">Adicionar novo endereço de envio</p>
       <br />
       <label for="name">Nome:</label>
       <input
@@ -414,9 +414,16 @@ a {
 }
 #andar,
 #cidade,
+#numero, 
 #longitude {
   width: 100%;
   max-width: 350px;
+}
+#name,
+#codigo_postal,
+#rua{
+	width: 100%;
+  max-width: 340px;
 }
 .titulo {
   text-align: center;
