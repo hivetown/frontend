@@ -171,3 +171,39 @@ export interface CartItem {
     consumer?: Consumer;
     quantity: number;
 }
+
+export interface Shipment {
+    carrier: Carrier;
+    events: ShipmentEvent[];
+}
+
+export enum ShipmentStatus {
+    /* eslint-disable no-unused-vars*/
+    Paid = 0,
+    Processing = 1,
+    Shipped = 2,
+    Delivered = 3,
+    Canceled = 4,
+    /* eslint-enable no-unused-vars*/
+}
+
+export interface ShipmentEvent {
+    id: number;
+    date: string;
+    shipment?: Shipment;
+    address: Address;
+    status: ShipmentStatus;
+}
+export enum CarrierStatus {
+    /* eslint-disable no-unused-vars*/
+    Available = 'AVAILABLE',
+    Unavailable = 'UNAVAILABLE',
+    /* eslint-enable no-unused-vars*/
+}
+export interface Carrier {
+    id: number;
+    licensePlate: string;
+    productionUnit: ProductionUnit;
+    status: CarrierStatus;
+    image: Image;
+}

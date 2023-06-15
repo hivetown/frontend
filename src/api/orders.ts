@@ -1,11 +1,8 @@
-import { BaseItems, Order, OrderItem } from '../types/interfaces';
-import { Consumer } from '../types/interfaces';
+import { BaseItems, Order, OrderItem, Shipment } from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllOrders = (userId: number, search?: string) =>
-    api.get<BaseItems<Order>>(`/consumers/${userId}/orders`, {
-        params: { search },
-    });
+export const fetchAllOrders = (userId: number) =>
+    api.get<BaseItems<Order>>(`/consumers/${userId}/orders`);
 
 export const fetchAllItems = (
     userId: number,
@@ -19,12 +16,22 @@ export const fetchAllItems = (
         }
     );
 
+export const fetchOrder = (userId: number, orderId: string) =>
+    api.get<Order>(`/consumers/${userId}/orders/${orderId}`);
+
+export const getShipment = (
+    consumerId: number,
+    orderId: number,
+    producerProduct: number
+) =>
+    api.get<Shipment>(
+        `/consumers/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`
+    );
+
 export const cancelOrder = (userId: number, orderId: number, search?: string) =>
     api.delete(`/consumers/${userId}/orders/${orderId}`, {
         params: { search },
     });
-
-export const fetchUser = () => api.get<Consumer[]>('/auth');
 
 export const exportOrders = async (userId: number, orders: string[]) => {
     // Transforma o array de orders em uma string de query parameter

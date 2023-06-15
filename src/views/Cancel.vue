@@ -9,8 +9,10 @@ import { onMounted } from 'vue';
 import Swal from 'sweetalert2';
 import { cancelPayment } from '../api/consumers';
 import { useStore } from '@/store';
+import { useRouter } from 'vue-router';
 const store = useStore();
 const user2 = computed(() => store.state.user);
+const router = useRouter();
 
 onMounted(async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -26,19 +28,19 @@ onMounted(async () => {
         .then((result) => {
           if (result.isConfirmed) {
             // Redirecionar para a página desejada
-            window.location.href = '/'; // Substitua com a URL da página desejada
+            router.push('/');
           }
         })
         .catch((error) => {
           // Lógica do clique fora do popup
           if (error === 'esc' || error === 'timer' || error === 'outside') {
             // Redirecionar para a página desejada
-            window.location.href = '/'; // Substitua com a URL da página desejada
+            router.push('/');
           }
         })
         .finally(() => {
           // Redirecionar para a página desejada
-          window.location.href = '/'; // Substitua com a URL da página desejada
+          router.push('/');
         });
     });
   }

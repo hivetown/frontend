@@ -68,12 +68,12 @@
           :key="index"
           style="white-space: nowrap"
         >
-          <a href="/carrinho">
+          <router-link to="/carrinho">
             <div style="display: inline-block">
               >{{ cartItem['quantity'] }}X
               {{ cartItem.producerProduct.productSpec!.name }};
             </div>
-          </a>
+          </router-link>
         </div>
       </div>
     </div>

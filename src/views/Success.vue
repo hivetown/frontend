@@ -6,11 +6,15 @@
       <i class="bi bi-cart-check"></i>
       <br />
       <p>
-        A encomenda <a :href="`${endereco}`">{{ orderId }} </a> encontra-se
-        paga.
+        A encomenda
+        <router-link :to="`${endereco}`">{{ orderId }} </router-link>
+        encontra-se paga.
       </p>
       <p>
-        Acompanhe o <a href="/encomendas"> progresso das suas encomendas</a>.
+        Acompanhe o
+        <router-link to="/encomendas">
+          progresso das suas encomendas</router-link
+        >.
       </p>
       <p>Obrigado pela sua compra.</p>
     </section>
