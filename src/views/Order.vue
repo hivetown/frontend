@@ -1,5 +1,12 @@
 <template>
   <div class="root">
+    <router-link
+      to="/encomendas"
+      class="p-2 grey-txt text-decoration-none"
+      style="font-weight: 500; margin-left: 20px"
+      ><i class="bi bi-arrow-left"></i>Voltar
+    </router-link>
+
     <div class="wrapper-mains">
       <div id="principal">
         <p class="titulo">Estado da encomenda {{ $route.params.id }}</p>
