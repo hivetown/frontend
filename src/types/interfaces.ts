@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpec;
+    productSpec?: ProductSpec;
     producer?: Producer;
 }
 
@@ -25,7 +25,7 @@ export interface ProducerProduct {
     stock: number;
     deletedAt: Date | null;
     producer?: Producer;
-    productionUnit?: productionUnit;
+    productionUnit?: ProductionUnit;
     productSpec?: ProductSpec;
 }
 
@@ -75,7 +75,7 @@ export interface CreateProducer {
     vat: string;
 }
 
-export interface productionUnit {
+export interface ProductionUnit {
     id: number;
     name: string;
     address: Address;
@@ -112,6 +112,26 @@ export interface Address {
     longitude: number;
 }
 
+export type CreateAddress = Omit<Address, 'id'>;
+
+export interface ShippingAdress {
+    shippingAddressId: number;
+}
+export interface Order {
+    id: number;
+    shippingAddress: Address;
+    orderDate: string;
+    generalStatus: string;
+    totalPrice: number;
+}
+
+export interface OrderItem {
+    price: number;
+    producerProduct: ProducerProduct;
+    quantity: number;
+    status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+}
+
 export interface Image {
     id: number;
     name: string;
@@ -137,4 +157,53 @@ export interface Field {
 export interface FieldPossibleValue {
     id: number;
     value: string;
+}
+
+export interface ProductSpecFieldWithCategory {
+    category: Category;
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
+}
+
+export interface CartItem {
+    producerProduct: ProducerProduct;
+    consumer?: Consumer;
+    quantity: number;
+}
+
+export interface Shipment {
+    carrier: Carrier;
+    events: ShipmentEvent[];
+}
+
+export enum ShipmentStatus {
+    /* eslint-disable no-unused-vars*/
+    Paid = 0,
+    Processing = 1,
+    Shipped = 2,
+    Delivered = 3,
+    Canceled = 4,
+    /* eslint-enable no-unused-vars*/
+}
+
+export interface ShipmentEvent {
+    id: number;
+    date: string;
+    shipment?: Shipment;
+    address: Address;
+    status: ShipmentStatus;
+}
+export enum CarrierStatus {
+    /* eslint-disable no-unused-vars*/
+    Available = 'AVAILABLE',
+    Unavailable = 'UNAVAILABLE',
+    /* eslint-enable no-unused-vars*/
+}
+export interface Carrier {
+    id: number;
+    licensePlate: string;
+    productionUnit: ProductionUnit;
+    status: CarrierStatus;
+    image: Image;
 }
