@@ -8,7 +8,7 @@ export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
 
 export const fetchProducerProductionUnits = (id: number) =>
-    api.get<BaseItems<productionUnit>>(`/producers/${id}/units`);
+    api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
 
 // TODO - descobrir se isto é usado em algum lado
 // export const fetchProductProducer = (specId: number) =>
