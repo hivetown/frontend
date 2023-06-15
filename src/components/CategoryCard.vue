@@ -1,6 +1,4 @@
 <template>
-  <!-- TODO fazer com que a imagem e o texto sejam automáticos -->
-  <!-- Todas as imagens têm de ser do mesmo tamanho -->
   <b-card class="category-card" :img-src="image" img-alt="Imagem de exemplo">
     <div class="card-img-overlay d-flex justify-content-center text-white">
       <h5 class="card-title text-center">{{ title }}</h5>
@@ -10,13 +8,32 @@
 
 <style>
 .category-card {
-  width: 17vh;
+  min-width: 15vh !important;
+  height: 20vh !important;
+}
+
+.category-card h5 {
+  margin-top: 1vh;
+  color: white;
 }
 
 .category-card img {
   border-radius: 1.3em !important;
-  max-height: 22vh;
+  /* max-height: 22vh; */
+  width: 100%;
+  height: 100%;
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
+}
+
+@media (max-width: 767px) {
+  .category-card {
+    min-width: 10vh !important;
+    height: 14vh !important;
+  }
+
+  .category-card h5 {
+    margin-top: 0.3vh !important;
+  }
 }
 </style>
 
