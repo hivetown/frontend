@@ -109,7 +109,7 @@
       </div>
     </div>
   </div>
-
+  <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
   <CompareBanner
     v-if="isCompareBannerVisible"
     :products="productsToCompare"

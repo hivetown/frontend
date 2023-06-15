@@ -9,3 +9,7 @@ export const fetchProducer = (id: number) =>
 
 export const fetchProducerProductionUnits = (id: number) =>
     api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
+
+// TODO - descobrir se isto é usado em algum lado
+// export const fetchProductProducer = (specId: number) =>
+//     api.get<Producer[]>(`/products/${specId}`);

@@ -129,7 +129,6 @@ export default {
 input[type='range']:focus::-webkit-slider-thumb {
   box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
 }
-
 /* ////////////////////////////////////////////////////// */
 
 /* Inputs do preço */

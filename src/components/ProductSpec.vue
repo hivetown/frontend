@@ -8,75 +8,73 @@
       <!-- Para cada categoria -->
       <div
         v-for="(categories, idxCategories) in productsFields"
-        class="mb-3 parent"
-        style="border-bottom: 1px solid #eeeeee"
         :key="idxCategories"
       >
-        <!-- <div
-          class="rounded-pill text-center mt-3 mb-3 prod-category"
-          style="width: 15%"
+        <div
+          class="mb-3 parent"
+          style="border-bottom: 1px solid #eeeeee"
+          v-if="categories"
         >
-          {{ categories.category.name }}
-        </div> -->
-        <p class="fw-bold">Categoria: {{ categories.category.name }}</p>
-        <!-- Fields -->
-        <div class="mb-3 d-flex gap-5">
-          <!-- Nome dos fields -->
-          <!-- Caso só um dos produtos tenha valores -->
-          <div
-            style="width: 25%"
-            v-if="imprime(categories.products.length, categories.products)"
-          >
+          <p class="fw-bold">Categoria: {{ categories?.category.name }}</p>
+          <!-- Fields -->
+          <div class="mb-3 d-flex gap-5">
+            <!-- Nome dos fields -->
+            <!-- Caso só um dos produtos tenha valores -->
             <div
-              v-for="(productFields, idxProduct) in categories.products"
-              :key="idxProduct"
+              style="width: 25%"
+              v-if="imprime(categories?.products.length, categories?.products)"
             >
               <div
-                v-for="(fieldValue, idxField) in productFields.fieldValues"
-                :key="idxField"
+                v-for="(productFields, idxProduct) in categories?.products"
+                :key="idxProduct"
               >
-                <span>{{ fieldValue.field.name }}:</span>
-              </div>
-            </div>
-          </div>
-          <!-- Caso ambos os produtos tenham valores -->
-          <div v-else style="width: 25%">
-            <div
-              v-for="(productFields, idxProduct) in categories.products[0]
-                .fieldValues"
-              :key="idxProduct"
-            >
-              <span>{{ productFields.field.name }}:</span>
-            </div>
-          </div>
-
-          <!-- Dados dos fields -->
-          <!-- Para cada categoria -->
-          <div
-            style="width: 15%"
-            v-for="(productFields, idxProduct) in categories.products"
-            :key="idxProduct"
-          >
-            <!-- Se não tiver valores -->
-            <div v-if="Object.keys(productFields).length === 0" class="">
-              <div v-for="(product, idp) in categories.products" :key="idp">
                 <div
-                  v-for="(fieldValue, idxField) in product.fieldValues"
+                  v-for="(fieldValue, idxField) in productFields.fieldValues"
                   :key="idxField"
                 >
-                  <span>-</span>
+                  <span>{{ fieldValue.field.name }}:</span>
                 </div>
               </div>
             </div>
-            <!-- Se tiver valores -->
-            <div v-else>
+            <!-- Caso ambos os produtos tenham valores -->
+            <div v-else style="width: 25%">
               <div
-                v-for="(fieldValue, idxField) in productFields.fieldValues"
-                :key="idxField"
+                v-for="(productFields, idxProduct) in categories?.products[0]
+                  .fieldValues"
+                :key="idxProduct"
               >
-                <span class="grey-txt"
-                  >{{ fieldValue.value }} {{ fieldValue.field.unit }}</span
+                <span>{{ productFields.field.name }}:</span>
+              </div>
+            </div>
+
+            <!-- Dados dos fields -->
+            <!-- Para cada categoria -->
+            <div
+              style="width: 15%"
+              v-for="(productFields, idxProduct) in categories?.products"
+              :key="idxProduct"
+            >
+              <!-- Se não tiver valores -->
+              <div v-if="Object.keys(productFields).length === 0" class="">
+                <div v-for="(product, idp) in categories?.products" :key="idp">
+                  <div
+                    v-for="(fieldValue, idxField) in product.fieldValues"
+                    :key="idxField"
+                  >
+                    <span>-</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Se tiver valores -->
+              <div v-else>
+                <div
+                  v-for="(fieldValue, idxField) in productFields.fieldValues"
+                  :key="idxField"
                 >
+                  <span class="grey-txt"
+                    >{{ fieldValue.value }} {{ fieldValue.field.unit }}</span
+                  >
+                </div>
               </div>
             </div>
           </div>
