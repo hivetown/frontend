@@ -11,32 +11,87 @@
     <div class="d-flex cards-mobile">
       <!-- TODO - routes para as categorias -->
       <router-link to="/products">
-        <CategoryCard title="Eletrónica" image="categories/tech.png" />
+        <CategoryCard
+          title="Eletrónica"
+          :image="{
+            url: 'categories/tech.png',
+            alt: 'Eletrónica',
+            name: 'Eletrónica',
+          }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Arte" image="categories/art.png" />
+        <CategoryCard
+          title="Arte"
+          :image="{ url: 'categories/art.png', alt: 'Arte', name: 'Arte' }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Moda" image="categories/clothes.png" />
+        <CategoryCard
+          title="Moda"
+          :image="{ url: 'categories/clothes.png', alt: 'Moda', name: 'Moda' }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Desporto" image="categories/sport.png" />
+        <CategoryCard
+          title="Desporto"
+          :image="{
+            url: 'categories/sport.png',
+            alt: 'Desporto',
+            name: 'Desporto',
+          }"
+        />
       </router-link>
       <!-- <CategoryCard title="Animais" image="categories/pets.png" /> -->
       <router-link to="/products">
-        <CategoryCard title="Jardim" image="categories/garden.png" />
+        <CategoryCard
+          title="Jardim"
+          :image="{
+            url: 'categories/garden.png',
+            alt: 'Jardim',
+            name: 'Jardim',
+          }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Bebé" image="categories/baby.png" />
+        <CategoryCard
+          title="Bebé"
+          :image="{
+            url: 'categories/baby.png',
+            alt: 'Bebé',
+            name: 'Bebé',
+          }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Beleza" image="categories/beauty.png" />
+        <CategoryCard
+          title="Beleza"
+          :image="{
+            url: 'categories/beauty.png',
+            alt: 'Beleza',
+            name: 'Beleza',
+          }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Casa" image="categories/house.png" />
+        <CategoryCard
+          title="Casa"
+          :image="{
+            url: 'categories/house.png',
+            alt: 'Casa',
+            name: 'Casa',
+          }"
+        />
       </router-link>
       <router-link to="/products">
-        <CategoryCard title="Livros" image="categories/books.png" />
+        <CategoryCard
+          title="Livros"
+          :image="{
+            url: 'categories/books.png',
+            alt: 'Livros',
+            name: 'Livros',
+          }"
+        />
       </router-link>
     </div>
   </div>

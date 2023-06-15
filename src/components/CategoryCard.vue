@@ -1,5 +1,5 @@
 <template>
-  <b-card class="category-card" :img-src="image" img-alt="Imagem de exemplo">
+  <b-card class="category-card" :img-src="image.url" :img-alt="image.alt">
     <div class="card-img-overlay d-flex justify-content-center text-white">
       <h5 class="card-title text-center">{{ title }}</h5>
     </div>
@@ -38,6 +38,8 @@
 </style>
 
 <script lang="ts">
+import { Image } from '@types';
+import { PropType } from 'vue';
 export default {
   props: {
     title: {
@@ -45,7 +47,7 @@ export default {
       required: true,
     },
     image: {
-      type: String,
+      type: Object as PropType<Omit<Image, 'id'>>,
       required: true,
     },
   },
