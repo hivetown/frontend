@@ -114,4 +114,10 @@
   border: none !important;
   border-radius: 0% !important;
 }
+
+@media (max-width: 767px) {
+  .custom-footer {
+    display: none !important;
+  }
+}
 </style>
