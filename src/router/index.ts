@@ -12,10 +12,8 @@ import Register from '@/views/Register.vue';
 import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/createOrder.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
-import { Permission } from '@/types';
-import { hasPermission } from '@/utils/permissions';
-import { createPopup } from '@/utils/popup';
 
 const routes = [
     {
@@ -29,8 +27,8 @@ const routes = [
         component: About,
     },
     {
-        path: '/produtos',
-        name: 'Produtos',
+        path: '/products',
+        name: 'Products',
         component: CategoriasProdutos,
     },
     {
@@ -63,8 +61,8 @@ const routes = [
     },
     // O link para o produto deveria ter o seu nome ou id
     {
-        path: '/produto',
-        name: 'Produto',
+        path: '/products/:specid',
+        name: 'ProductDetails',
         component: Product,
     },
     {
@@ -86,14 +84,9 @@ const routes = [
         component: Register,
     },
     {
-        path: '/admin',
-        name: 'Admin',
-        component: Register,
-        meta: {
-            requiresAuth: true,
-            requiredPermissions:
-                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
-        },
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
     },
 ];
 
@@ -103,11 +96,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    let isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) {
-        await store.dispatch('fetchAuthUser');
-        isAuthenticated = !!store.state.user;
-    }
+    const isAuthenticated = !!store.state.user;
+    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
 
     if (
         (to.path === '/login' || to.path === '/registration') &&
@@ -124,21 +114,6 @@ router.beforeEach(async (to, from, next) => {
     ) {
         // redirect to the login page if the user is not logged in
         next('/login');
-        return;
-    }
-
-    if (
-        to.matched.some((record) => record.meta.requiredPermissions) &&
-        !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
-    ) {
-        // redirect back to the previous page if the user does not have the required permissions
-        createPopup(
-            `Você não tem permissão para aceder a ${
-                to.name?.toString() || 'página'
-            }.`,
-            'error'
-        );
-        next(from);
         return;
     }
 
