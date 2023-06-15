@@ -1,8 +1,3 @@
-com
-
-
-
-
 <template>
   <h3 class="semencoemndas" v-if="orders['totalItems'] === 0">
     <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
@@ -325,11 +320,11 @@ com
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
+import { exportOrders } from '../api/orders';
 import { Order } from '../types/interfaces';
 import { onMounted, ref, Ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
-var idU = 0;
 const arr: { value: number[] } = ref([]);
 const store = useStore();
 const encomendas: number[] = [];
@@ -337,18 +332,22 @@ const encomendasImage: Ref<any[]> = ref([]);
 const orderIds = ref<number[]>([]); //array com o id das encomendas
 const encomendaId: Ref<any[]> = ref([]);
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-  idU = user2.value.user.id;
-}
-const orders = ref<any>('');
 
+const orders = ref<any>('');
+	const selectedOrders = ref([]);
+
+const isExportButtonVisible = computed(() => {
+  return selectedOrders.value.length > 0;
+});
 onMounted(async () => {
-  const response = await fetchAllOrders(idU);
+	if (user2.value && user2.value.user && user2.value.user.id) {
+
+  const response = await fetchAllOrders(user2.value.user.id);
   orders.value = response.data;
   orders.value.items.forEach((item: { id: number }) => {
     orderIds.value.push(item.id);
   });
-
+	
   for (let i = 0; i < orders.value.totalItems; i++) {
     encomendas.push(orders.value.items[i].id);
     arr.value.push(i);
@@ -357,7 +356,8 @@ onMounted(async () => {
 
   for (let i = 0; i < encomendas.length; i++) {
     //TODO por user logado
-    const response1 = await fetchAllItems(idU, encomendas[i].toString());
+	
+    const response1 = await fetchAllItems(user2.value.user.id, encomendas[i].toString());
     const newEncomenda = { [encomendas[i]]: response1.data };
     encomendaId.value.push(newEncomenda);
     const encomendaX: Order[] = [];
@@ -394,7 +394,9 @@ onMounted(async () => {
 
 
   }
+}
 });
+
 function cancelarEncomenda(num: number) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
@@ -410,7 +412,9 @@ function cancelarEncomenda(num: number) {
     if (result.isConfirmed) {
       try {
         //TODO trocar p user logado
-        cancelOrder(idU, orders.value['items'][num - 1]['id'])
+		if (user2.value && user2.value.user && user2.value.user.id) {
+
+        cancelOrder(user2.value.user.id, orders.value['items'][num - 1]['id'])
           .then((response) => {
             console.log('cancelou');
             // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
@@ -437,7 +441,7 @@ function cancelarEncomenda(num: number) {
               console.log(error);
               console.log('erro ao cancelar encomenda');
             }
-          });
+          });}
       } catch (error: any) {
         console.log(error);
         console.log('erro ao cancelar encomenda');
@@ -446,10 +450,6 @@ function cancelarEncomenda(num: number) {
   });
 }
 function exportSelectedOrders() {
-  //idU = user2.value['user']['id'];
-  if (user2.value && user2.value.user && user2.value.user.id) {
-    idU = user2.value.user.id;
-  }
 
   let arr = [];
   let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
@@ -457,8 +457,9 @@ function exportSelectedOrders() {
     // arr.push(checkboxes[i].value);
     arr.push((checkboxes[i] as HTMLInputElement).value);
   }
-  //TODO trocar para user logado
-  return exportOrders(idU, arr);
+  if (user2.value && user2.value.user && user2.value.user.id) {
+  	return exportOrders(user2.value.user.id, arr);
+  }
 }
 
 function onCheckboxChange() {
@@ -486,22 +487,7 @@ function cancelarEncomendaImpossivel() {
   });
 }
 </script>
-<script lang="ts">
-import { exportOrders } from '../api/orders';
 
-export default {
-  data() {
-    return {
-      selectedOrders: [],
-    };
-  },
-  computed: {
-    isExportButtonVisible() {
-      return this.selectedOrders.length > 0;
-    },
-  },
-};
-</script>
 
 <style scoped>
 #morada2 {
