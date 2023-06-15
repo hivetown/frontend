@@ -176,8 +176,7 @@ import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { Address2 } from '../types/interfaces';
 import { useStore } from '@/store';
-var user2;
-var store;
+
 export default {
   props: {
     endereco: {
@@ -185,14 +184,7 @@ export default {
       required: true,
     },
   },
-  setup() {
-	 store = useStore();
-	 user2 = computed(() => store.state.user);
-    return {
-      user2,
-	  store
-    };
-  },
+  
   data() {
     return {
 
@@ -346,8 +338,9 @@ export default {
 
       //adiciona o novo endereco
       //TODO trocar para user logado
-	  if (user2.value && user2.value.user && user2.value.user.id) {
-      postNewAdress(user2.value.user.id, this.address2)
+	  
+	  if (this.$store.state.user?.user?.id) {
+      postNewAdress(this.$store.state.user.user.id, this.address2)
         .then((response) => {
           Swal.fire({
             title: 'Endereço salvo!',

@@ -13,12 +13,12 @@ const store = useStore();
 const user2 = computed(() => store.state.user);
 
 onMounted(async () => {
-  let currentUrl = window.location.href;
-  const pathSegments = currentUrl.split('/');
-  const sessionId = pathSegments[5];
-  if (user2.value && user2.value.user && user2.value.user.id) {
-  cancelPayment(user2.value.user.id, sessionId);
-  Swal.fire({
+
+  const urlParams = new URLSearchParams(window.location.search);
+	const myParam = urlParams.get('session_id');
+  if (user2.value && user2.value.user && user2.value.user.id && myParam) {
+  cancelPayment(user2.value.user.id, myParam).then((response) => {
+	Swal.fire({
     icon: 'error',
     title: 'Pagamento cancelado',
     text: 'A encomenda não foi efetuada.',
@@ -41,6 +41,8 @@ onMounted(async () => {
       // Redirecionar para a página desejada
       window.location.href = '/'; // Substitua com a URL da página desejada
     });
+  });
+  
 }
 });
 </script>

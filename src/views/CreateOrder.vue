@@ -138,10 +138,6 @@ function checkButtonDisabled() {
 }
 
 async function submitOrder() {
-  if (isButtonDisabled.value) {
-    // Emitir um alerta
-    alert('O botão está desabilitado!');
-  }
   const id = selectedItems.value;
   try {
     if (typeof id === 'number') {
