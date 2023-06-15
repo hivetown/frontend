@@ -96,6 +96,7 @@
               class="p-2 grey-txt text-decoration-none"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item href="/encomendas">Encomendas</b-dropdown-item>
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
