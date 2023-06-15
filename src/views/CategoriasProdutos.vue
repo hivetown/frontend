@@ -167,7 +167,6 @@ export default defineComponent({
       console.log(index);
     },
     removeAllProductsFromCompare() {
-      console.log('da');
       this.productsToCompare = [];
     },
   },
