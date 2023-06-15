@@ -9,8 +9,12 @@
         >
         </i>
       </span>
-      <router-link :to="'/products/' + productId">
-        <img :src="productImage" class="square-image" />
+      <router-link :to="'/products/' + productSpec.id">
+        <img
+          :src="productImage.url"
+          :alt="productImage.alt"
+          class="square-image"
+        />
       </router-link>
     </b-card>
 
@@ -26,15 +30,11 @@
           {{ productCategory.name }}
         </div>
 
-        <h5>{{ productTitle }}</h5>
-        <p class="grey-txt mt-3">{{ productDescription }}</p>
+        <h5>{{ productSpec.name }}</h5>
+        <p class="grey-txt mt-3">{{ productSpec.description }}</p>
         <div class="d-flex gap-2">
           <h4 class="mb-3">
-            {{
-              productPrice && productPrice.length > 1
-                ? productPrice[0] + '€ - ' + productPrice[1] + '€'
-                : ''
-            }}
+            {{ productPricing }}
           </h4>
           <!-- TODO, fazer com que seja  -->
           <!-- <p class="mt-1 grey-txt text-decoration-line-through">1025€</p> -->
@@ -50,7 +50,8 @@
           >
             <i class="bi bi-cart"></i>
           </button>
-          <router-link :to="'/products/' + productId">
+
+          <router-link :to="'/products/' + productSpec.id">
             <button
               type="button"
               class="btn btn-outline-secondary circle-btn"
@@ -65,9 +66,12 @@
             class="btn btn-outline-secondary circle-btn"
             v-b-tooltip.hover
             title="Comparar produto"
+            :disabled="!canCompare"
+            @click="setupCompare()"
           >
             <i class="bi bi-arrow-left-right"></i>
           </button>
+          <!-- <button @click="sendId">Enviar ID</button> -->
         </div>
       </div>
     </b-card-text>
@@ -114,15 +118,16 @@
 }
 
 .prod-category {
-  background-color: #9dc88d; /* A cor irá variar de acordo com a categoria */
+  background-color: #9dc88d;
+  /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
 </style>
 
 <script setup lang="ts">
-// import { Category } from '@/types';
 import { fetchProductCategories } from '@/api';
-import { Category } from '@/types';
+import { Category, ProductSpec } from '@/types';
+import { PropType } from 'vue';
 </script>
 
 <script lang="ts">
@@ -131,38 +136,46 @@ export default {
     return {
       isFavorite: false, // Se o produto está nos favoritos
       productCategory: {} as Category, // Categoria do produto
+      selectedId: null as number | null, // Id do produto selecionado
     };
   },
+  computed: {
+    productImage() {
+      return this.productSpec.images[0];
+    },
+    productPricing() {
+      const { minPrice, maxPrice } = this.productSpec;
+      if (minPrice === maxPrice) {
+        if (minPrice === 0) return 'Grátis';
+
+        return `${minPrice} €`;
+      }
+
+      return `${minPrice} € - ${maxPrice} €`;
+    },
+  },
   props: {
-    productId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-    productTitle: {
-      type: String,
+    productSpec: {
+      type: Object as PropType<ProductSpec>,
       required: true,
     },
-    productDescription: {
-      type: String,
-      required: true,
+    canCompare: {
+      type: Boolean,
+      default: true,
     },
-    productImage: {
-      type: String,
-      required: true,
-    },
-    productPrice: {
-      type: Array,
-      required: false,
-      default: null,
+  },
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    compare: (productSpec: ProductSpec) => true,
+  },
+  methods: {
+    setupCompare() {
+      this.$emit('compare', this.productSpec);
     },
   },
   async beforeMount() {
-    if (this.productId != undefined) {
-      const productCategory = await fetchProductCategories(this.productId);
-      this.productCategory = productCategory.data.items[0];
-    }
-    // console.log("categoria" + JSON.stringify(this.productCategory) + "id: " + this.productId);
+    const productCategories = await fetchProductCategories(this.productSpec.id);
+    this.productCategory = productCategories.data.items[0];
   },
 };
 </script>
