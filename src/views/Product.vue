@@ -126,9 +126,6 @@
             </button>
           </div>
         </div>
-        <div class="mt-3 mb-3">
-          <a href="#">ver unidade de produção</a>
-        </div>
       </div>
 
       <!-- Detalhes do produto -->
@@ -142,24 +139,6 @@
                <p>Tecnologia</p>
             </div>
          </div> -->
-
-      <!-- Vendedor -->
-      <div class="mt-5 d-flex align-items-center gap-3">
-        <b-avatar
-          v-if="defaultProduct.producer && defaultProduct.producer.user.image"
-          class="nav-item"
-          :src="defaultProduct.producer.user.image.url"
-          :alt="defaultProduct.producer.user.image.alt"
-          style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; scale: 1.2"
-        >
-        </b-avatar>
-        <div class="seller" v-if="defaultProduct && defaultProduct.producer">
-          <h5>{{ defaultProduct.producer.user.name }}</h5>
-          <router-link :to="'/producer/' + defaultProduct.producer.user.id">
-            <a href="#" class="grey-txt">Sobre o vendedor</a>
-          </router-link>
-        </div>
-      </div>
     </div>
   </div>
 

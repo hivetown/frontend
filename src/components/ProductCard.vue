@@ -92,7 +92,8 @@
 .square-image {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ajusta a imagem para preencher todo o espaço disponível */
+  object-fit: cover;
+  /* Ajusta a imagem para preencher todo o espaço disponível */
   border-radius: 1.3em !important;
 }
 
@@ -114,7 +115,8 @@
 }
 
 .prod-category {
-  background-color: #9dc88d; /* A cor irá variar de acordo com a categoria */
+  background-color: #9dc88d;
+  /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
 </style>
