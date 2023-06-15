@@ -134,9 +134,6 @@
                   </button> -->
           </div>
         </div>
-        <div class="mt-3 mb-3">
-          <a href="#">ver unidade de produção</a>
-        </div>
       </div>
 
       <!-- Detalhes do produto -->

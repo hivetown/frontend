@@ -4732,7 +4732,6 @@ __metadata:
   linkType: hard
 
 "expect@npm:^29.0.0, expect@npm:^29.5.0":
-
   version: 29.5.0
   resolution: "expect@npm:29.5.0"
   dependencies:
@@ -8069,7 +8068,6 @@ __metadata:
   linkType: hard
 
 "pretty-format@npm:^29.0.0, pretty-format@npm:^29.5.0":
-
   version: 29.5.0
   resolution: "pretty-format@npm:29.5.0"
   dependencies:
