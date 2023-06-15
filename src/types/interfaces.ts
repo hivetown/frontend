@@ -148,16 +148,22 @@ export interface SelectedUnit {
 }
 
 export interface Location {
-    city: string;
-    county: string;
-    district: string;
-    door: string;
-    floor: number;
-    id: number;
-    latitude: number;
-    longitude: number;
-    number: number;
-    parish: string;
-    street: string;
-    zipCode: string;
+    items: {
+        city: string;
+        county: string;
+        district: string;
+        door: string;
+        floor: number;
+        id: number;
+        latitude: number;
+        longitude: number;
+        number: number;
+        parish: string;
+        street: string;
+        zipCode: string;
+    }[];
+    totalItems: number;
+    totalPages: number;
+    page: number;
+    pageSize: number;
 }

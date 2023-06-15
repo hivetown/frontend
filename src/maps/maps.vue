@@ -25,8 +25,9 @@ export default {
     },
   },
   setup(props) {
-    const mapContainer = ref(null);
-    let mapInstance: mapboxgl.Map | null = null;
+    // mapContainer has to be a string or a HTMLElement;
+    const mapContainer = ref('mapContainer');
+    let mapInstance: mapboxgl.Map;
     let marker = null;
     const store = useStore();
     const userType = store.state.user?.user.type;
