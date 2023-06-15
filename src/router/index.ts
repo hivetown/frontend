@@ -11,7 +11,7 @@ import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
-import CreateOrder from '@/views/createOrder.vue';
+import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 

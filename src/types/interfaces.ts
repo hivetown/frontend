@@ -111,7 +111,8 @@ export interface Address {
     latitude: number;
     longitude: number;
 }
-export interface Address2 { //necessitava sem o id para adicionar um novo
+export interface Address2 {
+    //necessitava sem o id para adicionar um novo
     //id: number;
     number: number;
     door: string;

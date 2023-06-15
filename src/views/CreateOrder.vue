@@ -54,7 +54,7 @@
         </button>
         <div v-if="!collapsed">
           <!-- Your content here -->
-          <AddAddress />
+          <AddAddress></AddAddress>
         </div>
       </div>
       <br />
@@ -105,31 +105,24 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
-import {
-  getAddresses,
-  postOrderPayment,
-  getCart,
-} from '../api/cart';
+import { getAddresses, postOrderPayment, getCart } from '../api/cart';
 import { useStore } from '@/store';
 import AddAddress from '../components/AddAddress.vue';
 const selectedItems = ref([]); // Variável de dados para armazenar os checkboxes selecionados
 const isButtonDisabled = ref(true); // Variável de dados para controlar o estado do botão
 const store = useStore();
 const user2 = computed(() => store.state.user);
-if (user2.value && user2.value.user && user2.value.user.id) {
-}
-const address2 =  ref<any>('');
+const address2 = ref<any>('');
 const collapsed = ref(true);
 const cart = ref<any>('');
 
 onMounted(async () => {
-if (user2.value && user2.value.user && user2.value.user.id) {
-
-  const addresses = await getAddresses(user2.value.user.id);
-  address2.value = addresses.data;
-  const gCart = await getCart(user2.value.user.id);
-  cart.value = gCart.data;
-}
+  if (user2.value && user2.value.user && user2.value.user.id) {
+    const addresses = await getAddresses(user2.value.user.id);
+    address2.value = addresses.data;
+    const gCart = await getCart(user2.value.user.id);
+    cart.value = gCart.data;
+  }
   //item.value.push()
 });
 function checkButtonDisabled() {
@@ -155,8 +148,7 @@ async function submitOrder() {
     if (error) {
       Swal.fire({
         title: 'Oops... Falta de stock!',
-        text:
-          'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
+        text: 'A encomenda não foi efetuada devido a falta de stock. Pedimos desculpa pelo incómodo.',
         icon: 'error',
         confirmButtonColor: '#797dc3',
         confirmButtonText: 'Ok',

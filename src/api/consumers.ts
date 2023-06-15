@@ -15,4 +15,4 @@ export const postNewAdress = (consumerId: number, address: Address2) =>
     api.post(`/consumers/${consumerId}/addresses`, address);
 
 export const cancelPayment = (consumerId: number, sessionId: string) =>
-    api.post(`/consumers/${consumerId}/orders/${sessionId}`);
+    api.post(`/consumers/${consumerId}/orders/cancel?session_id=${sessionId}`);

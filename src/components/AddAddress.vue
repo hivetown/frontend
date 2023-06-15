@@ -171,23 +171,13 @@
 </template>
 
 <script lang="ts">
-import { computed } from 'vue';
 import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { Address2 } from '../types/interfaces';
-import { useStore } from '@/store';
 
 export default {
-  props: {
-    endereco: {
-      type: Object,
-      required: true,
-    },
-  },
-  
   data() {
     return {
-
       address2: {} as Address2,
       isChecked: false, // Inicialmente o checkbox não estará selecionado
       name: '', // Propriedade para validar o campo "Nome"
@@ -207,47 +197,46 @@ export default {
 
   methods: {
     handleSubmit() {
-  const {
-    door,
-    floor,
-    number,
-    zipCode,
-    street,
-    parish,
-    county,
-    city,
-    district,
-    latitude,
-    longitude,
-  } = this.$refs as {
-    door: HTMLInputElement | undefined;
-    floor: HTMLInputElement | undefined;
-    number: HTMLInputElement | undefined;
-    zipCode: HTMLInputElement | undefined;
-    street: HTMLInputElement | undefined;
-    parish: HTMLInputElement | undefined;
-    county: HTMLInputElement | undefined;
-    city: HTMLInputElement | undefined;
-    district: HTMLInputElement | undefined;
-    latitude: HTMLInputElement | undefined;
-    longitude: HTMLInputElement | undefined;
-  };
-  
-  // Verifique se todos os campos obrigatórios são preenchidos
-  this.address2 = {
-    door: door ? door.value : '',
-    floor: floor ? parseFloat(floor.value) : 0,
-    number: number ? parseFloat(number.value) : 0,
-    zipCode: zipCode ? zipCode.value : '',
-    street: street ? street.value : '',
-    parish: parish ? parish.value : '',
-    county: county ? county.value : '',
-    city: city ? city.value : '',
-    district: district ? district.value : '',
-    latitude: latitude ? parseFloat(latitude.value) : 0,
-    longitude: longitude ? parseFloat(longitude.value) : 0,
-  };
+      const {
+        door,
+        floor,
+        number,
+        zipCode,
+        street,
+        parish,
+        county,
+        city,
+        district,
+        latitude,
+        longitude,
+      } = this.$refs as {
+        door: HTMLInputElement | undefined;
+        floor: HTMLInputElement | undefined;
+        number: HTMLInputElement | undefined;
+        zipCode: HTMLInputElement | undefined;
+        street: HTMLInputElement | undefined;
+        parish: HTMLInputElement | undefined;
+        county: HTMLInputElement | undefined;
+        city: HTMLInputElement | undefined;
+        district: HTMLInputElement | undefined;
+        latitude: HTMLInputElement | undefined;
+        longitude: HTMLInputElement | undefined;
+      };
 
+      // Verifique se todos os campos obrigatórios são preenchidos
+      this.address2 = {
+        door: door ? door.value : '',
+        floor: floor ? parseFloat(floor.value) : 0,
+        number: number ? parseFloat(number.value) : 0,
+        zipCode: zipCode ? zipCode.value : '',
+        street: street ? street.value : '',
+        parish: parish ? parish.value : '',
+        county: county ? county.value : '',
+        city: city ? city.value : '',
+        district: district ? district.value : '',
+        latitude: latitude ? parseFloat(latitude.value) : 0,
+        longitude: longitude ? parseFloat(longitude.value) : 0,
+      };
 
       if (!this.name) {
         this.showError('Por favor, preencha o campo "Nome".');
@@ -336,57 +325,56 @@ export default {
         return;
       }
 
-      //adiciona o novo endereco
-      //TODO trocar para user logado
-	  
-	  if (this.$store.state.user?.user?.id) {
-      postNewAdress(this.$store.state.user.user.id, this.address2)
-        .then((response) => {
-          Swal.fire({
-            title: 'Endereço salvo!',
-            text: 'O endereço foi adicionado à sua lista de endereços com sucesso.',
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonColor: '#797dc3',
-            cancelButtonColor: '#797dc3',
-            confirmButtonText: 'Continuar a compra',
-            cancelButtonText: 'Adicionar outro endereço',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              try {
-                window.location.href = '/createOrder';
-                // Lógica adicional após confirmação
-              } catch (error) {
-                console.log('erro ao redirecionar para o carrinho');
+      if (this.$store.state.user?.user?.id) {
+        postNewAdress(this.$store.state.user.user.id, this.address2)
+          .then(() => {
+            Swal.fire({
+              title: 'Endereço salvo!',
+              text: 'O endereço foi adicionado à sua lista de endereços com sucesso.',
+              icon: 'success',
+              showCancelButton: true,
+              confirmButtonColor: '#797dc3',
+              cancelButtonColor: '#797dc3',
+              confirmButtonText: 'Continuar a compra',
+              cancelButtonText: 'Adicionar outro endereço',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                try {
+                  window.location.href = '/createOrder';
+                  // Lógica adicional após confirmação
+                } catch (error) {
+                  console.log('erro ao redirecionar para o carrinho');
+                }
+              }
+            });
+          })
+          // Verificar se a resposta indica um erro
+          .catch((error) => {
+            if (error.response && error.response.status === 400) {
+              const errorDiv = document.createElement('div');
+              errorDiv.classList.add('alert', 'alert-warning');
+              errorDiv.textContent =
+                'É preciso preencher todos os campos para poder salvar o endereço!';
+
+              // Adicionar a div ao DOM
+              const errorContainer = document.getElementById('error-container');
+              if (errorContainer) {
+                errorContainer.appendChild(errorDiv);
+                throw new Error('Erro de requisição: dados inválidos');
               }
             }
           });
-        })
-        // Verificar se a resposta indica um erro
-        .catch((error) => {
-          if (error.response && error.response.status === 400) {
-            const errorDiv = document.createElement('div');
-            errorDiv.classList.add('alert', 'alert-warning');
-            errorDiv.textContent =
-              'É preciso preencher todos os campos para poder salvar o endereço!';
-
-            // Adicionar a div ao DOM
-            const errorContainer = document.getElementById('error-container'); 
-			if (errorContainer) {
-            errorContainer.appendChild(errorDiv);
-            throw new Error('Erro de requisição: dados inválidos');}
-          }
-        });
-	}
+      }
     },
     showError(message: string) {
       const errorContainer = document.getElementById('error-container');
-	  if (errorContainer) {
-      errorContainer.innerHTML = '';
-      const alert = document.createElement('div');
-      alert.classList.add('alert', 'alert-danger');
-      alert.innerHTML = message;
-      errorContainer.appendChild(alert);}
+      if (errorContainer) {
+        errorContainer.innerHTML = '';
+        const alert = document.createElement('div');
+        alert.classList.add('alert', 'alert-danger');
+        alert.innerHTML = message;
+        errorContainer.appendChild(alert);
+      }
     },
   },
 };
@@ -407,15 +395,15 @@ a {
 }
 #andar,
 #cidade,
-#numero, 
+#numero,
 #longitude {
   width: 100%;
   max-width: 350px;
 }
 #name,
 #codigo_postal,
-#rua{
-	width: 100%;
+#rua {
+  width: 100%;
   max-width: 340px;
 }
 .titulo {
