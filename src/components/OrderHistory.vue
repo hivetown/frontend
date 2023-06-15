@@ -1,12 +1,12 @@
 <template>
-  <h3 class="semencoemndas" v-if="orders['totalItems'] === 0">
+  <h3 class="semencoemndas" v-if="!orders?.items">
     <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
     encomendas.
   </h3>
 
   <div class="table-container" style="overflow: auto">
     <div></div>
-    <table v-if="orders['totalItems'] !== 0" style="border: 2px" class="table">
+    <table v-if="!!orders?.items" style="border: 2px" class="table">
       <thead>
         <tr>
           <th><h4>Exportar dados</h4></th>
@@ -29,194 +29,103 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="num in orders['totalItems']" :key="num">
+        <tr v-for="(order, idx) in orders.items" :key="order.id">
           <td>
             <input
               id="name"
               type="checkbox"
               style="transform: scale(1.2)"
               @change="onCheckboxChange()"
-              :value="orders['items'][num - 1]['id']"
-              v-model="selectedOrders[num - 1]"
+              :value="order.id"
+              v-model="selectedOrders[idx]"
             />
-            <span v-if="selectedOrders[num - 1]"></span>
+            <span v-if="selectedOrders[idx]"></span>
           </td>
 
           <td>
-            <div class="carousel-container">
-              <div class="carousel">
-                <div
-                  id="myCarousel"
-                  class="carousel slide"
-                  data-ride="carousel"
-                >
-                  <div>
-                    <div
-                      v-if="
-                        encomendasImage[num] === undefined ||
-                        encomendasImage[num] === null ||
-                        encomendasImage[num].length === 0
-                      "
-                    >
-                      <div class="carousel-inner" role="listbox">
-                        <a
-                          :href="'/encomenda/id' + orders?.items[num - 1]?.id"
-                          style="text-decoration: none; color: black"
-                        >
-                          <img
-                            style="width: 75px"
-                            :src="encomendasImage[1].toString()"
-                            :alt="'Image ' + orders?.items[num - 1]?.id"
-                            v-if="
-                              encomendasImage[1] &&
-                              encomendasImage[1].length !== 0
-                            "
-                          />
-                          <p class="texto" v-else>Produtos sem <br />imagem</p>
-                        </a>
-                      </div>
-                    </div>
-                    <div v-else>
-                      <ol
-                        v-if="encomendasImage[num].length > 1"
-                        class="carousel-indicators"
-                      >
-                        <li
-                          v-for="(image, index) in encomendasImage[num]"
-                          :key="index"
-                          :class="{ active: index === 0 }"
-                        ></li>
-                      </ol>
-
-                      <div class="carousel-inner" role="listbox">
-                        <div
-                          v-for="(image, index) in encomendasImage[num]"
-                          :key="index"
-                          :class="{ item: true, active: index === 0 }"
-                        >
-                          <a
-                            :href="'/encomenda/id' + orders?.items[num - 1]?.id"
-                            style="text-decoration: none; color: black"
-                          >
-                            <img
-                              style="width: 75px"
-                              :src="image"
-                              :alt="'Image ' + (index + 1)"
-                              v-if="image !== null"
-                            />
-                            <p class="texto" v-else>Produto sem <br />imagem</p>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <a :href="`/encomenda/id${orders['items'][num - 1]['id']}`">
-                </a>
-              </div>
-            </div>
+            <a
+              :href="'/encomenda/id' + order.id"
+              style="text-decoration: none; color: black"
+            >
+              <img
+                style="width: 75px"
+                :src="ordersImage[order.id].url"
+                :alt="ordersImage[order.id].alt"
+                v-if="!!ordersImage[order.id]"
+              />
+              <p class="texto" v-else>Produtos sem <br />imagem</p>
+            </a>
           </td>
 
           <td>
             <a
               class="texto"
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              >{{
-                orders['items'] && orders['items'][num - 1]
-                  ? orders['items'][num - 1]['id']
-                  : ''
-              }}</a
+              >{{ order.id }}</a
             >
           </td>
 
           <td>
             <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Delivered'
-              "
+              v-if="order.generalStatus === 'Delivered'"
               style="display: inline-flex"
             >
               <i class="bi bi-check-all"></i>
               <a
-                :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+                :href="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
                 <p class="texto">Entregue</p></a
               >
             </div>
             <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Processing'
-              "
+              v-if="order.generalStatus === 'Processing'"
               style="display: inline-flex"
             >
               <i class="bi bi-box-seam"></i>
               <a
-                :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+                :href="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
                 <p class="texto">Em processamento</p></a
               >
             </div>
             <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Paid'
-              "
+              v-if="order.generalStatus === 'Paid'"
               style="display: inline-flex"
             >
               <i class="bi bi-cash-coin"></i>
               <a
-                :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+                :href="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
                 ><p class="texto">Pago</p>
               </a>
             </div>
             <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Canceled'
-              "
+              v-if="order.generalStatus === 'Canceled'"
               style="display: inline-flex"
             >
               <i class="bi bi-x-lg"></i>
               <a
-                :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+                :href="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
                 ><p class="texto">Cancelada</p></a
               >
             </div>
             <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Shipped'
-              "
+              v-if="order.generalStatus === 'Shipped'"
               style="display: inline-flex"
             >
               <i class="bi bi-truck"></i>
               <a
-                :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+                :href="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
                 ><p class="texto">Em andamento</p></a
               >
             </div>
 
-            <div
-              v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                orders.items[num - 1].generalStatus === 'Shipped'
-              "
-            >
+            <div v-if="order.generalStatus === 'Shipped'">
               <BButton
                 class="botao2"
                 variant="outline-primary"
@@ -226,73 +135,63 @@
             </div>
             <div
               v-if="
-                orders.items &&
-                orders.items[num - 1] &&
-                (orders.items[num - 1].generalStatus === 'Paid' ||
-                  orders.items[num - 1].generalStatus === 'Processing')
+                order.generalStatus === 'Paid' ||
+                order.generalStatus === 'Processing'
               "
             >
               <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
               <BButton
                 class="botao2"
                 variant="outline-primary"
-                @click="cancelarEncomenda(num)"
+                @click="cancelarEncomenda(order)"
                 >Cancelar encomenda</BButton
               >
             </div>
           </td>
           <td>
             <a
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
-                {{ orders['items'][num - 1]['shippingAddress']['street'] }},
-                nº{{ orders['items'][num - 1]['shippingAddress']['number'] }},
-                andar {{ orders['items'][num - 1]['shippingAddress']['floor'] }}
+                {{ order.shippingAddress.street }}, nº{{
+                  order.shippingAddress.number
+                }}, andar {{ order.shippingAddress.floor }}
               </p></a
             >
 
             <a
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
-                {{ orders['items'][num - 1]['shippingAddress']['zipCode'] }},
-                {{ orders['items'][num - 1]['shippingAddress']['city'] }}
+                {{ order.shippingAddress.zipCode }},
+                {{ order.shippingAddress.city }}
               </p></a
             >
 
             <a
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><p id="morada2">
-                {{ orders['items'][num - 1]['shippingAddress']['latitude'] }},
-                {{ orders['items'][num - 1]['shippingAddress']['longitude'] }}
+                {{ order.shippingAddress.latitude }},
+                {{ order.shippingAddress.longitude }}
               </p></a
             >
           </td>
 
           <td>
             <a
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               class="texto"
-              >{{
-                orders['items'] && orders['items'][num - 1]
-                  ? orders['items'][num - 1]['orderDate'].substring(0, 10)
-                  : ''
-              }}</a
+              >{{ order.orderDate.substring(0, 10) }}</a
             >
           </td>
           <td>
             <a
-              :href="'/encomenda/id' + orders?.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               class="texto"
-              >{{
-                orders['items'] && orders['items'][num - 1]
-                  ? orders['items'][num - 1]['totalPrice']
-                  : ''
-              }}€</a
+              >{{ order.totalPrice }}€</a
             >
           </td>
 
@@ -300,7 +199,7 @@
             <BButton
               class="botao2"
               variant="outline-primary"
-              :href="'/encomenda/id' + orders.items[num - 1]?.id"
+              :href="'/encomenda/id' + order.id"
               >Ver detalhes</BButton
             >
           </td>
@@ -321,83 +220,53 @@
 <script setup lang="ts">
 import Swal from 'sweetalert2';
 import { exportOrders } from '../api/orders';
-import { Order } from '../types/interfaces';
-import { onMounted, ref, Ref, computed } from 'vue';
+import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
+import { onMounted, ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
-const arr: { value: number[] } = ref([]);
 const store = useStore();
-const encomendas: number[] = [];
-const encomendasImage: Ref<any[]> = ref([]);
-const orderIds = ref<number[]>([]); //array com o id das encomendas
-const encomendaId: Ref<any[]> = ref([]);
 const user2 = computed(() => store.state.user);
 
-const orders = ref<any>('');
-	const selectedOrders = ref([]);
+const orders = ref<BaseItems<Order>>();
+/**
+ * {
+ * 	id: Image
+ * }
+ */
+const ordersImage = ref<{ [id: number]: Image }>({});
+const selectedOrders = ref([]);
 
 const isExportButtonVisible = computed(() => {
   return selectedOrders.value.length > 0;
 });
+
+const findFirstImage = (order: OrderItem[]) => {
+  const image = order.find(
+    (item) => item.producerProduct.productSpec?.images.length
+  );
+  return image ? image.producerProduct.productSpec?.images[0] : undefined;
+};
+
 onMounted(async () => {
-	if (user2.value && user2.value.user && user2.value.user.id) {
+  if (user2.value && user2.value.user && user2.value.user.id) {
+    const response = await fetchAllOrders(user2.value.user.id);
+    orders.value = response.data;
 
-  const response = await fetchAllOrders(user2.value.user.id);
-  orders.value = response.data;
-  orders.value.items.forEach((item: { id: number }) => {
-    orderIds.value.push(item.id);
-  });
-	
-  for (let i = 0; i < orders.value.totalItems; i++) {
-    encomendas.push(orders.value.items[i].id);
-    arr.value.push(i);
-  }
-  arr.value.reverse();
-
-  for (let i = 0; i < encomendas.length; i++) {
-    //TODO por user logado
-	
-    const response1 = await fetchAllItems(user2.value.user.id, encomendas[i].toString());
-    const newEncomenda = { [encomendas[i]]: response1.data };
-    encomendaId.value.push(newEncomenda);
-    const encomendaX: Order[] = [];
-
-	for (
-      let j = 0;
-      j < encomendaId.value[i][encomendas[i]]['items'].length - 1;
-      j++
-    ) {
-      encomendaX.push(
-        encomendaId.value[i][encomendas[i]] &&
-          encomendaId.value[i][encomendas[i]]['items'] &&
-          encomendaId.value[i][encomendas[i]]['items'][j] &&
-          encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'] &&
-          encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'][
-            'productSpec'
-          ] &&
-          encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'][
-            'productSpec'
-          ]['images'] &&
-          encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'][
-            'productSpec'
-          ]['images'][0] &&
-          encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'][
-            'productSpec'
-          ]['images'][0]['url']
-          ? encomendaId.value[i][encomendas[i]]['items'][j]['producerProduct'][
-              'productSpec'
-            ]['images'][0]['url']
-          : null
+    for (const order of orders.value.items) {
+      const orderItems = await fetchAllItems(
+        user2.value.user.id,
+        order.id.toString()
       );
+
+      const image = findFirstImage(orderItems.data.items);
+      if (image) {
+        ordersImage.value[order.id] = image;
+      }
     }
-    encomendasImage.value.push(encomendaX);
-
-
   }
-}
 });
 
-function cancelarEncomenda(num: number) {
+function cancelarEncomenda(order: Order) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
     title: 'Deseja cancelar a encomenda?',
@@ -410,13 +279,10 @@ function cancelarEncomenda(num: number) {
     cancelButtonText: 'Não, voltar',
   }).then((result) => {
     if (result.isConfirmed) {
-      try {
-        //TODO trocar p user logado
-		if (user2.value && user2.value.user && user2.value.user.id) {
-
-        cancelOrder(user2.value.user.id, orders.value['items'][num - 1]['id'])
-          .then((response) => {
-            console.log('cancelou');
+      //TODO trocar p user logado
+      if (user2.value && user2.value.user && user2.value.user.id) {
+        cancelOrder(user2.value.user.id, order.id)
+          .then(() => {
             // exibe o Swal2 para "Encomenda cancelada!" após o cancelamento da encomenda
             Swal.fire({
               title: 'Encomenda cancelada!',
@@ -437,32 +303,27 @@ function cancelarEncomenda(num: number) {
                 text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
                 confirmButtonText: 'OK',
               });
-            } else {
-              console.log(error);
-              console.log('erro ao cancelar encomenda');
             }
-          });}
-      } catch (error: any) {
-        console.log(error);
-        console.log('erro ao cancelar encomenda');
+          });
       }
     }
   });
 }
 function exportSelectedOrders() {
-
   let arr = [];
+  // eslint-disable-next-line quotes
   let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
   for (let i = 0; i < checkboxes.length; i++) {
     // arr.push(checkboxes[i].value);
     arr.push((checkboxes[i] as HTMLInputElement).value);
   }
   if (user2.value && user2.value.user && user2.value.user.id) {
-  	return exportOrders(user2.value.user.id, arr);
+    return exportOrders(user2.value.user.id, arr);
   }
 }
 
 function onCheckboxChange() {
+  // eslint-disable-next-line quotes
   let checkboxes = document.querySelectorAll("input[type='checkbox']:checked");
   if (checkboxes.length == 0) {
     var button = document.getElementById('botao');
@@ -487,7 +348,6 @@ function cancelarEncomendaImpossivel() {
   });
 }
 </script>
-
 
 <style scoped>
 #morada2 {

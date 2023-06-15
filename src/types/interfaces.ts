@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpec;
+    productSpec?: ProductSpec;
     producer?: Producer;
 }
 
@@ -117,10 +117,19 @@ export type CreateAddress = Omit<Address, 'id'>;
 export interface ShippingAdress {
     shippingAddressId: number;
 }
-export interface Order extends BaseItems<Product> {
+export interface Order {
     id: number;
     shippingAddress: Address;
-    consumer?: User;
+    orderDate: string;
+    generalStatus: string;
+    totalPrice: number;
+}
+
+export interface OrderItem {
+    price: number;
+    producerProduct: ProducerProduct;
+    quantity: number;
+    status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface Image {
@@ -155,4 +164,10 @@ export interface ProductSpecFieldWithCategory {
     products: {
         fieldValues: ProductSpecField[];
     }[];
+}
+
+export interface CartItem {
+    producerProduct: ProducerProduct;
+    consumer?: Consumer;
+    quantity: number;
 }

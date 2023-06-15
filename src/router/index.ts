@@ -71,7 +71,7 @@ const routes = [
         name: 'OrderHistory',
         component: OrderHistory,
         meta: {
-            requiresAuth: true,
+            // requiresAuth: true,
         },
     },
     {

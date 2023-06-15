@@ -4,10 +4,10 @@
     <div class="form-check form-check-inline">
       <br />
       <h5>Endereços guardados</h5>
-      <div class="row" v-if="address2.totalItems > 0">
+      <div class="row" v-if="addresses && addresses.items">
         <div
           class="col-sm-6"
-          v-for="(num, index) in address2.totalItems"
+          v-for="(address, index) in addresses.items"
           :key="index"
         >
           <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
@@ -15,7 +15,7 @@
             <input
               class="form-check-input"
               type="radio"
-              :value="address2['items'][num - 1]['id']"
+              :value="address.id"
               v-model="selectedItems"
               @change="checkButtonDisabled"
             />
@@ -23,18 +23,17 @@
               <div class="border p-3" id="caixa">
                 <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
                 <p>
-                  {{ address2['items'][num - 1]['street'] }}, numero
-                  {{ address2['items'][num - 1]['number'] }}, andar
-                  {{ address2['items'][num - 1]['floor'] }}
+                  {{ address['street'] }}, numero {{ address['number'] }}, andar
+                  {{ address['floor'] }}
                 </p>
                 <p>
-                  {{ address2['items'][num - 1]['zipCode'] }},
-                  {{ address2['items'][num - 1]['parish'] }}
+                  {{ address['zipCode'] }},
+                  {{ address['parish'] }}
                 </p>
-                <p>Distrito de {{ address2['items'][num - 1]['district'] }}</p>
+                <p>Distrito de {{ address['district'] }}</p>
                 <p>
-                  {{ address2['items'][num - 1]['latitude'] }},
-                  {{ address2['items'][num - 1]['longitude'] }}
+                  {{ address['latitude'] }},
+                  {{ address['longitude'] }}
                 </p>
               </div>
             </label>
@@ -62,22 +61,17 @@
     <div>
       <h4 class="titulo">Resumo do carrinho</h4>
       <div class="border p-3" id="caixa2">
+        <span v-if="!cart?.items">O carrinho está vazio</span>
         <div
-          v-for="(num, index) in cart.totalItems"
+          v-else
+          v-for="(cartItem, index) in cart.items"
           :key="index"
           style="white-space: nowrap"
         >
           <a href="/carrinho">
             <div style="display: inline-block">
-              <span v-if="cart.totalItems > 0"
-                >{{ cart['items'][num - 1]['quantity'] }}X
-                {{
-                  cart['items'][num - 1]['producerProduct']['productSpec'][
-                    'name'
-                  ]
-                }};
-              </span>
-              <span v-else> O carrinho está vazio</span>
+              >{{ cartItem['quantity'] }}X
+              {{ cartItem.producerProduct.productSpec!.name }};
             </div>
           </a>
         </div>
@@ -108,18 +102,18 @@ import { onMounted, ref, computed } from 'vue';
 import { getAddresses, postOrderPayment, getCart } from '../api/cart';
 import { useStore } from '@/store';
 import AddAddress from '../components/AddAddress.vue';
+import { Address, BaseItems, CartItem } from '@/types';
 const selectedItems = ref([]); // Variável de dados para armazenar os checkboxes selecionados
 const isButtonDisabled = ref(true); // Variável de dados para controlar o estado do botão
 const store = useStore();
 const user2 = computed(() => store.state.user);
-const address2 = ref<any>('');
+const addresses = ref<BaseItems<Address>>();
 const collapsed = ref(true);
-const cart = ref<any>('');
+const cart = ref<BaseItems<CartItem>>();
 
 onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
-    const addresses = await getAddresses(user2.value.user.id);
-    address2.value = addresses.data;
+    addresses.value = (await getAddresses(user2.value.user.id)).data;
     const gCart = await getCart(user2.value.user.id);
     cart.value = gCart.data;
   }

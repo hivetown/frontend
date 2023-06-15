@@ -1,4 +1,9 @@
-import { ShippingAdress } from '../types/interfaces';
+import {
+    Address,
+    BaseItems,
+    CartItem,
+    ShippingAdress,
+} from '../types/interfaces';
 import { api } from './_base';
 
 export const postOrderPayment = (
@@ -13,10 +18,11 @@ export const deleteCart = (userId: string) => {
 };
 
 export const getAddresses = (userId: number) => {
-    return api.get(`/consumers/${userId}/addresses`);
+    return api.get<BaseItems<Address>>(`/consumers/${userId}/addresses`);
 };
+
 export const getCart = (userId: number) => {
-    return api.get(`/consumers/${userId}/cart`);
+    return api.get<BaseItems<CartItem>>(`/consumers/${userId}/cart`);
 };
 export const getProduct = (userId: number) => {
     return api.get(`/products/${userId}/products`);

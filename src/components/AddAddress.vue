@@ -173,12 +173,13 @@
 <script lang="ts">
 import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
-import { Address2 } from '../types/interfaces';
+import { CreateAddress } from '../types';
+import { AxiosError } from 'axios';
 
 export default {
   data() {
     return {
-      address2: {} as Address2,
+      address2: {} as CreateAddress,
       isChecked: false, // Inicialmente o checkbox não estará selecionado
       name: '', // Propriedade para validar o campo "Nome"
       door: '',
@@ -349,7 +350,7 @@ export default {
             });
           })
           // Verificar se a resposta indica um erro
-          .catch((error) => {
+          .catch((error: AxiosError) => {
             if (error.response && error.response.status === 400) {
               const errorDiv = document.createElement('div');
               errorDiv.classList.add('alert', 'alert-warning');
