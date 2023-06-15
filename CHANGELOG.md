@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.2](https://github.com/hivetown/frontend/compare/v1.0.1...v1.0.2) (2023-06-15)
+
+
+### Bug Fixes
+
+* remove products from comparison (last) ([b3b5b44](https://github.com/hivetown/frontend/commit/b3b5b44fa02aeccac4d50b317526df79d69d95f1))
+* remove produducts from compare ([9a9755f](https://github.com/hivetown/frontend/commit/9a9755f6b25b091387cd4b49fc2bc9ebce3ad49e))
+* remove produducts from compare ([7a88550](https://github.com/hivetown/frontend/commit/7a885508a1cc3e68592703bc985bc77df7607c3c))
+
 ## [1.0.1](https://github.com/hivetown/frontend/compare/v1.0.0...v1.0.1) (2023-06-12)
 
 
