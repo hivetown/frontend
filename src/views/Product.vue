@@ -185,6 +185,12 @@
           >
             <h5 class="grey-txt">Outros vendedores</h5>
           </b-nav-item>
+          <b-nav-item
+            @click="currentPage = 'unidade'"
+            :class="{ 'active-view': currentPage === 'unidade' }"
+          >
+            <h5 class="grey-txt">Unidade de produção</h5>
+          </b-nav-item>
         </b-nav>
       </b-navbar>
       <!-- Página dos detalhes -->
@@ -260,9 +266,13 @@
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
-              v-if="producerProduct.id != defaultProduct.id"
+              v-if="
+                producerProduct.producer &&
+                producerProduct.id != defaultProduct.id
+              "
             >
               <router-link
+                v-if="producerProduct.producer"
                 :to="'/producer/' + producerProduct.producer.user.id"
               >
                 <b-avatar
@@ -277,7 +287,7 @@
                 >
                 </b-avatar>
               </router-link>
-              <div class="seller">
+              <div class="seller" v-if="producerProduct.producer">
                 <h5>{{ producerProduct.producer.user.name }}</h5>
                 <router-link
                   :to="'/producer/' + producerProduct.producer.user.id"
@@ -306,6 +316,17 @@
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="px-4" v-if="currentPage === 'unidade'">
+        <div style="background-color: ">
+          <div class="mt-4">
+            <h4>Unidade de produção do produto</h4>
+
+            <div class="parent" style="background-color: green; height: 30vh">
+              colocar o mapa aqui
             </div>
           </div>
         </div>
