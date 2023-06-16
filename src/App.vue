@@ -20,7 +20,9 @@ import Footer from '@/components/Footer.vue';
   color: #232323;
   font-family: 'Inter', sans-serif;
 }
-
+.main-txt {
+  font-family: 'DM Serif Display', serif;
+}
 .grey-txt {
   color: #5a5a5a;
 }

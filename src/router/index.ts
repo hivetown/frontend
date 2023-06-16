@@ -10,6 +10,7 @@ import User from '@/views/User.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import ConsentPage from '@/views/ConsentPage.vue';
+import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import Order from '@/views/Order.vue';
 import OrderHistory from '@/views/OrderHistory.vue';
 import Success from '@/views/Success.vue';
@@ -109,6 +110,11 @@ const routes = [
         path: '/consent',
         name: 'ConsentManagement',
         component: ConsentPage,
+    },
+    {
+        path: '/impactConsumer',
+        name: 'ImpactConsumer',
+        component: ImpactConsumer,
     },
     {
         path: '/producer/:id',
