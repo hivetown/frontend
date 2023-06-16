@@ -1,15 +1,12 @@
 <template>
-  <div class="root">
-    <router-link
-      to="/encomendas"
-      class="p-2 grey-txt text-decoration-none"
-      style="font-weight: 500; margin-left: 20px"
-      ><i class="bi bi-arrow-left"></i>Voltar
+  <div class="root parent">
+    <router-link to="/encomendas" class="p-2 grey-txt text-decoration-none">
+      <PageBack></PageBack>
     </router-link>
 
     <div class="wrapper-mains">
       <div id="principal">
-        <p class="titulo">Estado da encomenda {{ $route.params.id }}</p>
+        <p class="titulo">Estado da encomenda nº {{ $route.params.id }}</p>
         <Progress
           :order="order"
           :length="4"
@@ -31,6 +28,7 @@
 
 <script setup lang="ts">
 import Progress from '../components/Progress.vue';
+import PageBack from '../components/PageBack.vue';
 import OrderDetails from '../components/OrderDetails.vue';
 import { ref, computed, onBeforeMount } from 'vue';
 import { useStore } from '@/store';
@@ -67,14 +65,14 @@ onBeforeMount(async () => {
   border-radius: 5px;
 }
 .tabela {
-  margin-top: 180px;
+  margin-top: 5vh;
 }
 .titulo {
-  font-size: 20px;
+  font-size: 1.8em;
 }
 @media (max-width: 660px) {
   .titulo {
-    font-size: 25px;
+    font-size: 1.3em;
     text-align: center !important;
   }
   .resumo {
