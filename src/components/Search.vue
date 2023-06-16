@@ -2,7 +2,7 @@
   <!-- Botão de pesquisa -->
   <div>
     <b-button @click="showModal" class="show-search-btn d-none d-lg-block">
-      <i class="bi bi-search"></i>
+      <i class="bi bi-search s-icon"></i>
     </b-button>
   </div>
 
@@ -74,6 +74,10 @@
 input[type='search']:focus {
   border: none !important;
   box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
+}
+
+.s-icon {
+  color: white;
 }
 </style>
 
