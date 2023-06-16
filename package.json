@@ -36,6 +36,7 @@
     "bootstrap-icons-vue": "^1.8.1",
     "bootstrap-vue": "^2.23.1",
     "bootstrap-vue-3": "^0.5.1",
+    "chart.js": "^4.3.0",
     "dotenv-cra": "^3.0.2",
     "firebase": "^9.21.0",
     "js-cookie": "^3.0.5",
@@ -47,6 +48,7 @@
     "stripe": "^11.18.0",
     "sweetalert2": "^11.7.12",
     "vue": "^3.2.41",
+    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.2.1",
     "vuex": "^4.1.0"
   },
