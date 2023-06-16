@@ -7,6 +7,15 @@ export const createProducer = async (producer: CreateProducer) =>
 export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
 
+export const fetchAllProducers = (
+    page?: number,
+    pageSize?: number,
+    search?: string
+) =>
+    api.get<BaseItems<Producer>>('/producers', {
+        params: { page, pageSize, search },
+    });
+
 export const fetchProducerProductionUnits = (id: number) =>
     api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
 
