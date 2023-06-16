@@ -14,11 +14,14 @@
             <p class="text-center grey-txt other-text-banner">
               Encontre os melhores produtos da sua comunidade local
             </p>
-            <b-form-input
-              class="rounded-pill search search-mobile"
-              type="search"
-              placeholder=" Pesquisar"
-            />
+            <form @submit="submitSearch">
+              <b-form-input
+                class="rounded-pill search search-mobile"
+                type="search"
+                placeholder=" Pesquisar"
+                v-model="search"
+              />
+            </form>
           </div>
         </div>
       </div>
@@ -26,7 +29,26 @@
   </div>
 </template>
 
-<style>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const search = ref('');
+const submitSearch = ($e: Event) => {
+  $e.preventDefault();
+
+  if (search.value) {
+    router.push({ path: '/products', query: { search: search.value } });
+  }
+};
+</script>
+
+<style scoped>
+form {
+  padding: 0 !important;
+}
 .search {
   border: solid 2px #f1b24a !important;
   display: block;
