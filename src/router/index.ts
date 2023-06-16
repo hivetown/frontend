@@ -111,6 +111,9 @@ const routes = [
         path: '/impactProducer',
         name: 'ImpactProducer',
         component: ImpactProducer,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/consent',
@@ -121,6 +124,9 @@ const routes = [
         path: '/impactConsumer',
         name: 'ImpactConsumer',
         component: ImpactConsumer,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/producer/:id',

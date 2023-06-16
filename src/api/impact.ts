@@ -33,7 +33,7 @@ export const fetchReportEvolution = (
     raio?: number,
     view?: string
 ) =>
-    api.get<ReportEvolution>(
+    api.get<Record<string, ReportEvolution>>(
         `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
 

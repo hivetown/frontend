@@ -184,6 +184,8 @@ export interface ReportEvolution {
     numeroEncomendasCancelados?: number;
     totalProdutos?: number;
     totalProdutosCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }
 
 export interface ReportBarChartProduct {
@@ -195,6 +197,8 @@ export interface ReportBarChartProduct {
     numeroEncomendasCancelados?: number;
     totalProdutos?: number;
     totalProdutosCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }
 
 // Ver se isto está a ser usado
