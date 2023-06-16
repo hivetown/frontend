@@ -344,12 +344,10 @@ export default {
           this.listOfPUs[this.puToEditIndex]['Nome'],
           newAddres
         );
-        updateProductionUnit(
-          15,
-          this.listOfPUs[this.puToEditIndex]['ID'],
-          { name: this.listOfPUs[this.puToEditIndex]['Nome'] },
-          { address: newAddres }
-        );
+        updateProductionUnit(15, this.listOfPUs[this.puToEditIndex]['ID'], {
+          name: this.listOfPUs[this.puToEditIndex]['Nome'],
+          address: newAddres,
+        });
       }
     },
 
@@ -391,7 +389,7 @@ export default {
             Morada: `${this.userProdUnit[i].address?.county}, ${this.userProdUnit[i].address?.city},
 				  ${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
 				  ${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
-            Acoes: this.userProdUnit[i].id,
+            Acoes: this.userProdUnit[i].address?.id,
           };
           opts.push(build);
         }
