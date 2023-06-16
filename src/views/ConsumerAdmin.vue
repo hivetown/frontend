@@ -197,7 +197,7 @@ export default {
     });
   } else {
     Swal.fire({
-      title: 'Digite a password de administrador:',
+      title: 'Digite a sua password:',
       input: 'password',
       inputAttributes: {
         autocapitalize: 'off'
@@ -268,7 +268,7 @@ export default {
 
     showCancelDialog(): void {
 		Swal.fire({
-    title: 'Digite a password de administrador:',
+    title: 'Digite a sua password',
     input: 'password',
     inputAttributes: {
       autocapitalize: 'off'
@@ -276,16 +276,23 @@ export default {
     showCancelButton: true,
     confirmButtonText: 'Confirmar',
     showLoaderOnConfirm: false,
-    preConfirm: (password) => {
-      // Verificar se a senha está correta
-      if (password === 'Hivetown2023') {
-        return true; // Senha correta, avança para o próximo diálogo
-      } else {
-        Swal.showValidationMessage('Password incorreta');
-        return false; // Senha incorreta, mantém a caixa de diálogo aberta
-      }
-    },
-    // Remova a propriedade allowOutsideClick
+    preConfirm: async (password) => {
+
+try {
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			this.$store.state.user?.user.email!, 
+			password 
+		);
+		return true;
+	} catch (error) {
+		//pass errada
+		Swal.showValidationMessage('Password incorreta');
+		return false;
+		
+	}
+
+},
   })
   .then((result) => {
     if (result.isConfirmed) {
@@ -343,15 +350,23 @@ export default {
     showCancelButton: true,
     confirmButtonText: 'Confirmar',
     showLoaderOnConfirm: false,
-    preConfirm: (password) => {
-      // Verificar se a senha está correta
-      if (password === 'Hivetown2023') {
-        return true; // Senha correta, avança para o próximo diálogo
-      } else {
-        Swal.showValidationMessage('Password incorreta');
-        return false; // Senha incorreta, mantém a caixa de diálogo aberta
-      }
-    }
+    preConfirm: async (password) => {
+
+try {
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			this.$store.state.user?.user.email!, 
+			password 
+		);
+		return true;
+	} catch (error) {
+		//pass errada
+		Swal.showValidationMessage('Password incorreta');
+		return false;
+		
+	}
+
+},
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({

@@ -8,17 +8,17 @@
     </div>
     <div class="cart">
       <b-card
-        v-if="users"
+        v-if="user"
         id="b-card"
-        :title="users['user']['name']"
+        :title="user['user']['name']"
         :img-src="
-          users['user']['image'] && users['user']['image']['url']
-            ? users['user']['image']['url']
+          user['user']['image'] && user['user']['image']['url']
+            ? user['user']['image']['url']
             : '../../public/semimagem.png'
         "
         :img-alt="
-          users['user']['image'] && users['user']['image']['alt']
-            ? users['user']['image']['alt']
+          user['user']['image'] && user['user']['image']['alt']
+            ? user['user']['image']['alt']
             : 'Default image'
         "
         img-top
@@ -27,30 +27,30 @@
         class="mb-2"
       >
         <b-card-text>
-          <strong>Email: </strong>{{ users['user']['email'] || 'Não definido' }}
+          <strong>Email: </strong>{{ user['user']['email'] || 'Não definido' }}
           <br />
           <strong>Telemóvel: </strong
-          >{{ users['user']['phone'] || 'Não definido' }}
+          >{{ user['user']['phone'] || 'Não definido' }}
 
           <div
-            v-for="num in Array.isArray(users['addresses']) &&
-            users['addresses'].length > 0
-              ? users['addresses'].length - 1
+            v-for="num in Array.isArray(user['addresses']) &&
+            user['addresses'].length > 0
+              ? user['addresses'].length - 1
               : 0"
             :key="num"
           >
             <strong>Morada: </strong>
             {{
-              users['addresses'] && users['addresses'][num]
-                ? users['addresses'][num]['street'] +
+              user['addresses'] && user['addresses'][num]
+                ? user['addresses'][num]['street'] +
                   ', nº' +
-                  users['addresses'][num]['number'] +
+                  user['addresses'][num]['number'] +
                   ', porta ' +
-                  users['addresses'][num]['door'] +
+                  user['addresses'][num]['door'] +
                   ' ' +
-                  users['addresses'][num]['zipCode'] +
+                  user['addresses'][num]['zipCode'] +
                   ', ' +
-                  users['addresses'][num]['city']
+                  user['addresses'][num]['city']
                 : 'Não definido'
             }}
           </div>
@@ -58,24 +58,24 @@
           <br />
           <strong>Unidades de produção: </strong>
           <div>
-            <div v-if="qtd > 0">
+            <div v-if="Number(qtd) > 0">
               <div v-for="idx in qtd" :key="idx">
                 <p>
                   <strong v-if="productionUnitIds.items">ID: </strong
-                  >{{ productionUnitIds.items[idx - 1]['id'] }} Nome:
-                  {{ productionUnitIds.items[idx - 1]['name'] }}, <br />
+                  >{{ productionUnitIds.items[Number(idx) - 1]['id'] }} Nome:
+                  {{ productionUnitIds.items[Number(idx) - 1]['name'] }}, <br />
                   Rua:
-                  {{ productionUnitIds.items[idx - 1]['address']['street'] }},
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['street'] }},
                   nº
-                  {{ productionUnitIds.items[idx - 1]['address']['number'] }},
-                  {{ productionUnitIds.items[idx - 1]['address']['door'] }}
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['number'] }},
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['door'] }}
                   <br />
                   Cidade:
-                  {{ productionUnitIds.items[idx - 1]['address']['city'] }}
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['city'] }}
                   <br />Latitude:
-                  {{ productionUnitIds.items[idx - 1]['address']['latitude'] }}
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['latitude'] }}
                   , Longitude:
-                  {{ productionUnitIds.items[idx - 1]['address']['longitude'] }}
+                  {{ productionUnitIds.items[Number(idx) - 1]['address']['longitude'] }}
                 </p>
               </div>
             </div>
@@ -138,7 +138,7 @@
           <p></p>
 
           <button
-            v-if="users['deletedAt'] === null"
+            v-if="user['deletedAt'] === null"
             href="#"
             class="btn btn-outline-secondary btn-sm"
             @click="showCancelDialog"
@@ -153,61 +153,57 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import Swal from 'sweetalert2';
 
 import {
   getProducerId,
   desativarProducer,
-  ativarProducer,
-  updateProducer,
   getAddressPU,
+  updateProducer,
+  ativarProducer,
 } from '../api/producers';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { auth } from '@/utils/firebase';
+import {Producer, productionUnit, BaseItems } from '@/types';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 export default {
-  setup() {
-    const route = useRoute();
-    let formData = {};
-    const id = ref<any>(null);
-    const qtd = ref<any>(null);
-    const collapsed = ref(true);
-    const users = ref<any>(null);
-    const productionUnitIds = ref<any>(null);
-    const responseList = ref<any>(null);
-
-    onMounted(async () => {
-      id.value = route.params.id;
+  data() {
+ 
+	return {
+		formData: {email: "", name: "", phone: ""} ,
+    	collapsed : true,
+		qtd : 0,
+    	user : null as Producer | null,
+		productionUnitIds : {} as BaseItems<productionUnit>,
+	}
+  },
+ async mounted() {
+	  
       try {
-        const response = await getProducerId(id.value);
-        users.value = response.data;
-        console.log(users.value);
-        const responseAddressesPU = await getAddressPU(id.value);
-        productionUnitIds.value = responseAddressesPU.data;
-        qtd.value = productionUnitIds.value.totalItems;
+        const response = await getProducerId(Number(this.$route.params.id));
+        this.user = response.data;
+		this.formData.email= this.user!.user.email;
+		this.formData.name=this.user!.user.name;
+		this.formData.phone=this.user!.user.phone;
+		const responseAddressesPU = await getAddressPU(Number(this.$route.params.id));
+        this.productionUnitIds = responseAddressesPU.data;
+		console.log(responseAddressesPU.data);
+        this.qtd = Number(this.productionUnitIds.items.length);
       } catch (error) {
         console.error(error);
       }
-    });
-
-    return {
-      users,
-      id,
-      collapsed,
-      formData,
-      qtd,
-      responseList,
-      productionUnitIds,
-    };
   },
 
   methods: {
-	saveChanges() {
+    saveChanges() {
+		const email = this.$store.state.user?.user.email;
   // Define valores padrão para campos não preenchidos
   const defaults = {
-    name: this.users.user.name,
-    email: this.users.user.email,
-    phone: this.users.user.phone,
+    name: this.user!.user.name,
+    email: this.user!.user.email,
+    phone: this.user!.user.phone,
   };
 
   // Mescla valores padrão com valores do formulário
@@ -222,7 +218,7 @@ export default {
     });
   } else {
     Swal.fire({
-      title: 'Digite a password de administrador:',
+      title: 'Digite a sua password:',
       input: 'password',
       inputAttributes: {
         autocapitalize: 'off'
@@ -230,21 +226,27 @@ export default {
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       showLoaderOnConfirm: false,
-      preConfirm: (password) => {
-        // Verificar se a senha está correta
-        if (password === 'Hivetown2023') {
-          return true; // Senha correta, avança para o próximo diálogo
-        } else {
-          Swal.showValidationMessage('Password incorreta');
-          return false; // Senha incorreta, mantém a caixa de diálogo aberta
-        }
+      preConfirm: async (password) => {
+
+		try {
+                const userCredential = await signInWithEmailAndPassword(
+                    auth,
+                    email!, 
+                    password 
+                );
+				return true;
+            } catch (error) {
+                //pass errada
+				Swal.showValidationMessage('Password incorreta');
+				return false;
+				
+            }
+      
       },
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        updateProducer(this.id, data)
-          .then((response) => {
-            console.log(response);
+       
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
               text: 'Você poderá voltar a editar a conta caso se arrependa.',
@@ -254,7 +256,7 @@ export default {
               cancelButtonText: 'Não',
             }).then((result) => {
               if (result.isConfirmed) {
-                updateProducer(this.id, data)
+                updateProducer(Number(this.$route.params.id), data)
                   .then((response) => {
                     console.log(response);
                     Swal.fire({
@@ -278,17 +280,16 @@ export default {
                   });
               }
             });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          
+          
       }
     });
   }
 },
-showCancelDialog(): void {
+
+    showCancelDialog(): void {
 		Swal.fire({
-    title: 'Digite a password de administrador:',
+    title: 'Digite a sua password',
     input: 'password',
     inputAttributes: {
       autocapitalize: 'off'
@@ -296,16 +297,23 @@ showCancelDialog(): void {
     showCancelButton: true,
     confirmButtonText: 'Confirmar',
     showLoaderOnConfirm: false,
-    preConfirm: (password) => {
-      // Verificar se a senha está correta
-      if (password === 'Hivetown2023') {
-        return true; // Senha correta, avança para o próximo diálogo
-      } else {
-        Swal.showValidationMessage('Password incorreta');
-        return false; // Senha incorreta, mantém a caixa de diálogo aberta
-      }
-    },
-    // Remova a propriedade allowOutsideClick
+    preConfirm: async (password) => {
+
+try {
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			this.$store.state.user?.user.email!, 
+			password 
+		);
+		return true;
+	} catch (error) {
+		//pass errada
+		Swal.showValidationMessage('Password incorreta');
+		return false;
+		
+	}
+
+},
   })
   .then((result) => {
     if (result.isConfirmed) {
@@ -321,7 +329,7 @@ showCancelDialog(): void {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          desativarProducer(this.id)
+          desativarProducer(Number(this.$route.params.id))
             .then(() => {
               Swal.fire(
                 'Desativado!',
@@ -353,9 +361,9 @@ showCancelDialog(): void {
     }
   });
     },
-    reativar(): void {
+	reativar(): void {
   Swal.fire({
-    title: 'Digite a password de administrador:',
+    title: 'Digite a password:',
     input: 'password',
     inputAttributes: {
       autocapitalize: 'off'
@@ -363,15 +371,23 @@ showCancelDialog(): void {
     showCancelButton: true,
     confirmButtonText: 'Confirmar',
     showLoaderOnConfirm: false,
-    preConfirm: (password) => {
-      // Verificar se a senha está correta
-      if (password === 'Hivetown2023') {
-        return true; // Senha correta, avança para o próximo diálogo
-      } else {
-        Swal.showValidationMessage('Password incorreta');
-        return false; // Senha incorreta, mantém a caixa de diálogo aberta
-      }
-    }
+    preConfirm: async (password) => {
+
+try {
+		const userCredential = await signInWithEmailAndPassword(
+			auth,
+			this.$store.state.user?.user.email!, 
+			password 
+		);
+		return true;
+	} catch (error) {
+		//pass errada
+		Swal.showValidationMessage('Password incorreta');
+		return false;
+		
+	}
+
+},
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({
@@ -385,7 +401,7 @@ showCancelDialog(): void {
         confirmButtonText: 'Sim, reativar!'
       }).then((result) => {
         if (result.isConfirmed) {
-          ativarProducer(this.id)
+          ativarProducer(Number(this.$route.params.id))
             .then(() => {
               Swal.fire(
                 'Reativado!',
@@ -420,6 +436,8 @@ showCancelDialog(): void {
   },
 };
 </script>
+
+
 <style scoped>
 h1 {
   text-align: center;

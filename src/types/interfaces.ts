@@ -49,6 +49,7 @@ export interface User {
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+	addresses?: Address[];
 	deletedAt: string;
 
 }
@@ -84,8 +85,8 @@ export interface productionUnit {
     id: number;
     name: string;
     address: Address;
-    producer?: Producer;
-    deletedAt: Date | null;
+    producer?: Producer | number;
+    deletedAt: string | null;
 }
 
 export interface ApiRequest {

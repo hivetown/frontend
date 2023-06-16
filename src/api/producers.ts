@@ -18,7 +18,7 @@ export const getProducers = (
     });
 //nao da com o include all
 export const getProducerId = (producerId: number, search?: string) =>
-    api.get<Producer[]>(`/producers/${producerId}`, {
+    api.get<Producer[]>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
 
