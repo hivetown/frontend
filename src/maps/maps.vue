@@ -65,6 +65,8 @@ export default {
         let longitude = 0;
         let latitude = 0;
         if (typeof unit.address === 'number') {
+          console.log('props.producerId', props.producerId);
+          console.log('unit.address', unit.address);
           const fetchedUnit = await fetchUnit(props.producerId, unit.address);
           longitude = fetchedUnit.data.address.longitude;
           latitude = fetchedUnit.data.address.latitude;

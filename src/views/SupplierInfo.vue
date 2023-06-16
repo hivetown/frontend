@@ -11,6 +11,7 @@
         />
       </div>
     </div>
+    <!-- Sobre -->
     <div
       class="w-75 p-4 px-5"
       style="background-color: ; height: ; flex-direction: column"
@@ -100,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { BaseItems, Producer, productionUnit } from '@/types';
+import { BaseItems, Producer, ProductionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
 import { fetchMapForUnit } from '@/maps/maps';
 import Maps from '../maps/maps.vue';
@@ -110,7 +111,7 @@ export default {
     return {
       mapImage: 1,
       dadosProdutor: {} as Producer,
-      unidadesProd: {} as BaseItems<productionUnit>,
+      unidadesProd: {} as BaseItems<ProductionUnit>,
       indiceUpSelecionada: 0 as number,
 
       ultimaUp: [] as HTMLElement[],
@@ -182,6 +183,7 @@ export default {
     this.mapData = maps;
   },
   components: { Maps },
+  //components: { Pagination },
 };
 </script>
 
@@ -196,7 +198,6 @@ export default {
   font-family: 'DM Serif Display', serif;
   font-size: 3.5vh;
 }
-
 .producer-image {
   width: 20vh;
   height: 20vh;
