@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/hivetown/frontend/compare/v1.2.1...v1.2.2) (2023-06-16)
+
+
+### Bug Fixes
+
+* after review ([99b2719](https://github.com/hivetown/frontend/commit/99b2719358731611797d2907de39920bae3f079d))
+* conflict ([b4f5a2f](https://github.com/hivetown/frontend/commit/b4f5a2ff783d838a092c83f6978ec7f1327bb3e6))
+
 ## [1.2.1](https://github.com/hivetown/frontend/compare/v1.2.0...v1.2.1) (2023-06-16)
 
 
