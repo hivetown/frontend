@@ -1,5 +1,5 @@
 import { api } from './_base';
-import { BaseItems } from '@/types';
+import { BaseItems, Notification } from '@/types';
 export const getUnreadNotifications = async () =>
     api.get<BaseItems<Notification>>('/notifications?unreadOnly=true');
 
