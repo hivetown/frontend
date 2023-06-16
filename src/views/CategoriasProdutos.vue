@@ -132,33 +132,23 @@ const route = useRoute();
 onBeforeMount(async () => {
   // Query strings for pagination and searching
   const categoryId = Number(route.query.categoryId) || undefined;
-  const minPrice = Number(route.query.minPrice) || undefined;
-  const maxPrice = Number(route.query.maxPrice) || undefined;
-  const search = route.query.search?.toString() || undefined;
 
   // Set loadings
   loadingCategories.value = true;
 
   try {
-    [productSpecs.value, categories.value, selectedCategory.value] =
-      await Promise.all([
-        loadProducts().then((prods) => {
-          // Set default price filter
-          priceFilter.value = [prods.minPrice, prods.maxPrice];
-          return prods;
-        }),
-        fetchAllCategories({
-          productMinPrice: minPrice,
-          productMaxPrice: maxPrice,
-          productSearch: search,
-        })
-          .then((r) => r.data)
-          .finally(() => {
-            // Set as loaded
-            loadingCategories.value = false;
-          }),
-        categoryId ? getCategory(categoryId) : null,
-      ]);
+    // Load products first because categories depends on it
+    productSpecs.value = await loadProducts().then((prods) => {
+      // Set default price filter
+      priceFilter.value = [prods.minPrice, prods.maxPrice];
+      return prods;
+    });
+
+    // Categories
+    [categories.value, selectedCategory.value] = await Promise.all([
+      loadCategories(),
+      categoryId ? getCategory(categoryId) : null,
+    ]);
   } finally {
     // Force set as loaded
     loadingCategories.value = false;
@@ -179,22 +169,52 @@ const getCategory = async (id: number) => {
   );
 };
 
+const loadCategories = async () => {
+  const search = route.query.search?.toString() || undefined;
+  const [minPrice, maxPrice] = priceFilter.value;
+
+  loadingCategories.value = true;
+
+  const res = await fetchAllCategories({
+    productMinPrice: minPrice,
+    productMaxPrice: maxPrice,
+    productSearch: search,
+  });
+
+  loadingCategories.value = false;
+  return res.data;
+};
+
 /**
  * The tree nodes for the categories
  */
 // Map categories to tree nodes
-const categoriesTreeNodes = computed(() => {
-  if (!categories.value?.items) return [] as TreeNode[];
+const categoriesTreeNodes = ref();
 
-  return categories.value.items.map((c) => ({
-    key: c.id.toString(),
-    label: c.name,
-    leaf: false,
-  })) as TreeNode[];
+const mapCategoryToTreeNode = (category: Category): TreeNode => ({
+  key: category.id.toString(),
+  label: category.name,
+  leaf: false,
 });
 
-const expandCategory = (a: TreeNode) => {
-  console.log(a);
+const expandCategory = async (node: TreeNode) => {
+  if (!node.children) {
+    loadingCategories.value = true;
+
+    // Fetch category
+    const categories = await fetchAllCategories({ parentId: Number(node.key) });
+
+    // Copy node
+    const _node = { ...node };
+    _node.children = categories.data.items.map(mapCategoryToTreeNode);
+
+    const _nodes = { ...categoriesTreeNodes.value };
+    _nodes[Number(node.key)] = _node;
+
+    categoriesTreeNodes.value = _nodes;
+
+    loadingCategories.value = false;
+  }
 };
 
 /**

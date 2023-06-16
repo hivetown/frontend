@@ -2,12 +2,14 @@ import { Category, BaseItems } from '@/types';
 import { api } from './_base';
 
 export const fetchAllCategories = ({
+    parentId,
     productSearch,
     page,
     pageSize,
     productMinPrice,
     productMaxPrice,
 }: {
+    parentId?: number;
     productSearch?: string;
     page?: number;
     pageSize?: number;
@@ -17,6 +19,7 @@ export const fetchAllCategories = ({
 }) =>
     api.get<BaseItems<Category>>('/categories', {
         params: {
+            parentId,
             productSearch,
             page,
             pageSize,
@@ -25,8 +28,5 @@ export const fetchAllCategories = ({
         },
     });
 
-export const fetchCategory = (specId: number) =>
-    api.get<Category>(`/categories/${specId}`);
-
-export const fetchCategorySubCategories = (specId: number) =>
-    api.get<Category>(`/categories/${specId}/categories`);
+export const fetchCategory = (id: number) =>
+    api.get<Category>(`/categories/${id}`);
