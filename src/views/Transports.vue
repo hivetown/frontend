@@ -132,7 +132,13 @@ export default {
 
       this.transportVehicles = transportVehiclesArray;
       console.log('this.transportVehicles', this.transportVehicles);
-      this.allTransportsData = allTransportsData;
+      this.allTransportsData = {
+        data: {
+          totalItems: allTransportsData.data.length,
+          pageSize: pageSize,
+          page: page,
+        },
+      };
     } catch (error) {
       console.error(error);
     }

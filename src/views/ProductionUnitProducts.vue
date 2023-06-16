@@ -123,7 +123,13 @@ export default {
       const unitProductsArray = allUnitProducts.data;
 
       this.unitProducts = unitProductsArray;
-      this.allUnitProducts = allUnitProducts;
+      this.allUnitProducts = {
+        data: {
+          totalItems: allUnitProducts.data.length,
+          pageSize: pageSize,
+          page: page,
+        },
+      };
     } catch (error) {
       console.error(error);
     }

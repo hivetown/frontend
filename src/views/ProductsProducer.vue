@@ -106,10 +106,16 @@ export default {
       const route = useRoute() as RouteLocationNormalizedLoaded;
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
-      const allProductsData = await fetchAllProducts(8, page, pageSize);
+      const allProductsData = await fetchAllProducts(id, page, pageSize);
       const productsArray = allProductsData.data;
       this.products = productsArray;
-      this.allProductsData = allProductsData;
+      this.allProductsData = {
+        data: {
+          totalItems: allProductsData.data.length,
+          pageSize: pageSize,
+          page: page,
+        },
+      };
     } catch (error) {
       console.error(error);
     }
