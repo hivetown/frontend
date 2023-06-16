@@ -9,7 +9,7 @@
           <b-col md="3" lg="4" xl="3" class="mb-4">
             <div id="logo">
               <img src="/logo.svg" />
-              <b-navbar-brand class="p-2 logo-txt" href="#"
+              <b-navbar-brand class="p-2 logo-txt" to="/"
                 >hiveTown</b-navbar-brand
               >
             </div>

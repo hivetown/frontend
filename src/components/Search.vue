@@ -8,11 +8,11 @@
 
   <!-- Conteúdo do modal -->
   <div>
-    <b-modal v-model="show" centered>
-      <div class="d-block parent">
+    <b-modal v-model="show" centered class="search-modal">
+      <div class="d-block parent search-modal-input">
         <p>O que procura?</p>
         <input
-          class="form-control me-2 rounded-pill"
+          class="form-control rounded-pill"
           type="search"
           placeholder="Pesquisar"
           aria-label="Pesquisar"
@@ -25,6 +25,16 @@
 </template>
 
 <style>
+.search-modal .modal-content {
+  height: auto !important;
+  max-width: 100% !important;
+}
+
+.search-modal-input {
+  /* background-color: red !important; */
+  width: 100%;
+}
+
 .show-search-btn {
   position: fixed !important;
   background-color: #5a5a5a !important;
@@ -61,6 +71,11 @@
   border: solid 1px #4d774e !important;
   border-radius: 1.3em;
   width: 9vh;
+}
+
+.modal .btn-secondary .btn-content,
+.modal .btn-primary .btn-content {
+  color: white !important;
 }
 
 .modal-header {
