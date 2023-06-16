@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import { Bar } from 'vue-chartjs';
+import { ChartData } from 'chart.js';
 import {
   Chart as ChartJS,
   Title,
@@ -27,7 +28,11 @@ export default {
   name: 'BarChart',
   props: {
     chartData: {
-      type: Object,
+      type: Object as () => ChartData<
+        'bar',
+        (number | [number, number] | null)[],
+        unknown
+      >,
       required: true,
     },
     chartOptions: {

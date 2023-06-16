@@ -313,7 +313,7 @@ export default defineComponent({
 
       view: '' as string,
       raio: 0 as any,
-      barChartView: '' as string,
+      barChartView: 'products' as string,
 
       // Informações do user
       userLoggedId: 0 as number,
@@ -465,7 +465,6 @@ export default defineComponent({
       view: string
     ) {
       // Ir buscar os dados dos cards
-
       const reportCards = await fetchReportCards(
         this.userLoggedId,
         dataInicio,

@@ -1716,6 +1716,7 @@ __metadata:
     primevue: ^3.29.0
     sass: ^1.56.0
     standard-version: ^9.3.2
+    sweetalert2: ^11.7.12
     ts-jest: ^29.0.3
     typedoc: ^0.23.17
     typedoc-plugin-mdn-links: ^2.0.0
@@ -9189,6 +9190,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 53b1e247e68e05db7b3808b99b892bd36fb096e6fba213a06da7fab22045e97597db425c724f2bbd6c99a3c295e1e73f3e4de78592289f38431049e1277ca0ae
+  languageName: node
+  linkType: hard
+
+"sweetalert2@npm:^11.7.12":
+  version: 11.7.12
+  resolution: "sweetalert2@npm:11.7.12"
+  checksum: 3f0d26399f7660bf8f410686d9e53bc2216e973a6cedd53a4566fd3f5952e642cf012d0ae68bc47d89cb2e29244ea54489c524217481581945983e5138ce1510
   languageName: node
   linkType: hard
 

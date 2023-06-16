@@ -223,24 +223,15 @@ export interface reportProducerClients {
     numeroProdutosEncomendados?: number;
     numeroProdutosEncomendadosCancelados?: number;
 }
-export interface ProductSpecFieldWithCategory {
-    category: Category;
-    products: {
-        fieldValues: ProductSpecField[];
-    }[];
-}
-
 export interface CartItem {
     producerProduct: ProducerProduct;
     consumer?: Consumer;
     quantity: number;
 }
-
 export interface Shipment {
     carrier: Carrier;
     events: ShipmentEvent[];
 }
-
 export enum ShipmentStatus {
     /* eslint-disable no-unused-vars*/
     Paid = 0,
@@ -250,7 +241,6 @@ export enum ShipmentStatus {
     Canceled = 4,
     /* eslint-enable no-unused-vars*/
 }
-
 export interface ShipmentEvent {
     id: number;
     date: string;
@@ -270,4 +260,11 @@ export interface Carrier {
     productionUnit: ProductionUnit;
     status: CarrierStatus;
     image: Image;
+}
+
+export interface ProductSpecFieldWithCategory {
+    category: Category;
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
 }
