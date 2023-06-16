@@ -213,7 +213,7 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
-import { ChartData } from 'chart.js';
+import { ChartData, Point } from 'chart.js';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import InlineMessage from 'primevue/inlinemessage';
@@ -271,8 +271,15 @@ export default defineComponent({
       lineGraphData: [] as number[],
       lineChartData: {
         labels: ['no data'] as string[],
-        datasets: [] as string[],
-      } as any,
+        datasets: [
+          {
+            label: 'Gráfico de linha',
+            data: [] as (number | [number, number] | null)[],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+          },
+        ],
+      } as ChartData<'line', (number | Point | null)[], unknown>,
       lineChartOptions: {
         plugins: {
           legend: {

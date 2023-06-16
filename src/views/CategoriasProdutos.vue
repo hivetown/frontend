@@ -19,8 +19,6 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <!-- Por enquanto limitado a apenas 10 -->
-          <!-- <CategoryFilter :categories="allCategories.slice(0, 10)"></CategoryFilter> -->
           <CategoryFilter :categories="allCategories"></CategoryFilter>
         </div>
 
@@ -83,11 +81,9 @@
             >
               <!-- {{ product}} -->
               <ProductCard
-                :product-id="product.id"
-                :product-title="product.name"
-                :product-description="product.description"
-                :product-image="product.images[0]?.url"
-                :product-price="[product.minPrice, product.maxPrice]"
+                :product-spec="product"
+                :can-compare="canCompareMoreProducts"
+                @compare="addProductToCompare"
               />
             </template>
           </div>
@@ -101,10 +97,6 @@
           justify-content: center;
         "
       >
-        <!-- <Pagination :totalRows="allProductsData.data.totalItems" 
-                      :perPage="allProductsData.data.pageSize" 
-                      :currentPage="allProductsData.data.page">
-          </Pagination> -->
         <Pagination
           v-if="allProducts"
           :total-rows="allProducts.totalItems"
@@ -112,14 +104,18 @@
           :current-page="allProducts.page"
         >
         </Pagination>
+
         <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
       </div>
     </div>
   </div>
-
-  <!-- TODO fazer o banner desaparecer e aparecer quando é suposto -->
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
-  <!-- <CompareBanner></CompareBanner> -->
+  <CompareBanner
+    v-if="isCompareBannerVisible"
+    :products="productsToCompare"
+    @remove-item="removeProductFromCompare"
+    @remove-all-items="removeAllProductsFromCompare"
+  ></CompareBanner>
 </template>
 
 <script setup lang="ts">
@@ -133,14 +129,11 @@ import Pagination from '@/components/Pagination.vue';
 // Componentes auxiliares
 import CustomViews from '@/components/CustomViews.vue';
 import ProductCard from '@/components/ProductCard.vue';
-// import CompareBanner from '@/components/CompareBanner.vue';
+import CompareBanner from '@/components/CompareBanner.vue';
 </script>
 
 <!-- TODO atualizar tipagens -->
 <script lang="ts">
-// Componentes
-// import ProductCard from "@/components/ProductCard.vue";
-
 // API
 import { fetchAllProducts, fetchCategory, fetchAllCategories } from '@/api';
 import { ProductSpec, Category, BaseItems } from '@/types';
@@ -153,23 +146,45 @@ export default defineComponent({
       // Produtos
       allProducts: {} as BaseItems<ProductSpec>,
       productSpec: {} as ProductSpec,
-      //   allProductsData: {} as BaseItems<ProductSpec>,
+      //   allProductsData: {} as any,
       // Filtros
       allCategories: [] as Category[],
       currentCategory: '' as string,
       mostExpensiveProduct: null as ProductSpec | null,
+      productsToCompare: [] as ProductSpec[],
     };
+  },
+  methods: {
+    addProductToCompare(productSpec: ProductSpec) {
+      if (!this.productsToCompare.find((spec) => spec.id === productSpec.id))
+        this.productsToCompare.push(productSpec);
+    },
+    removeProductFromCompare(productSpec: ProductSpec) {
+      const index = this.productsToCompare.findIndex(
+        (spec) => spec.id === productSpec.id
+      );
+      this.productsToCompare.splice(index, 1);
+      console.log(index);
+    },
+    removeAllProductsFromCompare() {
+      this.productsToCompare = [];
+    },
+  },
+  computed: {
+    isCompareBannerVisible() {
+      return this.productsToCompare.length > 0;
+    },
+    canCompareMoreProducts() {
+      return this.productsToCompare.length < 2;
+    },
   },
   // A fazer antes de montar o componente
   async beforeMount() {
     // Carregar os dados do produto da BD
-    // this.allProducts =   fetchAllProducts().data;
-    // const searchTerm = "Recycled";
-    // const allProductsData = await fetchAllProducts(searchTerm);
     const page = parseInt(String(this.$route.query.page)) || 1;
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
-    const categoryId = parseInt(String(this.$route.query.categoryId)) || 1;
-    // const allProductsData = await fetchAllProducts(
+    const categoryId =
+      parseInt(String(this.$route.query.categoryId)) || undefined;
     const allProducts = await fetchAllProducts(
       page,
       pageSize,
@@ -180,6 +195,7 @@ export default defineComponent({
     // const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();
     const allCategories = allCategoriesData.data.items;
+    // this.allProducts = allProducts;
     // this.allProductsData = allProductsData;
     this.allCategories = allCategories;
 
@@ -193,7 +209,7 @@ export default defineComponent({
       // Se não houver uma
       this.currentCategory = 'Todas as categorias';
     }
-    console.log(this.allCategories);
+    // console.log(this.allCategories);
 
     // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
     const maxPriceProduct =
@@ -208,6 +224,15 @@ export default defineComponent({
 
     this.mostExpensiveProduct = maxPriceProduct;
   },
-  components: { ProductCard, Pagination, CustomViews },
+  components: {
+    ProductCard,
+    Pagination,
+    CustomViews,
+    CompareBanner,
+    CategoryFilter,
+    PriceFilter,
+    SupplierFilter,
+    RatingFilter,
+  },
 });
 </script>
