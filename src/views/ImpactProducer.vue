@@ -313,7 +313,7 @@ export default defineComponent({
 
       view: '' as string,
       raio: 0 as any,
-      barChartView: 'products' as string,
+      barChartView: '' as string,
 
       // Informações do user
       userLoggedId: 0 as number,
@@ -331,7 +331,7 @@ export default defineComponent({
       // Reports
       reportCards: {} as ReportCard,
       reportMap: {} as ReportMap[],
-      reportEvolution: {} as Record<string, ReportEvolution>, // TODO - ver se é preciso alterar esta interface
+      reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
@@ -465,6 +465,7 @@ export default defineComponent({
       view: string
     ) {
       // Ir buscar os dados dos cards
+
       const reportCards = await fetchReportCards(
         this.userLoggedId,
         dataInicio,
@@ -527,19 +528,18 @@ export default defineComponent({
         this.lineGraphData = [];
 
         // Preparar os dados para o gráfico de linhas (Evolução)
-        for (const [data, valor] of Object.entries(this.reportEvolution)) {
-          this.lineGraphLabels.push(data);
+        for (const [data, string] of Object.entries(this.reportEvolution)) {
+          this.lineGraphLabels.push(String(data));
           if (view == 'numeroEncomendas') {
-            this.lineGraphData.push(valor.numeroEncomendas!);
+            this.lineGraphData.push(Object(string).numeroEncomendas);
           } else if (view == 'totalProdutos') {
-            this.lineGraphData.push(valor.totalProdutos!); // Só as que não foram canceladas
+            this.lineGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
           } else if (view == 'numeroProdutosEncomendados') {
-            this.lineGraphData.push(valor.numeroProdutosEncomendados!); // Só as que não foram canceladas
+            this.lineGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
           } else if (view == 'comprasTotais') {
-            this.lineGraphData.push(valor.comprasTotais!); // Só as que não foram canceladas
+            this.lineGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
           }
         }
-        console.log(this.reportEvolution);
         this.lineChartData = {
           labels: this.lineGraphLabels,
           datasets: [
@@ -568,13 +568,13 @@ export default defineComponent({
             this.barGraphLabels.push(nomeReduzido);
 
             if (view == 'numeroEncomendas') {
-              this.barGraphData.push(string.numeroEncomendas!);
+              this.barGraphData.push(Object(string).numeroEncomendas);
             } else if (view == 'totalProdutos') {
-              this.barGraphData.push(string.totalProdutos!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
             } else if (view == 'numeroProdutosEncomendados') {
-              this.barGraphData.push(string.numeroProdutosEncomendados!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
             } else if (view == 'comprasTotais') {
-              this.barGraphData.push(string.comprasTotais!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
             }
           }
           this.barChartData = {
@@ -589,20 +589,20 @@ export default defineComponent({
           };
         } else if (this.barChartView == 'clients') {
           for (const string of this.reportProducerClients) {
-            this.barGraphLabels.push(string.nome);
+            this.barGraphLabels.push(Object(string).nome);
 
             if (view == 'numeroEncomendas') {
               console.log('numeroEncomendas');
-              this.barGraphData.push(string.numeroEncomendas!);
+              this.barGraphData.push(Object(string).numeroEncomendas);
             } else if (view == 'totalProdutos') {
               console.log('totalProdutos');
-              this.barGraphData.push(string.totalProdutos!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
             } else if (view == 'numeroProdutosEncomendados') {
               console.log('numeroProdutosEncomendados');
-              this.barGraphData.push(string.numeroProdutosEncomendados!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
             } else if (view == 'comprasTotais') {
               console.log('comprasTotais');
-              this.barGraphData.push(string.comprasTotais!); // Só as que não foram canceladas
+              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
             }
           }
           this.barChartData = {
