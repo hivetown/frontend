@@ -110,6 +110,7 @@ const routes = [
         name: 'ConsentManagement',
         component: ConsentPage,
     },
+    {
         path: '/producer/:id',
         name: 'Producer',
         component: SupplierInfo,

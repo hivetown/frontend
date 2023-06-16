@@ -90,11 +90,18 @@
       <div class="">
         <div class="d-flex">
           <i class="bi bi-telephone yellow-txt" style="font-size: 1.3em"></i>
-          <h4 class="p-1 grey-txt text-lg">919 236 147</h4>
+          <a href="tel:919236147" target="_blank" class="text-decoration-none">
+            <h4 class="p-1 grey-txt text-lg">919 236 147</h4>
+          </a>
         </div>
         <div class="d-flex">
           <i class="bi bi-envelope yellow-txt" style="font-size: 1.3em"></i>
-          <h4 class="p-1 grey-txt text-lg">info@hivetown.pt</h4>
+          <a
+            href="mailto:info@hivetown.pt"
+            target="_blank"
+            class="text-decoration-none"
+            ><h4 class="p-1 grey-txt text-lg">info@hivetown.pt</h4></a
+          >
         </div>
         <p class="mb-1 mt-3">Presencialmente em:</p>
         <div class="d-flex">
