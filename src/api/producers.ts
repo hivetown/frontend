@@ -1,4 +1,10 @@
-import { BaseItems, CreateProducer, Producer, ProductionUnit, reportProducerClients } from '@/types';
+import {
+    BaseItems,
+    CreateProducer,
+    Producer,
+    ProductionUnit,
+    reportProducerClients,
+} from '@/types';
 import { api } from './_base';
 
 export const createProducer = async (producer: CreateProducer) =>
@@ -12,11 +18,20 @@ export const fetchProducerReportClients = (
     view?: string
 ) =>
     // TODO - substituir o tipo any pelo tipo correto
-	api.get<reportProducerClients[]>(
+    api.get<reportProducerClients[]>(
         `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
 export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
+
+export const fetchAllProducers = (
+    page?: number,
+    pageSize?: number,
+    search?: string
+) =>
+    api.get<BaseItems<Producer>>('/producers', {
+        params: { page, pageSize, search },
+    });
 
 export const fetchProducerProductionUnits = (id: number) =>
     api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
