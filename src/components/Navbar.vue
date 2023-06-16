@@ -42,7 +42,7 @@
                 class="rounded-circle position-absolute"
                 style="
                   top: 30px;
-                  right: 675px;
+                  right: 673px;
                   width: 20px;
                   height: 20px;
                   border-radius: 50%;
@@ -213,7 +213,6 @@
       </b-nav-item>
     </b-nav>
   </div>
-  <Notifications @qtd-notificacoes="myAction"/>
 
 </template>
 
