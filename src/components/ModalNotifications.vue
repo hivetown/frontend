@@ -22,14 +22,14 @@
 		  v-if="notificacoes.readAt== null"
 		  @click="marcarComoLida(notificacoes.id)"
 		>
-		  <u>Marcar como lida</u>
+		  <u style=" cursor: pointer;">Marcar como lida</u>
 		</small>
   
 		<small
 		  v-else
 		  @click="marcarComoNaoLida(notificacoes.id)"
 		>
-		  <u>Marcar como não lida</u></small
+		  <u style=" cursor: pointer;">Marcar como não lida</u></small
 		>
 		<hr>
 	  </b-list-group-item>
@@ -174,5 +174,45 @@ async marcarComoLida(id: number) {
   .active {
 	background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
 	border-color: #d3e3e6 !important;
+  }
+  @media (max-width: 767px) {
+
+	#popup {
+	border-radius: 1%;
+	position: absolute;
+	top: 37%;
+	right: 1px;
+	width: 400px;
+	background-color: #f3f3f3;
+	border: 1px solid #ccc;
+	padding: 10px;
+	z-index: 9999;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  #popup h5 {
+	margin-top: 0;
+  }
+  
+  .sticky-bar {
+	position: sticky;
+	top: 0;
+	/* Prefixos do navegador */
+	position: -webkit-sticky;
+	position: -moz-sticky;
+	position: -ms-sticky;
+	z-index: 2;
+	overflow-y: auto; /* Habilita a rolagem vertical */
+	max-height: 500px; /* Define a altura máxima da barra */
+  }
+  
+  .content {
+	margin-top: 20px; /* Ajuste para a altura da barra sticky */
+  }
+  
+  .active {
+	background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
+	border-color: #d3e3e6 !important;
+  }
   }
   </style>

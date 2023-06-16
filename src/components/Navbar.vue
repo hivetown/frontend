@@ -52,7 +52,7 @@
               <Modal v-if="showModal"  @qtdNotificacoes="atualizaNotificacoes"  />
               <p
                 class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500; margin-top: 5%;"
+                style="font-weight: 500; margin-top: 5%; cursor: pointer;"
               >
                 Notificações
               </p>
@@ -279,16 +279,14 @@ components: {
       }
     };
 	fetchNotifications();
-    // Atualiza as notificações a cada 45 segundos
-    setInterval(fetchNotifications, 45000);
+    // Atualiza as notificações a cada 3 em 3 minutos
+    setInterval(fetchNotifications, 30000);
   },
 
 };
 </script>
 <style>
-.linkcolor {
-  color: var(--bs-dropdown-link-color);
-}
+
 
 .linkcolor:hover {
   color: var(--bs-dropdown-link-color);
@@ -336,6 +334,9 @@ components: {
 }
 
 @media (max-width: 767px) {
+    .b-badge{
+		margin-top: 20px
+	}
   .nav-home {
     /* background-color: red; */
     justify-content: space-evenly;
