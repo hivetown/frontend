@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/hivetown/frontend/compare/v1.2.0...v1.2.1) (2023-06-16)
+
+
+### Bug Fixes
+
+* typings ([879b90a](https://github.com/hivetown/frontend/commit/879b90a168ee71a490f370a98ae9a4717fd5d817))
+
 ## [1.2.0](https://github.com/hivetown/frontend/compare/v1.1.2...v1.2.0) (2023-06-16)
 
 
