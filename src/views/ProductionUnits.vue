@@ -291,13 +291,13 @@ export default {
         { key: 'Acoes', label: 'Ações', sortable: false },
       ],
 
-      listOfPUs: [],
+      listOfPUs: [] as string[],
       listOfPUsIDs: [] as string[],
 
       showModalDialog: false,
       inputValue: '',
 
-      puToEditIndex: -1,
+      puToEditIndex: -1 as number,
 
       userLoggedId: 1 as number,
       userLoggedName: '' as string,
@@ -319,6 +319,16 @@ export default {
       const wantedIndex = this.listOfPUsIDs.indexOf(selectedPU as string);
       this.puToEditIndex = wantedIndex;
       //this.listOfPUs[wantedIndex]['ID'];
+    },
+
+    submitNewBrand() {
+      const newName = this.input1 as string;
+      updateProductionUnit(
+        15,
+        this.listOfPUs[this.puToEditIndex]['ID'],
+        newName,
+        15
+      );
     },
 
     submitNewAddress() {
@@ -344,10 +354,11 @@ export default {
           this.listOfPUs[this.puToEditIndex]['Nome'],
           newAddres
         );
-        updateProductionUnit(15, this.listOfPUs[this.puToEditIndex]['ID'], {
-          name: this.listOfPUs[this.puToEditIndex]['Nome'],
-          address: newAddres,
-        });
+        updateProductionUnit(
+          15,
+          this.listOfPUs[this.puToEditIndex]['ID'],
+          this.listOfPUs[this.puToEditIndex]['Nome']
+        );
       }
     },
 

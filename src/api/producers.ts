@@ -26,8 +26,8 @@ export const updateProductionUnit = (
     producerId: number,
     unitId: number,
     name: string,
-    address: Address
-) => api.post(`/producers/${producerId}/units/${unitId}`, { name, address });
+    address: number
+) => api.put(`/producers/${producerId}/units/${unitId}`, { name, address });
 
 export const deleteProductionUnit = (producerId: number, unitId: number) =>
     api.delete(`/producers/${producerId}/units/${unitId}`);
