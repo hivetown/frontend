@@ -110,7 +110,7 @@ export interface Address {
     district: string;
     latitude: number;
     longitude: number;
-    consumer?: Consumer;
+    consumer?: number;
 }
 
 export type CreateAddress = Omit<Address, 'id'>;

@@ -221,8 +221,8 @@ import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
-import { ref, computed, defineComponent } from 'vue';
-import { useStore } from '@/store';
+// import { ref, computed, defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
   Image,
@@ -331,11 +331,11 @@ export default defineComponent({
 
   async beforeMount() {
     // Valor do slider - Raio
-    const raio = ref(0);
-    this.raio = raio;
+    // const raio = ref(0);
+    // this.raio = raio;
 
     // Ir buscar o utilizador que está logado
-    const store = useStore();
+    const store = this.$store;
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
