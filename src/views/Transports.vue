@@ -126,7 +126,7 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allTransportsData = await fetchAllTransports(id, page, pageSize);
+      const allTransportsData = await fetchAllTransports(8, page, pageSize);
 
       const transportVehiclesArray = allTransportsData.data;
 

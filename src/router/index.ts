@@ -13,9 +13,15 @@ import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import ConsentPage from '@/views/ConsentPage.vue';
+import ImpactConsumer from '@/views/ImpactConsumer.vue';
+import Order from '@/views/Order.vue';
+import OrderHistory from '@/views/OrderHistory.vue';
+import Success from '@/views/Success.vue';
+import Cancel from '@/views/Cancel.vue';
+import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
-import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
 
@@ -24,6 +30,15 @@ const routes = [
         path: '/',
         name: 'Página principal',
         component: Home,
+    },
+    {
+        // O link para a encomenda deve ter o codigo
+        path: '/encomenda/id:id',
+        name: 'Encomenda',
+        component: Order,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/sobre',
@@ -44,6 +59,21 @@ const routes = [
         },
     },
     {
+        path: '/createOrder',
+        name: 'CreateOrder',
+        component: CreateOrder,
+    },
+    {
+        path: '/orders/:orderId/success',
+        name: 'Success',
+        component: Success,
+    },
+    {
+        path: '/orders/:orderId/cancel',
+        name: 'Cancel',
+        component: Cancel,
+    },
+    {
         path: '/carrinho',
         name: 'Cart',
         component: Cart,
@@ -53,6 +83,14 @@ const routes = [
         path: '/products/:specid',
         name: 'ProductDetails',
         component: Product,
+    },
+    {
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/conta',
@@ -110,15 +148,11 @@ const routes = [
             requiredProducer: true,
         },
     },
+
     {
-        path: '/admin',
-        name: 'Admin',
-        component: Register,
-        meta: {
-            requiresAuth: true,
-            requiredPermissions:
-                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
-        },
+        path: '/impactConsumer',
+        name: 'ImpactConsumer',
+        component: ImpactConsumer,
     },
     {
         path: '/producer/:id',
@@ -133,7 +167,10 @@ const router = createRouter({
 });
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) await store.dispatch('fetchAuthUser');
+    if (!isAuthenticated) {
+        await store.dispatch('fetchAuthUser');
+        isAuthenticated = !!store.state.user;
+    }
 
     // Check if the user is authenticated
     if (!isAuthenticated) {
@@ -180,12 +217,11 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    // Check if the user has the required permissions
     if (
         to.matched.some((record) => record.meta.requiredPermissions) &&
-        !hasPermission(user!, to.meta.requiredPermissions!)
+        !hasPermission(store.state.user!.user, to.meta.requiredPermissions!)
     ) {
-        // Redirect back to the previous page if the user does not have the required permissions
+        // redirect back to the previous page if the user does not have the required permissions
         createPopup(
             `Você não tem permissão para aceder a ${
                 to.name?.toString() || 'página'
