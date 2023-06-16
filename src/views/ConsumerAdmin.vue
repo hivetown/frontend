@@ -9,17 +9,17 @@
 
     <div class="cart">
       <b-card
-        v-if="users"
+        v-if="user"
         id="b-card"
-        :title="users['user']['name']"
+        :title="user['user']['name']"
         :img-src="
-          users['user']['image'] && users['user']['image']['url']
-            ? users['user']['image']['url']
+          user['user']['image'] && user['user']['image']['url']
+            ? user['user']['image']['url']
             : '../../public/semimagem.png'
         "
         :img-alt="
-          users['user']['image'] && users['user']['image']['alt']
-            ? users['user']['image']['alt']
+          user['user']['image'] && user['user']['image']['alt']
+            ? user['user']['image']['alt']
             : 'Default image'
         "
         img-top
@@ -28,45 +28,45 @@
         class="mb-2"
       >
         <b-card-text>
-          <strong>Email: </strong>{{ users['user']['email'] || 'Não definido' }}
+          <strong>Email: </strong>{{ user['user']['email'] || 'Não definido' }}
           <br />
           <strong>Telemóvel: </strong
-          >{{ users['user']['phone'] || 'Não definido' }}
+          >{{ user['user']['phone'] || 'Não definido' }}
           <br />
           <strong>Morada: </strong>
           {{
-            users['addresses'] && users['addresses'][0]
-              ? users['addresses'][0]['street'] +
+            user['addresses'] && user['addresses'][0]
+              ? user['addresses'][0]['street'] +
                 ', nº' +
-                users['addresses'][0]['number'] +
+                user['addresses'][0]['number'] +
                 ', porta ' +
-                users['addresses'][0]['door'] +
+                user['addresses'][0]['door'] +
                 ' ' +
-                users['addresses'][0]['zipCode'] +
+                user['addresses'][0]['zipCode'] +
                 ', ' +
-                users['addresses'][0]['city']
+                user['addresses'][0]['city']
               : 'Não definido'
           }}
 
           <div
-            v-for="num in Array.isArray(users['addresses']) &&
-            users['addresses'].length > 0
-              ? users['addresses'].length - 1
+            v-for="num in Array.isArray(user['addresses']) &&
+            user['addresses'].length > 0
+              ? user['addresses'].length - 1
               : 0"
             :key="num"
           >
             <strong>Morada: </strong>
             {{
-              users['addresses'] && users['addresses'][num]
-                ? users['addresses'][num]['street'] +
+              user['addresses'] && user['addresses'][num]
+                ? user['addresses'][num]['street'] +
                   ', nº' +
-                  users['addresses'][num]['number'] +
+                  user['addresses'][num]['number'] +
                   ', porta ' +
-                  users['addresses'][num]['door'] +
+                  user['addresses'][num]['door'] +
                   ' ' +
-                  users['addresses'][num]['zipCode'] +
+                  user['addresses'][num]['zipCode'] +
                   ', ' +
-                  users['addresses'][num]['city']
+                  user['addresses'][num]['city']
                 : 'Não definido'
             }}
           </div>
@@ -125,7 +125,7 @@
           <p></p>
 
           <button
-            v-if="users['deletedAt'] === null"
+            v-if="user['deletedAt'] === null"
             href="#"
             class="btn btn-outline-secondary btn-sm"
             @click="showCancelDialog"
@@ -150,34 +150,39 @@ import {
   updateConsumer,
 } from '../api/consumers';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { auth } from '@/utils/firebase';
+import {Consumer } from '@/types';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 export default {
-  setup() {
-    const route = useRoute();
-    let formData = {};
-    const id = ref<any>(null);
-    const collapsed = ref(true);
-    const users = ref<any>(null);
-    onMounted(async () => {
-      id.value = route.params.id;
+  data() {
+ 
+	return {
+		formData: {email: "", name: "", phone: ""} ,
+    	collapsed : true,
+    	user : null as Consumer | null,
+	}
+  },
+ async mounted() {
+	  
       try {
-        const response = await getConsumerId(id.value);
-        users.value = response.data;
+        const response = await getConsumerId(Number(this.$route.params.id));
+        this.user = response.data;
+		this.formData.email= this.user.user.email;
+		this.formData.name=this.user.user.name;
+		this.formData.phone=this.user.user.phone;
       } catch (error) {
         console.error(error);
       }
-    });
-
-    return { users, id, collapsed, formData };
   },
 
   methods: {
     saveChanges() {
+		const email = this.$store.state.user?.user.email;
   // Define valores padrão para campos não preenchidos
   const defaults = {
-    name: this.users.user.name,
-    email: this.users.user.email,
-    phone: this.users.user.phone,
+    name: this.user!.user.name,
+    email: this.user!.user.email,
+    phone: this.user!.user.phone,
   };
 
   // Mescla valores padrão com valores do formulário
@@ -200,21 +205,27 @@ export default {
       showCancelButton: true,
       confirmButtonText: 'Confirmar',
       showLoaderOnConfirm: false,
-      preConfirm: (password) => {
-        // Verificar se a senha está correta
-        if (password === 'Hivetown2023') {
-          return true; // Senha correta, avança para o próximo diálogo
-        } else {
-          Swal.showValidationMessage('Password incorreta');
-          return false; // Senha incorreta, mantém a caixa de diálogo aberta
-        }
+      preConfirm: async (password) => {
+
+		try {
+                const userCredential = await signInWithEmailAndPassword(
+                    auth,
+                    email!, 
+                    password 
+                );
+				return true;
+            } catch (error) {
+                //pass errada
+				Swal.showValidationMessage('Password incorreta');
+				return false;
+				
+            }
+      
       },
       allowOutsideClick: false
     }).then((result) => {
       if (result.isConfirmed) {
-        updateConsumer(this.id, data)
-          .then((response) => {
-            console.log(response);
+       
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
               text: 'Você poderá voltar a editar a conta caso se arrependa.',
@@ -224,7 +235,7 @@ export default {
               cancelButtonText: 'Não',
             }).then((result) => {
               if (result.isConfirmed) {
-                updateConsumer(this.id, data)
+                updateConsumer(Number(this.$route.params.id), data)
                   .then((response) => {
                     console.log(response);
                     Swal.fire({
@@ -248,10 +259,8 @@ export default {
                   });
               }
             });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+          
+          
       }
     });
   }
@@ -292,7 +301,7 @@ export default {
       })
       .then(async (result) => {
         if (result.isConfirmed) {
-          desativarConsumer(this.id)
+          desativarConsumer(Number(this.$route.params.id))
             .then(() => {
               Swal.fire(
                 'Desativado!',
@@ -356,7 +365,7 @@ export default {
         confirmButtonText: 'Sim, reativar!'
       }).then((result) => {
         if (result.isConfirmed) {
-          ativarConsumer(this.id)
+          ativarConsumer(Number(this.$route.params.id))
             .then(() => {
               Swal.fire(
                 'Reativado!',

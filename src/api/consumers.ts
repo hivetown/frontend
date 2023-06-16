@@ -23,10 +23,8 @@ export const getConsumers = (
         params: { page, pageSize, search },
     });
 
-export const getConsumerId = (consumerId: number, search?: string) =>
-    api.get<Consumer[]>(`/consumers/${consumerId}?includeAll=true`, {
-        params: { search },
-    });
+export const getConsumerId = (consumerId: number) =>
+    api.get<Consumer>(`/consumers/${consumerId}?includeAll=true`);
 
 export const desativarConsumer = (consumerId: number, search?: string) =>
     api.delete(`/consumers/${consumerId}`, { params: { search } });
