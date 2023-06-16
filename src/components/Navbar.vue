@@ -47,9 +47,9 @@
                   height: 20px;
                   border-radius: 50%;
                 "
-                >{{ notificacoes?.totalItems}}</b-badge
+                >{{ notificacoes}}</b-badge
               >
-              <Modal v-if="showModal" />
+              <Modal v-if="showModal"  @qtdNotificacoes="atualizaNotificacoes"  />
               <p
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500; margin-top: 5%;"
@@ -223,7 +223,7 @@ import Modal from '../components/ModalNotifications.vue';
 import { getUnreadNotifications } from '../api/notifications';
 import { ref } from 'vue';
 import { BaseItems, Notification } from '@types';
-const notificacoes = ref<BaseItems<Notification>>();
+const notificacoes = ref<number>();
 	
 export default {
 components: {
@@ -245,6 +245,16 @@ components: {
     };
   },
   methods: {
+	async atualizaNotificacoes(quantidade:number) {
+		console.log(quantidade);
+    
+		try {
+        const responseItem = await getUnreadNotifications();
+        this.notificacoes = quantidade;
+      } catch (error) {
+        console.error(error);
+      }
+	},
 	isMobile() {
       return window.innerWidth < 768;
     },
@@ -263,7 +273,7 @@ components: {
     const fetchNotifications = async () => {
       try {
         const responseItem = await getUnreadNotifications();
-        this.notificacoes = responseItem.data;
+        this.notificacoes = responseItem.data.items.length;
       } catch (error) {
         console.error(error);
       }

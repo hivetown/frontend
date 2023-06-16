@@ -1,6 +1,6 @@
 <template>
 	<div id="notificacoes">
-	  <div id="popup" class="sticky-bar" v-if="showPopup">
+	  <div id="popup"  @click.stop class="sticky-bar" v-if="showPopup">
 		<h5>Notificações</h5>
 		<div class="content">
 		  <p v-if="notificacoes?.totalItems == 0">Não existem notificações novas.</p>
@@ -37,18 +37,18 @@
 		  </b-list-group>
 	
 
-	<button @click="carregaMais">ola</button>
+	<button class="btn btn-primary" @click="carregaMais">Carregar mais</button>
 		</div>
 	  </div>
 	</div>
   </template>
   
   <script lang="ts">
-  import { ref } from 'vue';
   import {
 	postRead,
 	getAllNotifications,
    postUnread,
+   getUnreadNotifications
 	
   } from '../api/notifications';
   import { BaseItems, Notification } from '@/types'
@@ -61,20 +61,22 @@
 	  return {
 		  notificacoes: { page: 1, pageSize: 4} as BaseItems<Notification>,
 		showPopup: true,
+		quantidade : 0 as number,
 	  };
 	},
 	async beforeMount() {  
 	  this.notificacoes = (await getAllNotifications(this.notificacoes.page, this.notificacoes.pageSize)).data;
-	  console.log(this.notificacoes)
+	  this.quantidade = (await getUnreadNotifications()).data.items.length; //para ter p depois enviar no emit
+
 	},
 	methods: {
 		async carregaMais() {
-      if (this.notificacoes.page+1 === this.notificacoes.totalPages ) return;
+      if (this.notificacoes.page === this.notificacoes.totalPages ) return;
 
       const notificacoes = await getAllNotifications(
-        this.notificacoes.page + 1
+        this.notificacoes.page + 1, this.notificacoes.pageSize
       );
-      this.notificacoes.items.push(...this.notificacoes.items);
+      this.notificacoes.items.push(...notificacoes.data.items);
       this.notificacoes.page = this.notificacoes.page+1;
       this.notificacoes.pageSize = this.notificacoes.pageSize;
       this.notificacoes.totalItems = this.notificacoes.totalItems;
@@ -98,7 +100,8 @@
  },
 async marcarComoLida(id: number) {
    await postRead(id);
-  // app.emit('qtdNotificacoes', quantidade.value);
+   this.quantidade = this.quantidade-1;
+   this.$emit('qtdNotificacoes', this.quantidade);
    await this.reloadPage();
   
  },
@@ -112,9 +115,9 @@ async marcarComoLida(id: number) {
  },
  
  async  marcarComoNaoLida(id: number) {
-	console.log("entrou");
    await postUnread(id);
-  // app.emit('qtd-notificacoes', quantidade.value);
+   this.quantidade=this.quantidade+1;
+   this.$emit('qtdNotificacoes', this.quantidade);
    await this.reloadPage();
  },
   onPageChanged(newPageNumber: number): void {

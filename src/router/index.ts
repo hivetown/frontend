@@ -15,7 +15,6 @@ import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
-import Notifications from '@/views/Notifications.vue';
 import { store } from '@/store';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
@@ -73,12 +72,7 @@ const routes = [
         name: 'Cart',
         component: Cart,
     },
-	{
-        path: '/getAllNotifications',
-        name: 'Notifications',
-        component: Notifications,
-		
-	},
+	
     // O link para o produto deveria ter o seu nome ou id
     {
         path: '/products/:specid',
