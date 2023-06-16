@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/hivetown/frontend/compare/v1.1.2...v1.2.0) (2023-06-16)
+
+
+### Features
+
+* add links to tel and mail ([adf69d1](https://github.com/hivetown/frontend/commit/adf69d1fee31a0676d83b99af41600a67af871c8))
+
 ## [1.1.2](https://github.com/hivetown/frontend/compare/v1.1.1...v1.1.2) (2023-06-16)
 
 
