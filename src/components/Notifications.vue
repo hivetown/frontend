@@ -1,27 +1,27 @@
 <template>
 	<b-list-group>
-	  <b-list-group-item
-		v-for="num in notificacoes['totalItems']"
-		:key="num"
-		:active="notificacoes?.items?.[num - 1]?.readAt == null"
+	  <b-list-group-item v-if="notificacoes"
+		v-for=" (notificacoes, idx) in notificacoes.items"
+		:key="notificacoes.id"
+		:active="notificacoes?.readAt == null"
 		class="flex-column align-items-start"
 	  >
 		<div class="d-flex w-100 justify-content-between">
-		  <h5 class="mb-1">{{ notificacoes['items'][num - 1]['title'] }}</h5>
-		  <small>{{ notificacoes['items'][num - 1]['createdAt'].substring(0,10) }} {{ notificacoes['items'][num - 1]['createdAt'].substring(11,19) }}</small>
+		  <h5 class="mb-1">{{ notificacoes.title}}</h5>
+		  <small>{{ notificacoes.createdAt.substring(0,10) }} {{ notificacoes.createdAt.substring(11,19) }}</small>
   
 		</div>
-		<p class="mb-1">{{ notificacoes['items'][num - 1]['message'] }}</p>
+		<p class="mb-1">{{ notificacoes.message}}</p>
 		<small
-		  v-if="notificacoes['items'][num - 1]['readAt'] == null"
-		  @click="marcarComoLida(notificacoes['items'][num - 1]['id'])"
+		  v-if="notificacoes.readAt== null"
+		  @click="marcarComoLida(notificacoes.id)"
 		>
 		  <u>Marcar como lida</u>
 		</small>
   
 		<small
 		  v-else
-		  @click="marcarComoNaoLida(notificacoes['items'][num - 1]['id'])"
+		  @click="marcarComoNaoLida(notificacoes.id)"
 		>
 		  <u>Marcar como não lida</u></small
 		>
@@ -35,98 +35,102 @@
 	>
 	</Pagination>
   </template>
-  <script lang="ts">
-  import Pagination from '../components/Pagination.vue';
-  import { ref } from 'vue';
-  import {
-	postRead,
-	postUnread,
-	getAllNotifications,
-  } from '../api/notifications';
-  import { useRoute } from 'vue-router';
-  const notificacoes = ref<any>('');
-  const quantidade = ref<any>('');
-  let intervalId: any = 2000; // Variável para armazenar o ID do intervalo
-  const pageSize = ref(5);
-  const totalItems = ref(0);
-  const page = ref(1);
+ <script setup lang="ts">
+ import Pagination from '../components/Pagination.vue';
+ import { ref, onBeforeMount } from 'vue';
+ import {
+   postRead,
+   postUnread,
+   getAllNotifications,
+   getUnreadNotifications
+ } from '../api/notifications';
+ import { BaseItems, Notification } from '@/types';
+ const notificacoes = ref<BaseItems<Notification>>();
+ const quantidade = ref<number>(0);
+ let intervalId: any = 45000; // Variável para armazenar o ID do intervalo
+ const pageSize = ref<number>(5);
+ const totalItems = ref<number>(0);
+ const page = ref<number>(1);
+ //tentativa emit
+//const app = {
+ // emit(event: string, value: any) {
+ // }
+//};
+ 
+ onBeforeMount(async () => {
+   const responseItems = await getAllNotifications();
+   page.value = responseItems.data.page;
+   const response = await getUnreadNotifications();
+quantidade.value=response.data.totalItems;
+   const urlSearchParams = new URLSearchParams(window.location.search);
+   page.value = parseInt(urlSearchParams.get('page') ?? '') || 1;
+   pageSize.value = 5;
+   totalItems.value = responseItems.data.totalItems;
+   await loadNotifications();
+   startAutoReload(); // Inicia o recarregamento automático
+ })
+ 
+ function onPageChanged(newPageNumber: number): void {
+   page.value = newPageNumber;
+   myFunction(); // chame sua função aqui
+ }
+ 
+ async function myFunction() {
+   const response = await getAllNotifications(page.value, pageSize.value);
+   notificacoes.value = response.data;
+ }
+ 
+ function handlePageChange(value: number) {
+   page.value = value;
+ }
+ 
+ async function loadNotifications() {
+   try {
+	 const responseItem = await getAllNotifications(page.value, pageSize.value);
+	 notificacoes.value = responseItem.data;
+	
+   } catch (error) {
+	 console.error(error);
+   }
+ }
+ 
+ async function marcarComoLida(id: number) {
+   await postRead(id);
+   quantidade.value = quantidade.value-1;
+  // app.emit('qtdNotificacoes', quantidade.value);
+   await reloadPage();
   
-  export default {
-	components: { Pagination },
-	data() {
-	  return {
-		notificacoes,
-		page,
-		pageSize,
-		totalItems,
-	  };
-	},
-  
-	async mounted() {
-	  const responseItems = await getAllNotifications();
-	  page.value = responseItems.data.page;
-	  //nao consegui usar o route, dava me sempre undefined
-	  const urlSearchParams = new URLSearchParams(window.location.search);
-	  page.value = parseInt(urlSearchParams.get('page') ?? '') || 1;
-	  pageSize.value = 5;
-	  totalItems.value = responseItems.data.totalItems;
-	  await this.loadNotifications();
-	  this.startAutoReload(); // Inicia o recarregamento automático
-	},
-  
-	methods: {
-	  onPageChanged(newPageNumber: number): void {
-		this.page = newPageNumber;
-		this.myFunction(); // chame sua função aqui
-	  },
-	  async myFunction() {
-		const response = await getAllNotifications(this.page, this.pageSize);
-		this.notificacoes = response.data;
-	  },
-	  handlePageChange(value: number) {
-		this.page = value;
-	  },
-	  async loadNotifications() {
-		try {
-		  const responseItem = await getAllNotifications(
-			page.value,
-			pageSize.value
-		  );
-		  notificacoes.value = responseItem.data;
-		  quantidade.value = responseItem.data.totalItems;
-		} catch (error) {
-		  console.error(error);
-		}
-	  },
-	  async marcarComoLida(id:number) {
-		await postRead(id);
-		await this.reloadPage();
-	  },
-	  async marcarComoNaoLida(id:number) {
-		await postUnread(id);
-		await this.reloadPage();
-	  },
-	  async reloadPage() {
-		const scrollPosition = window.scrollY || window.pageYOffset;
-		try {
-		  await new Promise((resolve) => setTimeout(resolve, 500)); // Aguarda 500ms (opcional)
-		  await this.loadNotifications();
-		  window.scrollTo(0, scrollPosition);
-		} catch (error) {
-		  console.error(error);
-		}
-	  },
-	  startAutoReload() {
-		intervalId = setInterval(() => {
-		  this.loadNotifications();
-		}, 45000);
-	  },
-	  stopAutoReload() {
-		clearInterval(intervalId);
-	  },
-	},
-  };
-  </script>
+ }
+ 
+ async function marcarComoNaoLida(id: number) {
+   await postUnread(id);
+   quantidade.value = quantidade.value+1;
+  // app.emit('qtd-notificacoes', quantidade.value);
+   await reloadPage();
+ }
+ 
+ async function reloadPage() {
+   const scrollPosition = window.scrollY || window.pageYOffset;
+   try {
+	 await new Promise((resolve) => setTimeout(resolve, 500)); // Aguarda 500ms (opcional)
+	 await loadNotifications();
+	 window.scrollTo(0, scrollPosition);
+   } catch (error) {
+	 console.error(error);
+   }
+ }
+ 
+ function startAutoReload() {
+   intervalId = setInterval(() => {
+	 loadNotifications();
+   }, 45000);
+ }
+ 
+ function stopAutoReload() {
+   clearInterval(intervalId);
+ }
+ </script>
+ 
   <style scoped>
   hr {
 	color: black;

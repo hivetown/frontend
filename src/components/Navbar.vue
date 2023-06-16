@@ -36,7 +36,7 @@
               </b-avatar>
               <!--numero de notificacoes-->
               <b-badge
-                v-if="notificacoes.totalItems != 0"
+                v-if="notificacoes?.totalItems != 0"
                 @click="showModalFunction"
                 variant="danger"
                 class="rounded-circle position-absolute"
@@ -47,7 +47,7 @@
                   height: 20px;
                   border-radius: 50%;
                 "
-                >{{ notificacoes['totalItems'] }}</b-badge
+                >{{ notificacoes?.totalItems}}</b-badge
               >
               <Modal v-if="showModal" />
               <p
@@ -217,6 +217,8 @@
       </b-nav-item>
     </b-nav>
   </div>
+  <Notifications @qtd-notificacoes="myAction"/>
+
 </template>
 
 <script lang="ts">
@@ -225,7 +227,9 @@ import { computed } from 'vue';
 import Modal from '../components/ModalNotifications.vue';
 import { getUnreadNotifications } from '../api/notifications';
 import { ref } from 'vue';
-const notificacoes = ref<any>('');
+import { BaseItems, Notification } from '@types';
+const notificacoes = ref<BaseItems<Notification>>();
+	
 export default {
 components: {
     Modal,
@@ -246,6 +250,7 @@ components: {
     };
   },
   methods: {
+	
     showModalFunction() {
       this.showModal = !this.showModal;
     },

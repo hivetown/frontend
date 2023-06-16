@@ -69,7 +69,7 @@
   #popup {
 	border-radius: 1%;
 	position: absolute;
-	top: 72%;
+	top: 68%;
 	right: 16%;
 	width: 500px;
 	background-color: #f3f3f3;
