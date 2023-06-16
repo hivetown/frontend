@@ -134,9 +134,6 @@
                   </button> -->
           </div>
         </div>
-        <div class="mt-3 mb-3">
-          <a href="#">ver unidade de produção</a>
-        </div>
       </div>
 
       <!-- Detalhes do produto -->
@@ -277,12 +274,13 @@
             <div
               class="mt-5 d-flex align-items-center gap-3"
               style="background-color: ; width: 70%"
-              v-if="producerProduct.id != defaultProduct.id"
+              v-if="
+                producerProduct.producer &&
+                producerProduct.id != defaultProduct.id
+              "
             >
               <router-link
-
                 v-if="producerProduct.producer"
-
                 :to="'/producer/' + producerProduct.producer.user.id"
               >
                 <b-avatar

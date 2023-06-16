@@ -93,6 +93,7 @@ export default defineComponent({
       showSearchBtn.value = window.pageYOffset > 0;
     }
 
+    // TODO - trocar para coisas do vue
     watch(showSearchBtn, (newValue) => {
       if (newValue) {
         document.body.classList.add('show-show-search-btn');

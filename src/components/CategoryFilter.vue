@@ -15,7 +15,7 @@ import { PropType } from 'vue';
 export default {
   data() {
     return {
-      subCategoriesById: {} as CategoryType[],
+      subCategoriesById: [] as CategoryType[],
     };
   },
   props: {
