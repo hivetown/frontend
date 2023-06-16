@@ -12,6 +12,13 @@ import Register from '@/views/Register.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import ImpactProducer from '@/views/ImpactProducer.vue';
 import ImpactAdmin from '@/views/ImpactAdmin.vue';
+import ConsentPage from '@/views/ConsentPage.vue';
+import Order from '@/views/Order.vue';
+import OrderHistory from '@/views/OrderHistory.vue';
+import Success from '@/views/Success.vue';
+import Cancel from '@/views/Cancel.vue';
+import CreateOrder from '@/views/CreateOrder.vue';
+import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -22,6 +29,15 @@ const routes = [
         path: '/',
         name: 'Página principal',
         component: Home,
+    },
+    {
+        // O link para a encomenda deve ter o codigo
+        path: '/encomenda/id:id',
+        name: 'Encomenda',
+        component: Order,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/sobre',
@@ -42,6 +58,21 @@ const routes = [
         },
     },
     {
+        path: '/createOrder',
+        name: 'CreateOrder',
+        component: CreateOrder,
+    },
+    {
+        path: '/orders/:orderId/success',
+        name: 'Success',
+        component: Success,
+    },
+    {
+        path: '/orders/:orderId/cancel',
+        name: 'Cancel',
+        component: Cancel,
+    },
+    {
         path: '/carrinho',
         name: 'Cart',
         component: Cart,
@@ -51,6 +82,14 @@ const routes = [
         path: '/products/:specid',
         name: 'ProductDetails',
         component: Product,
+    },
+    {
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/conta',
@@ -70,16 +109,7 @@ const routes = [
         name: 'Registration',
         component: Register,
     },
-    {
-        path: '/impactConsumer',
-        name: 'ImpactConsumer',
-        component: ImpactConsumer,
-    },
-    {
-        path: '/impactProducer',
-        name: 'ImpactProducer',
-        component: ImpactProducer,
-    },
+
     {
         path: '/impactAdmin',
         name: 'ImpactAdmin',
@@ -89,6 +119,32 @@ const routes = [
             requiredPermissions:
                 Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
         },
+    },
+    {
+        path: '/impactProducer',
+        name: 'ImpactProducer',
+        component: ImpactProducer,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/impactConsumer',
+        name: 'ImpactConsumer',
+        component: ImpactConsumer,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/consent',
+        name: 'ConsentManagement',
+        component: ConsentPage,
+    },
+    {
+        path: '/producer/:id',
+        name: 'Producer',
+        component: SupplierInfo,
     },
 ];
 

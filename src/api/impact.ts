@@ -3,6 +3,7 @@ import {
     ReportMap,
     ReportEvolution,
     ReportBarChartProduct,
+    reportProducerClients,
 } from '@/types';
 import { api } from './_base';
 
@@ -51,7 +52,7 @@ export const fetchReportEvolution = (
     raio?: number,
     view?: string
 ) =>
-    api.get<ReportEvolution>(
+    api.get<Record<string, ReportEvolution>>(
         `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
 
@@ -61,7 +62,7 @@ export const fetchAdminReportEvolution = (
     raio?: number,
     view?: string
 ) =>
-    api.get<ReportEvolution>(
+    api.get<Record<string, ReportEvolution>>(
         `/reports/admin/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
 
@@ -93,6 +94,6 @@ export const fetchAdminReportClients = (
     view?: string
 ) =>
     // TODO - substituir o tipo any pelo tipo correto
-    api.get<any[]>(
+    api.get<reportProducerClients[]>(
         `/reports/admin/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );

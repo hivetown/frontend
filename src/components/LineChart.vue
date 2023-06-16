@@ -16,6 +16,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line as LineChart } from 'vue-chartjs';
+import { ChartData, Point } from 'chart.js';
 
 ChartJS.register(
   CategoryScale,
@@ -31,7 +32,11 @@ export default {
   name: 'LineChartComponent',
   props: {
     chartData: {
-      type: Object,
+      type: Object as () => ChartData<
+        'line',
+        (number | Point | null)[],
+        unknown
+      >,
       required: true,
     },
     chartOptions: {
@@ -44,3 +49,4 @@ export default {
   },
 };
 </script>
+<!--  -->

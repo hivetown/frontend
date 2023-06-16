@@ -277,7 +277,7 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
-import { ChartData } from 'chart.js';
+import { ChartData, Point } from 'chart.js';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import InlineMessage from 'primevue/inlinemessage';
@@ -286,8 +286,7 @@ import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
 import RadioButton from 'primevue/radiobutton';
-import { ref, computed, defineComponent } from 'vue';
-import { useStore } from '@/store';
+import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
   Image,
@@ -342,8 +341,15 @@ export default defineComponent({
       lineGraphData: [] as number[],
       lineChartData: {
         labels: ['no data'] as string[],
-        datasets: [] as string[],
-      } as any,
+        datasets: [
+          {
+            label: 'Gráfico de linha',
+            data: [] as (number | [number, number] | null)[],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+          },
+        ],
+      } as ChartData<'line', (number | Point | null)[], unknown>,
       lineChartOptions: {
         plugins: {
           legend: {
@@ -394,15 +400,8 @@ export default defineComponent({
   },
 
   async beforeMount() {
-    // Valor do slider - Raio
-    const raio = ref(0);
-    this.raio = raio;
-    // Valor dos radio buttons - Vista
-    const barChartView = ref('products');
-    this.barChartView = barChartView.value;
-
-    // Ir buscar os dados do utilizador que está logado
-    const store = useStore();
+    // Ir buscar o utilizador que está logado
+    const store = this.$store;
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
@@ -466,6 +465,10 @@ export default defineComponent({
       view: string
     ) {
       // Ir buscar os dados dos cards
+<<<<<<< HEAD
+=======
+
+>>>>>>> main
       const reportCards = await fetchReportCards(
         this.userLoggedId,
         dataInicio,
