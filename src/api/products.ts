@@ -7,14 +7,23 @@ import {
 } from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllProducts = (
-    page?: number,
-    pageSize?: number,
-    search?: string,
-    categoryId?: number
-) =>
+export const fetchAllProducts = ({
+    page,
+    pageSize,
+    search,
+    categoryId,
+    maxPrice,
+    minPrice,
+}: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    categoryId?: number;
+    maxPrice?: number;
+    minPrice?: number;
+}) =>
     api.get<BaseItems<ProductSpec>>('/products', {
-        params: { page, pageSize, search, categoryId },
+        params: { page, pageSize, search, categoryId, maxPrice, minPrice },
     });
 
 export const fetchProduct = (specId: number) =>

@@ -118,7 +118,7 @@
   ></CompareBanner>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 // Filtros
 import CategoryFilter from '@/components/CategoryFilter.vue';
 import PriceFilter from '@/components/PriceFilter.vue';
@@ -130,10 +130,6 @@ import Pagination from '@/components/Pagination.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import ProductCard from '@/components/ProductCard.vue';
 import CompareBanner from '@/components/CompareBanner.vue';
-</script>
-
-<!-- TODO atualizar tipagens -->
-<script lang="ts">
 // API
 import { fetchAllProducts, fetchCategory, fetchAllCategories } from '@/api';
 import { ProductSpec, Category, BaseItems } from '@/types';
@@ -142,14 +138,10 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
-      // Dados da BD
-      // Produtos
-      allProducts: {} as BaseItems<ProductSpec>,
-      productSpec: {} as ProductSpec,
-      //   allProductsData: {} as any,
-      // Filtros
-      allCategories: [] as Category[],
-      currentCategory: '' as string,
+      productSpecs: {} as BaseItems<ProductSpec>,
+      categories: {} as BaseItems<Category>,
+      selectedCategory: null as Category | null,
+
       mostExpensiveProduct: null as ProductSpec | null,
       productsToCompare: [] as ProductSpec[],
     };
@@ -169,6 +161,17 @@ export default defineComponent({
     removeAllProductsFromCompare() {
       this.productsToCompare = [];
     },
+    /**
+     * Find a category by its id. Fetch it if needed
+     * @param categoryId The category to find
+     */
+    async getSelectedCategory(categoryId: number) {
+      const cached = this.categories?.items?.find(
+        (category) => category.id === categoryId
+      );
+
+      return cached || (await fetchCategory(categoryId)).data;
+    },
   },
   computed: {
     isCompareBannerVisible() {
@@ -180,49 +183,32 @@ export default defineComponent({
   },
   // A fazer antes de montar o componente
   async beforeMount() {
-    // Carregar os dados do produto da BD
-    const page = parseInt(String(this.$route.query.page)) || 1;
-    const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
-    const categoryId =
-      parseInt(String(this.$route.query.categoryId)) || undefined;
-    const allProducts = await fetchAllProducts(
-      page,
-      pageSize,
-      undefined,
-      categoryId
-    );
-    this.allProducts = allProducts.data;
-    // const allProducts = allProductsData.data.items;
-    const allCategoriesData = await fetchAllCategories();
-    const allCategories = allCategoriesData.data.items;
-    // this.allProducts = allProducts;
-    // this.allProductsData = allProductsData;
-    this.allCategories = allCategories;
+    // Query strings for pagination and searching
+    const page = Number(this.$route.query.page) || 1;
+    const pageSize = Number(this.$route.query.pageSize) || 24;
+    const categoryId = Number(this.$route.query.categoryId) || undefined;
+    const minPrice = Number(this.$route.query.minPrice) || undefined;
+    const maxPrice = Number(this.$route.query.maxPrice) || undefined;
+    const search = this.$route.query.search?.toString() || undefined;
 
-    // Carregar a categoria atualmente selecionada
-    if (this.$route.query.categoryId) {
-      const currentCategory = await fetchCategory(
-        Number(this.$route.query.categoryId)
-      );
-      this.currentCategory = currentCategory.data.name;
-    } else {
-      // Se não houver uma
-      this.currentCategory = 'Todas as categorias';
-    }
-    // console.log(this.allCategories);
-
-    // Dá o preço mais alto mas pode ser pesado para o programa - TODO rever
-    const maxPriceProduct =
-      //   this.allProducts.items.length > 0
-      this.allProducts.totalItems > 0
-        ? this.allProducts.items.reduce((prevProduct, currentProduct) => {
-            return prevProduct.maxPrice > currentProduct.maxPrice
-              ? prevProduct
-              : currentProduct;
-          })
-        : null;
-
-    this.mostExpensiveProduct = maxPriceProduct;
+    // Promise.all() to request all data in parallel
+    [this.productSpecs, this.categories, this.selectedCategory] =
+      await Promise.all([
+        fetchAllProducts({
+          page,
+          pageSize,
+          categoryId,
+          minPrice,
+          maxPrice,
+          search,
+        }).then((r) => r.data),
+        fetchAllCategories({
+          productMinPrice: minPrice,
+          productMaxPrice: maxPrice,
+          productSearch: search,
+        }).then((r) => r.data),
+        categoryId ? this.getSelectedCategory(categoryId) : null,
+      ]);
   },
   components: {
     ProductCard,

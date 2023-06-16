@@ -80,7 +80,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 .compare-banner {
   background-color: #f3f3f3;
   height: 15vh;
