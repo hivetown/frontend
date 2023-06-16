@@ -164,7 +164,7 @@ export default {
 
     // Fetch maps for each production unit
     const fetchMapPromises = this.unidadesProd.items.map(
-      async (unit: productionUnit) => {
+      async (unit: ProductionUnit) => {
         const mapData = await fetchMapForUnit(
           unit.address.latitude,
           unit.address.longitude
