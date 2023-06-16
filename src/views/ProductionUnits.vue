@@ -22,9 +22,9 @@
           >
             <b-card class="prod-card position-relative">
               <img
-                :src="'https://images.pexels.com/photos/209251/pexels-photo-209251.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
+                :src="unit.images[0].url"
                 class="square-image"
-                alt="Imagem da unidade de produção"
+                :alt="unit.images[0].alt"
               />
             </b-card>
             <b-card-text class="">
@@ -122,7 +122,7 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allUnitsData = await fetchAllUnits(id, page, pageSize);
+      const allUnitsData = await fetchAllUnits(8, page, pageSize);
 
       const productionUnitsArray = allUnitsData.data;
 
