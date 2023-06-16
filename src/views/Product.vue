@@ -527,7 +527,7 @@ import {
   fetchProductCategories,
   fetchProductCategoriesFields,
   fetchLocalProducts,
-  getConsumerAddress
+  getConsumerAddresses
 } from '@/api';
 import {
   ProductSpec,
@@ -536,8 +536,7 @@ import {
   Category,
   ProductSpecField,
 } from '@/types';
-import { defineComponent, PropType, computed, ref } from 'vue';
-const producerLocalProducts= ref<any>('');
+import { defineComponent, PropType, computed} from 'vue';
 	export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -551,8 +550,7 @@ const producerLocalProducts= ref<any>('');
  
   data() {
     return {
-		userLogado:0,
-	  producerLocalProducts,
+	  producerLocalProducts: {} as BaseItems<ProducerProduct>,
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
@@ -598,8 +596,11 @@ const producerLocalProducts= ref<any>('');
 	async onCheckboxChange() {
 	this.checkboxValue = !this.checkboxValue;
 	const checkbox = document.getElementById('local-products-checkbox') as HTMLInputElement;
-	const address = await getConsumerAddress(this.userLogado);
+	const consumerId =  this.$store.state.user?.user.id;
+	if (consumerId){
+	const address = await getConsumerAddresses(consumerId);
 	const addressId = (address.data.items[0].id);
+	
 	if (checkbox.checked) {
 		this.producerLocalProducts  = await fetchLocalProducts(
 			Number(this.$route.params.specid),//specid
@@ -610,6 +611,7 @@ const producerLocalProducts= ref<any>('');
     );
 
     } 
+}
 	},
   },
 
@@ -617,10 +619,6 @@ const producerLocalProducts= ref<any>('');
   async beforeMount() {
 	const store = useStore();
 
-	const userLogado = computed(() => store.state.user);
-	if (userLogado.value && userLogado.value.user && userLogado.value.user.id) {
-		this.userLogado = userLogado.value.user.id;
-	}
     // SpecId escolhida
     const specId = Number(this.$route.params.specid);
 

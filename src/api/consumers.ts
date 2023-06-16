@@ -7,7 +7,7 @@ export const createConsumer = async (consumer: CreateConsumer) =>
 export const createConsumerAddress = (id: number, address: Address) =>
     api.post(`/consumers/${id}/addresses`, address);
 
-export const getConsumerAddress = (id: number) =>
+export const getConsumerAddresses = (id: number) =>
 api.get(`/consumers/${id}/addresses`);
 // consumer is consumer or supplier
 export const postConsumer = (consumer: CreateConsumer) =>
