@@ -2,7 +2,7 @@ export interface Product {
     id: number;
     currentPrice: number;
     productionDate: Date;
-    specification?: ProductSpec;
+    productSpec?: ProductSpec;
     producer?: Producer;
 }
 
@@ -25,7 +25,7 @@ export interface ProducerProduct {
     stock: number;
     deletedAt: Date | null;
     producer?: Producer;
-    productionUnit?: productionUnit;
+    productionUnit?: ProductionUnit;
     productSpec?: ProductSpec;
 }
 
@@ -75,7 +75,7 @@ export interface CreateProducer {
     vat: string;
 }
 
-export interface productionUnit {
+export interface ProductionUnit {
     id: number;
     name: string;
     address: Address;
@@ -110,6 +110,27 @@ export interface Address {
     district: string;
     latitude: number;
     longitude: number;
+    consumer?: number;
+}
+
+export type CreateAddress = Omit<Address, 'id'>;
+
+export interface ShippingAdress {
+    shippingAddressId: number;
+}
+export interface Order {
+    id: number;
+    shippingAddress: Address;
+    orderDate: string;
+    generalStatus: string;
+    totalPrice: number;
+}
+
+export interface OrderItem {
+    price: number;
+    producerProduct: ProducerProduct;
+    quantity: number;
+    status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface Image {
@@ -164,4 +185,99 @@ export interface Field {
 export interface FieldPossibleValue {
     id: number;
     value: string;
+}
+
+export interface ReportCard {
+    id: number;
+    numeroEncomendas: number;
+    numeroEncomendasCanceladas: number;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
+    comprasTotais: number;
+    comprasTotaisCanceladas: number;
+    numeroProdutosEncomendados: number;
+    numeroProdutosEncomendadosCancelados: number;
+}
+
+export interface ReportMap {
+    shippingAddress: Address;
+    productionUnitAddress: Address;
+}
+
+export interface ReportEvolution {
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+}
+
+export interface ReportBarChartProduct {
+    id: number;
+    nome: string;
+    totalProdutos: number;
+    totalProdutosCancelados: number;
+}
+
+// Ver se isto está a ser usado
+export interface ReportProducts {
+    id: number;
+    nome: string;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
+}
+export interface ProductSpecFieldWithCategory {
+    category: Category;
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
+}
+
+export interface CartItem {
+    producerProduct: ProducerProduct;
+    consumer?: Consumer;
+    quantity: number;
+}
+
+export interface Shipment {
+    carrier: Carrier;
+    events: ShipmentEvent[];
+}
+
+export enum ShipmentStatus {
+    /* eslint-disable no-unused-vars*/
+    Paid = 0,
+    Processing = 1,
+    Shipped = 2,
+    Delivered = 3,
+    Canceled = 4,
+    /* eslint-enable no-unused-vars*/
+}
+
+export interface ShipmentEvent {
+    id: number;
+    date: string;
+    shipment?: Shipment;
+    address: Address;
+    status: ShipmentStatus;
+}
+export enum CarrierStatus {
+    /* eslint-disable no-unused-vars*/
+    Available = 'AVAILABLE',
+    Unavailable = 'UNAVAILABLE',
+    /* eslint-enable no-unused-vars*/
+}
+export interface Carrier {
+    id: number;
+    licensePlate: string;
+    productionUnit: ProductionUnit;
+    status: CarrierStatus;
+    image: Image;
 }
