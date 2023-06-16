@@ -35,6 +35,10 @@ import Footer from '@/components/Footer.vue';
   color: #f1b24a;
 }
 
+.main-txt {
+  font-family: 'DM Serif Display', serif;
+}
+
 .parent {
   display: block;
   margin: auto;
