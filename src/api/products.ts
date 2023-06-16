@@ -4,6 +4,7 @@ import {
     BaseItems,
     ProducerProduct,
     ProductSpecField,
+    ProductSpecs,
 } from '../types/interfaces';
 import { api } from './_base';
 
@@ -22,7 +23,7 @@ export const fetchAllProducts = ({
     maxPrice?: number;
     minPrice?: number;
 }) =>
-    api.get<BaseItems<ProductSpec>>('/products', {
+    api.get<ProductSpecs>('/products', {
         params: { page, pageSize, search, categoryId, maxPrice, minPrice },
     });
 

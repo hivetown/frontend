@@ -19,15 +19,29 @@
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <CategoryFilter :categories="allCategories"></CategoryFilter>
+          <Tree
+            :value="categoriesTreeNodes"
+            @node-expand="expandCategory"
+            :loading="loadingCategories"
+            selection-mode="checkbox"
+          ></Tree>
         </div>
 
         <div id="price-filter">
-          <h5 class="grey-txt mt-3">Preço</h5>
-          <PriceFilter
-            v-if="mostExpensiveProduct"
-            :max-price="mostExpensiveProduct"
-          ></PriceFilter>
+          <div v-if="productSpecs">
+            <h5 class="grey-txt mt-3">Preço</h5>
+            <span>{{ priceFilter[0] }}€</span>
+            <Slider
+              v-model="priceFilter"
+              range
+              :min="productSpecs.minPrice"
+              :max="productSpecs.maxPrice"
+            />
+            <span>{{ priceFilter[1] }}€</span>
+          </div>
+          <div v-else>
+            <!-- TODO skeleton -->
+          </div>
         </div>
 
         <div id="supplier-filter">
@@ -49,63 +63,50 @@
     <!-- Espeaço à direita -->
     <div class="" style="width: 100%; background-color: ">
       <!-- TODO trocar para a categoria escolhida -->
-      <h3 class="parent dgreen-txt">{{ currentCategory }}</h3>
+      <h3 class="parent dgreen-txt">
+        <span v-if="!selectedCategory">Nenhuma categoria selecionada</span>
+        <span v-else>{{ selectedCategory.name }}</span>
+      </h3>
       <!-- Diferentes vistas da página -->
       <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
-      <CustomViews
-        v-if="allProducts && allProducts.pageSize"
-        :items="allProducts.totalItems"
-        :amount="allProducts.pageSize"
-      />
 
-      <div v-if="allProducts?.totalItems === 0" class="parent">
-        <p>Não foram encontrados produtos para a categoria especificada</p>
-      </div>
+      <div v-if="productSpecs">
+        <!-- <CustomViews :product-specs="productSpecs" /> -->
 
-      <div v-else id="page-products">
-        <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
-        <div
-          v-for="(linha, indice) in Math.ceil((allProducts?.pageSize ?? 0) / 4)"
-          :key="indice"
-        >
-          <div
-            class="parent d-flex justify-content-center mt-5"
-            style="gap: 12vh"
-          >
-            <template
-              v-for="product in allProducts.items.slice(
-                indice * 4,
-                indice * 4 + 4
-              )"
+        <div v-if="productSpecs.totalItems === 0" class="parent">
+          <p>Não foram encontrados produtos para a categoria especificada</p>
+        </div>
+
+        <div v-else id="page-products">
+          <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
+          <div class="parent d-flex justify-content-center mt-5">
+            <!-- <ProductCard
+              v-for="product in productSpecs.items"
               :key="product.id"
-            >
-              <!-- {{ product}} -->
-              <ProductCard
-                :product-spec="product"
-                :can-compare="canCompareMoreProducts"
-                @compare="addProductToCompare"
-              />
-            </template>
+              :product-spec="product"
+              :can-compare="canCompareMoreProducts"
+              @compare="addProductToCompare"
+            /> -->
           </div>
         </div>
-      </div>
-      <div
-        class=""
-        style="
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: center;
-        "
-      >
-        <Pagination
-          v-if="allProducts"
-          :total-rows="allProducts.totalItems"
-          :per-page="allProducts.pageSize"
-          :current-page="allProducts.page"
+        <div
+          class=""
+          style="
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+          "
         >
-        </Pagination>
+          <!-- <Pagination
+            v-if="allProducts"
+            :total-rows="allProducts.totalItems"
+            :per-page="allProducts.pageSize"
+            :current-page="allProducts.page"
+          >
+          </Pagination> -->
 
-        <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+          <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+        </div>
       </div>
     </div>
   </div>
@@ -118,107 +119,148 @@
   ></CompareBanner>
 </template>
 
-<script lang="ts">
-// Filtros
-import CategoryFilter from '@/components/CategoryFilter.vue';
-import PriceFilter from '@/components/PriceFilter.vue';
-import SupplierFilter from '@/components/SupplierFilter.vue';
-import RatingFilter from '@/components/RatingFilter.vue';
-import Pagination from '@/components/Pagination.vue';
+<script setup lang="ts">
+import { BaseItems, Category, ProductSpec, ProductSpecs } from '@/types';
+import { fetchAllCategories, fetchAllProducts, fetchCategory } from '@/api';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import Tree, { TreeNode } from 'primevue/tree';
+import Slider from 'primevue/slider';
 
-// Componentes auxiliares
-import CustomViews from '@/components/CustomViews.vue';
-import ProductCard from '@/components/ProductCard.vue';
-import CompareBanner from '@/components/CompareBanner.vue';
-// API
-import { fetchAllProducts, fetchCategory, fetchAllCategories } from '@/api';
-import { ProductSpec, Category, BaseItems } from '@/types';
-import { defineComponent } from 'vue';
+const route = useRoute();
 
-export default defineComponent({
-  data() {
-    return {
-      productSpecs: {} as BaseItems<ProductSpec>,
-      categories: {} as BaseItems<Category>,
-      selectedCategory: null as Category | null,
+onBeforeMount(async () => {
+  // Query strings for pagination and searching
+  const categoryId = Number(route.query.categoryId) || undefined;
+  const minPrice = Number(route.query.minPrice) || undefined;
+  const maxPrice = Number(route.query.maxPrice) || undefined;
+  const search = route.query.search?.toString() || undefined;
 
-      mostExpensiveProduct: null as ProductSpec | null,
-      productsToCompare: [] as ProductSpec[],
-    };
-  },
-  methods: {
-    addProductToCompare(productSpec: ProductSpec) {
-      if (!this.productsToCompare.find((spec) => spec.id === productSpec.id))
-        this.productsToCompare.push(productSpec);
-    },
-    removeProductFromCompare(productSpec: ProductSpec) {
-      const index = this.productsToCompare.findIndex(
-        (spec) => spec.id === productSpec.id
-      );
-      this.productsToCompare.splice(index, 1);
-      console.log(index);
-    },
-    removeAllProductsFromCompare() {
-      this.productsToCompare = [];
-    },
-    /**
-     * Find a category by its id. Fetch it if needed
-     * @param categoryId The category to find
-     */
-    async getSelectedCategory(categoryId: number) {
-      const cached = this.categories?.items?.find(
-        (category) => category.id === categoryId
-      );
+  // Set loadings
+  loadingCategories.value = true;
 
-      return cached || (await fetchCategory(categoryId)).data;
-    },
-  },
-  computed: {
-    isCompareBannerVisible() {
-      return this.productsToCompare.length > 0;
-    },
-    canCompareMoreProducts() {
-      return this.productsToCompare.length < 2;
-    },
-  },
-  // A fazer antes de montar o componente
-  async beforeMount() {
-    // Query strings for pagination and searching
-    const page = Number(this.$route.query.page) || 1;
-    const pageSize = Number(this.$route.query.pageSize) || 24;
-    const categoryId = Number(this.$route.query.categoryId) || undefined;
-    const minPrice = Number(this.$route.query.minPrice) || undefined;
-    const maxPrice = Number(this.$route.query.maxPrice) || undefined;
-    const search = this.$route.query.search?.toString() || undefined;
-
-    // Promise.all() to request all data in parallel
-    [this.productSpecs, this.categories, this.selectedCategory] =
+  try {
+    [productSpecs.value, categories.value, selectedCategory.value] =
       await Promise.all([
-        fetchAllProducts({
-          page,
-          pageSize,
-          categoryId,
-          minPrice,
-          maxPrice,
-          search,
-        }).then((r) => r.data),
+        loadProducts().then((prods) => {
+          // Set default price filter
+          priceFilter.value = [prods.minPrice, prods.maxPrice];
+          return prods;
+        }),
         fetchAllCategories({
           productMinPrice: minPrice,
           productMaxPrice: maxPrice,
           productSearch: search,
-        }).then((r) => r.data),
-        categoryId ? this.getSelectedCategory(categoryId) : null,
+        })
+          .then((r) => r.data)
+          .finally(() => {
+            // Set as loaded
+            loadingCategories.value = false;
+          }),
+        categoryId ? getCategory(categoryId) : null,
       ]);
-  },
-  components: {
-    ProductCard,
-    Pagination,
-    CustomViews,
-    CompareBanner,
-    CategoryFilter,
-    PriceFilter,
-    SupplierFilter,
-    RatingFilter,
-  },
+  } finally {
+    // Force set as loaded
+    loadingCategories.value = false;
+  }
 });
+
+/**
+ * ------------------------------------------------------------------------
+ * Categories
+ */
+const categories = ref<BaseItems<Category>>();
+const loadingCategories = ref(false);
+const selectedCategory = ref<Category | null>(null);
+const getCategory = async (id: number) => {
+  return (
+    categories.value?.items.find((c) => c.id === id) ||
+    fetchCategory(id).then((r) => r.data)
+  );
+};
+
+/**
+ * The tree nodes for the categories
+ */
+// Map categories to tree nodes
+const categoriesTreeNodes = computed(() => {
+  if (!categories.value?.items) return [] as TreeNode[];
+
+  return categories.value.items.map((c) => ({
+    key: c.id.toString(),
+    label: c.name,
+    leaf: false,
+  })) as TreeNode[];
+});
+
+const expandCategory = (a: TreeNode) => {
+  console.log(a);
+};
+
+/**
+ * ------------------------------------------------------------------------
+ * Product Specs
+ */
+const productSpecs = ref<ProductSpecs>();
+
+const loadProducts = async () => {
+  // TODO replace this
+  const page = Number(route.query.page) || 1;
+  const pageSize = Number(route.query.pageSize) || 24;
+  const categoryId = Number(route.query.categoryId) || undefined;
+  const search = route.query.search?.toString() || undefined;
+
+  const [minPrice, maxPrice] = priceFilter.value;
+  return (
+    await fetchAllProducts({
+      page,
+      pageSize,
+      categoryId,
+      minPrice: minPrice === -1 ? undefined : minPrice,
+      maxPrice: maxPrice === -1 ? undefined : maxPrice,
+      search,
+    })
+  ).data;
+};
+
+/**
+ * ---------------------------
+ * Compare product specs
+ */
+const productsToCompare = ref<ProductSpec[]>([]);
+const canCompareMoreProducts = computed(
+  // compare up to 2 products
+  () => productsToCompare.value.length < 2
+);
+const isCompareBannerVisible = computed(
+  () => productsToCompare.value.length > 0
+);
+
+const addProductToCompare = (product: ProductSpec) => {
+  if (canCompareMoreProducts.value) productsToCompare.value.push(product);
+};
+
+const removeProductFromCompare = (product: ProductSpec) => {
+  const index = productsToCompare.value.indexOf(product);
+  if (index > -1) productsToCompare.value.splice(index, 1);
+};
+
+const removeAllProductsFromCompare = () => {
+  productsToCompare.value = [];
+};
+
+/**
+ * Filters ---------------------------------------------------------------
+ */
+const minPrice = Number(route.query.minPrice) || -1;
+const maxPrice = Number(route.query.maxPrice) || -1;
+const priceFilter = ref<[number, number]>([minPrice, maxPrice]);
 </script>
+
+<style scoped>
+.p-tree-container,
+.p-tree {
+  max-height: 360px;
+  overflow: scroll;
+}
+</style>
