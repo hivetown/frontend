@@ -1,4 +1,4 @@
-import { Category, BaseItems } from '../types/interfaces';
+import { Category, BaseItems } from '@/types';
 import { api } from './_base';
 
 export const fetchAllCategories = (search?: string) =>
