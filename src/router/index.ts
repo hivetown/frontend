@@ -109,8 +109,8 @@ const routes = [
         path: '/impactConsumer',
         name: 'ImpactConsumer',
         component: ImpactConsumer,
-	},
-	{
+    },
+    {
         path: '/producer/:id',
         name: 'Producer',
         component: SupplierInfo,
