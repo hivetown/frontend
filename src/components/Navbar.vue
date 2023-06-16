@@ -2,7 +2,7 @@
   <div class="parent">
     <b-navbar toggleable="lg" type="dark">
       <div id="logo" class="d-block d-sm mx-auto text-center">
-        <img src="logo.svg" />
+        <img src="/logo.svg" />
         <b-navbar-brand class="p-2 logo-txt" to="/">hiveTown</b-navbar-brand>
       </div>
 

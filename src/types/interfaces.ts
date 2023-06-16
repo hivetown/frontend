@@ -132,13 +132,6 @@ export interface Transport {
     images: Image[];
 }
 
-export interface ProducerProduct {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    producer?: Producer;
-    // productionUnit?: ProductionUnit;
-}
 export interface Address {
     id: number;
     number: number;

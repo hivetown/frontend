@@ -79,7 +79,6 @@
             v-if="allUnitsData && allUnitsData.data"
             :total-rows="allUnitsData.data.totalItems"
             :per-page="allUnitsData.data.pageSize"
-            :current-page="allUnitsData.data.page"
           >
             ></Pagination
           >
@@ -123,11 +122,12 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allUnitsData = await fetchAllUnits(id, page, pageSize);
+      const allUnitsData = await fetchAllUnits(8, page, pageSize);
 
       const productionUnitsArray = allUnitsData.data;
 
       this.productionUnits = productionUnitsArray;
+      console.log(this.productionUnits);
       this.allUnitsData = allUnitsData;
     } catch (error) {
       console.error(error);

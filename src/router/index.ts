@@ -183,7 +183,7 @@ router.beforeEach(async (to, from, next) => {
     // Check if the user has the required permissions
     if (
         to.matched.some((record) => record.meta.requiredPermissions) &&
-        !hasPermission(user, to.meta.requiredPermissions!)
+        !hasPermission(user!, to.meta.requiredPermissions!)
     ) {
         // Redirect back to the previous page if the user does not have the required permissions
         createPopup(

@@ -67,7 +67,6 @@
             v-if="allUnitProducts && allUnitProducts.data"
             :total-rows="allUnitProducts.data.totalItems"
             :per-page="allUnitProducts.data.pageSize"
-            :current-page="allUnitProducts.data.page"
           >
             ></Pagination
           >
@@ -88,17 +87,11 @@ import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 export default {
   computed: {
     unitName(): string {
-      return this.$route.params.unitName;
+      return this.$route.params.unitName as string;
     },
   },
   components: {
     Pagination,
-  },
-  props: {
-    id: {
-      type: Number,
-      required: true,
-    },
   },
   data() {
     return {
@@ -115,8 +108,8 @@ export default {
   async mounted() {
     try {
       const route = useRoute() as RouteLocationNormalizedLoaded;
-      const producerId = route.params.producerId;
-      const unitId = route.params.unitId;
+      const producerId = parseInt(route.params.producerId as string);
+      const unitId = parseInt(route.params.unitId as string);
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 

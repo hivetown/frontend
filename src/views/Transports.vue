@@ -80,7 +80,6 @@
             v-if="allTransportsData && allTransportsData.data"
             :total-rows="allTransportsData.data.totalItems"
             :per-page="allTransportsData.data.pageSize"
-            :current-page="allTransportsData.data.page"
           >
             ></Pagination
           >
