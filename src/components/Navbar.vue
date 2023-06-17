@@ -135,14 +135,16 @@
         </button>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Adicionar ao carrinho"
+          >
+            <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
         <button

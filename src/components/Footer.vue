@@ -81,14 +81,22 @@
           </b-col>
           <b-col md="3" lg="2" xl="2" class="mb-4">
             <!-- Links -->
+
             <h6 class="text-uppercase fw-bold mb-4 dgreen-txt">Conta</h6>
+
             <b-list-group>
-              <b-list-group-item href="#" class="text-reset footer-links"
-                ><span class="grey-txt">A minha conta</span></b-list-group-item
-              >
-              <b-list-group-item href="#" class="text-reset footer-links"
-                ><span class="grey-txt">Encomendas</span></b-list-group-item
-              >
+              <router-link class="text-decoration-none" to="/conta">
+                <b-list-group-item href="#" class="text-reset footer-links"
+                  ><span class="grey-txt"
+                    >A minha conta</span
+                  ></b-list-group-item
+                >
+              </router-link>
+              <router-link class="text-decoration-none" to="/encomendas">
+                <b-list-group-item href="#" class="text-reset footer-links"
+                  ><span class="grey-txt">Encomendas</span></b-list-group-item
+                >
+              </router-link>
               <b-list-group-item href="#" class="text-reset footer-links"
                 ><span class="grey-txt">Devoluções</span></b-list-group-item
               >
