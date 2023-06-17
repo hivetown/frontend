@@ -75,7 +75,7 @@
     </div>
 
     <!-- Espeaço à direita -->
-    <div class="" style="width: 100%; background-color: ">
+    <div style="width: 100%">
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">
         <span v-if="!selectedCategoryTreeNode"
@@ -84,21 +84,22 @@
         <span v-else>{{ selectedCategoryTreeNode.label }}</span>
       </h3>
       <!-- Diferentes vistas da página -->
-      <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
+      <CustomViews
+        v-if="productSpecs && productSpecs.pageSize"
+        :items="productSpecs.totalItems"
+        :amount="productSpecs.pageSize"
+        :prevent-redirect="true"
+        @update:page-size="
+          (pageSize) => productSpecPageChange({ rows: pageSize })
+        "
+      />
 
       <div v-if="productSpecs">
-        <!-- <CustomViews :product-specs="productSpecs" /> -->
-
         <div v-if="productSpecs.totalItems === 0" class="parent">
           <p>Não foram encontrados produtos para a categoria especificada</p>
         </div>
 
         <div v-else id="page-products">
-          <p v-if="!loadingProductSpecs">
-            {{ productSpecs.totalItems }} produtos
-          </p>
-
-          <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
           <div class="grid m-3">
             <template v-if="loadingProductSpecs">
               <ProgressSpinner
@@ -171,9 +172,14 @@ import ProductCard from '@/components/ProductCard.vue';
 import InputText from 'primevue/inputtext';
 import ProgressSpinner from 'primevue/progressspinner';
 import Paginator, { PageState } from 'primevue/paginator';
+import PathComponent from '@/components/PathComponent.vue';
+import CustomViews from '@/components/CustomViews.vue';
+import CompareBanner from '@/components/CompareBanner.vue';
 
 const route = useRoute();
 const router = useRouter();
+
+const path = [['Produtos', '/products']];
 
 const currentFilters = ref({
   categoryId: Number(route.query.categoryId) || undefined,
@@ -185,7 +191,6 @@ const currentFilters = ref({
 });
 
 watch(currentFilters.value, (newFilters) => {
-  console.log('newFilters', newFilters);
   router.push({
     query: {
       ...newFilters,
@@ -415,11 +420,19 @@ const changeSearchQuery = debounce(async () => {
   currentFilters.value.searchQuery = productSpecSearchQuery.value;
 }, 1500);
 
-const productSpecPageChange = async (page: PageState) => {
-  await loadProducts({ page: page.page + 1, pageSize: page.rows });
+const productSpecPageChange = async (page: Partial<PageState>) => {
+  const filter: { page?: number; pageSize?: number } = {};
+  if (page.page) {
+    filter.page = page.page + 1;
+    currentFilters.value.page = page.page + 1;
+  }
 
-  currentFilters.value.page = page.page + 1;
-  currentFilters.value.pageSize = page.rows;
+  if (page.rows) {
+    filter.pageSize = page.rows;
+    currentFilters.value.pageSize = page.rows;
+  }
+
+  await loadProducts(filter);
 };
 
 /**
