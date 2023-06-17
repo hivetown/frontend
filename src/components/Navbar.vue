@@ -86,21 +86,31 @@
                 class="nav-item"
                 :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
-              >
-              </b-avatar>
+              ></b-avatar>
               <span>{{ user.user.name }}</span>
             </router-link>
             <b-nav-item-dropdown
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item>Definições</b-dropdown-item>
-              <b-dropdown-item>
-                <router-link to="/encomendas" class="linkcolor"
-                  >Encomendas</router-link
+              <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <div v-if="user.user.type === 'PRODUCER'">
+                <b-dropdown-item href="/produtosprodutor"
+                  >Produtos</b-dropdown-item
                 >
-              </b-dropdown-item>
-              <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
+                <b-dropdown-item href="/unidadesproducao"
+                  >Unidades de Produção</b-dropdown-item
+                >
+                <b-dropdown-item href="/transportes"
+                  >Transportes</b-dropdown-item
+                >
+                <b-dropdown-item href="/encomendas" class="linkcolor"
+                  >Encomendas</b-dropdown-item
+                >
+              </div>
+              <b-dropdown-item @click="logout" href="#"
+                >Terminar Sessão</b-dropdown-item
+              >
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -167,15 +177,12 @@
     </b-nav>
   </div>
 </template>
-
 <script lang="ts">
-import { useStore } from '@/store';
 import { computed } from 'vue';
-
+import { useStore } from '@/store';
 export default {
   setup() {
     const store = useStore();
-
     // computed user
     const user = computed(() => store.state.user);
 

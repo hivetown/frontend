@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
 import { key, store } from '@/store';
-import router from './router';
+import router from '@/router/index';
 
 // Ver se está tudo ok
 import PrimeVue from 'primevue/config';
