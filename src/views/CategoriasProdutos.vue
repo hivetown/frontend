@@ -6,7 +6,7 @@
   <!-- Conteúdo da página -->
   <div class="d-flex parent">
     <!-- Barra lateral com os filtros -->
-    <div class="lat-bar" style="width: 20%">
+    <div class="lat-bar mobile-off-lat-bar" style="width: 20%">
       <div id="filters">
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- Espeaço à direita -->
-    <div class="" style="width: 100%; background-color: ">
+    <div class="right-content" style="width: 100%; background-color: ">
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">{{ currentCategory }}</h3>
       <!-- Diferentes vistas da página -->
@@ -93,6 +93,55 @@
       </div>
     </div>
   </div>
+
+  <!-- Filtros no movo telemovel -->
+  <div class="card mobile-on-lat-bar" style="display: none">
+    <Accordion class="">
+      <AccordionTab header="Filtros">
+        <div id="filters">
+          <div id="category-filter">
+            <h5 class="grey-txt">Categorias</h5>
+            <CategoryFilter :categories="allCategories"></CategoryFilter>
+          </div>
+
+          <div id="price-filter">
+            <h5 class="grey-txt mt-3">Preço</h5>
+            <PriceFilter
+              v-if="mostExpensiveProduct"
+              :max-price="mostExpensiveProduct"
+            ></PriceFilter>
+          </div>
+
+          <div id="supplier-filter">
+            <h5 class="grey-txt mt-3">Fornecedor</h5>
+            <SupplierFilter></SupplierFilter>
+          </div>
+        </div>
+      </AccordionTab>
+    </Accordion>
+  </div>
+  <div class="right-content-mobile-on">
+    <CustomViews
+      v-if="allProducts && allProducts.pageSize"
+      :items="allProducts.totalItems"
+      :amount="allProducts.pageSize"
+    />
+  </div>
+
+  <div class="pagination-mobile-on">
+    <div class="parent" style="display: flex; justify-content: center">
+      <Pagination
+        v-if="allProducts"
+        :total-rows="allProducts.totalItems"
+        :per-page="allProducts.pageSize"
+        :current-page="allProducts.page"
+      >
+      </Pagination>
+
+      <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+    </div>
+  </div>
+
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
   <CompareBanner
     v-if="isCompareBannerVisible"
@@ -115,6 +164,9 @@ import Pagination from '@/components/Pagination.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import ProductCard from '@/components/ProductCard.vue';
 import CompareBanner from '@/components/CompareBanner.vue';
+
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 </script>
 
 <!-- TODO atualizar tipagens -->
@@ -223,3 +275,40 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.right-content-mobile-on {
+  display: none;
+}
+
+.pagination-mobile-on {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-off-lat-bar {
+    display: none;
+  }
+
+  .mobile-on-lat-bar {
+    display: block !important;
+    /* background-color: red; */
+  }
+
+  .right-content {
+    display: none;
+  }
+
+  .p-accordion {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+  }
+
+  .right-content-mobile-on {
+    display: block;
+  }
+
+  .pagination-mobile-on {
+    display: block;
+  }
+}
+</style>
