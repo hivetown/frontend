@@ -20,12 +20,25 @@
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
           <Tree
+            scroll-height="600px"
             :value="categoriesTreeNodes"
             @node-expand="expandCategory"
             :loading="loadingCategories"
-            selection-mode="checkbox"
-          ></Tree>
+            selection-mode="single"
+            @node-select="nodeSelect"
+            @node-unselect="nodeUnselect"
+          >
+            <template #default="slotProps">
+              <b-form-checkbox
+                :checked="selectedCategoryTreeNode?.key === slotProps.node.key"
+                :disabled="selectedCategoryTreeNode?.key === slotProps.node.key"
+              />
+              {{ slotProps.node.label }}
+            </template>
+          </Tree>
         </div>
+
+        <!-- <Checkbox :v-model="checkboxTest" :binary="true" /> -->
 
         <div id="price-filter">
           <div v-if="productSpecs">
@@ -64,8 +77,10 @@
     <div class="" style="width: 100%; background-color: ">
       <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">
-        <span v-if="!selectedCategory">Nenhuma categoria selecionada</span>
-        <span v-else>{{ selectedCategory.name }}</span>
+        <span v-if="!selectedCategoryTreeNode"
+          >Nenhuma categoria selecionada</span
+        >
+        <span v-else>{{ selectedCategoryTreeNode.label }}</span>
       </h3>
       <!-- Diferentes vistas da página -->
       <!-- <CustomViews :items="allProductsData.data.totalItems" :amount="allProductsData.data.pageSize"></CustomViews> -->
@@ -121,17 +136,23 @@
 
 <script setup lang="ts">
 import { BaseItems, Category, ProductSpec, ProductSpecs } from '@/types';
-import { fetchAllCategories, fetchAllProducts, fetchCategory } from '@/api';
-import { computed, onBeforeMount, ref } from 'vue';
+import { fetchAllCategories, fetchAllProducts } from '@/api';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import Tree, { TreeNode } from 'primevue/tree';
 import Slider from 'primevue/slider';
+import Checkbox from 'primevue/checkbox';
+
+const checkboxTest = ref();
+watch(checkboxTest, (val) => {
+  console.log(val);
+});
 
 const route = useRoute();
 
 onBeforeMount(async () => {
   // Query strings for pagination and searching
-  const categoryId = Number(route.query.categoryId) || undefined;
+  // const categoryId = Number(route.query.categoryId) || undefined;
 
   // Set loadings
   loadingCategories.value = true;
@@ -145,15 +166,31 @@ onBeforeMount(async () => {
     });
 
     // Categories
-    [categories.value, selectedCategory.value] = await Promise.all([
-      loadCategories(),
-      categoryId ? getCategory(categoryId) : null,
-    ]);
+    categories.value = await loadCategories();
+
+    // TODO: preload selectedCategoryTreeNode categoryId
+
+    if (categories.value?.items.length)
+      categoriesTreeNodes.value = categories.value.items.map(
+        mapCategoryToTreeNode
+      );
   } finally {
     // Force set as loaded
     loadingCategories.value = false;
   }
 });
+
+const asdasd = ref(null);
+watch(asdasd, (val) => console.log(val));
+const nodeSelect = (node: TreeNode) => {
+  console.log('select', node);
+  selectedCategoryTreeNode.value = node;
+};
+
+const nodeUnselect = (node: TreeNode) => {
+  console.log('unselect', node);
+  selectedCategoryTreeNode.value = null;
+};
 
 /**
  * ------------------------------------------------------------------------
@@ -161,13 +198,7 @@ onBeforeMount(async () => {
  */
 const categories = ref<BaseItems<Category>>();
 const loadingCategories = ref(false);
-const selectedCategory = ref<Category | null>(null);
-const getCategory = async (id: number) => {
-  return (
-    categories.value?.items.find((c) => c.id === id) ||
-    fetchCategory(id).then((r) => r.data)
-  );
-};
+const selectedCategoryTreeNode = ref<TreeNode | null>(null);
 
 const loadCategories = async () => {
   const search = route.query.search?.toString() || undefined;
@@ -176,6 +207,7 @@ const loadCategories = async () => {
   loadingCategories.value = true;
 
   const res = await fetchAllCategories({
+    pageSize: 100,
     productMinPrice: minPrice,
     productMaxPrice: maxPrice,
     productSearch: search,
@@ -189,7 +221,7 @@ const loadCategories = async () => {
  * The tree nodes for the categories
  */
 // Map categories to tree nodes
-const categoriesTreeNodes = ref();
+const categoriesTreeNodes = ref<TreeNode[]>([]);
 
 const mapCategoryToTreeNode = (category: Category): TreeNode => ({
   key: category.id.toString(),
@@ -204,14 +236,8 @@ const expandCategory = async (node: TreeNode) => {
     // Fetch category
     const categories = await fetchAllCategories({ parentId: Number(node.key) });
 
-    // Copy node
-    const _node = { ...node };
-    _node.children = categories.data.items.map(mapCategoryToTreeNode);
-
-    const _nodes = { ...categoriesTreeNodes.value };
-    _nodes[Number(node.key)] = _node;
-
-    categoriesTreeNodes.value = _nodes;
+    // TODO pagination/lazyloading
+    node.children = categories.data.items.map(mapCategoryToTreeNode);
 
     loadingCategories.value = false;
   }
@@ -248,17 +274,17 @@ const loadProducts = async () => {
  * Compare product specs
  */
 const productsToCompare = ref<ProductSpec[]>([]);
-const canCompareMoreProducts = computed(
-  // compare up to 2 products
-  () => productsToCompare.value.length < 2
-);
+// const canCompareMoreProducts = computed(
+//   // compare up to 2 products
+//   () => productsToCompare.value.length < 2
+// );
 const isCompareBannerVisible = computed(
   () => productsToCompare.value.length > 0
 );
 
-const addProductToCompare = (product: ProductSpec) => {
-  if (canCompareMoreProducts.value) productsToCompare.value.push(product);
-};
+// const addProductToCompare = (product: ProductSpec) => {
+//   if (canCompareMoreProducts.value) productsToCompare.value.push(product);
+// };
 
 const removeProductFromCompare = (product: ProductSpec) => {
   const index = productsToCompare.value.indexOf(product);
@@ -276,11 +302,3 @@ const minPrice = Number(route.query.minPrice) || -1;
 const maxPrice = Number(route.query.maxPrice) || -1;
 const priceFilter = ref<[number, number]>([minPrice, maxPrice]);
 </script>
-
-<style scoped>
-.p-tree-container,
-.p-tree {
-  max-height: 360px;
-  overflow: scroll;
-}
-</style>

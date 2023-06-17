@@ -23,7 +23,7 @@ export const fetchAllCategories = ({
             productSearch,
             page,
             pageSize,
-            minPrice: productMinPrice,
+            productMinPrice,
             productMaxPrice,
         },
     });
