@@ -178,23 +178,14 @@
     </b-nav>
   </div>
 </template>
-<<<<<<< HEAD
-
 <script lang="ts">
-=======
-<script lang="ts">
-import { computed } from 'vue';
->>>>>>> main
 import { useStore } from '@/store';
 import { computed } from 'vue';
 
 export default {
   setup() {
     const store = useStore();
-<<<<<<< HEAD
 
-=======
->>>>>>> main
     // computed user
     const user = computed(() => store.state.user);
 
