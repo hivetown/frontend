@@ -23,7 +23,7 @@ export interface ProducerProduct {
     productionDate: Date;
     stock: number;
     deletedAt: Date | null;
-    producer?: Producer | number;
+    producer?: Producer;
     productionUnit?: ProductionUnit;
     productSpec?: ProductSpec;
 }

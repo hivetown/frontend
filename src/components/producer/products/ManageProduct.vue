@@ -13,7 +13,10 @@
       <h4>{{ methodName }} produto</h4>
 
       <div class="flex justify-content-center mt-4">
-        <VeeForm @submit="createProduct" class="flex flex-column gap-3">
+        <VeeForm
+          @submit="($e) => createProduct($e as Event)"
+          class="flex flex-column gap-3"
+        >
           <!-- Product Spec -->
           <div class="flex flex-column gap-2">
             <label for="productSpec">Nome do produto</label>

@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts">
-import { Product } from '@/types';
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -27,6 +26,8 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { PropType } from 'vue';
 import { AxiosError } from 'axios';
+import { ProducerProduct } from '@/types';
+
 export default {
   components: {
     PrimeButton,
@@ -35,12 +36,13 @@ export default {
   },
   props: {
     producerProduct: {
-      type: Object as PropType<Product>,
+      type: Object as PropType<ProducerProduct>,
       required: true,
     },
   },
   emits: {
-    deleteProduct: (producerProduct: Product) => true,
+    // eslint-disable-next-line no-unused-vars
+    deleteProduct: (producerProduct: ProducerProduct) => true,
   },
   setup(props, { emit }) {
     const confirm = useConfirm();
