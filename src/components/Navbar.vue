@@ -279,28 +279,25 @@ components: {
     };
   },
   mounted() {
-
-    // Função para buscar as notificações não lidas
-	console.log(this.user);
-	setTimeout(() => {
-	if(this.user){
-    const fetchNotifications = async () => {
+  const fetchAndSetNotifications = async () => {
+    if (this.user) {
       try {
         const responseItem = await getUnreadNotifications();
         this.notificacoes = responseItem.data.items.length;
       } catch (error) {
         console.error(error);
       }
-	
-    };
-	fetchNotifications();
+    }
+  };
 
-    // Atualiza as notificações a cada 3 em 3 minutos
-    setInterval(fetchNotifications, 30000);
-}
-}, 2000); //para que a autenticcao seja feita primeiro
-  },
+  // Chama a função após um atraso inicial de 2000 milissegundos
+  setTimeout(() => {
+    fetchAndSetNotifications();
 
+    // Chama a função a cada 3 minutos
+    setInterval(fetchAndSetNotifications, 180000);
+  }, 3000);
+},
 };
 </script>
 <style>
