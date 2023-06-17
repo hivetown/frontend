@@ -50,7 +50,7 @@
                   class="btn btn-outline-secondary btn-sm"
                   style="text-align: center"
                 >
-                  Processeguir para Pagamento & Envio
+                  Prosseguir para Pagamento & Envio
                 </button>
               </div>
             </div>
@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 .container {
   display: flex;
   align-items: center;
@@ -101,15 +101,12 @@ table {
 }
 </style>
 
-<script setup lang="ts">
-import CartItem from '@/components/CartItem.vue';
-</script>
-
 <script lang="ts">
+import CartItem from '@/components/CartItem.vue';
 import { deleteCartItem, fetchCartItems } from '../api/consumers';
 //import { Product } from '@/types';
 //import { defineComponent } from 'vue';
-import { Cart, Image } from '@types'; //TODO: Pode dar erro
+import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 //import { getSystemErrorMap } from 'util';
 
@@ -200,6 +197,13 @@ export default {
     },
 
     async refreshValues() {
+      const itensCarrinho = await fetchCartItems(this.userLoggedId);
+      this.itensCarrinho = itensCarrinho.data;
+      this.nElementos = this.countItems();
+      this.precoTotal = this.countPrice();
+    },
+
+    checkLogin() {
       //Guardar em Vars informação do User    const store = useStore();
       const userLoggedId = computed(() => this.$store.state.user);
       if (userLoggedId.value) {
@@ -211,13 +215,6 @@ export default {
           this.userLoggedNImage = userLoggedId.value['user']['image'];
         }
       }
-      const itensCarrinho = await fetchCartItems(this.userLoggedId);
-      this.itensCarrinho = itensCarrinho.data;
-      this.nElementos = this.countItems();
-      this.precoTotal = this.countPrice();
-    },
-
-    checkLogin() {
       if (this.$store.state.user != undefined) {
         this.refreshValues();
       }
@@ -226,7 +223,7 @@ export default {
 
   // Buscar Info do Carrinho
   async beforeMount() {
-    this.refreshValues();
+    this.checkLogin();
   },
 };
 </script>

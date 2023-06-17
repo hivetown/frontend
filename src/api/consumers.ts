@@ -28,8 +28,5 @@ export const updateQuantityCartItem = (
     quantity: number
 ) => api.put(`/consumers/${consumer}/cart/${producerProduct}`, { quantity });
 
-export const createConsumer = async (consumer: CreateConsumer) =>
-    api.post<Consumer>('/consumers', consumer);
-
 export const createConsumerAddress = (id: number, address: Address) =>
     api.post(`/consumers/${id}/addresses`, address);

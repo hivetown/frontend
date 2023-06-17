@@ -10,7 +10,7 @@
         />
       </b-card>
     </router-link>
-    <b-card-text class="w-100" style="background-color: ">
+    <b-card-text class="w-100">
       <div style="margin-top: 45px">
         <!--<p>{{cartItem}}</p>-->
 
@@ -52,51 +52,15 @@
       </div>
     </b-card-text>
   </div>
-
-  <!-- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO -->
-
-  <button
-    @click="itemAdded(cartItem.producerProduct!.id)"
-    variant="danger"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="Remover do carrinho"
-  >
-    <i class="bi bi-bag-plus-fill"></i>
-  </button>
-  <button
-    @click="itemAddedTest()"
-    variant="danger"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="Remover do carrinho"
-  >
-    <i class="bi bi-bag-plus-fill"></i>
-  </button>
-  <button
-    @click="itemAddedNAU(cartItem.producerProduct!.id, 1)"
-    variant="danger"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="Remover do carrinho"
-  >
-    <i class="bi bi-bag-plus-fill"></i>
-  </button>
-
-  <!-------------------------------------------->
 </template>
 
 <script lang="ts">
-// --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
 import { addCartItem } from '../api/consumers';
-//-----------------------------------------------
 import { CartItem, Image } from '@/types';
 import { PropType, computed } from 'vue';
 import { deleteCartItem } from '@/api'; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
 import { updateQuantityCartItem } from '@/api';
-// --- Non-Aut-User TESTE ---
 import { CartNAU, CartItemNAU } from '@/utils/cartItemNAU.js';
-// Use the CartItemNAU class as needed
 
 // --------------------------
 
@@ -126,14 +90,11 @@ export default {
   },
 
   methods: {
-    // --- Non-Aut-User TESTE ---
     itemAddedNAU(idToAdd: number, quantity: number) {
       this.CartNAU.buildCartNonAut(new CartItemNAU(idToAdd, quantity));
       console.log(this.CartNAU);
     },
-    // --------------------------
 
-    // --- ADICIONAR ITEM AO CARRINO - TEMPORÁRIO ---
     async itemAdded(idToAdd: number) {
       this.getLoginInfo();
       console.log(idToAdd);
@@ -143,7 +104,6 @@ export default {
       this.getLoginInfo();
       await addCartItem(this.userLoggedId, 11527, 1);
     },
-    //-----------------------------------------------
 
     setupQts() {
       this.getLoginInfo();
@@ -165,13 +125,11 @@ export default {
       try {
         this.getLoginInfo();
         if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
-          //TODO: Fazer aviso de confirmação ao user se realmente quer apagar o item do carrinho
-          //TODO: Desativar botão aqui
-          await deleteCartItem(9, this.cartItem.producerProduct!.id);
-          //TODO: Mudar o 1 para o id do cliente
-          //console.log('test');
+          await deleteCartItem(
+            this.userLoggedId,
+            this.cartItem.producerProduct!.id
+          );
           this.$emit('deleteCartItem', this.cartItem.producerProduct!.id);
-          //console.log('id:',this.cartItem.producerProduct!.id);
         } else {
           /* do nothing */
         }
@@ -184,16 +142,13 @@ export default {
 
     async updateQnt(): Promise<void> {
       try {
-        //console.log('Entrou updateQnt')
         this.getLoginInfo();
         await updateQuantityCartItem(
           this.userLoggedId,
           this.cartItem.producerProduct!.id,
           this.selectedValue
         );
-        //console.log('Correu updateQnt')
         this.$emit('updateCartItem');
-        //console.log(this.cartItem.producerProduct!)
       } catch (error) {
         if (error instanceof Error) {
           if (error.message === 'Request failed with status code 400') {
