@@ -103,6 +103,10 @@
         </div>
 
         <div v-else id="page-products">
+          <p v-if="!loadingProductSpecs">
+            {{ productSpecs.totalItems }} produtos
+          </p>
+
           <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
           <div class="grid m-3">
             <template v-if="loadingProductSpecs">
@@ -129,19 +133,28 @@
         <div
           style="
             display: flex;
-            flex-direction: row-reverse;
             justify-content: center;
+            align-items: center;
+            flex-direction: column;
           "
         >
-          <!-- <Pagination
-            v-if="allProducts"
-            :total-rows="allProducts.totalItems"
-            :per-page="allProducts.pageSize"
-            :current-page="allProducts.page"
+          <Paginator
+            :template="{
+              '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+              '960px':
+                'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+              '1300px':
+                'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
+              default:
+                'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown JumpToPageInput',
+            }"
+            :rows="productSpecs.pageSize"
+            :total-records="productSpecs.totalItems"
+            @page="productSpecPageChange"
           >
-          </Pagination> -->
+          </Paginator>
 
-          <!-- <p>Total de páginas: {{ allProductsData.data.totalPages }}</p> -->
+          <p>Total de páginas: {{ productSpecs.totalPages }}</p>
         </div>
       </div>
     </div>
@@ -159,13 +172,14 @@
 import { Category, ProductSpec, ProductSpecs } from '@/types';
 import { fetchAllCategories, fetchAllProducts } from '@/api';
 import { computed, onBeforeMount, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import Tree, { TreeNode } from 'primevue/tree';
 import Slider from 'primevue/slider';
 import { debounce } from 'lodash';
 import ProductCard from '@/components/ProductCard.vue';
 import InputText from 'primevue/inputtext';
 import ProgressSpinner from 'primevue/progressspinner';
+import Paginator, { PageState } from 'primevue/paginator';
 
 const checkboxTest = ref();
 watch(checkboxTest, (val) => {
@@ -173,6 +187,7 @@ watch(checkboxTest, (val) => {
 });
 
 const route = useRoute();
+const router = useRouter();
 
 onBeforeMount(async () => {
   // Query strings for pagination and searching
@@ -350,11 +365,12 @@ const loadingProductSpecs = ref(true);
 const productsPricing = ref<{ min: number; max: number }>({ min: 0, max: 0 });
 const productSpecSearchQuery = ref(route.query.search?.toString() || '');
 
-const loadProducts = async () => {
-  // TODO replace this
-  const page = Number(route.query.page) || 1;
-  const pageSize = Number(route.query.pageSize) || 24;
-  // --
+const loadProducts = async ({
+  page: _page,
+  pageSize: _pageSize,
+}: { page?: number; pageSize?: number } = {}) => {
+  const page = _page || Number(route.query.page) || 1;
+  const pageSize = _pageSize || Number(route.query.pageSize) || 24;
 
   const category =
     Number(selectedCategoryTreeNode.value?.key) ||
@@ -390,6 +406,19 @@ const changePriceFilter = debounce(async () => {
 const changeSearchQuery = debounce(async () => {
   await Promise.all([loadCategories(), loadProducts()]);
 }, 1500);
+
+const productSpecPageChange = async (page: PageState) => {
+  await loadProducts({ page: page.page + 1, pageSize: page.rows });
+
+  // page is 0-indexed
+  router.push({
+    query: {
+      ...route.query,
+      page: page.page + 1,
+      pageSize: page.rows,
+    },
+  });
+};
 
 /**
  * ---------------------------
