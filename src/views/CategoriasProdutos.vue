@@ -76,12 +76,11 @@
 
     <!-- Espeaço à direita -->
     <div style="width: 100%">
-      <!-- TODO trocar para a categoria escolhida -->
       <h3 class="parent dgreen-txt">
-        <span v-if="!selectedCategoryTreeNode"
-          >Nenhuma categoria selecionada</span
+        <template v-if="!selectedCategoryTreeNode"
+          >Nenhuma categoria selecionada</template
         >
-        <span v-else>{{ selectedCategoryTreeNode.label }}</span>
+        <template v-else>{{ selectedCategoryTreeNode.label }}</template>
       </h3>
       <!-- Diferentes vistas da página -->
       <CustomViews
