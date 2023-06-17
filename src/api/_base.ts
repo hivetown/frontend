@@ -1,4 +1,3 @@
-import router from '@/router';
 import { store } from '@/store';
 import { ApiRequest } from '@/types';
 import { createPopup } from '@/utils/popup';
@@ -29,15 +28,7 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
         (response) => response,
 
         (error: AxiosError) => {
-            if (
-                error.response?.status === 401 &&
-                router.currentRoute.value.meta.requiresAuth
-            ) {
-                createPopup(
-                    `Erro ${error.response.status}: É necessário autenticar-se para realizar esta operação`,
-                    'error'
-                );
-            } else if (error.response?.status === 403) {
+            if (error.response?.status === 403) {
                 createPopup(
                     `Erro ${error.response.status}: Não tem permissões para esta operação`,
                     'error'

@@ -1,11 +1,3 @@
-export interface Product {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    productSpec?: ProductSpec;
-    producer?: Producer;
-}
-
 export interface ProductSpec {
     id: number;
     name: string;
@@ -15,7 +7,14 @@ export interface ProductSpec {
     maxPrice: number;
     producersCount: number;
     images: Image[];
-    products?: Product[];
+    products?: ProducerProduct[];
+}
+
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
 }
 
 export interface ProducerProduct {
@@ -86,7 +85,8 @@ export interface ProductionUnit {
     name: string;
     address: Address;
     producer?: Producer | number;
-    deletedAt: string | null;
+    images?: Image[];
+    deletedAt: Date | null;
 }
 
 export interface ApiRequest {
@@ -101,6 +101,25 @@ export interface BaseItems<T> {
     totalPages: number;
     page: number;
     pageSize: number;
+}
+
+export interface ProductionUnits {
+    id: number;
+    name: string;
+    description: string;
+    productionUnit: ProductionUnit;
+    products: ProducerProduct[];
+    address: Address;
+    images: Image[];
+}
+
+export interface Transport {
+    id: number;
+    licensePlate: string;
+    productionUnit?: ProductionUnit;
+    status: string;
+    shipments?: Shipment[];
+    image: Image;
 }
 
 export interface Address {
@@ -139,13 +158,6 @@ export interface OrderItem {
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
-export interface Image {
-    id: number;
-    name: string;
-    url: string;
-    alt: string;
-}
-
 export type AuthenticatedUser = Consumer | Producer;
 
 export interface ProductSpecField {
@@ -166,6 +178,33 @@ export interface FieldPossibleValue {
     value: string;
 }
 
+export interface SelectedUnit {
+    id: number;
+    name: string;
+    address: Address;
+    producer: Producer;
+    deletedAt: Date | null;
+}
+
+export interface Location {
+    items: {
+        city: string;
+        county: string;
+        district: string;
+        door: string;
+        floor: number;
+        id: number;
+        latitude: number;
+        longitude: number;
+        number: number;
+        parish: string;
+        street: string;
+        zipCode: string;
+    }[];
+    baseItems: BaseItems<{
+        address: Address;
+    }>;
+}
 export interface ReportCard {
     id: number;
     numeroEncomendas: number;
