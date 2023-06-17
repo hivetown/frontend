@@ -2,7 +2,7 @@ import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
 import { key, store } from '@/store';
-import router from './router';
+import router from '@/router/index';
 
 import BootstrapVue3, { BCarousel, BCarouselSlide } from 'bootstrap-vue-3';
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
@@ -19,6 +19,7 @@ import 'primevue/resources/themes/bootstrap4-light-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const app = createApp(App);
 app.use(store, key);

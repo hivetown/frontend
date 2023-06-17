@@ -53,7 +53,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Order } from '@types';
+import { Order } from '@/types';
 import { PropType } from 'vue';
 
 const props = defineProps({
