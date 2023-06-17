@@ -42,8 +42,11 @@ export default {
   color: #232323 !important;
 }
 
+.pagination .disabled span {
+  color: #a4a4a4 !important;
+}
+
 .pagination .page-link:focus {
-  /* box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important; */
   box-shadow: 0 0 0 0.2rem rgba(207, 207, 207, 0.25) !important;
 }
 
@@ -51,5 +54,30 @@ export default {
   color: white !important;
   border: 1px solid #ce9840;
   background-color: #f1b24a !important;
+}
+
+.pagination li:first-child .page-link:after {
+  content: 'Primeira';
+  margin-left: 5px;
+}
+
+.pagination li:nth-child(2) .page-link:after {
+  content: 'Anterior';
+  margin-left: 5px;
+}
+
+.pagination li:nth-child(2) .page-link:after {
+  content: 'Anterior';
+  margin-left: 5px;
+}
+
+.pagination li:nth-last-child(2) .page-link:before {
+  content: 'Seguinte';
+  margin-right: 5px;
+}
+
+.pagination li:last-child .page-link:before {
+  content: 'Última';
+  margin-right: 5px;
 }
 </style>

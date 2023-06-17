@@ -13,6 +13,8 @@ import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
+import ImpactProducer from '@/views/ImpactProducer.vue';
+import ConsentPage from '@/views/ConsentPage.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import Order from '@/views/Order.vue';
 import OrderHistory from '@/views/OrderHistory.vue';
@@ -119,6 +121,19 @@ const routes = [
         },
     },
     {
+        path: '/impactProducer',
+        name: 'ImpactProducer',
+        component: ImpactProducer,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/consent',
+        name: 'ConsentManagement',
+        component: ConsentPage,
+    },
+    {
         path: '/unidadesproducao',
         name: 'unidadesproducao',
         component: ProductionUnits,
@@ -152,6 +167,9 @@ const routes = [
         path: '/impactConsumer',
         name: 'ImpactConsumer',
         component: ImpactConsumer,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/producer/:id',
