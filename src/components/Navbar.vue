@@ -1,15 +1,15 @@
 <template>
   <div class="parent">
-    <b-navbar toggleable="lg" type="dark">
+    <b-navbar toggleable="lg" type="dark" class="nav-home">
       <div id="logo" class="d-block d-sm mx-auto text-center">
         <img src="/logo.svg" />
         <b-navbar-brand class="p-2 logo-txt" to="/">hiveTown</b-navbar-brand>
       </div>
 
-      <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
       <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav class="ms-auto mt-4 mb-3">
+        <b-navbar-nav class="ms-auto mt-4 mb-3 nav-home-items">
           <div class="d-flex nav-items-left">
             <div class="d-flex">
               <router-link
@@ -54,7 +54,6 @@
                 </b-avatar>
                 Carrinho
               </router-link>
-              <!-- <p class="p-2 grey-txt" style="font-weight: 500;" to="/carrinho">Carrinho</p> -->
             </div>
 
             <div class="d-flex" v-if="!user">
@@ -93,7 +92,7 @@
             </router-link>
             <b-nav-item-dropdown
               right
-              class="p-2 grey-txt text-decoration-none"
+              class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
               <b-dropdown-item
@@ -104,6 +103,13 @@
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
+              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item>
+                <router-link to="/encomendas" class="linkcolor"
+                  >Encomendas</router-link
+                >
+              </b-dropdown-item>
+              <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -112,10 +118,7 @@
   </div>
 
   <!-- Nav inferior no modo telemovel -->
-  <!-- TODO melhorar isto e o modo telemóvel no geral
-			 evitar repetir código como está aqui -->
   <div>
-    <!-- <b-nav is-nav class="d-lg-none fixed-bottom" style="background-color: #f3f3f3;"> -->
     <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
       <b-nav-item class="deu">
         <button
@@ -194,9 +197,23 @@ export default {
       logout,
     };
   },
+  methods: {
+    isMobile() {
+      return window.innerWidth < 768;
+    },
+  },
 };
 </script>
 <style>
+.linkcolor {
+  color: var(--bs-dropdown-link-color);
+}
+
+.linkcolor:hover {
+  color: var(--bs-dropdown-link-color);
+  background: none;
+}
+
 #logo img {
   width: 2.6em;
   margin-top: -0.5em;
@@ -235,5 +252,21 @@ export default {
 .deu {
   /* background-color: green; */
   width: 20%;
+}
+
+@media (max-width: 767px) {
+  .nav-home {
+    /* background-color: red; */
+    justify-content: space-evenly;
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    width: 100%;
+  }
+
+  .nav-home-items .nav-items-left {
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>
