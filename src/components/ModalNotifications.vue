@@ -37,7 +37,7 @@
 		  </b-list-group>
 	
 
-	<button class="btn btn-primary" @click="carregaMais">Carregar mais</button>
+	<button class="btn btn-primary" v-if="notificacoes.totalItems>24 && notificacoes.page!=notificacoes.totalPages" @click="carregaMais">Carregar mais</button>
 		</div>
 	  </div>
 	</div>
@@ -59,7 +59,7 @@
 	},
 	data() {
 	  return {
-		  notificacoes: { page: 1, pageSize: 4} as BaseItems<Notification>,
+		  notificacoes: { page: 1, pageSize: 24} as BaseItems<Notification>,
 		showPopup: true,
 		quantidade : 0 as number,
 	  };

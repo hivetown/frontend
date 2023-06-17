@@ -36,7 +36,7 @@
               </b-avatar>
               <!--numero de notificacoes-->
               <b-badge
-                v-if="notificacoes?.totalItems != 0"
+                v-if="notificacoes != 0"
                 @click="showModalFunction"
                 variant="danger"
                 class="rounded-circle position-absolute"
@@ -244,6 +244,16 @@ components: {
       logout,
     };
   },
+  watch: {
+  user: {
+    handler: async function (newValue, oldValue) {
+      const responseItem = await getUnreadNotifications();
+      const qtd = responseItem.data.items.length;
+      this.atualizaNotificacoes(qtd);
+    },
+    deep: true,
+  },
+},
   methods: {
 	async atualizaNotificacoes(quantidade:number) {
 		console.log(quantidade);
@@ -269,7 +279,11 @@ components: {
     };
   },
   mounted() {
+
     // Função para buscar as notificações não lidas
+	console.log(this.user);
+	setTimeout(() => {
+	if(this.user){
     const fetchNotifications = async () => {
       try {
         const responseItem = await getUnreadNotifications();
@@ -277,10 +291,14 @@ components: {
       } catch (error) {
         console.error(error);
       }
+	
     };
 	fetchNotifications();
+
     // Atualiza as notificações a cada 3 em 3 minutos
     setInterval(fetchNotifications, 30000);
+}
+}, 2000); //para que a autenticcao seja feita primeiro
   },
 
 };
