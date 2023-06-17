@@ -14,6 +14,8 @@ import ConsentPage from '@/views/ConsentPage.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import Order from '@/views/Order.vue';
 import OrderHistory from '@/views/OrderHistory.vue';
+import OrderProducer from '@/views/OrderProducer.vue';
+import OrderHistoryProducer from '@/views/OrderHistoryProducer.vue';
 import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
@@ -33,6 +35,14 @@ const routes = [
         path: '/encomenda/id:id',
         name: 'Encomenda',
         component: Order,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/encomendaFornecedor/id:id',
+        name: 'Encomenda (Fornecedor)',
+        component: OrderProducer,
         meta: {
             requiresAuth: true,
         },
@@ -85,6 +95,22 @@ const routes = [
         path: '/encomendas',
         name: 'OrderHistory',
         component: OrderHistory,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+	{
+        path: '/encomendas',
+        name: 'OrderHistory',
+        component: OrderHistory,
+        meta: {
+            requiresAuth: true,
+        },
+    },
+    {
+        path: '/encomendasfornecedor',
+        name: 'OrderHistoryProducer',
+        component: OrderHistoryProducer,
         meta: {
             requiresAuth: true,
         },
