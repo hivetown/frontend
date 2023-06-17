@@ -1,6 +1,6 @@
 <template>
   <!-- Caminho -->
-  <PathComponent></PathComponent>
+  <PathComponent :path-list="path"></PathComponent>
 
   <!-- Detalhes do produto -->
   <div class="d-flex parent">
@@ -527,6 +527,10 @@ export default defineComponent({
 
   data() {
     return {
+      path: [
+        ['Produtos', '/products'],
+        ['Produto', ''],
+      ] as string[][],
       producerLocalProducts: {} as BaseItems<ProducerProduct>,
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada

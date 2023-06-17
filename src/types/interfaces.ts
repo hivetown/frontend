@@ -211,13 +211,21 @@ export interface ReportEvolution {
     numeroEncomendasCancelados?: number;
     totalProdutos?: number;
     totalProdutosCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }
 
 export interface ReportBarChartProduct {
     id: number;
     nome: string;
-    totalProdutos: number;
-    totalProdutosCancelados: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
 }
 
 // Ver se isto está a ser usado
@@ -233,24 +241,28 @@ export interface ReportProducts {
     numeroProdutosEncomendados?: number;
     numeroProdutosEncomendadosCancelados?: number;
 }
-export interface ProductSpecFieldWithCategory {
-    category: Category;
-    products: {
-        fieldValues: ProductSpecField[];
-    }[];
-}
 
+export interface reportProducerClients {
+    id: number;
+    nome: string;
+    totalProdutos?: number;
+    totalProdutosCancelados?: number;
+    numeroEncomendas?: number;
+    numeroEncomendasCancelados?: number;
+    comprasTotais?: number;
+    comprasTotaisCancelados?: number;
+    numeroProdutosEncomendados?: number;
+    numeroProdutosEncomendadosCancelados?: number;
+}
 export interface CartItem {
     producerProduct: ProducerProduct;
     consumer?: Consumer;
     quantity: number;
 }
-
 export interface Shipment {
     carrier: Carrier;
     events: ShipmentEvent[];
 }
-
 export enum ShipmentStatus {
     /* eslint-disable no-unused-vars*/
     Paid = 0,
@@ -260,7 +272,6 @@ export enum ShipmentStatus {
     Canceled = 4,
     /* eslint-enable no-unused-vars*/
 }
-
 export interface ShipmentEvent {
     id: number;
     date: string;
@@ -280,4 +291,11 @@ export interface Carrier {
     productionUnit: ProductionUnit;
     status: CarrierStatus;
     image: Image;
+}
+
+export interface ProductSpecFieldWithCategory {
+    category: Category;
+    products: {
+        fieldValues: ProductSpecField[];
+    }[];
 }
