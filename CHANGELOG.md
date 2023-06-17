@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.2.2](https://github.com/hivetown/frontend/compare/v1.2.1...v1.2.2) (2023-06-16)
+
+
+### Bug Fixes
+
+* after review ([99b2719](https://github.com/hivetown/frontend/commit/99b2719358731611797d2907de39920bae3f079d))
+* conflict ([b4f5a2f](https://github.com/hivetown/frontend/commit/b4f5a2ff783d838a092c83f6978ec7f1327bb3e6))
+
+## [1.2.1](https://github.com/hivetown/frontend/compare/v1.2.0...v1.2.1) (2023-06-16)
+
+
+### Bug Fixes
+
+* typings ([879b90a](https://github.com/hivetown/frontend/commit/879b90a168ee71a490f370a98ae9a4717fd5d817))
+
+## [1.2.0](https://github.com/hivetown/frontend/compare/v1.1.2...v1.2.0) (2023-06-16)
+
+
+### Features
+
+* add links to tel and mail ([adf69d1](https://github.com/hivetown/frontend/commit/adf69d1fee31a0676d83b99af41600a67af871c8))
+
+## [1.1.2](https://github.com/hivetown/frontend/compare/v1.1.1...v1.1.2) (2023-06-16)
+
+
+### Bug Fixes
+
+* changes after review ([a0c0360](https://github.com/hivetown/frontend/commit/a0c0360411487fb11a2af0655fa7d6f51b73c8bf))
+
 ## [1.1.1](https://github.com/hivetown/frontend/compare/v1.1.0...v1.1.1) (2023-06-15)
 
 
