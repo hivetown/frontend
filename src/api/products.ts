@@ -2,7 +2,7 @@ import {
     Category,
     BaseItems,
     ProducerProduct,
-    ProductSpecification,
+    ProductSpec,
     ProductSpecField,
 } from '../types/interfaces';
 import { api } from './_base';
@@ -13,12 +13,12 @@ export const fetchAllProducts = (
     search?: string,
     categoryId?: number
 ) =>
-    api.get<BaseItems<ProductSpecification>>('/products', {
+    api.get<BaseItems<ProductSpec>>('/products', {
         params: { page, pageSize, search, categoryId },
     });
 
 export const fetchProduct = (specId: number) =>
-    api.get<ProductSpecification>(`/products/${specId}`);
+    api.get<ProductSpec>(`/products/${specId}`);
 
 export const fetchProducerProducts = (specId: number) =>
     api.get<BaseItems<ProducerProduct>>(`/products/${specId}/products`);

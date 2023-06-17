@@ -199,12 +199,7 @@ import {
   onMounted,
   ref,
 } from 'vue';
-import {
-  BaseItems,
-  Product,
-  ProductSpecification,
-  ProductionUnit,
-} from '@/types';
+import { BaseItems, Product, ProductSpec, ProductionUnit } from '@/types';
 import OverlayPanel from 'primevue/overlaypanel';
 import AutoComplete from 'primevue/autocomplete';
 import PrimeButton from 'primevue/button';
@@ -232,7 +227,7 @@ export default {
       default: null,
     },
     defaultProductSpec: {
-      type: Object as PropType<ProductSpecification>,
+      type: Object as PropType<ProductSpec>,
       required: false,
       default: null,
     },
@@ -302,7 +297,7 @@ export default {
       values: formValues,
     } = useForm({
       initialValues: {
-        productSpec: props.defaultProductSpec || ({} as ProductSpecification),
+        productSpec: props.defaultProductSpec || ({} as ProductSpec),
         productionUnit: props.defaultProductionUnit || ({} as ProductionUnit),
         productionDate: props.defaultProductionDate || null,
         stock: props.defaultStock || null,
@@ -334,18 +329,18 @@ export default {
     };
 
     // Apply the selected product to the form
-    const productSpecChanged = (event: { value: ProductSpecification }) => {
+    const productSpecChanged = (event: { value: ProductSpec }) => {
       setFieldValue('productSpec', event.value);
     };
     // Reset productspec when search query changes
     const productSpecReset = () => {
       if (formValues.productSpec)
-        setFieldValue('productSpec', {} as ProductSpecification);
+        setFieldValue('productSpec', {} as ProductSpec);
     };
 
     const productSpec = {
       searchQuery: ref(''),
-      items: ref({} as BaseItems<ProductSpecification>),
+      items: ref({} as BaseItems<ProductSpec>),
       search: searchProductSpecs,
       changed: productSpecChanged,
       reset: productSpecReset,
@@ -388,7 +383,7 @@ export default {
       isQueryValid: isProductionUnitValid,
     };
 
-    useField('productSpec', (value: ProductSpecification) => {
+    useField('productSpec', (value: ProductSpec) => {
       if (!value || !value.id) {
         return 'A especificação do produto é obrigatória';
       }
