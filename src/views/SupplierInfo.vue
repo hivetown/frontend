@@ -16,31 +16,46 @@
       class="w-75 p-4 px-5"
       style="background-color: ; height: ; flex-direction: column"
     >
-      <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
-      <div id="info" class="mb-4">
-        <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
-        <!-- <p>
-
+      <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4">
+        <h4 class="mb-4">Sobre</h4>
+        <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
           veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
           reiciendis placeat corrupti odio consequatur alias nisi deserunt
           laudantium a doloremque!
-        </p> -->
-        <div class="">
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-telephone-fill yellow-txt"></i>
-            <p class="fw-bold">Telefone:</p>
-            <span>{{ dadosProdutor.user?.phone }}</span>
-          </div>
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-envelope-fill yellow-txt"></i>
-            <p class="fw-bold">Email:</p>
-            <span>{{ dadosProdutor.user?.email }}</span>
-          </div>
-          <div class="d-flex gap-2 grey-txt">
-            <i class="bi bi-receipt yellow-txt"></i>
-            <p class="fw-bold">VAT:</p>
-            <span>{{ dadosProdutor.user?.vat }}</span>
+        </p>
+      </div>
+
+      <!-- Sobre -->
+      <div
+        class="w-75 p-4 px-5"
+        style="background-color: ; height: ; flex-direction: column"
+      >
+        <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
+        <div id="info" class="mb-4">
+          <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
+          <!-- <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
+            veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
+            reiciendis placeat corrupti odio consequatur alias nisi deserunt
+            laudantium a doloremque!
+          </p> -->
+          <div class="">
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-telephone-fill yellow-txt"></i>
+              <p class="fw-bold">Telefone:</p>
+              <span>{{ dadosProdutor.user?.phone }}</span>
+            </div>
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-envelope-fill yellow-txt"></i>
+              <p class="fw-bold">Email:</p>
+              <span>{{ dadosProdutor.user?.email }}</span>
+            </div>
+            <div class="d-flex gap-2 grey-txt">
+              <i class="bi bi-receipt yellow-txt"></i>
+              <p class="fw-bold">VAT:</p>
+              <span>{{ dadosProdutor.user?.vat }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -56,48 +71,40 @@
         <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
           <div
             :id="String(idU + 1)"
-            @click="updateImage(idU + 1)"
-            class="production-unit"
-            :ref="String(idU + 1)"
+            @click="updateImage(idU)"
+            :class="['production-unit', { 'selected-unit': mapImage === idU }]"
           >
             <p class="text-center fw-bold">{{ unidade.name }}</p>
             <div class="d-flex gap-2 justify-content-center">
               <p class="text-center mb-1">nº{{ unidade.address.number }},</p>
-              <p class="text-center mb-1">
-                {{ unidade.address.floor }} {{ unidade.address.door }}
-              </p>
-              <p class="text-center">{{ unidade.address.zipCode }}</p>
+              <p class="text-center mb-1">{{ unidade.address.city }}</p>
             </div>
-            <!-- TODO - por automatico -->
-            <p class="text-center mb-1">A 5km de si</p>
           </div>
         </div>
       </div>
       <div class="" style="background-color: lightgrey; width: 80%">
-        <!-- TODO - trocar src das imagens por sources do mapa (ver como) -->
-        <img
-          class=""
-          :src="'map' + mapImage + '.png'"
-          :alt="'Map ' + mapImage"
-          style="object-fit: cover; height: 100%; width: 100%"
-        />
+        <div v-if="mapImage !== null && unidadesProd.items">
+          <Maps
+            v-if="unidadesProd.items[mapImage]"
+            :selected-unit="unidadesProd.items[mapImage]"
+            :map-data="
+              mapData.find(
+                (data) =>
+                  data.unitId === (unidadesProd.items[mapImage]?.id || null)
+              )?.mapData
+            "
+          />
+        </div>
       </div>
     </div>
   </div>
-  <!-- TODO - ajeitar -->
-  <div>
-    <!-- <Pagination
-      v-if="unidadesProd"
-      :total-rows="unidadesProd.totalItems"
-      :per-page="unidadesProd.pageSize"
-      :current-page="unidadesProd.page"
-    ></Pagination> -->
-  </div>
 </template>
+
 <script lang="ts">
 import { BaseItems, Producer, ProductionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
-//import Pagination from '@/components/Pagination.vue';
+import { fetchMapForUnit } from '@/maps/maps';
+import Maps from '../maps/maps.vue';
 
 export default {
   data() {
@@ -110,6 +117,7 @@ export default {
       ultimaUp: [] as HTMLElement[],
       ultimaUpId: 1 as number,
       idUpDefault: 0 as number,
+      mapData: [] as { unitId: number; mapData: any }[],
     };
   },
   props: {
@@ -125,31 +133,56 @@ export default {
       this.mapImage = number;
       // Compara o id da ultima UP selecionada com o id da UP
       // selecionada atualmente
-      if (this.ultimaUpId != Number(upSelecionada[0].id)) {
-        this.ultimaUpId = Number(upSelecionada[0].id);
-        this.ultimaUp[0].classList.remove('selected-unit');
-        upSelecionada[0].classList.add('selected-unit');
-        this.ultimaUp = upSelecionada;
+      if (upSelecionada && upSelecionada.length > 0) {
+        if (this.ultimaUpId !== Number(upSelecionada[0].id)) {
+          this.ultimaUpId = Number(upSelecionada[0].id);
+          if (this.ultimaUp[0]) {
+            this.ultimaUp[0].classList.remove('selected-unit');
+          }
+          upSelecionada[0].classList.add('selected-unit');
+          this.ultimaUp = upSelecionada;
+        }
       }
     },
   },
-
   async beforeMount() {
     // Dados do produtor
     const producerId = Number(this.$route.params.id);
     const dadosProdutor = await fetchProducer(producerId);
     this.dadosProdutor = dadosProdutor.data;
-
     // Unidades de produção do produtor
     const unidadesProd = await fetchProducerProductionUnits(producerId);
     this.unidadesProd = unidadesProd.data;
 
-    // Define a UP selecionada por default
     this.$nextTick(() => {
-      this.ultimaUp = this.$refs[1] as HTMLElement[];
-      this.ultimaUp[0].classList.add('selected-unit');
+      const ultimaUpRef = this.$refs[1] as HTMLElement | HTMLElement[];
+      if (ultimaUpRef instanceof HTMLElement) {
+        this.ultimaUp = [ultimaUpRef];
+        this.ultimaUp[0].classList.add('selected-unit');
+      }
     });
+
+    // Fetch maps for each production unit
+    const fetchMapPromises = this.unidadesProd.items.map(
+      async (unit: ProductionUnit) => {
+        const mapData = await fetchMapForUnit(
+          unit.address.latitude,
+          unit.address.longitude
+        );
+        return {
+          unitId: unit.id,
+          mapData,
+        };
+      }
+    );
+
+    // Wait for all map requests to finish
+    const maps = await Promise.all(fetchMapPromises);
+
+    // Store the map data in the component's data
+    this.mapData = maps;
   },
+  components: { Maps },
   //components: { Pagination },
 };
 </script>
