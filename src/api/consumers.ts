@@ -31,7 +31,7 @@ export const getConsumers = (
     pageSize?: number,
     search?: string
 ) =>
-    api.get<any>('/consumers?includeAll=true', {
+    api.get('/consumers?includeAll=true', {
         params: { page, pageSize, search },
     });
 

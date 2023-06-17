@@ -32,7 +32,7 @@ export const getProducers = (
 	page?: number,
     pageSize?: number,
     search?: string
-) =>     api.get<any>('/producers', {
+) =>     api.get('/producers?includeAll=true', {
 	params: { page, pageSize, search },
 });
 	
@@ -70,6 +70,6 @@ export const getAddressPU = (producerId: number, search?: string) =>
     });
 //nao da com o include all
 export const getProducerId = (producerId: number, search?: string) =>
-    api.get<Producer>(`/producers/${producerId}`, {
+    api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
