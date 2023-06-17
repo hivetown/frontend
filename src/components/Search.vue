@@ -25,11 +25,6 @@
 </template>
 
 <style>
-.search-modal .modal-content {
-  height: auto !important;
-  max-width: 100% !important;
-}
-
 .search-modal-input {
   /* background-color: red !important; */
   width: 100%;
