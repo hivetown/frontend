@@ -7,6 +7,10 @@ import Favourites from '@/views/Favourites.vue';
 import Cart from '@/views/Cart.vue';
 import Product from '@/views/Product.vue';
 import User from '@/views/User.vue';
+import ProductsProducer from '@/views/ProductsProducer.vue';
+import ProductionUnits from '@/views/ProductionUnits.vue';
+import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
+import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
 import ImpactProducer from '@/views/ImpactProducer.vue';
@@ -109,6 +113,15 @@ const routes = [
         component: Register,
     },
     {
+        path: '/produtosprodutor',
+        name: 'produtosprodutor',
+        component: ProductsProducer,
+        meta: {
+            requiresAuth: true,
+            requiredProducer: true,
+        },
+    },
+    {
         path: '/impactProducer',
         name: 'ImpactProducer',
         component: ImpactProducer,
@@ -121,6 +134,36 @@ const routes = [
         name: 'ConsentManagement',
         component: ConsentPage,
     },
+    {
+        path: '/unidadesproducao',
+        name: 'unidadesproducao',
+        component: ProductionUnits,
+        meta: {
+            requiresAuth: true,
+            requiredProducer: true,
+        },
+    },
+
+    {
+        path: '/production-units/:producerId/:unitId/:unitName/products',
+        name: 'ProductionUnitProducts',
+        component: ProductionUnitProducts,
+        meta: {
+            requiresAuth: true,
+            requiredProducer: true,
+        },
+    },
+
+    {
+        path: '/transportes',
+        name: 'transportes',
+        component: Transports,
+        meta: {
+            requiresAuth: true,
+            requiredProducer: true,
+        },
+    },
+
     {
         path: '/impactConsumer',
         name: 'ImpactConsumer',
@@ -143,25 +186,47 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
+
+    // Check if the user is authenticated
     if (!isAuthenticated) {
         await store.dispatch('fetchAuthUser');
         isAuthenticated = !!store.state.user;
     }
 
+    // Check if the user is authenticated and has the correct type
+    const userType = store.state.user?.user?.type;
+
+    // Check if the user type is different from "PRODUCER" for routes that require it
     if (
-        (to.path === '/login' || to.path === '/registration') &&
-        isAuthenticated
+        to.matched.some((record) => record.meta.requiredProducer) &&
+        userType !== 'PRODUCER'
     ) {
-        // redirect to the home page if the user is already logged in
+        createPopup(
+            `Você não tem permissão para aceder a ${
+                to.name?.toString() || 'página'
+            }.`,
+            'error'
+        );
         next(from);
         return;
     }
 
+    // Check if the user is already logged in and trying to access login or registration pages
+    if (
+        (to.path === '/login' || to.path === '/registration') &&
+        isAuthenticated
+    ) {
+        // Redirect to the home page if the user is already logged in
+        next(from);
+        return;
+    }
+
+    // Check if the route requires authentication
     if (
         to.matched.some((record) => record.meta.requiresAuth) &&
         !isAuthenticated
     ) {
-        // redirect to the login page if the user is not logged in
+        // Redirect to the login page if the user is not logged in
         next('/login');
         return;
     }
