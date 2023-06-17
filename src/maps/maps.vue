@@ -28,7 +28,6 @@ export default {
     // mapContainer has to be a string or a HTMLElement;
     const mapContainer = ref<string | HTMLElement>('');
     let mapInstance: mapboxgl.Map;
-    let marker = null;
     const store = useStore();
     const userType = store.state.user?.user.type;
     const userId = store.state.user?.user.id;
@@ -82,7 +81,7 @@ export default {
         });
 
         mapInstance.on('load', async () => {
-          marker = new mapboxgl.Marker({ color: 'red' })
+          new mapboxgl.Marker({ color: 'red' })
             .setLngLat([longitude, latitude])
             .addTo(mapInstance);
 
