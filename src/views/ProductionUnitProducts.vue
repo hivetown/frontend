@@ -1,6 +1,14 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">Produtos da UP: {{ unitName }}</h1>
+    <h1 class="mb-5">
+      Produtos da UP: {{ unitName }}
+      <ManageProduct
+        class="ml-2"
+        method="create"
+        :default-production-unit="productionUnit"
+        @product-managed="refreshWindow(1000)"
+      />
+    </h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <template v-if="allUnitProducts?.items?.length">
         <div
@@ -26,24 +34,21 @@
                 <h4 class="mb-3">{{ product.currentPrice }}€</h4>
               </div>
               <div class="d-flex gap-2">
-                <router-link :to="'/product/edit/' + product.id">
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary circle-btn"
-                    v-b-tooltip.hover
-                    title="Editar produto"
-                  >
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                </router-link>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary circle-btn"
-                  v-b-tooltip.hover
-                  title="Remover produto"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
+                <ManageProduct
+                  :default-product-spec="product.productSpec"
+                  :default-production-unit="productionUnit"
+                  :default-price="product.currentPrice"
+                  :default-stock="product.stock"
+                  :default-production-date="new Date(product.productionDate)"
+                  method="update"
+                  :producer-product-id="product.id"
+                  @product-managed="refreshWindow(1000)"
+                />
+
+                <DeleteProduct
+                  :producer-product="product"
+                  @delete-product="deleteProduct"
+                />
               </div>
             </div>
           </b-card-text>
@@ -76,7 +81,11 @@
 import { fetchAllUnitProducts } from '@/api/unitProducts';
 import Pagination from '../components/Pagination.vue';
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
-import { BaseItems, ProducerProduct } from '@/types';
+import { BaseItems, ProducerProduct, ProductionUnit } from '@/types';
+import { fetchUnit } from '@/api/unitData';
+import ManageProduct from '@/components/producer/products/ManageProduct.vue';
+import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
+
 export default {
   computed: {
     unitName(): string {
@@ -85,11 +94,28 @@ export default {
   },
   components: {
     Pagination,
+    ManageProduct,
+    DeleteProduct,
   },
   data() {
     return {
       allUnitProducts: {} as BaseItems<ProducerProduct>,
+      productionUnit: {} as ProductionUnit,
     };
+  },
+  methods: {
+    refreshWindow(timeout: number = 0) {
+      setTimeout(() => window.location.reload(), timeout);
+    },
+    deleteProduct(data: ProducerProduct) {
+      const productIdx = this.allUnitProducts.items.findIndex(
+        (p) => p.id === data.id
+      );
+      if (productIdx === -1) return;
+
+      this.allUnitProducts.items.splice(productIdx, 1);
+      this.allUnitProducts.totalItems--;
+    },
   },
   async mounted() {
     try {
@@ -98,6 +124,8 @@ export default {
       const unitId = parseInt(route.params.unitId as string);
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
+
+      this.productionUnit = (await fetchUnit(producerId, unitId)).data;
 
       const allUnitProducts = await fetchAllUnitProducts(
         producerId,

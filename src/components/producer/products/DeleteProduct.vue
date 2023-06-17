@@ -1,5 +1,13 @@
 <template>
-  <Toast />
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <ConfirmPopup group="deleteProducerProduct">
     <template #message="slotProps">
       <div class="flex p-4">
