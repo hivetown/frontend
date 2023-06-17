@@ -1,9 +1,10 @@
 <template>
+  <!-- TODO - fix pagination -->
   <div class="container">
-    <h1 class="mb-5">Meus Produtos</h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <h2 class="mb-5 dgreen-txt main-txt">Produtos</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
       <template v-if="products && products.items && products.items.length > 0">
-        <div v-for="product in products.items" :key="product.id" class="col">
+        <div v-for="product in products.items" :key="product.id">
           <!-- <div v-for="product in products" :key="product.id" class="col"> -->
           <b-card class="prod-card position-relative">
             <!-- <span class="position-absolute top-0 end-0 p-3 fav">
@@ -147,5 +148,16 @@ export default {
   align-items: center;
   font-size: 1.3rem;
   color: #333;
+}
+
+h2 {
+  text-transform: capitalize;
+  font-size: 2em;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
 }
 </style>
