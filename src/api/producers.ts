@@ -1,5 +1,5 @@
 import { CreateProducer } from '@/types';
-import { Producer } from '../types/interfaces';
+import { Producer, productionUnit, BaseItems } from '../types/interfaces';
 import { api } from './_base';
 
 export const createProducer = async (producer: CreateProducer) =>
@@ -18,7 +18,7 @@ export const getProducers = (
     });
 //nao da com o include all
 export const getProducerId = (producerId: number, search?: string) =>
-    api.get<Producer[]>(`/producers/${producerId}?includeAll=true`, {
+    api.get<Producer>(`/producers/${producerId}`, {
         params: { search },
     });
 
@@ -35,6 +35,6 @@ export const updateProducer = (
 ) => api.put(`/producers/${producerId}`, formData, { params: { search } });
 
 export const getAddressPU = (producerId: number, search?: string) =>
-    api.get<Producer[]>(`/producers/${producerId}/units`, {
+    api.get<BaseItems<productionUnit>>(`/producers/${producerId}/units`, {
         params: { search },
     });
