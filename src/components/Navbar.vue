@@ -95,7 +95,7 @@
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
               <b-dropdown-item
-                v-if="user.user.role != null"
+                v-if="user.user.role?.id === 1"
                 href="/admin?page=1"
                 >Admin area</b-dropdown-item
               >
