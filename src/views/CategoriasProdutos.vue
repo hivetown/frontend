@@ -181,13 +181,26 @@ import InputText from 'primevue/inputtext';
 import ProgressSpinner from 'primevue/progressspinner';
 import Paginator, { PageState } from 'primevue/paginator';
 
-const checkboxTest = ref();
-watch(checkboxTest, (val) => {
-  console.log(val);
-});
-
 const route = useRoute();
 const router = useRouter();
+
+const currentFilters = ref({
+  categoryId: Number(route.query.categoryId) || undefined,
+  page: Number(route.query.page) || 1,
+  pageSize: Number(route.query.pageSize) || 12,
+  searchQuery: route.query.searchQuery || undefined,
+  minPrice: Number(route.query.minPrice) || undefined,
+  maxPrice: Number(route.query.maxPrice) || undefined,
+});
+
+watch(currentFilters.value, (newFilters) => {
+  console.log('newFilters', newFilters);
+  router.push({
+    query: {
+      ...newFilters,
+    },
+  });
+});
 
 onBeforeMount(async () => {
   // Query strings for pagination and searching
@@ -353,6 +366,7 @@ const expandCategory = async (node: CategoryTreeNode) => {
 
 const nodeSelect = async (node: CategoryTreeNode) => {
   selectedCategoryTreeNode.value = node;
+  currentFilters.value.categoryId = Number(node.key);
   await loadProducts();
 };
 
@@ -400,24 +414,21 @@ const loadProducts = async ({
 // Debounce price filter to make less requests
 const changePriceFilter = debounce(async () => {
   await Promise.all([loadCategories(), loadProducts()]);
+  currentFilters.value.minPrice = priceFilter.value[0];
+  currentFilters.value.maxPrice = priceFilter.value[1];
 }, 1500);
 
 // Debounce search query to make less requests
 const changeSearchQuery = debounce(async () => {
   await Promise.all([loadCategories(), loadProducts()]);
+  currentFilters.value.searchQuery = productSpecSearchQuery.value;
 }, 1500);
 
 const productSpecPageChange = async (page: PageState) => {
   await loadProducts({ page: page.page + 1, pageSize: page.rows });
 
-  // page is 0-indexed
-  router.push({
-    query: {
-      ...route.query,
-      page: page.page + 1,
-      pageSize: page.rows,
-    },
-  });
+  currentFilters.value.page = page.page + 1;
+  currentFilters.value.pageSize = page.rows;
 };
 
 /**
