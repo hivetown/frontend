@@ -94,15 +94,12 @@
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item href="#">Definições</b-dropdown-item>
               <b-dropdown-item
                 v-if="user.user.role != null"
                 href="/admin?page=1"
                 >Admin area</b-dropdown-item
               >
-              <b-dropdown-item @click="logout" href="#"
-                >Terminar Sessão</b-dropdown-item
-              >
+             
               <b-dropdown-item>Definições</b-dropdown-item>
               <b-dropdown-item>
                 <router-link to="/encomendas" class="linkcolor"

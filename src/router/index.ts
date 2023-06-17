@@ -112,23 +112,24 @@ const routes = [
         },
     },
     {
-        path: '/admin/consumer/:id',
-        name: 'Consumer',
-        component: ConsumerAdmin,
-        meta: {
-            requiresAuth: true,
-            requiredPermissions: Permission.ALL_CONSUMER,
-        },
-    },
-    {
         path: '/admin/producer/:id',
-        name: 'Producer',
+        name: 'ProducerAdmin',
         component: ProducerAdmin,
         meta: {
             requiresAuth: true,
             requiredPermissions: Permission.ALL_PRODUCER,
         },
     },
+	{
+        path: '/admin/consumer/:id',
+        name: 'ConsumerAdmin',
+        component: ConsumerAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions: Permission.ALL_CONSUMER,
+        },
+    },
+ 
 
     {
         path: '/login',

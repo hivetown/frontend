@@ -166,7 +166,7 @@ import {
 } from '../api/producers';
 import { onMounted, ref } from 'vue';
 import { auth } from '@/utils/firebase';
-import {Producer, productionUnit, BaseItems } from '@/types';
+import {Producer, ProductionUnit, BaseItems } from '@/types';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 export default {
   data() {
@@ -176,7 +176,7 @@ export default {
     	collapsed : true,
 		qtd : 0,
     	user : null as Producer | null,
-		productionUnitIds : {} as BaseItems<productionUnit>,
+		productionUnitIds : {} as BaseItems<ProductionUnit>,
 	}
   },
  async mounted() {
