@@ -1,5 +1,5 @@
 <template>
-  <!-- TODO fazer com que isto funcione bem, está apenas um exemplo aleatório -->
+  <!-- TODO fazer de forma recursiva para ir buscar as outras páginas -->
   <div>
     <b-form-input
       class="mt-3 mb-3 light-search"
@@ -7,17 +7,20 @@
       placeholder="Pesquisar fornecedores"
     />
 
+    <p class="producer-txt mb-1 parent">
+      {{ producerAmount }} fornecedores encontrados:
+    </p>
     <div class="option-list">
       <b-form-group v-slot="{ ariaDescribedby }">
         <b-form-checkbox
-          v-for="option in options"
+          v-for="poducer in allProducers"
           v-model="selected"
-          :key="option.value"
-          :value="option.value"
+          :key="poducer.user.id"
+          :value="poducer.user.name"
           :aria-describedby="ariaDescribedby"
           name="flavour-3a"
         >
-          {{ option.text }}
+          {{ poducer.user.name }}
         </b-form-checkbox>
       </b-form-group>
     </div>
@@ -35,28 +38,30 @@
 .light-search:focus {
   box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
 }
+
+.producer-txt {
+  font-size: 0.9rem;
+  color: #5a5a5a;
+}
 </style>
 
 <script lang="ts">
+import { fetchAllProducers } from '@/api';
+import { Producer } from '@/types';
 export default {
   data() {
     return {
+      allProducers: [] as Producer[],
+      producerAmount: 0 as number,
       selected: [], // Must be an array reference!
-      options: [
-        { text: 'Orange', value: 'orange' },
-        { text: 'Apple', value: 'apple' },
-        { text: 'Pineapple', value: 'pineapple' },
-        { text: 'Grape', value: 'grape' },
-        { text: 'Orange', value: 'orange2' },
-        { text: 'Apple', value: 'apple2' },
-        { text: 'Pineapple', value: 'pineapple2' },
-        { text: 'Grape', value: 'grape2' },
-        { text: 'Orange', value: 'orange3' },
-        { text: 'Apple', value: 'apple3' },
-        { text: 'Pineapple', value: 'pineapple3' },
-        { text: 'Grape', value: 'grape3' },
-      ],
     };
+  },
+
+  async beforeMount() {
+    // Carrega apenas a primeira página de produtores
+    const allProducers = await fetchAllProducers(1);
+    this.allProducers = allProducers.data.items;
+    this.producerAmount = allProducers.data.totalItems;
   },
 };
 </script>

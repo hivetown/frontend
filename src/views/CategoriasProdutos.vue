@@ -1,16 +1,7 @@
 <template>
   <!-- Caminho seguido até esta página -->
-  <div class="parent mb-4">
-    <!-- TODO por isto automático -->
-    <b-breadcrumb>
-      <b-breadcrumb-item href="#home"
-        ><i class="bi bi-house-fill"></i>Home</b-breadcrumb-item
-      >
-      <b-breadcrumb-item href="#foo">Foo</b-breadcrumb-item>
-      <b-breadcrumb-item href="#bar">Bar</b-breadcrumb-item>
-      <b-breadcrumb-item active>Baz</b-breadcrumb-item>
-    </b-breadcrumb>
-  </div>
+  <!-- TODO por isto automático -->
+  <PathComponent :path-list="path"></PathComponent>
 
   <!-- Conteúdo da página -->
   <div class="d-flex parent">
@@ -72,14 +63,14 @@
           <SupplierFilter></SupplierFilter>
         </div>
 
-        <div
+        <!-- <div
           id="reting-filter"
           class="mt-4"
           style="border-top: 1px solid #f3f3f3"
         >
           <h5 class="grey-txt mt-3">Avaliação</h5>
           <RatingFilter></RatingFilter>
-        </div>
+        </div> -->
       </div>
     </div>
 

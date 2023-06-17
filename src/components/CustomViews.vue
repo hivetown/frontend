@@ -11,19 +11,19 @@
     <div class="w-25" style=""></div>
     <div
       class="w-50 d-flex justify-content-end align-items-center"
-      style="gap: 2vh"
+      style="gap: 2vh; margin-top: -4vh"
     >
       <!-- Views -->
       <div
         class="custom-views d-flex justify-content-center align-items-center"
-        style="width: 10%"
+        style="width: 10%; background-color: red !important"
       >
-        <i
+        <!-- <i
           class="bi bi-grid selected"
           v-b-tooltip.hover
           title="Vista em grelha"
-        ></i>
-        <i class="bi bi-list-ul" v-b-tooltip.hover title="Vista em lista"></i>
+        ></i> -->
+        <!-- <i class="bi bi-list-ul" v-b-tooltip.hover title="Vista em lista"></i> -->
       </div>
 
       <!-- Mostrar -->
@@ -32,22 +32,22 @@
         <div class="views-btn">
           <b-dropdown
             id="dropdown-1"
-            :text="'Mostrar: ' + currentPageSize"
+            :text="'Mostrar: ' + currentPageSize + ' items'"
             class="m-md-2"
           >
             <b-dropdown-item @click="setCurrentPageSize(12)"
-              >12</b-dropdown-item
+              >12 items</b-dropdown-item
             >
             <b-dropdown-item @click="setCurrentPageSize(24)"
-              >24</b-dropdown-item
+              >24 items</b-dropdown-item
             >
             <b-dropdown-item @click="setCurrentPageSize(48)"
-              >48</b-dropdown-item
+              >48 items</b-dropdown-item
             >
           </b-dropdown>
         </div>
         <!-- Ordem -->
-        <div class="views-btn">
+        <!-- <div class="views-btn">
           <b-dropdown
             id="dropdown-1"
             :text="'Mostrar: ' + order"
@@ -63,7 +63,7 @@
               >Preço (descendente)</b-dropdown-item
             >
           </b-dropdown>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -82,6 +82,20 @@
 
 .selected {
   color: #164a41 !important;
+}
+
+.views-btn .btn {
+  background-color: #fff !important;
+  border: 2px solid #dfdfdf;
+}
+
+.views-btn .btn.show,
+.views-btn .btn:hover {
+  border: 2px solid #dfdfdf !important;
+}
+
+.views-btn .dropdown-toggle::after {
+  color: #164a41;
 }
 </style>
 

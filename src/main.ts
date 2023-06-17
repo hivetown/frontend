@@ -1,13 +1,15 @@
 import { createApp } from 'vue';
 import './style.css';
 import App from './App.vue';
+import { key, store } from '@/store';
+import router from './router';
+
 import BootstrapVue3, { BCarousel, BCarouselSlide } from 'bootstrap-vue-3';
 import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import PrimeVue from 'primevue/config';
+import Calendar from 'primevue/calendar';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
-import { key, store } from '@/store';
-import router from './router';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
@@ -27,7 +29,13 @@ app.use(ToastService);
 app.use(ConfirmationService);
 app.use(router);
 
+// Aqui tb
+app.use(PrimeVue);
+
 app.component('BCarousel', BCarousel);
 app.component('BCarouselSlide', BCarouselSlide);
+
+// Aqui tb
+app.component('Calendar', Calendar);
 
 app.mount('#app');
