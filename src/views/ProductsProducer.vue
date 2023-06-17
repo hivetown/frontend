@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">Meus Produtos</h1>
+    <h1 class="mb-5">
+      Meus Produtos
+      <ManageProduct
+        class="ml-2"
+        method="create"
+        @product-managed="refreshWindow(1000)"
+      />
+    </h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <template v-if="products && products.items && products.items.length > 0">
         <div v-for="product in products.items" :key="product.id" class="col">
@@ -27,24 +34,21 @@
                 <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
               </div>
               <div class="d-flex gap-2">
-                <router-link :to="'/product/edit/' + product.id">
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary circle-btn"
-                    v-b-tooltip.hover
-                    title="Editar produto"
-                  >
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                </router-link>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary circle-btn"
-                  v-b-tooltip.hover
-                  title="Remover produto"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
+                <ManageProduct
+                  :default-product-spec="product.productSpec"
+                  :default-production-unit="product.productionUnit"
+                  :default-price="product.currentPrice"
+                  :default-stock="product.stock"
+                  :default-production-date="new Date(product.productionDate)"
+                  method="update"
+                  :producer-product-id="product.id"
+                  @product-managed="refreshWindow(1000)"
+                />
+
+                <DeleteProduct
+                  :producer-product="product"
+                  @delete-product="deleteProduct"
+                />
               </div>
             </div>
           </b-card-text>
@@ -58,9 +62,9 @@
           "
         >
           <Pagination
-            v-if="allProductsData && allProductsData.data"
-            :total-rows="allProductsData.data.totalItems"
-            :per-page="allProductsData.data.pageSize"
+            v-if="products"
+            :total-rows="products.totalItems"
+            :per-page="products.pageSize"
           >
             ></Pagination
           >
@@ -79,22 +83,31 @@ import { fetchAllProducts } from '@/api/producerProducts';
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
+import ManageProduct from '@/components/producer/products/ManageProduct.vue';
+import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
 
 export default {
   components: {
     Pagination,
+    ManageProduct,
+    DeleteProduct,
   },
   data() {
     return {
       products: {} as BaseItems<ProducerProduct>,
-      allProductsData: {
-        data: {
-          totalItems: 0,
-          pageSize: 0,
-          page: 0,
-        },
-      },
     };
+  },
+  methods: {
+    refreshWindow(timeout: number = 0) {
+      setTimeout(() => window.location.reload(), timeout);
+    },
+    deleteProduct(data: ProducerProduct) {
+      const productIdx = this.products.items.findIndex((p) => p.id === data.id);
+      if (productIdx === -1) return;
+
+      this.products.items.splice(productIdx, 1);
+      this.products.totalItems--;
+    },
   },
   async mounted() {
     try {
@@ -106,13 +119,6 @@ export default {
       const allProductsData = await fetchAllProducts(id, page, pageSize);
       const productsArray = allProductsData.data;
       this.products = productsArray;
-      this.allProductsData = {
-        data: {
-          totalItems: allProductsData.data.totalItems,
-          pageSize: pageSize,
-          page: page,
-        },
-      };
     } catch (error) {
       console.error(error);
     }
