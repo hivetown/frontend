@@ -34,7 +34,7 @@
             <input
               id="name"
               type="checkbox"
-              style="transform: scale(1.2)"
+              style="transform: scale(2)"
               @change="onCheckboxChange()"
               :value="order.id"
               v-model="selectedOrders[idx]"
@@ -68,14 +68,16 @@
 
           <td>
             <div style="display: inline-flex">
-              <i class="bi bi-check-all"></i>
               <router-link
                 :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
-                <p class="texto">
-                  {{ orderStatusTranslation(order.generalStatus) }}
-                </p></router-link
+                <div class="status-info">
+                  <i class="bi bi-check-all"></i>
+                  <p class="texto">
+                    {{ orderStatusTranslation(order.generalStatus) }}
+                  </p>
+                </div></router-link
               >
             </div>
 
@@ -136,16 +138,16 @@
             <router-link
               :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              class="texto"
-              >{{ order.orderDate.substring(0, 10) }}</router-link
+              ><span class="texto">{{
+                order.orderDate.substring(0, 10)
+              }}</span></router-link
             >
           </td>
           <td>
             <router-link
               :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              class="texto"
-              >{{ order.totalPrice }}€</router-link
+              ><span class="texto">{{ order.totalPrice }}€</span></router-link
             >
           </td>
 
@@ -160,14 +162,15 @@
       </tbody>
     </table>
   </div>
-  <BButton
-    id="botao"
-    class="botao"
-    variant="outline-primary"
-    v-if="isExportButtonVisible"
-    @click="exportSelectedOrders"
-    >Exportar dados</BButton
-  >
+  <div class="btn-div" v-if="isExportButtonVisible">
+    <BButton
+      id="botao"
+      class="botao"
+      variant="outline-primary"
+      @click="exportSelectedOrders"
+      ><span>Exportar dados</span></BButton
+    >
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -319,12 +322,15 @@ function cancelarEncomendaImpossivel() {
 
 <style scoped>
 #morada2 {
-  font-size: 11px;
+  font-size: 0.8em;
 }
 .texto,
-i,
 #morada {
-  font-size: 13px;
+  font-size: 0.9em;
+}
+
+td i {
+  font-size: 1.3em;
 }
 .carousel-container {
   display: flex;
@@ -338,10 +344,11 @@ i,
 [v-cloak] {
   display: none;
 }
+
 .table thead th {
   position: sticky;
   top: 0;
-  background-color: #e9e5de !important;
+  background-color: #9dc88d !important;
   /* Prefixos do navegador */
   position: -webkit-sticky;
   position: -moz-sticky;
@@ -356,27 +363,23 @@ h3 {
 }
 
 .table-container {
-  max-height: 450px; /* Altura máxima da tabela */
-  max-width: 1600px;
-  margin: auto;
-  max-width: 92%;
+  width: 90%;
+  max-height: 50vh; /* Altura máxima da tabela */
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   position: relative;
 }
-.table {
-  text-align: center;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  font-size: 16px;
-  border: 2px;
-}
-
 .table th,
 .table td {
-  padding: 10px;
-  font-size: 20px;
+  padding: 1.5vh;
+  font-size: 1.2em;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+.table h4 {
+  color: #2a2a2a !important;
+  font-weight: bold !important;
+  font-size: 1.1em !important;
 }
 
 tr:hover {
@@ -384,9 +387,96 @@ tr:hover {
   z-index: -2;
 }
 
-.botao {
-  width: 190px;
-  margin-left: 80px;
-  margin-top: 20px;
+.btn-div {
+  width: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+.botao {
+  padding: 0.7em;
+  background-color: #4d774e;
+  border-radius: 5em;
+  border: 2px solid #4d774e;
+}
+
+.botao2 {
+  padding: 0.6em;
+  border-radius: 0.8em;
+  border: 2px solid #f3f3f3;
+}
+
+.botao span {
+  color: white !important;
+}
+
+.botao:hover {
+  background-color: #3c5e3c !important;
+  border: 2px solid #3c5e3c !important;
+}
+
+.botao2:hover {
+  background-color: #f3f3f3 !important;
+  border: 2px solid #f3f3f3 !important;
+}
+
+.status-info {
+  display: flex;
+  gap: 0.5em;
+}
+
+.status-info i {
+  margin-top: -2%;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    width: 100% !important;
+    max-height: 100% !important;
+  }
+}
+/* @media (max-width: 768px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .table thead,
+  .table tbody,
+  .table th,
+  .table td,
+  .table tr {
+    display: block;
+  }
+  .table thead {
+    position: relative;
+    visibility: hidden;
+  }
+  .table thead th {
+    position: absolute;
+    white-space: nowrap;
+    visibility: hidden;
+  }
+  .table tbody tr {
+    margin-bottom: 30px;
+  }
+  .table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    white-space: normal;
+    text-align: left;
+  }
+  .table td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+} */
 </style>

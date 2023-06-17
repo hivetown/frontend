@@ -236,22 +236,6 @@ onBeforeMount(async () => {
   border-bottom: 1px solid #ddd;
 }
 
-/* TODO - rever se isto funciona */
-/* tr:hover {
-  background-color: #f5f5f5;
-  z-index: -2;
-} */
-/* TODO - rever se isto faz alguma coisa */
-/* span {
-  color: black;
-} */
-
-/* TODO - rever se isto faz alguma coisa */
-/* .numero {
-  color: black;
-  text-decoration: none;
-} */
-
 th {
   background-color: #9dc88d !important;
   font-size: 1.3em !important;
@@ -265,7 +249,6 @@ th {
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   overflow-x: scroll;
   position: relative;
-  /* background-color: red; */
 }
 .resumo {
   margin-top: 20px;
