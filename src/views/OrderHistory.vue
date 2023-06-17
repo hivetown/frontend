@@ -31,7 +31,7 @@ h1 {
 
 @media (max-width: 768px) {
   h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
   .table-container-main {

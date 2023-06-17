@@ -9,12 +9,11 @@
     <table v-if="!!orders?.items" style="border: 2px" class="table">
       <thead>
         <tr>
-          <th><h4>Exportar dados</h4></th>
-
-          <th><h4>Artigos</h4></th>
           <th>
             <h4>Código</h4>
           </th>
+          <th><h4>Artigos</h4></th>
+
           <th><h4>Estado</h4></th>
           <th><h4>Morada de entrega</h4></th>
 
@@ -24,22 +23,19 @@
             </div>
           </th>
           <th><h4>Total</h4></th>
-
+          <th><h4>Exportar dados</h4></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(order, idx) in orders.items" :key="order.id">
           <td>
-            <input
-              id="name"
-              type="checkbox"
-              style="transform: scale(2)"
-              @change="onCheckboxChange()"
-              :value="order.id"
-              v-model="selectedOrders[idx]"
-            />
-            <span v-if="selectedOrders[idx]"></span>
+            <router-link
+              :to="'/encomenda/id' + order.id"
+              class="texto"
+              style="text-decoration: none; color: black"
+              >{{ order.id }}</router-link
+            >
           </td>
 
           <td>
@@ -55,15 +51,6 @@
               />
               <p class="texto" v-else>Produtos sem <br />imagem</p>
             </router-link>
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              class="texto"
-              style="text-decoration: none; color: black"
-              >{{ order.id }}</router-link
-            >
           </td>
 
           <td>
@@ -104,6 +91,7 @@
               >
             </div>
           </td>
+
           <td>
             <router-link
               :to="'/encomenda/id' + order.id"
@@ -143,12 +131,25 @@
               }}</span></router-link
             >
           </td>
+
           <td>
             <router-link
               :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
               ><span class="texto">{{ order.totalPrice }}€</span></router-link
             >
+          </td>
+
+          <td>
+            <input
+              id="name"
+              type="checkbox"
+              style="transform: scale(2)"
+              @change="onCheckboxChange()"
+              :value="order.id"
+              v-model="selectedOrders[idx]"
+            />
+            <span v-if="selectedOrders[idx]"></span>
           </td>
 
           <td>
@@ -356,6 +357,15 @@ td i {
   z-index: 2;
 }
 
+.table thead th:first-child,
+.table tbody td:first-child {
+  text-align: center;
+}
+
+.table thead th:nth-last-child(2) {
+  text-align: center;
+}
+
 h3 {
   text-align: center;
   margin-top: 150px;
@@ -433,6 +443,25 @@ tr:hover {
   .table-container {
     width: 100% !important;
     max-height: 100% !important;
+  }
+
+  .table h4 {
+    font-size: 0.75em !important;
+  }
+
+  .botao,
+  .botao2 {
+    font-size: 0.7em;
+  }
+
+  .texto,
+  #morada,
+  #morada2 {
+    font-size: 0.7em;
+  }
+
+  .table thead th {
+    min-width: 15vh;
   }
 }
 /* @media (max-width: 768px) {
