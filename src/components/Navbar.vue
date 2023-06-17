@@ -144,7 +144,7 @@
               <b-dropdown-item>Definições</b-dropdown-item>
               <b-dropdown-item>
                 <router-link to="/encomendas" class="linkcolor"
-                  >Encomendas</router-link
+                  v-if="user.user.type==='CONSUMER'">Encomendas</router-link
                 >
               </b-dropdown-item>
               <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
