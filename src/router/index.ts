@@ -13,7 +13,6 @@ import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
-import ConsentPage from '@/views/ConsentPage.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import Order from '@/views/Order.vue';
 import OrderHistory from '@/views/OrderHistory.vue';
@@ -179,7 +178,6 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Check if the user is authenticated and has the correct type
-    const user = store.state.user?.user;
     const userType = store.state.user?.user?.type;
 
     // Check if the user type is different from "PRODUCER" for routes that require it

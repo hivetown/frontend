@@ -10,21 +10,18 @@
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
             <img
-              :src="product.productSpec.images[0].url"
+              :src="product.productSpec!.images[0].url"
               class="square-image"
-              :alt="product.productSpec.images[0].alt"
+              :alt="product.productSpec!.images[0].alt"
             />
           </b-card>
           <b-card-text class="">
             <div>
-              <div
-                class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
-              >
-                {{ product.category }}
-              </div>
-              <h5>{{ product.productSpec.name }}</h5>
-              <p>UP: {{ product.productionUnit.name }}</p>
-              <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
+              <h5>{{ product.productSpec!.name }}</h5>
+              <p>UP: {{ product.productionUnit!.name }}</p>
+              <p class="grey-txt mt-3">
+                {{ product.productSpec!.description }}
+              </p>
               <div class="d-flex gap-2">
                 <h4 class="mb-3">{{ product.currentPrice }}€</h4>
                 <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
@@ -77,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { Product } from '@/types';
+import { BaseItems, ProducerProduct } from '@/types';
 import { fetchAllProducts } from '@/api/producerProducts';
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 import Pagination from '../components/Pagination.vue';
@@ -89,7 +86,7 @@ export default {
   },
   data() {
     return {
-      products: [] as Product[],
+      products: {} as BaseItems<ProducerProduct>,
       allProductsData: {
         data: {
           totalItems: 0,
@@ -106,12 +103,12 @@ export default {
       const route = useRoute() as RouteLocationNormalizedLoaded;
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
-      const allProductsData = await fetchAllProducts(8, page, pageSize);
+      const allProductsData = await fetchAllProducts(id, page, pageSize);
       const productsArray = allProductsData.data;
       this.products = productsArray;
       this.allProductsData = {
         data: {
-          totalItems: allProductsData.data.length,
+          totalItems: allProductsData.data.totalItems,
           pageSize: pageSize,
           page: page,
         },

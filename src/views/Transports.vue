@@ -2,15 +2,9 @@
   <div class="container">
     <h1 class="mb-5">Veículos de Transporte</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <template
-        v-if="
-          transportVehicles &&
-          transportVehicles.items &&
-          transportVehicles.items.length > 0
-        "
-      >
+      <template v-if="allTransportsData?.items?.length">
         <div
-          v-for="transport in transportVehicles.items"
+          v-for="transport in allTransportsData.items"
           :key="transport.id"
           class="col"
         >
@@ -43,7 +37,7 @@
               </p>
               <h5>UP:</h5>
               <p>
-                {{ transport.productionUnit.name }}
+                {{ transport.productionUnit!.name }}
               </p>
               <div class="d-flex gap-2">
                 <router-link :to="'/product/edit/' + transport.id">
@@ -77,9 +71,9 @@
           "
         >
           <Pagination
-            v-if="allTransportsData && allTransportsData.data"
-            :total-rows="allTransportsData.data.totalItems"
-            :per-page="allTransportsData.data.pageSize"
+            v-if="allTransportsData"
+            :total-rows="allTransportsData.totalItems"
+            :per-page="allTransportsData.pageSize"
           >
             ></Pagination
           >
@@ -93,62 +87,36 @@
 </template>
 
 <script lang="ts">
-import { Transport } from '@/types';
+import { BaseItems, Transport } from '@/types';
 import { fetchAllTransports } from '@/api/transports';
 import Pagination from '../components/Pagination.vue';
-import { useStore } from '@/store';
-import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 export default {
   components: {
     Pagination,
   },
   data() {
     return {
-      transportVehicles: [] as Transport[],
-      allTransportsData: {
-        data: {
-          totalItems: 0,
-          pageSize: 0,
-          page: 0,
-        },
-      },
-      transport: {
-        status: 'AVAILABLE', // Set the initial status value here
-      },
+      allTransportsData: {} as BaseItems<Transport>,
     };
   },
   async mounted() {
     try {
-      const store = useStore();
-      const id = store.state.user!.user.id;
+      const id = this.$store.state.user!.user.id;
 
-      const route = useRoute() as RouteLocationNormalizedLoaded;
-      const page = parseInt(route.query.page as string) || 1;
-      const pageSize = parseInt(route.query.pageSize as string) || 24;
+      const page = parseInt(this.$route.query.page as string) || 1;
+      const pageSize = parseInt(this.$route.query.pageSize as string) || 24;
 
-      const allTransportsData = await fetchAllTransports(8, page, pageSize);
-
-      const transportVehiclesArray = allTransportsData.data;
-
-      this.transportVehicles = transportVehiclesArray;
-      console.log('this.transportVehicles', this.transportVehicles);
-      this.allTransportsData = {
-        data: {
-          totalItems: allTransportsData.data.length,
-          pageSize: pageSize,
-          page: page,
-        },
-      };
+      const allTransportsData = await fetchAllTransports(id, page, pageSize);
+      this.allTransportsData = allTransportsData.data;
     } catch (error) {
       console.error(error);
     }
   },
-  computed: {
-    getStatusText() {
-      if (this.transport.status === 'AVAILABLE') {
+  methods: {
+    getStatusText(transport: Transport) {
+      if (transport.status === 'AVAILABLE') {
         return 'Disponível';
-      } else if (this.transport.status === 'UNAVAILABLE') {
-        console.log('UNAVAILABLE');
+      } else if (transport.status === 'UNAVAILABLE') {
         return 'Indisponível';
       }
       return '';

@@ -2,33 +2,26 @@
   <div class="container">
     <h1 class="mb-5">Produtos da UP: {{ unitName }}</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <template
-        v-if="
-          unitProducts && unitProducts.items && unitProducts.items.length > 0
-        "
-      >
+      <template v-if="allUnitProducts?.items?.length">
         <div
-          v-for="product in unitProducts.items"
+          v-for="product in allUnitProducts.items"
           :key="product.id"
           class="col"
         >
           <b-card class="prod-card position-relative">
             <img
-              :src="product.productSpec.images[0].url"
+              :src="product.productSpec!.images[0].url"
               class="square-image"
-              :alt="product.productSpec.images[0].alt"
+              :alt="product.productSpec!.images[0].alt"
             />
           </b-card>
           <b-card-text class="">
             <div>
-              <div
-                class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
-              >
-                {{ product.category }}
-              </div>
-              <h5>{{ product.productSpec.name }}</h5>
-              <p>UP: {{ product.productionUnit.name }}</p>
-              <p class="grey-txt mt-3">{{ product.productSpec.description }}</p>
+              <h5>{{ product.productSpec!.name }}</h5>
+              <p>UP: {{ product.productionUnit!.name }}</p>
+              <p class="grey-txt mt-3">
+                {{ product.productSpec!.description }}
+              </p>
               <div class="d-flex gap-2">
                 <h4 class="mb-3">{{ product.currentPrice }}€</h4>
               </div>
@@ -64,9 +57,9 @@
           "
         >
           <Pagination
-            v-if="allUnitProducts && allUnitProducts.data"
-            :total-rows="allUnitProducts.data.totalItems"
-            :per-page="allUnitProducts.data.pageSize"
+            v-if="allUnitProducts"
+            :total-rows="allUnitProducts.totalItems"
+            :per-page="allUnitProducts.pageSize"
           >
             ></Pagination
           >
@@ -82,8 +75,8 @@
 <script lang="ts">
 import { fetchAllUnitProducts } from '@/api/unitProducts';
 import Pagination from '../components/Pagination.vue';
-import { Product } from '@/types';
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
+import { BaseItems, ProducerProduct } from '@/types';
 export default {
   computed: {
     unitName(): string {
@@ -95,14 +88,7 @@ export default {
   },
   data() {
     return {
-      unitProducts: [] as Product[],
-      allUnitProducts: {
-        data: {
-          totalItems: 0,
-          pageSize: 0,
-          page: 0,
-        },
-      },
+      allUnitProducts: {} as BaseItems<ProducerProduct>,
     };
   },
   async mounted() {
@@ -120,16 +106,7 @@ export default {
         pageSize
       );
 
-      const unitProductsArray = allUnitProducts.data;
-
-      this.unitProducts = unitProductsArray;
-      this.allUnitProducts = {
-        data: {
-          totalItems: allUnitProducts.data.length,
-          pageSize: pageSize,
-          page: page,
-        },
-      };
+      this.allUnitProducts = allUnitProducts.data;
     } catch (error) {
       console.error(error);
     }

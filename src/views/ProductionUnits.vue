@@ -2,19 +2,13 @@
   <div class="container">
     <h1 class="mb-5">Unidades de Produção</h1>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <template
-        v-if="
-          productionUnits &&
-          productionUnits.items &&
-          productionUnits.items.length > 0
-        "
-      >
-        <div v-for="unit in productionUnits.items" :key="unit.id" class="col">
+      <template v-if="allUnitsData?.items">
+        <div v-for="unit in allUnitsData.items" :key="unit.id" class="col">
           <router-link
             :to="{
               name: 'ProductionUnitProducts',
               params: {
-                producerId: unit.producer,
+                producerId: unit.producer as number,
                 unitId: unit.id,
                 unitName: unit.name,
               },
@@ -22,9 +16,9 @@
           >
             <b-card class="prod-card position-relative">
               <img
-                :src="unit.images[0].url"
+                :src="unit.images![0].url"
                 class="square-image"
-                :alt="unit.images[0].alt"
+                :alt="unit.images![0].alt"
               />
             </b-card>
             <b-card-text class="">
@@ -76,9 +70,9 @@
           "
         >
           <Pagination
-            v-if="allUnitsData && allUnitsData.data"
-            :total-rows="allUnitsData.data.totalItems"
-            :per-page="allUnitsData.data.pageSize"
+            v-if="allUnitsData"
+            :total-rows="allUnitsData.totalItems"
+            :per-page="allUnitsData.pageSize"
           >
             ></Pagination
           >
@@ -92,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { ProductionUnits } from '@/types';
+import { BaseItems, ProductionUnit } from '@/types';
 import { fetchAllUnits } from '@/api/units';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
@@ -103,14 +97,7 @@ export default {
   },
   data() {
     return {
-      productionUnits: [] as ProductionUnits[],
-      allUnitsData: {
-        data: {
-          totalItems: 0,
-          pageSize: 0,
-          page: 0,
-        },
-      },
+      allUnitsData: {} as BaseItems<ProductionUnit>,
     };
   },
   async mounted() {
@@ -122,19 +109,8 @@ export default {
       const page = parseInt(route.query.page as string) || 1;
       const pageSize = parseInt(route.query.pageSize as string) || 24;
 
-      const allUnitsData = await fetchAllUnits(8, page, pageSize);
-
-      const productionUnitsArray = allUnitsData.data;
-
-      this.productionUnits = productionUnitsArray;
-      console.log(this.productionUnits);
-      this.allUnitsData = {
-        data: {
-          totalItems: allUnitsData.data.length,
-          pageSize: pageSize,
-          page: page,
-        },
-      };
+      const allUnitsData = await fetchAllUnits(id, page, pageSize);
+      this.allUnitsData = allUnitsData.data;
     } catch (error) {
       console.error(error);
     }

@@ -1,4 +1,4 @@
-import { ProductionUnits } from '../types/interfaces';
+import { BaseItems, ProducerProduct } from '../types/interfaces';
 import { api } from './_base';
 
 export const fetchAllUnitProducts = (
@@ -7,6 +7,9 @@ export const fetchAllUnitProducts = (
     page: number,
     pageSize: number
 ) =>
-    api.get<ProductionUnits[]>(`/producers/${id}/units/${unitId}/products`, {
-        params: { page, pageSize },
-    });
+    api.get<BaseItems<ProducerProduct>>(
+        `/producers/${id}/units/${unitId}/products`,
+        {
+            params: { page, pageSize },
+        }
+    );
