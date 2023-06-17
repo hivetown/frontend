@@ -9,7 +9,7 @@
           <b-col md="3" lg="4" xl="3" class="mb-4">
             <div id="logo">
               <img src="/logo.svg" />
-              <b-navbar-brand class="p-2 logo-txt" href="#"
+              <b-navbar-brand class="p-2 logo-txt" to="/"
                 >hiveTown</b-navbar-brand
               >
             </div>
@@ -40,12 +40,17 @@
                   class="bi bi-telephone yellow-txt"
                   style="font-size: 1.5em"
                 ></i>
-                <h4 class="p-1 grey-txt text-lg">919 236 147</h4>
+                <a
+                  href="tel:919236147"
+                  target="_blank"
+                  class="text-decoration-none"
+                  ><h4 class="p-1 grey-txt text-lg">919 236 147</h4></a
+                >
               </div>
               <a
-                href="#"
-                class="text-reset footer-links"
-                style="text-decoration: none"
+                href="mailto:info@hivetown.pt"
+                target="_blank"
+                class="text-decoration-none"
                 ><span class="grey-txt">info@hivetown.pt</span></a
               >
             </div>
@@ -62,9 +67,11 @@
                   >Informação sobre entregas</span
                 ></b-list-group-item
               >
-              <b-list-group-item href="#" class="text-reset footer-links"
-                ><span class="grey-txt"
-                  >Termos e condições</span
+              <b-list-group-item class="text-reset footer-links"
+                ><router-link
+                  to="/consent"
+                  class="grey-txt text-decoration-none"
+                  >Privacidade</router-link
                 ></b-list-group-item
               >
               <b-list-group-item href="#" class="text-reset footer-links"
@@ -113,5 +120,11 @@
 .footer-links {
   border: none !important;
   border-radius: 0% !important;
+}
+
+@media (max-width: 767px) {
+  .custom-footer {
+    display: none !important;
+  }
 }
 </style>
