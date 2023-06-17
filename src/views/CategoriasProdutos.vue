@@ -17,6 +17,17 @@
     <!-- Barra lateral com os filtros -->
     <div class="lat-bar" style="width: 20%">
       <div id="filters">
+        <div>
+          <span class="p-input-icon-left">
+            <i class="pi pi-search" />
+            <InputText
+              v-model="productSpecSearchQuery"
+              @update:model-value="changeSearchQuery"
+              placeholder="Search"
+            />
+          </span>
+        </div>
+
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
           <Tree
@@ -36,8 +47,6 @@
             </template>
           </Tree>
         </div>
-
-        <!-- <Checkbox :v-model="checkboxTest" :binary="true" /> -->
 
         <div id="price-filter">
           <div v-if="productSpecs">
@@ -96,14 +105,25 @@
         <div v-else id="page-products">
           <!-- <div v-for="(linha, indice) in Math.ceil(allProductsData.data.pageSize / 4)" :key="indice"> -->
           <div class="grid m-3">
-            <ProductCard
-              v-for="product in productSpecs.items"
-              :key="product.id"
-              :product-spec="product"
-              :can-compare="canCompareMoreProducts"
-              @compare="addProductToCompare"
-              class="col-12 md:col-6 lg:col-3 xl:col-2"
-            />
+            <template v-if="loadingProductSpecs">
+              <ProgressSpinner
+                style="width: 50px; height: 50px"
+                stroke-width="8"
+                fill="var(--surface-ground)"
+                animation-duration=".5s"
+                aria-label="Loading Product specifications"
+              />
+            </template>
+            <template v-else>
+              <ProductCard
+                v-for="product in productSpecs.items"
+                :key="product.id"
+                :product-spec="product"
+                :can-compare="canCompareMoreProducts"
+                @compare="addProductToCompare"
+                class="col-12 md:col-6 lg:col-3 xl:col-2"
+              />
+            </template>
           </div>
         </div>
         <div
@@ -144,6 +164,8 @@ import Tree, { TreeNode } from 'primevue/tree';
 import Slider from 'primevue/slider';
 import { debounce } from 'lodash';
 import ProductCard from '@/components/ProductCard.vue';
+import InputText from 'primevue/inputtext';
+import ProgressSpinner from 'primevue/progressspinner';
 
 const checkboxTest = ref();
 watch(checkboxTest, (val) => {
@@ -269,7 +291,6 @@ const fetchCategories = async ({
   parentId,
   loadings,
 }: { parentId?: number; loadings?: boolean } = {}) => {
-  const search = route.query.search?.toString() || undefined;
   const [minPrice, maxPrice] = priceFilter.value;
 
   if (loadings === undefined) loadings = true;
@@ -280,7 +301,7 @@ const fetchCategories = async ({
       pageSize: 100,
       productMinPrice: minPrice,
       productMaxPrice: maxPrice,
-      productSearch: search,
+      productSearch: productSpecSearchQuery.value || undefined,
       parentId: parentId,
     })
   ).data;
@@ -327,12 +348,12 @@ const nodeSelect = async (node: CategoryTreeNode) => {
 const productSpecs = ref<ProductSpecs>();
 const loadingProductSpecs = ref(true);
 const productsPricing = ref<{ min: number; max: number }>({ min: 0, max: 0 });
+const productSpecSearchQuery = ref(route.query.search?.toString() || '');
 
 const loadProducts = async () => {
   // TODO replace this
   const page = Number(route.query.page) || 1;
   const pageSize = Number(route.query.pageSize) || 24;
-  const search = route.query.search?.toString() || undefined;
   // --
 
   const category =
@@ -351,7 +372,7 @@ const loadProducts = async () => {
       categoryId: category,
       minPrice: minPrice === -1 ? undefined : minPrice,
       maxPrice: maxPrice === -1 ? undefined : maxPrice,
-      search,
+      search: productSpecSearchQuery.value || undefined,
     })
   ).data;
 
@@ -362,6 +383,11 @@ const loadProducts = async () => {
 
 // Debounce price filter to make less requests
 const changePriceFilter = debounce(async () => {
+  await Promise.all([loadCategories(), loadProducts()]);
+}, 1500);
+
+// Debounce search query to make less requests
+const changeSearchQuery = debounce(async () => {
   await Promise.all([loadCategories(), loadProducts()]);
 }, 1500);
 
