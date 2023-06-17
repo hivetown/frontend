@@ -71,3 +71,6 @@ export const fetchConsumerReportProducts = (
     api.get<ReportBarChartProduct[]>(
         `/reports/${id}/products?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
     );
+
+export const getOrder = (consumerId: number, orderId: number) =>
+    api.get(`/consumers/${consumerId}/orders/${orderId}`);

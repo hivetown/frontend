@@ -175,8 +175,9 @@ import Swal from 'sweetalert2';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
-//import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
+import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { getOrders } from '../api/producers';
+import { getOrder } from '../api/consumers';
 import { useStore } from '@/store';
 const store = useStore();
 const user2 = computed(() => store.state.user);
@@ -197,6 +198,7 @@ const orderStatusTranslation = (status: string) => {
       return 'Desconhecido';
   }
 };
+const ordersBulk = ref<BaseItems<Order>>();
 const orders = ref<BaseItems<Order>>();
 /**
  * {
@@ -221,18 +223,29 @@ onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
     console.log('user', user2.value.user);
     const response = await getOrders(user2.value.user.id);
-    orders.value = response.data;
-    console.log('valores', response);
+    ordersBulk.value = response.data;
 
-    for (const order of orders.value.items) {
-      const orderItems = await fetchAllItems(
-        user2.value.user.id,
-        order.id.toString()
-      );
+    console.log('valores', response.data);
 
-      const image = findFirstImage(orderItems.data.items);
-      if (image) {
-        ordersImage.value[order.id] = image;
+    if (ordersBulk.value !== undefined) {
+      for (const order of ordersBulk.value.items) {
+        const orderToSave = await getOrder(user2.value.user.id, order.id);
+        order.value.items.push(orderToSave);
+        console.log('order', order);
+      }
+
+      for (const order of orders.value.items) {
+        console.log('orderItems, userID', user2.value.user.id);
+        const orderItems = await fetchAllItems(
+          user2.value.user.id,
+          order.id.toString()
+        );
+        console.log('orderItems', orderItems);
+
+        const image = findFirstImage(orderItems.data.items);
+        if (image) {
+          ordersImage.value[order.id] = image;
+        }
       }
     }
   }

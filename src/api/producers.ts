@@ -41,4 +41,4 @@ export const fetchProducerProductionUnits = (id: number) =>
 //     api.get<Producer[]>(`/products/${specId}`);
 
 export const getOrders = (producerId: number) =>
-    api.get(`/${producerId}/orders`);
+    api.get(`/producers/${producerId}/orders`);
