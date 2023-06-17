@@ -455,7 +455,6 @@ export default defineComponent({
             this.lineGraphData.push(valor.comprasTotais!); // Só as que não foram canceladas
           }
         }
-        console.log(this.reportEvolution);
         this.lineChartData = {
           labels: this.lineGraphLabels,
           datasets: [

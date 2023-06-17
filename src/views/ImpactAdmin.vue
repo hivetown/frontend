@@ -282,8 +282,7 @@ import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
 import RadioButton from 'primevue/radiobutton';
-import { ref, computed, defineComponent } from 'vue';
-import { useStore } from '@/store';
+import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
   Image,
@@ -328,7 +327,7 @@ export default defineComponent({
       // Reports
       reportCards: {} as ReportCard,
       reportMap: {} as ReportMap[],
-      reportEvolution: {} as ReportEvolution, // TODO - ver se é preciso alterar esta interface
+      reportEvolution: {} as Record<string, ReportEvolution>,
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
       selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
@@ -351,10 +350,6 @@ export default defineComponent({
       // Gráfico de barras
       barGraphLabels: [] as string[],
       barGraphData: [] as number[],
-      //   barChartData: {
-      //     labels: ['no data'] as string[],
-      //     datasets: [] as string[],
-      //   } as Object,
       barChartData: {
         labels: ['no data'],
         datasets: [
@@ -390,15 +385,8 @@ export default defineComponent({
   },
 
   async beforeMount() {
-    // Valor do slider - Raio
-    const raio = ref(0);
-    this.raio = raio;
-    // Valor dos radio buttons - Vista
-    const barChartView = ref('products');
-    this.barChartView = barChartView.value;
-
     // Ir buscar os dados do utilizador que está logado
-    const store = useStore();
+    const store = this.$store;
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
@@ -511,16 +499,16 @@ export default defineComponent({
         this.lineGraphData = [];
 
         // Preparar os dados para o gráfico de linhas (Evolução)
-        for (const [data, string] of Object.entries(this.reportEvolution)) {
-          this.lineGraphLabels.push(String(data));
+        for (const [data, valor] of Object.entries(this.reportEvolution)) {
+          this.lineGraphLabels.push(data);
           if (view == 'numeroEncomendas') {
-            this.lineGraphData.push(Object(string).numeroEncomendas);
+            this.lineGraphData.push(valor.numeroEncomendas!);
           } else if (view == 'totalProdutos') {
-            this.lineGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+            this.lineGraphData.push(valor.totalProdutos!); // Só as que não foram canceladas
           } else if (view == 'numeroProdutosEncomendados') {
-            this.lineGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+            this.lineGraphData.push(valor.numeroProdutosEncomendados!); // Só as que não foram canceladas
           } else if (view == 'comprasTotais') {
-            this.lineGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
+            this.lineGraphData.push(valor.comprasTotais!); // Só as que não foram canceladas
           }
         }
         this.lineChartData = {
@@ -551,13 +539,13 @@ export default defineComponent({
             this.barGraphLabels.push(nomeReduzido);
 
             if (view == 'numeroEncomendas') {
-              this.barGraphData.push(Object(string).numeroEncomendas);
+              this.barGraphData.push(string.numeroEncomendas!);
             } else if (view == 'totalProdutos') {
-              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+              this.barGraphData.push(string.totalProdutos!); // Só as que não foram canceladas
             } else if (view == 'numeroProdutosEncomendados') {
-              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+              this.barGraphData.push(string.numeroProdutosEncomendados!); // Só as que não foram canceladas
             } else if (view == 'comprasTotais') {
-              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
+              this.barGraphData.push(string.comprasTotais!); // Só as que não foram canceladas
             }
           }
           this.barChartData = {
@@ -572,20 +560,20 @@ export default defineComponent({
           };
         } else if (this.barChartView == 'clients') {
           for (const string of this.reportProducerClients) {
-            this.barGraphLabels.push(Object(string).nome);
+            this.barGraphLabels.push(string.nome);
 
             if (view == 'numeroEncomendas') {
               console.log('numeroEncomendas');
-              this.barGraphData.push(Object(string).numeroEncomendas);
+              this.barGraphData.push(string.numeroEncomendas!);
             } else if (view == 'totalProdutos') {
               console.log('totalProdutos');
-              this.barGraphData.push(Object(string).totalProdutos); // Só as que não foram canceladas
+              this.barGraphData.push(string.totalProdutos!); // Só as que não foram canceladas
             } else if (view == 'numeroProdutosEncomendados') {
               console.log('numeroProdutosEncomendados');
-              this.barGraphData.push(Object(string).numeroProdutosEncomendados); // Só as que não foram canceladas
+              this.barGraphData.push(string.numeroProdutosEncomendados!); // Só as que não foram canceladas
             } else if (view == 'comprasTotais') {
               console.log('comprasTotais');
-              this.barGraphData.push(Object(string).comprasTotais); // Só as que não foram canceladas
+              this.barGraphData.push(string.comprasTotais!); // Só as que não foram canceladas
             }
           }
           this.barChartData = {
