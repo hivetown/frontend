@@ -95,9 +95,7 @@
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
-			  <b-dropdown-item
-                v-if="permissions"
-                href="/admin?page=1"
+              <b-dropdown-item v-if="permissions" href="/admin?page=1"
                 >Admin area</b-dropdown-item
               >
               <div v-if="user.user.type === 'PRODUCER'">
@@ -182,18 +180,20 @@
       </b-nav-item>
     </b-nav>
   </div>
-</template><script lang="ts">
+</template>
+<script lang="ts">
 import { useStore } from '@/store';
 import { computed, watch, ref } from 'vue';
 import { hasPermission } from '@/utils/permissions';
 import { Permission } from '@/types';
 export default {
   setup() {
-	const requiredPermissions = Permission.ALL_CONSUMER | Permission.ALL_PRODUCER;
+    const requiredPermissions =
+      Permission.ALL_CONSUMER | Permission.ALL_PRODUCER;
     const store = useStore();
     const user = computed(() => store.state.user);
     const permissions = ref(false); // Transforme em uma variável reativa usando ref
-    
+
     watch(user, (newValue) => {
       if (newValue) {
         permissions.value = hasPermission(newValue?.user, requiredPermissions);

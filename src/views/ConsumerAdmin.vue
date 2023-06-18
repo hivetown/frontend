@@ -1,7 +1,7 @@
 <template>
-  <router-link :to="{ path: '/admin', query: { page: 1 }}" class="back">
-  <i class="bi bi-arrow-left-circle"></i> Voltar
-</router-link>
+  <router-link :to="{ path: '/admin', query: { page: 1 } }" class="back">
+    <i class="bi bi-arrow-left-circle"></i> Voltar
+  </router-link>
 
   <div id="container">
     <div id="titulo">
@@ -29,8 +29,8 @@
         class="mb-2"
       >
         <b-card-text>
-			<strong v-if="user.deletedAt != null">Conta desativa</strong>
-			<br>
+          <strong v-if="user.deletedAt != null">Conta desativa</strong>
+          <br />
           <strong>Email: </strong>{{ user['user']['email'] || 'Não definido' }}
           <br />
           <strong>Telemóvel: </strong
@@ -75,8 +75,9 @@
           </div>
         </b-card-text>
 
-        <div class="editarConta" >
-          <button v-if="user.deletedAt===null"
+        <div class="editarConta">
+          <button
+            v-if="user.deletedAt === null"
             href="#"
             style="margin-right: 10px !important"
             class="btn btn-outline-secondary btn-sm"
@@ -152,83 +153,72 @@ import {
   ativarConsumer,
   updateConsumer,
 } from '../api/consumers';
-import { onMounted, ref } from 'vue';
 import { auth } from '@/utils/firebase';
-import {Consumer } from '@/types';
+import { Consumer } from '@/types';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 export default {
   data() {
- 
-	return {
-		formData: {email: "", name: "", phone: ""} ,
-    	collapsed : true,
-    	user : null as Consumer | null,
-	}
+    return {
+      formData: { email: '', name: '', phone: '' },
+      collapsed: true,
+      user: null as Consumer | null,
+    };
   },
- async mounted() {
-	  
-      try {
-        const response = await getConsumerId(Number(this.$route.params.id));
-        this.user = response.data;
-		this.formData.email= this.user.user.email;
-		this.formData.name=this.user.user.name;
-		this.formData.phone=this.user.user.phone;
-      } catch (error) {
-        console.error(error);
-      }
+  async mounted() {
+    try {
+      const response = await getConsumerId(Number(this.$route.params.id));
+      this.user = response.data;
+      this.formData.email = this.user.user.email;
+      this.formData.name = this.user.user.name;
+      this.formData.phone = this.user.user.phone;
+    } catch (error) {
+      console.error(error);
+    }
   },
 
   methods: {
     saveChanges() {
-		const email = this.$store.state.user?.user.email;
-  // Define valores padrão para campos não preenchidos
-  const defaults = {
-    name: this.user!.user.name,
-    email: this.user!.user.email,
-    phone: this.user!.user.phone,
-  };
+      const email = this.$store.state.user?.user.email;
+      // Define valores padrão para campos não preenchidos
+      const defaults = {
+        name: this.user!.user.name,
+        email: this.user!.user.email,
+        phone: this.user!.user.phone,
+      };
 
-  // Mescla valores padrão com valores do formulário
-  const data = { ...defaults, ...this.formData };
-  if (Object.keys(this.formData).length === 0) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Sem alterações a efetuar',
-      text: 'Precisa preencher pelo menos um campo para efetuar alterações',
-      showConfirmButton: false,
-      timer: 3500,
-    });
-  } else {
-    Swal.fire({
-      title: 'Digite a sua password:',
-      input: 'password',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Confirmar',
-      showLoaderOnConfirm: false,
-      preConfirm: async (password) => {
-
-		try {
-                const userCredential = await signInWithEmailAndPassword(
-                    auth,
-                    email!, 
-                    password 
-                );
-				return true;
+      // Mescla valores padrão com valores do formulário
+      const data = { ...defaults, ...this.formData };
+      if (Object.keys(this.formData).length === 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Sem alterações a efetuar',
+          text: 'Precisa preencher pelo menos um campo para efetuar alterações',
+          showConfirmButton: false,
+          timer: 3500,
+        });
+      } else {
+        Swal.fire({
+          title: 'Digite a sua password:',
+          input: 'password',
+          inputAttributes: {
+            autocapitalize: 'off',
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Confirmar',
+          showLoaderOnConfirm: false,
+          preConfirm: async (password) => {
+            try {
+              await signInWithEmailAndPassword(auth, email!, password);
+              return true;
             } catch (error) {
-                //pass errada
-				Swal.showValidationMessage('Password incorreta');
-				return false;
-				
+              //pass errada
+              Swal.showValidationMessage('Password incorreta');
+              return false;
             }
-      
-      },
-      allowOutsideClick: false
-    }).then((result) => {
-      if (result.isConfirmed) {
-       
+          },
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
             Swal.fire({
               title: 'Tem certeza que deseja salvar as alterações?',
               text: 'Você poderá voltar a editar a conta caso se arrependa.',
@@ -262,159 +252,148 @@ export default {
                   });
               }
             });
-          
-          
+          }
+        });
       }
-    });
-  }
-},
+    },
 
     showCancelDialog(): void {
-		Swal.fire({
-    title: 'Digite a sua password',
-    input: 'password',
-    inputAttributes: {
-      autocapitalize: 'off'
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Confirmar',
-    showLoaderOnConfirm: false,
-    preConfirm: async (password) => {
-
-try {
-		const userCredential = await signInWithEmailAndPassword(
-			auth,
-			this.$store.state.user?.user.email!, 
-			password 
-		);
-		return true;
-	} catch (error) {
-		//pass errada
-		Swal.showValidationMessage('Password incorreta');
-		return false;
-		
-	}
-
-},
-  })
-  .then((result) => {
-    if (result.isConfirmed) {
       Swal.fire({
-        title: 'Desativar conta?',
-        text: 'A conta pode voltar a ser ativada.',
-        icon: 'warning',
+        title: 'Digite a sua password',
+        input: 'password',
+        inputAttributes: {
+          autocapitalize: 'off',
+        },
         showCancelButton: true,
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, desativar!',
-      })
-      .then(async (result) => {
-        if (result.isConfirmed) {
-          desativarConsumer(Number(this.$route.params.id))
-            .then(() => {
-              Swal.fire(
-                'Desativado!',
-                'A conta encontra-se desativada.',
-                'success'
-              ).then(() => {
-                location.reload();
-              });
-            })
-            .catch((error) => {
-              console.error(error);
-
-              if (error.response && error.response.status === 400) {
-                Swal.fire(
-                  'Erro ao desativar conta',
-                  'Ocorreu um erro na requisição, não foi possível concluir a requisição de desativar conta.',
-                  'error'
-                );
-              } else {
-                Swal.fire(
-                  'Erro!',
-                  'Não foi possível desativar a conta.',
-                  'error'
-                );
-              }
-            });
-        }
-      });
-    }
-  });
-    },
-	reativar(): void {
-  Swal.fire({
-    title: 'Digite a password:',
-    input: 'password',
-    inputAttributes: {
-      autocapitalize: 'off'
-    },
-    showCancelButton: true,
-    confirmButtonText: 'Confirmar',
-    showLoaderOnConfirm: false,
-    preConfirm: async (password) => {
-
-try {
-		const userCredential = await signInWithEmailAndPassword(
-			auth,
-			this.$store.state.user?.user.email!, 
-			password 
-		);
-		return true;
-	} catch (error) {
-		//pass errada
-		Swal.showValidationMessage('Password incorreta');
-		return false;
-		
-	}
-
-},
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        title: 'Reativar conta?',
-        text: 'A conta pode voltar a ser desativada.',
-        icon: 'warning',
-        showCancelButton: true,
-        cancelButtonText: 'Cancelar',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, reativar!'
+        confirmButtonText: 'Confirmar',
+        showLoaderOnConfirm: false,
+        preConfirm: async (password) => {
+          try {
+            await signInWithEmailAndPassword(
+              auth,
+              this.$store.state.user?.user.email!,
+              password
+            );
+            return true;
+          } catch (error) {
+            //pass errada
+            Swal.showValidationMessage('Password incorreta');
+            return false;
+          }
+        },
       }).then((result) => {
         if (result.isConfirmed) {
-          ativarConsumer(Number(this.$route.params.id))
-            .then(() => {
-              Swal.fire(
-                'Reativado!',
-                'A conta foi reativada com sucesso.',
-                'success'
-              ).then(() => {
-                location.reload();
-              });
-            })
-            .catch((error) => {
-              console.error(error);
-              if (error.response && error.response.status === 400) {
-                Swal.fire(
-                  'Erro ao reativar a conta',
-                  'Ocorreu um erro na requisição. Não foi possível concluir a solicitação de reativação da conta.',
-                  'error'
-                );
-              } else {
-                Swal.fire(
-                  'Erro!',
-                  'Não foi possível reativar a conta.',
-                  'error'
-                );
-              }
-            });
+          Swal.fire({
+            title: 'Desativar conta?',
+            text: 'A conta pode voltar a ser ativada.',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, desativar!',
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              desativarConsumer(Number(this.$route.params.id))
+                .then(() => {
+                  Swal.fire(
+                    'Desativado!',
+                    'A conta encontra-se desativada.',
+                    'success'
+                  ).then(() => {
+                    location.reload();
+                  });
+                })
+                .catch((error) => {
+                  console.error(error);
+
+                  if (error.response && error.response.status === 400) {
+                    Swal.fire(
+                      'Erro ao desativar conta',
+                      'Ocorreu um erro na requisição, não foi possível concluir a requisição de desativar conta.',
+                      'error'
+                    );
+                  } else {
+                    Swal.fire(
+                      'Erro!',
+                      'Não foi possível desativar a conta.',
+                      'error'
+                    );
+                  }
+                });
+            }
+          });
         }
       });
-    }
-  });
-}
-
+    },
+    reativar(): void {
+      Swal.fire({
+        title: 'Digite a password:',
+        input: 'password',
+        inputAttributes: {
+          autocapitalize: 'off',
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Confirmar',
+        showLoaderOnConfirm: false,
+        preConfirm: async (password) => {
+          try {
+            await signInWithEmailAndPassword(
+              auth,
+              this.$store.state.user?.user.email!,
+              password
+            );
+            return true;
+          } catch (error) {
+            //pass errada
+            Swal.showValidationMessage('Password incorreta');
+            return false;
+          }
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Reativar conta?',
+            text: 'A conta pode voltar a ser desativada.',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, reativar!',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              ativarConsumer(Number(this.$route.params.id))
+                .then(() => {
+                  Swal.fire(
+                    'Reativado!',
+                    'A conta foi reativada com sucesso.',
+                    'success'
+                  ).then(() => {
+                    location.reload();
+                  });
+                })
+                .catch((error) => {
+                  console.error(error);
+                  if (error.response && error.response.status === 400) {
+                    Swal.fire(
+                      'Erro ao reativar a conta',
+                      'Ocorreu um erro na requisição. Não foi possível concluir a solicitação de reativação da conta.',
+                      'error'
+                    );
+                  } else {
+                    Swal.fire(
+                      'Erro!',
+                      'Não foi possível reativar a conta.',
+                      'error'
+                    );
+                  }
+                });
+            }
+          });
+        }
+      });
+    },
   },
 };
 </script>

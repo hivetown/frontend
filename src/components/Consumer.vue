@@ -2,30 +2,29 @@
   <h3>Consumidores</h3>
   <div class="card-container" v-if="users">
     <div v-for="idx in qtd" :key="idx">
-		<b-card
-  id="b-card"
-  :title="users.items[idx - 1]?.user?.name || ''"
-  :img-src="
-    users.items[idx - 1]?.user?.image?.url
-      ? users.items[idx - 1]?.user?.image?.url
-      : '../../public/semimagem.png'
-  "
-  :img-alt="
-    users.items[idx - 1]?.user?.image
-      ? users.items[idx - 1]?.user?.image?.alt || 'sem imagem'
-      : 'sem imagem'
-  "
-  img-top
-  tag="article"
-  style="max-width: 17rem"
-  class="mb-2"
->
-
+      <b-card
+        id="b-card"
+        :title="users.items[idx - 1]?.user?.name || ''"
+        :img-src="
+          users.items[idx - 1]?.user?.image?.url
+            ? users.items[idx - 1]?.user?.image?.url
+            : '../../public/semimagem.png'
+        "
+        :img-alt="
+          users.items[idx - 1]?.user?.image
+            ? users.items[idx - 1]?.user?.image?.alt || 'sem imagem'
+            : 'sem imagem'
+        "
+        img-top
+        tag="article"
+        style="max-width: 17rem"
+        class="mb-2"
+      >
         <b-card-text>
           {{ users.items[idx - 1].user.email }} <br />
-          <p v-if="users.items[idx-1].user.type==='CONSUMER'">Consumidor</p>
-		  <p v-else>{{ users.items[idx - 1].user.type }}</p>
-		  <p v-if="users.items[idx-1].deletedAt != null">Conta desativa</p>
+          <p v-if="users.items[idx - 1].user.type === 'CONSUMER'">Consumidor</p>
+          <p v-else>{{ users.items[idx - 1].user.type }}</p>
+          <p v-if="users.items[idx - 1].deletedAt != null">Conta desativa</p>
         </b-card-text>
         <b-button
           :href="'admin/consumer/' + users['items'][idx - 1]['user']['id']"
@@ -63,19 +62,19 @@ onMounted(async () => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const pageParam = urlSearchParams.get('page');
     if (pageParam) {
-			if (pageParam> responseItems.data.totalPages){
-				page.value = responseItems.data.totalPages;
-			}else{
-				page.value = Number(pageParam);
-			}
-		}
+      if (pageParam > responseItems.data.totalPages) {
+        page.value = responseItems.data.totalPages;
+      } else {
+        page.value = Number(pageParam);
+      }
+    }
 
     pageSize.value = responseItems.data.pageSize;
     totalItems.value = responseItems.data.totalItems;
 
     const response = await getConsumers(page.value, pageSize.value);
     users.value = response.data;
-	qtd.value = Number(users.value?.items.length);
+    qtd.value = Number(users.value?.items.length);
   } catch (error) {
     console.error(error);
   }
@@ -92,12 +91,7 @@ function myFunction(): void {
     users.value = res.data;
   });
 }
-
-function handlePageChange(value: number) {
-  page.value = value;
-}
 </script>
-
 
 <style scoped>
 .card-container {

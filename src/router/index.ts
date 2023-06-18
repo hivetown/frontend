@@ -124,7 +124,7 @@ const routes = [
             requiredPermissions: Permission.ALL_PRODUCER,
         },
     },
-	{
+    {
         path: '/admin/consumer/:id',
         name: 'ConsumerAdmin',
         component: ConsumerAdmin,
@@ -133,7 +133,6 @@ const routes = [
             requiredPermissions: Permission.ALL_CONSUMER,
         },
     },
- 
 
     {
         path: '/login',
