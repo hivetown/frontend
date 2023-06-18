@@ -685,7 +685,7 @@
             <div class="mt-4" style="background-color: ">
               <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
               <div
-                class="mt-5 d-flex align-items-center gap-3"
+                class="mt-5 d-flex align-items-center gap-3 producer-infos-mobile"
                 style="background-color: ; width: 70%"
                 v-if="
                   producerProduct.producer &&
@@ -716,7 +716,14 @@
                     <a href="#" class="grey-txt">Sobre o vendedor</a>
                   </router-link>
                 </div>
-                <div style="margin-left: 30%; position: absolute">
+                <div
+                  class="producer-other-mobile"
+                  style="
+                    margin-left: 30%;
+
+                    position: absolute;
+                  "
+                >
                   <div class="d-flex gap-5 align-items-center">
                     <span>
                       <h5>{{ producerProduct.currentPrice }}€</h5>
@@ -1004,6 +1011,14 @@
   }
   .more-info-mobile {
     display: block !important;
+  }
+
+  .producer-infos-mobile {
+    background-color: blue;
+  }
+
+  .producer-other-mobile {
+    background-color: green;
   }
 }
 </style>
