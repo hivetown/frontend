@@ -13,7 +13,7 @@
           <div class="d-flex nav-items-left">
             <div
               @click="showModalFunction"
-              v-if="$store.state.user"
+              v-if="store.state.user"
               class="d-flex"
             >
               <!--todo por se user logado-->
@@ -48,7 +48,10 @@
                 "
                 >{{ notificacoes }}</b-badge
               >
-              <Modal v-if="showModal" @qtdNotificacoes="atualizaNotificacoes" />
+              <Modal
+                v-if="showModal"
+                @qtd-notificacoes="atualizaNotificacoes"
+              />
               <p
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500; margin-top: 5%; cursor: pointer"
@@ -102,7 +105,7 @@
               </router-link>
             </div>
 
-            <div class="d-flex" v-if="!user">
+            <div class="d-flex" v-if="!store.state.user">
               <router-link
                 to="/login"
                 class="p-2 grey-txt text-decoration-none"
@@ -126,44 +129,40 @@
             </div>
           </div>
 
-          <div class="d-flex nav-items-right" v-if="user">
+          <div class="d-flex nav-items-right" v-if="store.state.user">
             <router-link to="/conta" class="p-2 grey-txt text-decoration-none">
               <b-avatar
                 class="nav-item"
-                :src="user.user.image?.url"
+                :src="store.state.user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ user.user.name }}</span>
+              <span>{{ store.state.user.user.name }}</span>
             </router-link>
             <b-nav-item-dropdown
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item href="#">Definições</b-dropdown-item>
-              <b-dropdown-item v-if="permissions" href="/admin?page=1"
+              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item v-if="permissions" to="/admin?page=1"
                 >Admin area</b-dropdown-item
               >
-              <div v-if="user.user.type === 'PRODUCER'">
-                <b-dropdown-item href="/produtosprodutor"
+              <div v-if="store.state.user.user.type === 'PRODUCER'">
+                <b-dropdown-item to="/produtosprodutor"
                   >Produtos</b-dropdown-item
                 >
-                <b-dropdown-item href="/unidadesproducao"
+                <b-dropdown-item to="/unidadesproducao"
                   >Unidades de Produção</b-dropdown-item
                 >
-                <b-dropdown-item href="/transportes"
-                  >Transportes</b-dropdown-item
-                >
+                <b-dropdown-item to="/transportes">Transportes</b-dropdown-item>
               </div>
               <b-dropdown-item
-                href="/encomendas"
+                to="/encomendas"
                 class="linkcolor"
-                v-if="user.user.type === 'CONSUMER'"
+                v-if="store.state.user.user.type === 'CONSUMER'"
                 >Encomendas</b-dropdown-item
               >
-              <b-dropdown-item @click="logout" href="#"
-                >Terminar Sessão</b-dropdown-item
-              >
+              <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -230,87 +229,60 @@
     </b-nav>
   </div>
 </template>
-<script lang="ts">
+<script setup lang="ts">
+import { useStore } from '@/store';
 import Modal from '../components/ModalNotifications.vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { getUnreadNotifications } from '@/api/notifications';
 import { hasPermission } from '@/utils/permissions';
 import { Permission } from '@/types';
-import { getUnreadNotifications } from '@/api/notifications';
-export default {
-  components: {
-    Modal,
-  },
-  watch: {
-    user: {
-      handler: async function () {
-        const responseItem = await getUnreadNotifications();
-        const qtd = responseItem.data.items.length;
-        this.atualizaNotificacoes(qtd);
-      },
-      deep: true,
-    },
-  },
-  computed: {
-    permissions() {
-      return (
-        this.$store.state.user &&
-        hasPermission(
-          this.$store.state.user?.user,
-          Permission.ALL_CONSUMER | Permission.ALL_PRODUCER
-        )
-      );
-    },
-    user() {
-      return this.$store.state.user;
-    },
-  },
-  methods: {
-    async atualizaNotificacoes(quantidade: number) {
-      console.log(quantidade);
 
-      try {
-        await getUnreadNotifications();
-        this.notificacoes = quantidade;
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    isMobile() {
-      return window.innerWidth < 768;
-    },
-    showModalFunction() {
-      this.showModal = !this.showModal;
-    },
-    logout() {
-      this.$store.dispatch('logout');
-    },
+const store = useStore();
+watch(
+  store.state.user!,
+  async () => {
+    const responseItem = await getUnreadNotifications();
+    const qtd = responseItem.data.items.length;
+    atualizaNotificacoes(qtd);
   },
-  data() {
-    return {
-      showModal: false,
-      notificacoes: 0,
-    };
-  },
-  mounted() {
-    const fetchAndSetNotifications = async () => {
-      if (this.user) {
-        try {
-          const responseItem = await getUnreadNotifications();
-          this.notificacoes = responseItem.data.items.length;
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
+  { deep: true }
+);
 
-    // Chama a função após um atraso inicial de 2000 milissegundos
-    setTimeout(() => {
-      fetchAndSetNotifications();
+const permissions = computed(() => {
+  return (
+    store.state.user &&
+    hasPermission(
+      store.state.user.user,
+      Permission.ALL_CONSUMER | Permission.ALL_PRODUCER
+    )
+  );
+});
 
-      // Chama a função a cada 3 minutos
-      setInterval(fetchAndSetNotifications, 180000);
-    }, 3000);
-  },
+const notificacoes = ref(0);
+const showModal = ref(false);
+
+const atualizaNotificacoes = (qtd: number) => (notificacoes.value = qtd);
+// const isMobile = () => window.innerWidth < 992;
+const showModalFunction = () => (showModal.value = !showModal.value);
+const logout = () => store.dispatch('logout');
+
+const fetchAndSetNotifications = async () => {
+  try {
+    const responseItem = (await getUnreadNotifications()).data;
+    atualizaNotificacoes(responseItem.totalItems);
+  } catch {
+    //
+  }
 };
+
+onMounted(() => {
+  setTimeout(() => {
+    fetchAndSetNotifications();
+
+    // Chama a função a cada 3 minutos
+    setInterval(fetchAndSetNotifications, 180000);
+  }, 3000);
+});
 </script>
 
 <style>

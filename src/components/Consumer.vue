@@ -46,7 +46,7 @@
 import Pagination from '../components/Pagination.vue';
 import { getConsumers, getConsumersValues } from '../api/consumers';
 import { onMounted, ref } from 'vue';
-import { BaseItems, Consumer } from '@types';
+import { BaseItems, Consumer } from '@/types';
 
 const users = ref<BaseItems<Consumer>>();
 const qtd = ref(0);

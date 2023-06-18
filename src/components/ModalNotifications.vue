@@ -16,7 +16,7 @@
             >
               <div
                 class="d-flex w-100 justify-content-between"
-                @click="marcarComoLida(notificacao.id)"
+                @click="marcarComoLida(notificacao)"
               >
                 <h5 class="mb-1">{{ notificacao.title }}</h5>
                 <small
@@ -27,12 +27,12 @@
               <p class="mb-1">{{ notificacao.message }}</p>
               <small
                 v-if="notificacao.readAt == null"
-                @click="marcarComoLida(notificacao.id)"
+                @click="marcarComoLida(notificacao)"
               >
                 <u style="cursor: pointer">Marcar como lida</u>
               </small>
 
-              <small v-else @click="marcarComoNaoLida(notificacao.id)">
+              <small v-else @click="marcarComoNaoLida(notificacao)">
                 <u style="cursor: pointer">Marcar como não lida</u></small
               >
               <hr />
@@ -65,6 +65,10 @@ import {
 } from '../api/notifications';
 import { BaseItems, Notification } from '@/types';
 export default {
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    qtdNotificacoes: (quantidade: number) => true,
+  },
   data() {
     return {
       notificacoes: { page: 1, pageSize: 24 } as BaseItems<Notification>,
@@ -103,21 +107,11 @@ export default {
     closePopup() {
       this.showPopup = false;
     },
-    async reloadPage() {
-      const scrollPosition = window.scrollY || window.pageYOffset;
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 500)); // Aguarda 500ms (opcional)
-        await this.loadNotifications();
-        window.scrollTo(0, scrollPosition);
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    async marcarComoLida(id: number) {
-      await postRead(id);
+    async marcarComoLida(notification: Notification) {
+      await postRead(notification.id);
       this.quantidade = this.quantidade - 1;
+      notification.readAt = new Date().toISOString();
       this.$emit('qtdNotificacoes', this.quantidade);
-      await this.reloadPage();
     },
     async loadNotifications() {
       try {
@@ -131,11 +125,11 @@ export default {
       }
     },
 
-    async marcarComoNaoLida(id: number) {
-      await postUnread(id);
+    async marcarComoNaoLida(notification: Notification) {
+      await postUnread(notification.id);
       this.quantidade = this.quantidade + 1;
+      notification.readAt = null;
       this.$emit('qtdNotificacoes', this.quantidade);
-      await this.reloadPage();
     },
     onPageChanged(newPageNumber: number): void {
       this.notificacoes.page = newPageNumber;
@@ -154,7 +148,6 @@ export default {
 </script>
 
 <style scoped>
-
 hr {
   color: black;
 }
