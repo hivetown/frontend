@@ -85,35 +85,35 @@
               <div
                 class="status-info"
                 v-if="orderItem['status'] === 'Delivered'"
-                style="display: inline-flex"
+                style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-check-all"></i>
                 <p class="texto">Entregue</p>
               </div>
               <div
                 v-if="orderItem['status'] === 'Processing'"
-                style="display: inline-flex"
+                style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-arrow-repeat mr-2"></i>
                 <p class="texto">Em processamento</p>
               </div>
               <div
                 v-if="orderItem['status'] === 'Paid'"
-                style="display: inline-flex"
+                style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-currency-euro"></i>
                 <p class="texto">Pago</p>
               </div>
               <div
                 v-if="orderItem['status'] === 'Canceled'"
-                style="display: inline-flex"
+                style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-x-lg"></i>
                 <p class="texto">Cancelado</p>
               </div>
               <div
                 v-if="orderItem['status'] === 'Shipped'"
-                style="display: inline-flex"
+                style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-truck mr-2"></i>
                 <p class="texto">Em andamento</p>

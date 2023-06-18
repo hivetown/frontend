@@ -23,12 +23,6 @@ h1 {
   font-size: 2.3rem;
 }
 
-.table-container-main {
-  display: flex;
-  justify-content: center !important;
-  align-items: center !important;
-}
-
 @media (max-width: 768px) {
   h1 {
     font-size: 1.8rem;

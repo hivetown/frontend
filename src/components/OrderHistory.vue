@@ -1,9 +1,10 @@
 <template>
-  <h3 class="semencoemndas" v-if="!orders?.items">
-    <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
-    encomendas.
-  </h3>
-
+  <div>
+    <h3 class="semencoemndas" v-if="!orders?.items">
+      <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+      encomendas.
+    </h3>
+  </div>
   <div class="table-container" style="overflow: auto">
     <div></div>
     <table v-if="!!orders?.items" style="border: 2px" class="table">
@@ -54,17 +55,47 @@
           </td>
 
           <td>
-            <div style="display: inline-flex">
+            <div style="display: inline-flex; gap: 0.5vh">
               <router-link
                 :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
                 <div class="status-info">
-                  <i v-if="orderStatusTranslation(order.generalStatus)==='Entregue' " class="bi bi-check-all"></i>
-				  <i v-if="orderStatusTranslation(order.generalStatus)==='Em processamento' " class="bi bi-arrow-repeat mr-2"></i>
-                  <i v-if="orderStatusTranslation(order.generalStatus)==='Pago' " class="bi bi-currency-euro"></i>
-                  <i v-if="orderStatusTranslation(order.generalStatus)==='Cancelada' " class="bi bi-x-lg"></i>
-                  <i v-if="orderStatusTranslation(order.generalStatus)==='Em andamento' " class="bi bi-truck mr-2">></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) === 'Entregue'
+                    "
+                    class="bi bi-check-all"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Em processamento'
+                    "
+                    class="bi bi-arrow-repeat mr-2"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) === 'Pago'
+                    "
+                    class="bi bi-currency-euro"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Cancelada'
+                    "
+                    class="bi bi-x"
+                    style="margin-top: -0.5vh"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Em andamento'
+                    "
+                    class="bi bi-truck mr-2"
+                    >></i
+                  >
 
                   <p class="texto">
                     {{ orderStatusTranslation(order.generalStatus) }}
@@ -382,6 +413,8 @@ h3 {
   max-height: 50vh; /* Altura máxima da tabela */
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   position: relative;
+  display: block;
+  margin: auto;
 }
 .table th,
 .table td {
