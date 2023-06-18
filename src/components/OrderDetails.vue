@@ -44,7 +44,7 @@
               <router-link
                 class="texto"
                 :to="'/products/' + orderItem.producerProduct.productSpec!.id"
-                ><span>{{
+                ><span style="color: black !important">{{
                   orderItem.producerProduct.productSpec!.name
                 }}</span></router-link
               >
@@ -53,7 +53,7 @@
               <router-link
                 class="texto"
                 :to="'/producer/'+orderItem.producerProduct.producer!.user.id"
-                ><span>
+                ><span style="color: black !important">
                   {{ orderItem.producerProduct.producer!.user.name }}
                 </span></router-link
               >
@@ -326,6 +326,7 @@ th {
   p {
     font-size: 12px !important;
   }
+
   i {
     font-size: 13px !important;
   }

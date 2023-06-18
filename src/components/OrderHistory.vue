@@ -468,6 +468,10 @@ tr:hover {
   border: 2px solid #f3f3f3 !important;
 }
 
+.btn {
+  color: black !important;
+}
+
 .status-info {
   display: flex;
   gap: 0.5em;
