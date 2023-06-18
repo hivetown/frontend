@@ -1,0 +1,19 @@
+#!/bin/sh
+ROOT_DIR=/app
+
+FILES=`find ${ROOT_DIR} -type f -name '*.js'`
+
+# Replace env vars in files served by NGINX
+for file in $FILES $ROOT_DIR/index.html;
+do
+	sed -i 's|VITE_API_URL_PLACEHOLDER|'${VITE_API_URL}'|g' $file
+	sed -i 's|VITE_FIREBASE_API_KEY_PLACEHOLDER|'${VITE_FIREBASE_API_KEY}'|g' $file
+	sed -i 's|VITE_FIREBASE_AUTH_DOMAIN_PLACEHOLDER|'${VITE_FIREBASE_AUTH_DOMAIN}'|g' $file
+	sed -i 's|VITE_FIREBASE_PROJECT_ID_PLACEHOLDER|'${VITE_FIREBASE_PROJECT_ID}'|g' $file
+	sed -i 's|VITE_FIREBASE_STORAGE_BUCKET_PLACEHOLDER|'${VITE_FIREBASE_STORAGE_BUCKET}'|g' $file
+	sed -i 's|VITE_FIREBASE_MESSAGING_SENDER_ID_PLACEHOLDER|'${VITE_FIREBASE_MESSAGING_SENDER_ID}'|g' $file
+	sed -i 's|VITE_FIREBASE_APP_ID_PLACEHOLDER|'${VITE_FIREBASE_APP_ID}'|g' $file
+done
+
+# Start NGINX
+nginx -g 'daemon off;'

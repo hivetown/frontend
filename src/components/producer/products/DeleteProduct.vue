@@ -1,5 +1,13 @@
 <template>
-  <Toast />
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <ConfirmPopup group="deleteProducerProduct">
     <template #message="slotProps">
       <div class="flex p-4">
@@ -18,7 +26,6 @@
 </template>
 
 <script lang="ts">
-import { ProducerProduct } from '@/types';
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -27,6 +34,8 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { PropType } from 'vue';
 import { AxiosError } from 'axios';
+import { ProducerProduct } from '@/types';
+
 export default {
   components: {
     PrimeButton,
@@ -39,7 +48,11 @@ export default {
       required: true,
     },
   },
-  setup(props) {
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    deleteProduct: (producerProduct: ProducerProduct) => true,
+  },
+  setup(props, { emit }) {
     const confirm = useConfirm();
     const toast = useToast();
 
@@ -63,6 +76,8 @@ export default {
 
             const productId = props.producerProduct.id;
             await deleteProducerProduct(producerId, productId);
+
+            emit('deleteProduct', props.producerProduct);
 
             toast.add({
               severity: 'success',

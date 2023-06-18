@@ -1,18 +1,22 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <OverlayPanel ref="manageProductOverlay">
-    <div class="p-3">
-      <Toast>
-        <template #message="slotProps">
-          <div class="p-toast-message-text">
-            <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-            <div class="p-toast-detail" v-html="slotProps.message.detail" />
-          </div>
-        </template>
-      </Toast>
+    <div v-if="isOverlayOpen" class="p-3">
       <h4>{{ methodName }} produto</h4>
 
       <div class="flex justify-content-center mt-4">
-        <VeeForm @submit="createProduct" class="flex flex-column gap-3">
+        <VeeForm
+          @submit="($e) => createProduct($e as Event)"
+          class="flex flex-column gap-3"
+        >
           <!-- Product Spec -->
           <div class="flex flex-column gap-2">
             <label for="productSpec">Nome do produto</label>
@@ -187,18 +191,11 @@
 <script lang="ts">
 import {
   fetchAllProducts,
-  fetchAllProductionUnits,
+  fetchProducerProductionUnits,
   createProducerProduct,
   updateProducerProduct,
 } from '@/api';
-import {
-  ComputedRef,
-  PropType,
-  computed,
-  onBeforeMount,
-  onMounted,
-  ref,
-} from 'vue';
+import { ComputedRef, PropType, computed, onBeforeMount, ref } from 'vue';
 import {
   BaseItems,
   ProducerProduct,
@@ -213,6 +210,7 @@ import Calendar from 'primevue/calendar';
 import InputNumber from 'primevue/inputnumber';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useStore } from '@/store';
 
 export default {
   name: 'ManageProduct',
@@ -267,8 +265,8 @@ export default {
     productManaged: (product: ProducerProduct) => true,
   },
   setup(props, { emit }) {
-    // TODO USE STORE AUTHENTICATED USER
-    const PRODUCER_ID = 1;
+    const store = useStore();
+    const producerId = store.state.user!.user.id;
 
     if (
       props.method === 'update' &&
@@ -277,21 +275,20 @@ export default {
         !props.defaultProductionUnit.id)
     ) {
       throw new Error(
-        'When method is "update", producerProductId, defaultProductSpec, and defaultProductionUnit must be provided'
+        'Quando o método é "update", producerProductId, defaultProductSpec, e defaultProductionUnit devem ser fornecidos'
       );
     }
     const methodName = props.method === 'create' ? 'Criar' : 'Atualizar';
 
     // Overlay
     const manageProductOverlay = ref();
+    const isOverlayOpen = computed(() => manageProductOverlay.value.visible);
     const toggleOverlay = (event: MouseEvent) => {
-      console.log(manageProductOverlay.value);
       manageProductOverlay.value.toggle(event);
     };
-
-    onMounted(() => {
-      console.log(manageProductOverlay.value);
-    });
+    const closeOverlay = () => {
+      manageProductOverlay.value.hide();
+    };
 
     // Form
     const {
@@ -361,8 +358,8 @@ export default {
     // Search the products
     const searchProductionUnits = async () => {
       productionUnit.items.value = (
-        await fetchAllProductionUnits(
-          PRODUCER_ID,
+        await fetchProducerProductionUnits(
+          producerId,
           productionUnit.searchQuery.value
         )
       ).data;
@@ -452,7 +449,7 @@ export default {
         switch (props.method) {
           case 'create':
             product = (
-              await createProducerProduct(PRODUCER_ID, {
+              await createProducerProduct(producerId, {
                 currentPrice: values.price!,
                 productionDate: values.productionDate!,
                 productionUnitId: values.productionUnit.id,
@@ -463,16 +460,12 @@ export default {
             break;
           case 'update':
             product = (
-              await updateProducerProduct(
-                PRODUCER_ID,
-                props.producerProductId,
-                {
-                  currentPrice: values.price!,
-                  productionDate: values.productionDate!,
-                  stock: values.stock!,
-                  productionUnitId: values.productionUnit.id,
-                }
-              )
+              await updateProducerProduct(producerId, props.producerProductId, {
+                currentPrice: values.price!,
+                productionDate: values.productionDate!,
+                stock: values.stock!,
+                productionUnitId: values.productionUnit.id,
+              })
             ).data;
             break;
         }
@@ -484,12 +477,13 @@ export default {
         toast.add({
           severity: 'success',
           summary: `Produto ${methodNameSummary} com sucesso`,
-          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${PRODUCER_ID}/products/${product.id}">aqui</a> para ver o produto."`,
+          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${producerId}/products/${product.id}">aqui</a> para ver o produto."`,
           life: 10000,
         });
 
         // Reset form
         resetForm();
+        console.log(JSON.parse(JSON.stringify(formValues.productSpec)));
         productSpec.searchQuery.value = '';
         productionUnit.searchQuery.value = '';
       } catch (error) {
@@ -505,6 +499,9 @@ export default {
 
       // Enable submitting
       submitting.value = false;
+
+      // Close overlay
+      setTimeout(closeOverlay, 100);
     });
 
     return {
@@ -513,6 +510,7 @@ export default {
       //   Overlay
       toggleOverlay,
       manageProductOverlay,
+      isOverlayOpen,
       // Form
       formErrors,
       createProduct: manageProduct,
