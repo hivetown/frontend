@@ -9,7 +9,7 @@
             <th id="col" scope="col">Fornecedor</th>
             <th id="col" scope="col">Preço</th>
             <th id="col" scope="col">Quantidade</th>
-            <!-- <th id="col" scope="col">Eventos</th> -->
+            <th id="col" scope="col">Eventos</th>
             <th id="col" scope="col">Estado</th>
             <th id="col" scope="col">Total</th>
           </tr>

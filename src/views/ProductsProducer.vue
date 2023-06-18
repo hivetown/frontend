@@ -198,6 +198,7 @@ h2 {
 
   .mobile-pagination-prods {
     scale: 0.8 !important;
+    margin-left: -12vh;
   }
 }
 </style>
