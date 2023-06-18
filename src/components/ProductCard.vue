@@ -183,12 +183,13 @@ export default {
     // Adicionar Items ao carrinho -----
     async itemAdded(idToAdd: number) {
       if (this.userLoggedId === undefined) {
-        const itemInfo = await fetchProduct(155);
+        const itemInfo = await fetchProduct(idToAdd);
         const itemInfo2 = await fetchProducerProducts(idToAdd);
-        console.log(itemInfo.data);
-        console.log(itemInfo2);
 
-        console.log(this.CartNAU);
+        console.log('info', itemInfo);
+        console.log('info2', itemInfo2);
+
+        console.log();
       } else {
         console.log('productSpec', this.productSpec);
         this.getLoginInfo();
