@@ -96,7 +96,7 @@
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
 			  <b-dropdown-item
-                v-if="user.user.role?.id === 1"
+                v-if="permissions"
                 href="/admin?page=1"
                 >Admin area</b-dropdown-item
               >
@@ -182,17 +182,24 @@
       </b-nav-item>
     </b-nav>
   </div>
-</template>
-<script lang="ts">
+</template><script lang="ts">
 import { useStore } from '@/store';
-import { computed } from 'vue';
+import { computed, watch, ref } from 'vue';
+import { hasPermission } from '@/utils/permissions';
 
 export default {
   setup() {
     const store = useStore();
-
-    // computed user
     const user = computed(() => store.state.user);
+    const permissions = ref(false); // Transforme em uma variável reativa usando ref
+    console.log(permissions.value);
+    
+    watch(user, (newValue) => {
+      if (newValue) {
+        permissions.value = hasPermission(newValue?.user, 1);
+        console.log(permissions.value);
+      }
+    });
 
     const logout = async () => {
       await store.dispatch('logout');
@@ -200,6 +207,7 @@ export default {
 
     return {
       user,
+      permissions, // Retorne a variável permissions no objeto de retorno
       logout,
     };
   },
@@ -210,6 +218,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .linkcolor {
   color: var(--bs-dropdown-link-color);

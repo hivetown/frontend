@@ -1,7 +1,8 @@
 <template>
-  <a style="color: black" href="/admin?page=1" class="back"
-    ><i class="bi bi-arrow-left-circle"></i> Voltar</a
-  >
+  <router-link :to="{ path: '/admin', query: { page: 1 }}" class="back">
+  <i class="bi bi-arrow-left-circle"></i> Voltar
+</router-link>
+
   <div id="container">
     <div id="titulo">
       <h1>Consumidor {{ $route.params.id }}</h1>
