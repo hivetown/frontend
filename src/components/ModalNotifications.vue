@@ -66,7 +66,7 @@
 	},
 	async beforeMount() {  
 	  this.notificacoes = (await getAllNotifications(this.notificacoes.page, this.notificacoes.pageSize)).data;
-	  this.quantidade = (await getUnreadNotifications()).data.items.length; //para ter p depois enviar no emit
+	  this.quantidade = (await getUnreadNotifications()).data.totalItems; //para ter p depois enviar no emit
 
 	},
 	methods: {
