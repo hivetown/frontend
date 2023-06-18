@@ -8,10 +8,9 @@
 </template>
 
 <script setup lang="ts">
-import Navbar from "@/components/Navbar.vue";
-import Search from "@/components/Search.vue";
-import Footer from "@/components/Footer.vue";
-
+import Navbar from '@/components/Navbar.vue';
+import Search from '@/components/Search.vue';
+import Footer from '@/components/Footer.vue';
 </script>
 
 <style>
@@ -21,7 +20,9 @@ import Footer from "@/components/Footer.vue";
   color: #232323;
   font-family: 'Inter', sans-serif;
 }
-
+.main-txt {
+  font-family: 'DM Serif Display', serif;
+}
 .grey-txt {
   color: #5a5a5a;
 }
@@ -32,6 +33,10 @@ import Footer from "@/components/Footer.vue";
 
 .yellow-txt {
   color: #f1b24a;
+}
+
+.main-txt {
+  font-family: 'DM Serif Display', serif;
 }
 
 .parent {
@@ -78,4 +83,36 @@ button a:hover {
 .separator-bottom {
   border-bottom: 1px solid #f3f3f3;
 }
+
+/* TODO - ver se não interfere com ninguém */
+/* Scrollbar //////////////////////////////////////////// */
+
+/* Google chrome */
+::-webkit-scrollbar {
+  width: 0.8em; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+
+/* Firefox */
+::-moz-scrollbar {
+  width: 8px; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-moz-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-moz-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+/* ////////////////////////////////////////////////////// */
 </style>
