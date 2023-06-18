@@ -1,8 +1,8 @@
 import {
-    ProductSpec,
     Category,
     BaseItems,
     ProducerProduct,
+    ProductSpec,
     ProductSpecField,
     ProductSpecs,
 } from '../types/interfaces';
