@@ -4,52 +4,6 @@
     <div class="wrapper-mains">
       <h1>Unidades de Produção</h1>
       <hr />
-      <h3 class="parent dgreen-txt">Adicionar Unidades de Produção</h3>
-      <!--Faltam os v-model="form.name" dentro dos b-form-input-->
-      <div>
-        <b-form inline>
-          <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
-          <b-row>
-            <b-col>
-              <b-form-group
-                id="input-group-1"
-                label="Nome:"
-                label-for="input-2"
-                label-cols="3"
-              >
-                <b-form-input
-                  id="input-1"
-                  placeholder="Insira o Nome do transporte"
-                  required
-                ></b-form-input>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <b-form-group
-                id="input-group-2"
-                label="Morada:"
-                label-for="input-2"
-                label-cols="3"
-                label-cols-sm="3"
-              >
-                <b-form-input
-                  id="input-3"
-                  placeholder="Insira uma Morada válida"
-                  required
-                ></b-form-input>
-              </b-form-group>
-            </b-col>
-            <b-col>
-              <div class="d-flex justify-content-center pd-2">
-                <b-button type="submit">Adicionar</b-button>
-                <b-button type="reset" variant="danger">Recomeçar</b-button>
-              </div>
-            </b-col>
-          </b-row>
-        </b-form>
-      </div>
-
-      <hr />
 
       <h3 class="parent dgreen-txt">Gestão de Unidades de Produção</h3>
       <br />
@@ -60,27 +14,63 @@
         </b-button>
         <b-modal v-model="showModalDialog" title="Gerenciamento de Veículos">
           <b-col col lg="15">
+            <h4>Editar Unidade de Produção Existente</h4>
             <b-form-select
-              v-model="selectedValue"
+              v-model="puToEditName"
               :options="listOfPUsIDs"
               size="sm"
               class="mt-3"
-              @input="updateQnt"
               @change="changePUtoEdit"
             ></b-form-select>
-          </b-col>
-          <b-col>
-            <p>Edite os detalhes de: {{ puToEditIndex }}</p>
-            <p>Deixe em branco o que não pretende alterar</p>
+            <p>Edite os detalhes de:</p>
+            <p>{{ puToEditName }}</p>
             <b-form @submit="submitNewBrand">
               <b-form-group label="Nome">
                 <b-form-input v-model="input1" type="text"></b-form-input>
               </b-form-group>
-              <b-button type="submit" variant="primary"
-                >Submeter novo Nome</b-button
-              >
+              <b-button type="submit" variant="primary">Alterar</b-button>
             </b-form>
           </b-col>
+          <hr />
+          <b-col col lg="15">
+            <h4>Adicionar uma Unidade de Produção</h4>
+          </b-col>
+          <b-form>
+            <!--@submit="onSubmit" @reset="onReset" v-if="show">-->
+            <b-row>
+              <b-col>
+                <b-form-group
+                  id="input-group-1"
+                  label="Nome:"
+                  label-for="input-2"
+                  label-cols="3"
+                >
+                  <b-form-input
+                    id="input-1"
+                    placeholder="Insira o Nome do transporte"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                  id="input-group-2"
+                  label="Morada:"
+                  label-for="input-2"
+                  label-cols="3"
+                  label-cols-sm="3"
+                >
+                  <b-form-input
+                    id="input-3"
+                    placeholder="Insira uma Morada válida"
+                    required
+                  ></b-form-input>
+                </b-form-group>
+                <div class="d-flex justify-content-center pd-2">
+                  <b-button type="submit">Adicionar</b-button>
+                  <b-button type="reset" variant="danger">Recomeçar</b-button>
+                </div>
+              </b-col>
+            </b-row>
+          </b-form>
         </b-modal>
       </div>
       <br />
@@ -165,14 +155,14 @@ import { computed } from 'vue';
 export default {
   data() {
     return {
-      userProdUnit: {} as Array<Object>,
+      userProdUnit: {} as Array<string>,
 
       sortBy: 'ID',
       sortDesc: false,
       fields: [
-        { key: 'ID', sortable: true },
-        { key: 'Nome', sortable: true },
-        { key: 'Morada', sortable: true },
+        { key: 'id', sortable: true },
+        { key: 'nome', sortable: true },
+        { key: 'morada', sortable: true },
       ],
 
       listOfPUs: [] as string[],
@@ -182,6 +172,7 @@ export default {
       inputValue: '',
 
       puToEditIndex: -1 as number,
+      puToEditName: 'Nenhum selecionado',
 
       userLoggedId: 1 as number,
       userLoggedName: '' as string,
@@ -203,6 +194,8 @@ export default {
     changePUtoEdit(selectedPU: string) {
       const wantedIndex = this.listOfPUsIDs.indexOf(selectedPU as string);
       this.puToEditIndex = wantedIndex;
+      this.puToEditName =
+        this.listOfPUs[this.listOfPUsIDs.indexOf(selectedPU as string)]['nome'];
       //this.listOfPUs[wantedIndex]['ID'];
     },
 
@@ -210,9 +203,9 @@ export default {
       const newName = this.userLoggedName + ' - ' + (this.input1 as string);
       updateProductionUnit(
         this.userLoggedId,
-        this.listOfPUs[this.puToEditIndex]['ID'],
+        this.listOfPUs[this.puToEditIndex]['id'],
         newName,
-        this.userProdUnit[i].address?.id
+        this.userProdUnit[this.puToEditIndex].address?.id
       );
     },
 
@@ -229,11 +222,17 @@ export default {
 
         for (let i = 0; i < Object.entries(this.userProdUnit).length; i++) {
           const build = {
-            ID: this.userProdUnit[i].id,
-            Nome: this.userProdUnit[i].name,
-            Morada: `${this.userProdUnit[i].address?.county}, ${this.userProdUnit[i].address?.city},
-					${this.userProdUnit[i].address?.district}, ${this.userProdUnit[i].address?.street}
-					${this.userProdUnit[i].address?.number} ${this.userProdUnit[i].address?.zipCode}`,
+            id: this.userProdUnit[i].id as number,
+            nome: this.userProdUnit[i].name as string,
+            morada: `${this.userProdUnit[i].address?.country as string}, ${
+              this.userProdUnit[i].address?.city as string
+            },
+					${this.userProdUnit[i].address?.district as string}, ${
+              this.userProdUnit[i].address?.street as string
+            }
+					${this.userProdUnit[i].address?.number as number} ${
+              this.userProdUnit[i].address?.zipCode as number
+            }`,
           };
           opts.push(build);
         }
@@ -242,7 +241,9 @@ export default {
         this.listOfPUs = opts;
         for (let i = 0; i < this.listOfPUs.length; i++) {
           this.listOfPUsIDs.push(
-            `ID: ${this.listOfPUs[i]['ID']} - Nome: ${this.listOfPUs[i]['Nome']}`
+            `ID: ${this.listOfPUs[i as number]['id']} - Nome: ${
+              this.listOfPUs[i as number]['nome']
+            }`
           );
         }
         console.log('itemIDs', this.listOfPUsIDs);
