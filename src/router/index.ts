@@ -84,6 +84,7 @@ const routes = [
         name: 'Cart',
         component: Cart,
     },
+
     // O link para o produto deveria ter o seu nome ou id
     {
         path: '/products/:specid',

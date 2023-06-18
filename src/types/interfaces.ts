@@ -47,6 +47,7 @@ export interface User {
     vat: string;
     role?: Role;
     image?: Image;
+    disableEmails?: boolean;
     type: 'PRODUCER' | 'CONSUMER';
 }
 
@@ -317,6 +318,16 @@ export interface Carrier {
     productionUnit: ProductionUnit;
     status: CarrierStatus;
     image: Image;
+}
+
+export interface Notification {
+    id: number;
+    actor: User | number;
+    notifier: User;
+    createdAt: string;
+    readAt: string | null;
+    title: string;
+    message: string;
 }
 
 export interface ProductSpecFieldWithCategory {

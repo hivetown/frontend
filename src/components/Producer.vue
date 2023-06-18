@@ -48,7 +48,7 @@
 import Pagination from '../components/Pagination.vue';
 import { getProducers, getProducersValues } from '../api/producers';
 import { onMounted, ref } from 'vue';
-import { BaseItems, Producer } from '@types';
+import { BaseItems, Producer } from '@/types';
 const users = ref<BaseItems<Producer>>();
 const qtd = ref(0);
 const page = ref(1);

@@ -1,10 +1,9 @@
 <template>
-  <div>
-    <h3 class="semencoemndas" v-if="!orders?.items">
-      <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
-      encomendas.
-    </h3>
-  </div>
+  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) > 0">
+    <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+    encomendas.
+  </h3>
+
   <div class="table-container" style="overflow: auto">
     <div></div>
     <table v-if="!!orders?.items" style="border: 2px" class="table">
