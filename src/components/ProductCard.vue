@@ -79,10 +79,6 @@
 </template>
 
 <style>
-.product {
-  max-width: 18%;
-}
-
 .prod-card {
   background-color: #f3f3f3 !important;
   border-radius: 1.3em !important;
