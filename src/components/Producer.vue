@@ -110,7 +110,7 @@ function handlePageChange(value: number) {
 }
 .custom-button {
   background-color: #e9dfdf; /* Cor de fundo personalizada */
-  color: #ffffff; /* Cor do texto personalizada */
+  color: #000000; /* Cor do texto personalizada */
   /* Mais estilos personalizados aqui */
 }
 </style>

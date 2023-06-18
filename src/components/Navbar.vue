@@ -186,18 +186,17 @@
 import { useStore } from '@/store';
 import { computed, watch, ref } from 'vue';
 import { hasPermission } from '@/utils/permissions';
-
+import { Permission } from '@/types';
 export default {
   setup() {
+	const requiredPermissions = Permission.ALL_CONSUMER | Permission.ALL_PRODUCER;
     const store = useStore();
     const user = computed(() => store.state.user);
     const permissions = ref(false); // Transforme em uma variável reativa usando ref
-    console.log(permissions.value);
     
     watch(user, (newValue) => {
       if (newValue) {
-        permissions.value = hasPermission(newValue?.user, 1);
-        console.log(permissions.value);
+        permissions.value = hasPermission(newValue?.user, requiredPermissions);
       }
     });
 
