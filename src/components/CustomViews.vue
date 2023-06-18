@@ -110,6 +110,10 @@ export default {
       type: Number,
       required: true,
     },
+    preventRedirect: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -117,9 +121,16 @@ export default {
       currentPageSize: this.amount,
     };
   },
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    'update:pageSize': (size: number) => true,
+  },
   methods: {
     setCurrentPageSize(size: number) {
       this.currentPageSize = size;
+      this.$emit('update:pageSize', size);
+
+      if (this.preventRedirect) return;
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.set('pageSize', size.toString());
       window.location.replace(currentUrl.toString());

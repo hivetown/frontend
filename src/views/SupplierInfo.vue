@@ -5,7 +5,7 @@
         <!-- Imagem do produtor -->
         <img
           v-if="dadosProdutor && dadosProdutor.user && dadosProdutor.user.image"
-          class="producer-image d-block mx-auto"
+          class="producer-image mx-auto"
           :src="dadosProdutor.user.image.url"
           :alt="dadosProdutor.user.image.alt"
         />
@@ -13,49 +13,33 @@
     </div>
     <!-- Sobre -->
     <div
-      class="w-75 p-4 px-5"
+      class="p-4 px-5 producer-mobile"
       style="background-color: ; height: ; flex-direction: column"
     >
-      <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4">
-        <h4 class="mb-4">Sobre</h4>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
-          veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
-          reiciendis placeat corrupti odio consequatur alias nisi deserunt
-          laudantium a doloremque!
-        </p>
-      </div>
-
-      <!-- Sobre -->
-      <div
-        class="w-75 p-4 px-5"
-        style="background-color: ; height: ; flex-direction: column"
-      >
-        <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
-        <div id="info" class="mb-4">
-          <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
-          <!-- <p>
+      <!-- <div id="info" class="mb-4" style="border-bottom: solid 1px #e4e4e4"> -->
+      <div id="info" class="mb-4">
+        <h3 class="mb-4 dgreen-txt">{{ dadosProdutor.user?.name }}</h3>
+        <!-- <p>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Et, quam
             veniam reprehenderit quasi numquam ratione fuga vel, eum soluta
             reiciendis placeat corrupti odio consequatur alias nisi deserunt
             laudantium a doloremque!
           </p> -->
-          <div class="">
-            <div class="d-flex gap-2 grey-txt">
-              <i class="bi bi-telephone-fill yellow-txt"></i>
-              <p class="fw-bold">Telefone:</p>
-              <span>{{ dadosProdutor.user?.phone }}</span>
-            </div>
-            <div class="d-flex gap-2 grey-txt">
-              <i class="bi bi-envelope-fill yellow-txt"></i>
-              <p class="fw-bold">Email:</p>
-              <span>{{ dadosProdutor.user?.email }}</span>
-            </div>
-            <div class="d-flex gap-2 grey-txt">
-              <i class="bi bi-receipt yellow-txt"></i>
-              <p class="fw-bold">VAT:</p>
-              <span>{{ dadosProdutor.user?.vat }}</span>
-            </div>
+        <div class="">
+          <div class="d-flex gap-2 grey-txt">
+            <i class="bi bi-telephone-fill yellow-txt"></i>
+            <p class="fw-bold">Telefone:</p>
+            <span>{{ dadosProdutor.user?.phone }}</span>
+          </div>
+          <div class="d-flex gap-2 grey-txt">
+            <i class="bi bi-envelope-fill yellow-txt"></i>
+            <p class="fw-bold">Email:</p>
+            <span>{{ dadosProdutor.user?.email }}</span>
+          </div>
+          <div class="d-flex gap-2 grey-txt">
+            <i class="bi bi-receipt yellow-txt"></i>
+            <p class="fw-bold">VAT:</p>
+            <span>{{ dadosProdutor.user?.vat }}</span>
           </div>
         </div>
       </div>
@@ -66,8 +50,8 @@
     <h5 class="mb-4">
       Unidades de produção: <span>({{ unidadesProd.totalItems }})</span>
     </h5>
-    <div class="d-flex production-unit-container">
-      <div class="units-container" style="width: 20%">
+    <div class="production-unit-container">
+      <div class="units-container" style="width: 20%; max-height: 400px">
         <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
           <div
             :id="String(idU + 1)"
@@ -82,9 +66,25 @@
           </div>
         </div>
       </div>
-      <div class="" style="background-color: lightgrey; width: 80%">
-        <div v-if="mapImage !== null && unidadesProd.items">
+      <div class="units-container-mobile" style="max-height: 400px">
+        <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
+          <div
+            :id="String(idU + 1)"
+            @click="updateImage(idU)"
+            :class="['production-unit', { 'selected-unit': mapImage === idU }]"
+          >
+            <p class="text-center fw-bold">{{ unidade.name }}</p>
+            <div class="d-flex gap-2 justify-content-center">
+              <p class="text-center mb-1">nº{{ unidade.address.number }},</p>
+              <p class="text-center mb-1">{{ unidade.address.city }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="map-container">
+        <div class="map-image" v-if="mapImage !== null && unidadesProd.items">
           <Maps
+            class="map"
             v-if="unidadesProd.items[mapImage]"
             :selected-unit="unidadesProd.items[mapImage]"
             :map-data="
@@ -96,6 +96,7 @@
           />
         </div>
       </div>
+      <div style="height: 60vh"></div>
     </div>
   </div>
 </template>
@@ -199,6 +200,7 @@ export default {
   font-size: 3.5vh;
 }
 .producer-image {
+  display: block;
   width: 20vh;
   height: 20vh;
   border-radius: 50%;
@@ -209,6 +211,7 @@ export default {
 .production-unit-container {
   max-height: 45vh;
   border-radius: 0.8vh;
+  display: flex;
 }
 .units-container {
   overflow-y: scroll;
@@ -236,5 +239,58 @@ export default {
 
 .selected-unit:hover {
   border: 2px solid #f1b24a;
+}
+
+.producer-mobile {
+  width: 75%;
+}
+
+.units-container-mobile {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .producer-image {
+    display: none !important;
+  }
+
+  .producer-mobile {
+    width: 100% !important;
+  }
+
+  .units-container {
+    background-color: green;
+    display: none !important;
+  }
+  .units-container-mobile {
+    display: flex !important;
+    overflow-x: auto;
+    max-width: 100% !important;
+    gap: 1.5vh;
+    margin-bottom: 3vh;
+  }
+  .production-unit-container {
+    display: block !important;
+  }
+  .production-unit {
+    /* background-color: red; */
+    min-width: 20vh;
+    height: 15vh;
+  }
+}
+</style>
+
+<style scoped>
+.map-container {
+  background-color: #f3f3f3;
+  position: relative;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.map-image {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
 }
 </style>

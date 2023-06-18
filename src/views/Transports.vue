@@ -1,13 +1,10 @@
 <template>
+  <!-- TODO - arranjar pagination -->
   <div class="container">
-    <h1 class="mb-5">Veículos de Transporte</h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <h2 class="mb-5 dgreen-txt main-txt">Veículos de Transporte</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
       <template v-if="allTransportsData?.items?.length">
-        <div
-          v-for="transport in allTransportsData.items"
-          :key="transport.id"
-          class="col"
-        >
+        <div v-for="transport in allTransportsData.items" :key="transport.id">
           <b-card class="prod-card position-relative">
             <img
               :src="transport.image.url"
@@ -22,7 +19,7 @@
               >
                 {{ transport.licensePlate }}
               </div>
-              <p>
+              <h5>
                 <span
                   :style="{
                     color: transport.status === 'AVAILABLE' ? 'green' : 'red',
@@ -34,8 +31,8 @@
                       : 'Indisponível'
                   }}
                 </span>
-              </p>
-              <h5>UP:</h5>
+              </h5>
+              <h6>Unidade:</h6>
               <p>
                 {{ transport.productionUnit!.name }}
               </p>
@@ -62,14 +59,7 @@
             </div>
           </b-card-text>
         </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
+        <div class="parent" style="display: flex; justify-content: center">
           <Pagination
             v-if="allTransportsData"
             :total-rows="allTransportsData.totalItems"
@@ -160,10 +150,21 @@ export default {
 }
 
 .green-text {
-  color: green;
+  color: #4d774e;
 }
 
 .red-text {
-  color: red;
+  color: #dc6942;
+}
+
+h2 {
+  text-transform: capitalize;
+  font-size: 2em;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
 }
 </style>

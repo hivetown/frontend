@@ -66,7 +66,7 @@
 
 <script lang="ts">
 import { Category } from '@/types';
-import { fetchCategorySubCategories } from '@/api';
+import { fetchAllCategories } from '@/api';
 import { PropType, defineComponent } from 'vue';
 
 export default defineComponent({
@@ -89,7 +89,8 @@ export default defineComponent({
   methods: {
     async fetchSubCategories(id: number) {
       const subCategories =
-        this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
+        this.subCategoriesById[id] ||
+        (await fetchAllCategories({ parentId: id }));
       this.subCategoriesById[id] = subCategories;
       const category = this.categories.find((c) => c.id === id);
       if (category) {

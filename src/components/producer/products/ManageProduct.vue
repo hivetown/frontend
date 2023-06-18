@@ -126,7 +126,8 @@
               :max-date="new Date()"
               show-icon
               date-format="dd/mm/yy"
-            ></Calendar>
+            >
+            </Calendar>
             <small
               v-if="formErrors.productionDate"
               class="p-error"
@@ -524,3 +525,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.p-button-outlined {
+  color: #f1b24a !important;
+  border-radius: 50%;
+}
+
+.card-text .p-button-outlined {
+  color: #5a5a5a !important;
+}
+</style>

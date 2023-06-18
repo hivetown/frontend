@@ -1,3 +1,8 @@
+export interface ProductSpecs extends BaseItems<ProductSpec> {
+    maxPrice: number;
+    minPrice: number;
+}
+
 export interface ProductSpec {
     id: number;
     name: string;

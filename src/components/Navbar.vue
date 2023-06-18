@@ -62,6 +62,28 @@
             </div>
             <div class="d-flex">
               <router-link
+                to="/products"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+              >
+                <b-avatar
+                  class="nav-item"
+                  style="
+                    background-color: #f3f3f3 !important;
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  "
+                >
+                  <i
+                    class="bi bi-bag"
+                    style="color: #164a41"
+                    font-scale="1.5"
+                  ></i>
+                </b-avatar>
+                Comprar
+              </router-link>
+            </div>
+            <div class="d-flex">
+              <router-link
                 to="/favoritos"
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500"
@@ -145,7 +167,7 @@
             >
               <b-dropdown-item>Definições</b-dropdown-item>
               <b-dropdown-item v-if="permissions" to="/admin?page=1"
-                >Admin area</b-dropdown-item
+                >Área de admin</b-dropdown-item
               >
               <div v-if="store.state.user.user.type === 'PRODUCER'">
                 <b-dropdown-item to="/produtosprodutor"
