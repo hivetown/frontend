@@ -12,6 +12,9 @@ import ProductionUnits from '@/views/ProductionUnits.vue';
 import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
+import Admin from '@/views/Admin.vue';
+import ConsumerAdmin from '@/views/ConsumerAdmin.vue';
+import ProducerAdmin from '@/views/ProducerAdmin.vue';
 import Register from '@/views/Register.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
 import ImpactProducer from '@/views/ImpactProducer.vue';
@@ -103,6 +106,35 @@ const routes = [
             requiresAuth: true,
         },
     },
+    {
+        path: '/admin',
+        name: 'Admin',
+        component: Admin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions:
+                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
+    },
+    {
+        path: '/admin/producer/:id',
+        name: 'ProducerAdmin',
+        component: ProducerAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions: Permission.ALL_PRODUCER,
+        },
+    },
+    {
+        path: '/admin/consumer/:id',
+        name: 'ConsumerAdmin',
+        component: ConsumerAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions: Permission.ALL_CONSUMER,
+        },
+    },
+
     {
         path: '/login',
         name: 'Login',
