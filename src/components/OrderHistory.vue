@@ -1,5 +1,5 @@
 <template>
-  <h3 class="semencoemndas" v-if="!orders?.items.length > 0">
+  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) > 0">
     <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
     encomendas.
   </h3>
