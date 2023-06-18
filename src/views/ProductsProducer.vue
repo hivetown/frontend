@@ -77,22 +77,31 @@ import { fetchAllProducts } from '@/api/producerProducts';
 import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
+import ManageProduct from '@/components/producer/products/ManageProduct.vue';
+import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
 
 export default {
   components: {
     Pagination,
+    ManageProduct,
+    DeleteProduct,
   },
   data() {
     return {
       products: {} as BaseItems<ProducerProduct>,
-      allProductsData: {
-        data: {
-          totalItems: 0,
-          pageSize: 0,
-          page: 0,
-        },
-      },
     };
+  },
+  methods: {
+    refreshWindow(timeout: number = 0) {
+      setTimeout(() => window.location.reload(), timeout);
+    },
+    deleteProduct(data: ProducerProduct) {
+      const productIdx = this.products.items.findIndex((p) => p.id === data.id);
+      if (productIdx === -1) return;
+
+      this.products.items.splice(productIdx, 1);
+      this.products.totalItems--;
+    },
   },
   async mounted() {
     try {
@@ -104,13 +113,6 @@ export default {
       const allProductsData = await fetchAllProducts(id, page, pageSize);
       const productsArray = allProductsData.data;
       this.products = productsArray;
-      this.allProductsData = {
-        data: {
-          totalItems: allProductsData.data.totalItems,
-          pageSize: pageSize,
-          page: page,
-        },
-      };
     } catch (error) {
       console.error(error);
     }

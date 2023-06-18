@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/hivetown/frontend/compare/v1.2.4...v1.3.0) (2023-06-18)
+
+
+### Features
+
+* create, edit, and remove producer products ([c19b18a](https://github.com/hivetown/frontend/commit/c19b18a9e2a751521daf5413032206b2f5137523))
+* create, edit, and remove producer products on production units ([09465f3](https://github.com/hivetown/frontend/commit/09465f3ae7adf4152286322e0aad03c4d86708c3))
+
 ## [1.2.4](https://github.com/hivetown/frontend/compare/v1.2.3...v1.2.4) (2023-06-17)
 
 
