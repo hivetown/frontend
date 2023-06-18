@@ -1,0 +1,10 @@
+export const apiUrl = 'http://localhost:3000';
+
+export const firebase = {
+    apiKey: 'an-example-api-key',
+    authDomain: 'some-domain.firebaseapp.com',
+    projectId: 'an-example-project-id',
+    storageBucket: 'some-domain.appspot.com',
+    messagingSenderId: 'some-sender-id',
+    appId: 'some-app-id',
+};
