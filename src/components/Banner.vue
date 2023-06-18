@@ -16,11 +16,16 @@
             </p>
             <form @submit="submitSearch">
               <b-form-input
+                @input="checkSearchErrors"
+                :state="!searchError"
                 class="rounded-pill search search-mobile"
                 type="search"
                 placeholder=" Pesquisar"
                 v-model="search"
               />
+              <b-form-invalid-feedback>
+                {{ searchError }}
+              </b-form-invalid-feedback>
             </form>
           </div>
         </div>
@@ -36,12 +41,25 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const search = ref('');
-const submitSearch = ($e: Event) => {
+const searchError = ref<string | null>(null);
+const checkSearchErrors = () => {
+  searchError.value = null;
+  if (search.value === '') {
+    return;
+  }
+
+  if (search.value.length < 3) {
+    searchError.value = 'A pesquisa deve ter no mínimo 3 caracteres';
+    return;
+  }
+};
+
+const submitSearch = async ($e: Event) => {
   $e.preventDefault();
 
-  if (search.value) {
-    router.push({ path: '/products', query: { search: search.value } });
-  }
+  if (searchError.value || search.value === '') return;
+
+  await router.push({ path: '/products', query: { search: search.value } });
 };
 </script>
 

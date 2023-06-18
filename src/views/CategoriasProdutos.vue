@@ -12,11 +12,16 @@
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText
+              :class="{ 'p-invalid': productSearchQueryError }"
               v-model="productSpecSearchQuery"
               @update:model-value="changeSearchQuery"
               placeholder="Search"
             />
           </span>
+
+          <small class="p-error" v-if="productSearchQueryError">{{
+            productSearchQueryError
+          }}</small>
         </div>
 
         <div id="category-filter">
@@ -184,7 +189,7 @@ const currentFilters = ref({
   categoryId: Number(route.query.categoryId) || undefined,
   page: Number(route.query.page) || 1,
   pageSize: Number(route.query.pageSize) || 12,
-  searchQuery: route.query.searchQuery || undefined,
+  search: route.query.searchQuery || undefined,
   minPrice: Number(route.query.minPrice) || undefined,
   maxPrice: Number(route.query.maxPrice) || undefined,
 });
@@ -414,9 +419,19 @@ const changePriceFilter = debounce(async () => {
 }, 1500);
 
 // Debounce search query to make less requests
+const productSearchQueryError = ref<string | null>();
 const changeSearchQuery = debounce(async () => {
+  productSearchQueryError.value = null;
+  if (
+    productSpecSearchQuery.value !== '' &&
+    productSpecSearchQuery.value.length < 3
+  ) {
+    productSearchQueryError.value = 'Mínimo 3 caracteres';
+    return;
+  }
+
   await Promise.all([loadCategories(), loadProducts()]);
-  currentFilters.value.searchQuery = productSpecSearchQuery.value;
+  currentFilters.value.search = productSpecSearchQuery.value;
 }, 1500);
 
 const productSpecPageChange = async (page: Partial<PageState>) => {
