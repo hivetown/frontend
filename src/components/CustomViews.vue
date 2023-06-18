@@ -85,8 +85,8 @@
 }
 
 .views-btn .btn {
-  background-color: #fff !important;
-  border: 2px solid #dfdfdf;
+  /* background-color: #fff !important;
+  border: 2px solid #dfdfdf; */
 }
 
 .views-btn .btn.show,
@@ -95,9 +95,11 @@
 }
 
 .views-btn .dropdown-toggle::after {
-  color: #164a41;
+  /* color: #164a41; */
+  color: white;
 }
 </style>
+<style scoped></style>
 
 <script lang="ts">
 export default {

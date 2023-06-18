@@ -12,6 +12,7 @@
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText
+              style="border-radius: 3em !important"
               :class="{ 'p-invalid': productSearchQueryError }"
               v-model="productSpecSearchQuery"
               @update:model-value="changeSearchQuery"
@@ -24,13 +25,14 @@
           }}</small>
         </div>
 
-        <div id="category-filter">
+        <div id="category-filter" class="mt-4">
           <h5 class="grey-txt">Categorias</h5>
           <div v-if="!categoriesTreeNodes.length">
             Sem categorias disponíveis
           </div>
           <div v-else>
             <Tree
+              class="cats-container"
               scroll-height="600px"
               :value="categoriesTreeNodes"
               @node-expand="expandCategory"
@@ -39,15 +41,17 @@
               @node-select="nodeSelect"
             >
               <template #default="slotProps">
-                <b-form-checkbox
-                  :checked="
-                    selectedCategoryTreeNode?.key === slotProps.node.key
-                  "
-                  :disabled="
-                    selectedCategoryTreeNode?.key === slotProps.node.key
-                  "
-                />
-                {{ slotProps.node.label }}
+                <div class="d-flex">
+                  <b-form-checkbox
+                    :checked="
+                      selectedCategoryTreeNode?.key === slotProps.node.key
+                    "
+                    :disabled="
+                      selectedCategoryTreeNode?.key === slotProps.node.key
+                    "
+                  />
+                  {{ slotProps.node.label }}
+                </div>
               </template>
             </Tree>
           </div>
@@ -64,11 +68,16 @@
           </div>
           <div v-else>
             <Slider
+              class="price-slider"
               v-model="priceFilter"
               @slideend="changePriceFilter"
               range
               :min="productsPricing.min"
               :max="productsPricing.max"
+              :pt="{
+                root: { style: 'width:60%;' },
+                range: { style: 'background-color: #ddd' },
+              }"
             />
             <span>{{ priceFilter[0] }}€</span>~<span
               >{{ priceFilter[1] }}€</span
@@ -134,7 +143,7 @@
                 :product-spec="product"
                 :can-compare="canCompareMoreProducts"
                 @compare="addProductToCompare"
-                class="col-12 md:col-6 lg:col-3 xl:col-2"
+                class="col-6 md:col-6 lg:col-3 xl:col-2"
               />
             </template>
           </div>
@@ -192,6 +201,7 @@ import Paginator, { PageState } from 'primevue/paginator';
 import PathComponent from '@/components/PathComponent.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import CompareBanner from '@/components/CompareBanner.vue';
+import SupplierFilter from '@/components/SupplierFilter.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -496,3 +506,21 @@ const routeMinPrice = Number(route.query.minPrice) || -1;
 const routeMaxPrice = Number(route.query.maxPrice) || -1;
 const priceFilter = ref<[number, number]>([routeMinPrice, routeMaxPrice]);
 </script>
+
+<style scoped>
+.cats-container {
+  /* background-color: red; */
+  border: 2px solid #f3f3f3;
+  border-radius: 0.5em;
+}
+
+.price-slider {
+  margin-top: 2vh;
+  width: 95%;
+  margin-bottom: 1vh;
+}
+
+#supplier-filter {
+  margin-top: 4vh;
+}
+</style>
