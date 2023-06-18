@@ -111,9 +111,10 @@ function handlePageChange(value: number) {
 }
 #b-card {
   background-color: rgb(239, 243, 247);
+  height: 400px;
 }
 .custom-button {
-  background-color: #f1b24a; /* Cor de fundo personalizada */
+	background-color: #e9dfdf; /* Cor de fundo personalizada */
   color: #ffffff; /* Cor do texto personalizada */
   /* Mais estilos personalizados aqui */
 }
