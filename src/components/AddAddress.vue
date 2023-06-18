@@ -439,8 +439,10 @@ button {
 @media (max-width: 768px) {
   /* Substitua 768px pelo valor desejado para a largura de tela */
   .form {
-    margin-left: 10px; /* Ajuste a margem esquerda para telas menores */
-    margin-right: 10px; /* Ajuste a margem direita para telas menores */
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
     height: auto; /* Ajuste a altura para telas menores */
   }
   #andar,
@@ -456,7 +458,7 @@ button {
   #latitude,
   #name,
   #freguesia {
-    max-width: 300px;
+    max-width: 95%;
   }
   input {
     width: 90%; /* Ajuste a largura do input para preencher a largura do elemento pai */

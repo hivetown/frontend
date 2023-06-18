@@ -73,11 +73,14 @@
           style="white-space: nowrap"
         >
           <router-link to="/carrinho">
-            <div style="display: flex; justify-content: space-between">
-              <span style="font-size: 1.1em">
+            <div
+              style="display: flex; justify-content: space-between"
+              class="mobile-items"
+            >
+              <span style="font-size: 1.1em; text-decoration: none !important">
                 {{ cartItem.producerProduct.productSpec!.name }}
               </span>
-              <span style="font-size: 1.1em">
+              <span style="font-size: 1.1em; text-decoration: none !important">
                 Qnt: {{ cartItem['quantity'] }}</span
               >
             </div>
@@ -199,11 +202,6 @@ async function submitOrder() {
   border: 4px solid #f3f3f3;
 }
 .form-address {
-  /* margin-left: 100px;
-  margin-right: 100px;
-  background-color: beige;
-  border-radius: 10px; */
-  /* background-color: red; */
   padding: 2em;
   width: 50%;
 }
@@ -271,6 +269,7 @@ async function submitOrder() {
   height: 25vh;
   max-height: 25vh;
   overflow-y: auto;
+  padding: 1em;
 }
 
 #finalizar {
@@ -303,24 +302,52 @@ input[type='radio'] {
   height: 20px;
 }
 @media (max-width: 768px) {
-  /* Substitua 768px pelo valor desejado para a largura de tela */
-  .form-address {
-    margin-left: 10px; /* Ajuste a margem esquerda para telas menores */
-    margin-right: 10px; /* Ajuste a margem direita para telas menores */
-    height: auto; /* Ajuste a altura para telas menores */
-  }
-  #caixa {
-    width: 310px !important;
-  }
-  #caixa2 {
-    margin-left: 10px;
-    width: 310px !important;
+  .container {
+    display: flex;
+    flex-direction: column-reverse;
+    border: none;
   }
   .form-address {
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: beige;
-    border-radius: 10px;
+    width: 100%;
+    /* background-color: blue; */
+  }
+
+  .resumo {
+    /* background-color: red; */
+    width: 100%;
+    margin-bottom: 4vh;
+  }
+
+  .morada-info p {
+    font-size: 0.8em;
+  }
+
+  .caixa {
+    /* background-color: green; */
+    width: 100% !important;
+  }
+
+  .mobile-items {
+    /* background-color: purple; */
+    font-size: 0.75em;
+  }
+  #finalizar {
+    scale: 0.8;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .finalizar-btn {
+    max-width: 70%;
+  }
+
+  #aviso {
+    /* background-color: green; */
+    margin-top: 1vh;
   }
 }
 </style>
