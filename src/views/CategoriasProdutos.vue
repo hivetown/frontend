@@ -103,10 +103,8 @@
 
     <!-- Espeaço à direita -->
     <div class="right-content" style="width: 100%">
-      <h3 class="parent dgreen-txt">
-        <template v-if="!selectedCategoryTreeNode"
-          >Nenhuma categoria selecionada</template
-        >
+      <h3 class="parent dgreen-txt main-txt">
+        <template v-if="!selectedCategoryTreeNode">Todos os produtos</template>
         <template v-else>{{ selectedCategoryTreeNode.label }}</template>
       </h3>
       <!-- Diferentes vistas da página -->
@@ -664,6 +662,7 @@ const priceFilter = ref<[number, number]>([routeMinPrice, routeMaxPrice]);
   margin-top: 2vh;
   width: 95%;
   margin-bottom: 1vh;
+  margin-left: 1vh;
 }
 
 #supplier-filter {
