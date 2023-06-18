@@ -1,21 +1,17 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">
-      Produtos da UP: {{ unitName }}
+    <h2 class="mb-5">
+      Produtos da Unidade: {{ unitName }}
       <ManageProduct
         class="ml-2"
         method="create"
         :default-production-unit="productionUnit"
         @product-managed="refreshWindow(1000)"
       />
-    </h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    </h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
       <template v-if="allUnitProducts?.items?.length">
-        <div
-          v-for="product in allUnitProducts.items"
-          :key="product.id"
-          class="col"
-        >
+        <div v-for="product in allUnitProducts.items" :key="product.id">
           <b-card class="prod-card position-relative">
             <img
               :src="product.productSpec!.images[0].url"
@@ -62,6 +58,7 @@
           "
         >
           <Pagination
+            class="mobile-pagination-prods"
             v-if="allUnitProducts"
             :total-rows="allUnitProducts.totalItems"
             :per-page="allUnitProducts.pageSize"
@@ -141,3 +138,16 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
+    margin-left: -14vh;
+  }
+}
+</style>

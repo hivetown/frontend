@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">Unidades de Produção</h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <h2 class="mb-5 dgreen-txt main-txt">Unidades de Produção</h2>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
       <template v-if="allUnitsData?.items">
-        <div v-for="unit in allUnitsData.items" :key="unit.id" class="col">
+        <div v-for="unit in allUnitsData.items" :key="unit.id">
           <router-link
             :to="{
               name: 'ProductionUnitProducts',
@@ -24,7 +24,7 @@
             <b-card-text class="">
               <div>
                 <div
-                  class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
+                  class="rounded-pill text-center mt-3 mb-3 w-25 prod-category"
                 >
                   {{ unit.id }}
                 </div>
@@ -61,27 +61,24 @@
             </b-card-text>
           </router-link>
         </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
-          <Pagination
-            v-if="allUnitsData"
-            :total-rows="allUnitsData.totalItems"
-            :per-page="allUnitsData.pageSize"
-          >
-            ></Pagination
-          >
-        </div>
       </template>
       <div v-else>
         <p>Ainda não tem Unidades de Produção registadas.</p>
       </div>
     </div>
+  </div>
+  <div
+    class=""
+    style="display: flex; flex-direction: row-reverse; justify-content: center"
+  >
+    <Pagination
+      class="mobile-pagination-prods mt-4"
+      v-if="allUnitsData"
+      :total-rows="allUnitsData.totalItems"
+      :per-page="allUnitsData.pageSize"
+    >
+      ></Pagination
+    >
   </div>
 </template>
 
@@ -119,6 +116,10 @@ export default {
 </script>
 
 <style scoped>
+* {
+  color: black;
+  text-decoration: none;
+}
 .production-unit-card a {
   text-decoration: none;
 }
@@ -154,5 +155,16 @@ export default {
   align-items: center;
   font-size: 1.3rem;
   color: #333;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
+    margin-left: -14vh;
+  }
 }
 </style>
