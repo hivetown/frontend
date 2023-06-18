@@ -11,7 +11,7 @@ import { getCookie, removeCookie, setCookie } from '@/utils/cookies';
 import { fetchAuth } from '@/api/auth';
 import { AxiosError } from 'axios';
 import { createConsumerAddress, createConsumer } from '@/api/consumers';
-import router from '@/router';
+import router from '@/router/index';
 import { createProducer } from '@/api';
 import { createPopup } from '@/utils/popup';
 import { InjectionKey } from 'vue';
@@ -72,6 +72,7 @@ export const store = createStore<State>({
             try {
                 const response = await fetchAuth();
                 const auth = response.data;
+                // console.log('auth', auth);
                 commit('SET_USER', auth);
             } catch (error) {
                 if (error instanceof AxiosError) {

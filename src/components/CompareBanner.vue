@@ -80,7 +80,7 @@
   </div>
 </template>
 
-<style>
+<style scoped>
 .compare-banner {
   background-color: #f3f3f3;
   height: 15vh;
@@ -104,9 +104,6 @@
   color: #eeeeee;
 }
 
-.modal-content {
-  height: 80vh;
-}
 .square-image {
   border-radius: 0.5em !important;
 }

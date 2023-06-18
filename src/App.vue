@@ -17,7 +17,7 @@ import Footer from '@/components/Footer.vue';
 * {
   /* font-family: 'Roboto', sans-serif; */
   /* font-family: 'DM Serif Display', serif; */
-  color: #232323;
+  /* color: #232323; */
   font-family: 'Inter', sans-serif;
 }
 .main-txt {
@@ -83,4 +83,36 @@ button a:hover {
 .separator-bottom {
   border-bottom: 1px solid #f3f3f3;
 }
+
+/* TODO - ver se não interfere com ninguém */
+/* Scrollbar //////////////////////////////////////////// */
+
+/* Google chrome */
+::-webkit-scrollbar {
+  width: 0.8em; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+
+/* Firefox */
+::-moz-scrollbar {
+  width: 8px; /* Largura da barra */
+  background-color: #f3f3f3;
+}
+::-moz-scrollbar-thumb {
+  background-color: #d3d3d3; /* Cor do thumb da barra */
+  border-radius: 20px;
+  border: none;
+}
+::-moz-scrollbar-thumb:hover {
+  background-color: #b1b1b1;
+}
+/* ////////////////////////////////////////////////////// */
 </style>
