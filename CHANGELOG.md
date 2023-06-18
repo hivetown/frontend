@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.0.3](https://github.com/hivetown/frontend/compare/v2.0.2...v2.0.3) (2023-06-18)
+
+
+### Bug Fixes
+
+* design improvement insupplier pages ([b9600b7](https://github.com/hivetown/frontend/commit/b9600b7d06fb9f133332a167f952c63c0c141f58))
+* design improvements ([b618870](https://github.com/hivetown/frontend/commit/b61887081a2996112e455fa1b1d752ffa8b040e7))
+* main page design ([6f5ad75](https://github.com/hivetown/frontend/commit/6f5ad75a8624b5e014179e4c00db7057b786e439))
+* order ([7597b66](https://github.com/hivetown/frontend/commit/7597b66e41bd8d5eb47e7aa3d9c4841e4a687133))
+
 ## [2.0.2](https://github.com/hivetown/frontend/compare/v2.0.1...v2.0.2) (2023-06-18)
 
 
