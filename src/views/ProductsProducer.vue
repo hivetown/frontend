@@ -57,8 +57,17 @@
               </div>
             </b-card-text>
           </div>
-          <div class="parent" style="display: flex; justify-content: center">
+          <div
+            class="parent"
+            style="display: flex !important; justify-content: center !important"
+          >
             <Pagination
+              class="mobile-pagination-prods"
+              style="
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+              "
               v-if="products"
               :total-rows="products.totalItems"
               :per-page="products.pageSize"
@@ -128,24 +137,29 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .square-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .fav {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
 }
+
 .prod-category {
   background-color: #9dc88d;
   /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
+
 .grey-txt {
   color: #888;
   font-size: 0.9rem;
 }
+
 .circle-btn {
   width: 40px;
   height: 40px;
@@ -165,6 +179,10 @@ h2 {
 @media (max-width: 768px) {
   h2 {
     text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
   }
 }
 </style>
