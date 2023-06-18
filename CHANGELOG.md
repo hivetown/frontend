@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.4](https://github.com/hivetown/frontend/compare/v2.0.3...v2.0.4) (2023-06-18)
+
+
+### Bug Fixes
+
+* display ([1516930](https://github.com/hivetown/frontend/commit/15169300cc8ee2c7a48abcffcf7bb6dfbaad2285))
+* units ([f2635df](https://github.com/hivetown/frontend/commit/f2635dfa85889cf09c894db5b2b73271e06cea41))
+
 ## [2.0.3](https://github.com/hivetown/frontend/compare/v2.0.2...v2.0.3) (2023-06-18)
 
 
