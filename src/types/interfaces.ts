@@ -272,8 +272,4 @@ export interface ProductSpecFieldWithCategory {
     products: {
         fieldValues: ProductSpecField[];
     }[];
-export interface CartItem {
-    producerProduct?: ProducerProduct;
-    consumer: Consumer;
-    quantity: number;
 }

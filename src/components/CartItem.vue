@@ -1,13 +1,9 @@
 <template>
   <div class="d-flex gap-4">
-    <router-link to="/produto">
+    <router-link :to="'/products/' + cartItem.producerProduct!.id">
       <b-card class="prod-card">
         <!-- <img src="https://placehold.jp/150x150.png" class="square-image"> -->
-        <img
-          :src="cartItem.producerProduct!.productSpec!.images[0].url"
-          class="square-image"
-          alt="Product image"
-        />
+        <img :src="cartItemImageURL" class="square-image" alt="Product image" />
       </b-card>
     </router-link>
     <b-card-text class="w-100">
@@ -15,7 +11,7 @@
         <!--<p>{{cartItem}}</p>-->
 
         <div class="d-flex">
-          <h5>{{ cartItem.producerProduct!.productSpec!.name }}</h5>
+          <h5>{{ cartItemDetails.name }}</h5>
         </div>
 
         <div class="d-flex gap-2">
@@ -33,7 +29,7 @@
           </div>
           <p class="mt-3">{{ cartItem.producerProduct!.currentPrice }}€/item</p>
           <div class="d-flex ms-auto mt-3 justify-content-end">
-            <h3>{{ priceCalc() }}€</h3>
+            <h4>{{ priceCalc() }}€</h4>
           </div>
           <!-- O <p> seguinte apenas é adicionado quando o item tem outro preço e está agor em promoção -->
 
@@ -55,11 +51,10 @@
 </template>
 
 <script lang="ts">
-import { addCartItem } from '../api/consumers';
 import { CartItem, Image } from '@/types';
 import { PropType, computed } from 'vue';
 import { deleteCartItem } from '@/api'; //'@/api' vai buscar ao src/api/index.ts que por sua vez vai ao src/api/consumers.ts
-import { updateQuantityCartItem } from '@/api';
+import { updateQuantityCartItem, fetchProduct } from '@/api';
 import { CartNAU, CartItemNAU } from '@/utils/cartItemNAU.js';
 
 // --------------------------
@@ -71,6 +66,8 @@ export default {
       selectedValueBackup: this.selectedValue,
       options: this.setupQts(),
       cartItemPrice: this.priceCalc(),
+      cartItemDetails: this.getDetails(),
+      cartItemImageURL: 'none',
 
       userLoggedId: 0 as number,
       userLoggedName: '' as string,
@@ -95,14 +92,12 @@ export default {
       console.log(this.CartNAU);
     },
 
-    async itemAdded(idToAdd: number) {
-      this.getLoginInfo();
-      console.log(idToAdd);
-      await addCartItem(this.userLoggedId, idToAdd, 1);
-    },
-    async itemAddedTest() {
-      this.getLoginInfo();
-      await addCartItem(this.userLoggedId, 11527, 1);
+    async getDetails() {
+      this.cartItemDetails = await fetchProduct(
+        this.cartItem.producerProduct!.id
+      );
+      this.cartItemDetails = this.cartItemDetails.data;
+      this.cartItemImageURL = this.cartItemDetails.images[0].url;
     },
 
     setupQts() {
@@ -141,6 +136,7 @@ export default {
     },
 
     async updateQnt(): Promise<void> {
+      console.log('cartItem', this.cartItem);
       try {
         this.getLoginInfo();
         await updateQuantityCartItem(

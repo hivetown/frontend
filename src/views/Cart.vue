@@ -45,13 +45,15 @@
                 ><br />
               </p>
               <div style="text-align: center">
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary btn-sm"
-                  style="text-align: center"
-                >
-                  Prosseguir para Pagamento & Envio
-                </button>
+                <a href="/createOrder">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    style="text-align: center"
+                  >
+                    Prosseguir para Pagamento & Envio
+                  </button>
+                </a>
               </div>
             </div>
           </td>
@@ -101,8 +103,12 @@ table {
 }
 </style>
 
-<script lang="ts">
+<!-- Sim, existem dois scripts mas se não estiver assim  -->
+<!-- não funciona de todo por isso é melhor deixar estar -->
+<script setup lang="ts">
 import CartItem from '@/components/CartItem.vue';
+</script>
+<script lang="ts">
 import { deleteCartItem, fetchCartItems } from '../api/consumers';
 //import { Product } from '@/types';
 //import { defineComponent } from 'vue';
