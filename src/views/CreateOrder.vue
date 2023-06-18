@@ -1,98 +1,101 @@
 <template>
-  <div class="form-address">
-    <h4 class="titulo">Selecione o endereço de envio</h4>
-    <div class="form-check form-check-inline">
-      <br />
-      <h5>Endereços guardados</h5>
-      <div class="row" v-if="addresses && addresses.items">
-        <div
-          class="col-sm-6"
-          v-for="(address, index) in addresses.items"
-          :key="index"
-        >
-          <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              :value="address.id"
-              v-model="selectedItems"
-              @change="checkButtonDisabled"
-            />
-            <label class="form-check-label" for="radio{{ index + 1 }}">
-              <div class="border p-3" id="caixa">
-                <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
-                <p>
-                  {{ address['street'] }}, numero {{ address['number'] }}, andar
-                  {{ address['floor'] }}
-                </p>
-                <p>
-                  {{ address['zipCode'] }},
-                  {{ address['parish'] }}
-                </p>
-                <p>Distrito de {{ address['district'] }}</p>
-                <p>
-                  {{ address['latitude'] }},
-                  {{ address['longitude'] }}
-                </p>
+  <div class="container">
+    <div class="form-address">
+      <h4 class="titulo dgreen-txt main-txt">Selecione o endereço de envio</h4>
+      <div class="form-check form-check-inline enderecos">
+        <br />
+        <h5>Endereços guardados</h5>
+        <div class="row" v-if="addresses && addresses.items">
+          <div
+            class="col-sm-6"
+            v-for="(address, index) in addresses.items"
+            :key="index"
+          >
+            <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                :value="address.id"
+                v-model="selectedItems"
+                @change="checkButtonDisabled"
+              />
+              <label class="form-check-label" for="radio{{ index + 1 }}">
+                <div class="border p-3" id="caixa">
+                  <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
+                  <p>
+                    {{ address['street'] }}, numero {{ address['number'] }},
+                    andar
+                    {{ address['floor'] }}
+                  </p>
+                  <p>
+                    {{ address['zipCode'] }},
+                    {{ address['parish'] }}
+                  </p>
+                  <p>Distrito de {{ address['district'] }}</p>
+                  <p>
+                    {{ address['latitude'] }},
+                    {{ address['longitude'] }}
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <p v-else>Ainda não existem endereços salvos!</p>
+      </div>
+      <div>
+        <div>
+          <button
+            id="btnExtende"
+            class="btn btn-outline-secondary btn-sm"
+            @click="collapsed = !collapsed"
+          >
+            {{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}
+          </button>
+          <div v-if="!collapsed">
+            <!-- Your content here -->
+            <AddAddress></AddAddress>
+          </div>
+        </div>
+        <br />
+      </div>
+      <div>
+        <h4 class="titulo">Resumo do carrinho</h4>
+        <div class="border p-3" id="caixa2">
+          <span v-if="!cart?.items">O carrinho está vazio</span>
+          <div
+            v-else
+            v-for="(cartItem, index) in cart.items"
+            :key="index"
+            style="white-space: nowrap"
+          >
+            <router-link to="/carrinho">
+              <div style="display: inline-block">
+                >{{ cartItem['quantity'] }}X
+                {{ cartItem.producerProduct.productSpec!.name }};
               </div>
-            </label>
+            </router-link>
           </div>
         </div>
       </div>
-      <p v-else>Ainda não existem endereços salvos!</p>
-    </div>
-    <div>
-      <div>
+      <div id="finalizar">
         <button
-          id="btnExtende"
+          id="btn"
+          @click="submitOrder"
+          type="button"
           class="btn btn-outline-secondary btn-sm"
-          @click="collapsed = !collapsed"
+          style="text-align: center"
+          :disabled="isButtonDisabled"
         >
-          {{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}
+          Finalizar a compra
         </button>
-        <div v-if="!collapsed">
-          <!-- Your content here -->
-          <AddAddress></AddAddress>
+        <div id="aviso" v-if="isButtonDisabled">
+          *Selecione pelo menos um endereço para finalizar a encomenda
         </div>
       </div>
       <br />
     </div>
-    <div>
-      <h4 class="titulo">Resumo do carrinho</h4>
-      <div class="border p-3" id="caixa2">
-        <span v-if="!cart?.items">O carrinho está vazio</span>
-        <div
-          v-else
-          v-for="(cartItem, index) in cart.items"
-          :key="index"
-          style="white-space: nowrap"
-        >
-          <router-link to="/carrinho">
-            <div style="display: inline-block">
-              >{{ cartItem['quantity'] }}X
-              {{ cartItem.producerProduct.productSpec!.name }};
-            </div>
-          </router-link>
-        </div>
-      </div>
-    </div>
-    <div id="finalizar">
-      <button
-        id="btn"
-        @click="submitOrder"
-        type="button"
-        class="btn btn-outline-secondary btn-sm"
-        style="text-align: center"
-        :disabled="isButtonDisabled"
-      >
-        Finalizar a compra
-      </button>
-      <div id="aviso" v-if="isButtonDisabled">
-        *Selecione pelo menos um endereço para finalizar a encomenda
-      </div>
-    </div>
-    <br />
   </div>
 </template>
 
@@ -165,7 +168,7 @@ async function submitOrder() {
   margin-left: 50px;
 }
 .titulo {
-  text-align: center;
+  /* text-align: center; */
   font-size: 35px;
   margin-top: 20px;
   font-family: 'DM Serif Display';
@@ -186,12 +189,26 @@ async function submitOrder() {
 #adiciona {
   text-align: center;
 }
+
+.container {
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.8em;
+  margin-top: 3vh;
+}
 .form-address {
-  margin-left: 100px;
+  /* margin-left: 100px;
   margin-right: 100px;
   background-color: beige;
-  border-radius: 10px;
+  border-radius: 10px; */
 }
+
+.enderecos {
+  background-color: green;
+}
+
 #finalizar {
   margin-top: 20px;
   text-align: right;
