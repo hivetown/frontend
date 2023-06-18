@@ -1,77 +1,84 @@
 <template>
-  <div class="container">
-    <h1 class="mb-5">
-      Meus Produtos
-      <ManageProduct
-        class="ml-2"
-        method="create"
-        @product-managed="refreshWindow(1000)"
-      />
-    </h1>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-      <template v-if="products && products.items && products.items.length > 0">
-        <div v-for="product in products.items" :key="product.id" class="col">
-          <!-- <div v-for="product in products" :key="product.id" class="col"> -->
-          <b-card class="prod-card position-relative">
-            <!-- <span class="position-absolute top-0 end-0 p-3 fav">
+  <div class="center-page">
+    <div class="container">
+      <h2 class="mb-5 dgreen-txt main-txt">
+        Produtos
+        <ManageProduct
+          class="ml-2"
+          method="create"
+          @product-managed="refreshWindow(1000)"
+        />
+      </h2>
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
+        <template
+          v-if="products && products.items && products.items.length > 0"
+        >
+          <div v-for="product in products.items" :key="product.id">
+            <!-- <div v-for="product in products" :key="product.id" class="col"> -->
+            <b-card class="prod-card position-relative">
+              <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
-            <img
-              :src="product.productSpec!.images[0].url"
-              class="square-image"
-              :alt="product.productSpec!.images[0].alt"
-            />
-          </b-card>
-          <b-card-text class="">
-            <div>
-              <h5>{{ product.productSpec!.name }}</h5>
-              <p>UP: {{ product.productionUnit!.name }}</p>
-              <p class="grey-txt mt-3">
-                {{ product.productSpec!.description }}
-              </p>
-              <div class="d-flex gap-2">
-                <h4 class="mb-3">{{ product.currentPrice }}€</h4>
-                <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
-              </div>
-              <div class="d-flex gap-2">
-                <ManageProduct
-                  :default-product-spec="product.productSpec"
-                  :default-production-unit="product.productionUnit"
-                  :default-price="product.currentPrice"
-                  :default-stock="product.stock"
-                  :default-production-date="new Date(product.productionDate)"
-                  method="update"
-                  :producer-product-id="product.id"
-                  @product-managed="refreshWindow(1000)"
-                />
+              <img
+                :src="product.productSpec!.images[0].url"
+                class="square-image"
+                :alt="product.productSpec!.images[0].alt"
+              />
+            </b-card>
+            <b-card-text class="">
+              <div>
+                <h5>{{ product.productSpec!.name }}</h5>
+                <p>UP: {{ product.productionUnit!.name }}</p>
+                <p class="grey-txt mt-3">
+                  {{ product.productSpec!.description }}
+                </p>
+                <div class="d-flex gap-2">
+                  <h4 class="mb-3">{{ product.currentPrice }}€</h4>
+                  <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
+                </div>
+                <div class="d-flex gap-2">
+                  <ManageProduct
+                    :default-product-spec="product.productSpec"
+                    :default-production-unit="product.productionUnit"
+                    :default-price="product.currentPrice"
+                    :default-stock="product.stock"
+                    :default-production-date="new Date(product.productionDate)"
+                    method="update"
+                    :producer-product-id="product.id"
+                    @product-managed="refreshWindow(1000)"
+                  />
 
-                <DeleteProduct
-                  :producer-product="product"
-                  @delete-product="deleteProduct"
-                />
+                  <DeleteProduct
+                    :producer-product="product"
+                    @delete-product="deleteProduct"
+                  />
+                </div>
               </div>
-            </div>
-          </b-card-text>
-        </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
-          <Pagination
-            v-if="products"
-            :total-rows="products.totalItems"
-            :per-page="products.pageSize"
+            </b-card-text>
+          </div>
+          <div
+            class="parent"
+            style="display: flex !important; justify-content: center !important"
           >
-            ></Pagination
-          >
+            <Pagination
+              class="mobile-pagination-prods"
+              style="
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+              "
+              v-if="products"
+              :total-rows="products.totalItems"
+              :per-page="products.pageSize"
+            >
+              ></Pagination
+            >
+          </div>
+        </template>
+        <div v-else>
+          <p>Ainda não tem produtos registados.</p>
         </div>
-      </template>
-      <div v-else>
-        <p>Ainda não tem produtos registados.</p>
       </div>
     </div>
   </div>
@@ -126,24 +133,33 @@ export default {
 };
 </script>
 <style scoped>
+.center-page {
+  display: flex;
+  justify-content: center;
+}
+
 .square-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .fav {
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
 }
+
 .prod-category {
   background-color: #9dc88d;
   /* A cor irá variar de acordo com a categoria */
   cursor: pointer;
 }
+
 .grey-txt {
   color: #888;
   font-size: 0.9rem;
 }
+
 .circle-btn {
   width: 40px;
   height: 40px;
@@ -153,5 +169,20 @@ export default {
   align-items: center;
   font-size: 1.3rem;
   color: #333;
+}
+
+h2 {
+  text-transform: capitalize;
+  font-size: 2em;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
+  }
 }
 </style>
