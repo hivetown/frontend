@@ -380,7 +380,7 @@ const expandCategory = async (node: CategoryTreeNode) => {
 const nodeSelect = async (node: CategoryTreeNode) => {
   selectedCategoryTreeNode.value = node;
   currentFilters.value.categoryId = Number(node.key);
-  await productSpecPageChange({ page: 1 });
+  await productSpecPageChange({ page: 0 });
 };
 
 /**
@@ -426,7 +426,7 @@ const loadProducts = async ({
 
 // Debounce price filter to make less requests
 const changePriceFilter = debounce(async () => {
-  await Promise.all([loadCategories(), productSpecPageChange({ page: 1 })]);
+  await Promise.all([loadCategories(), productSpecPageChange({ page: 0 })]);
 
   currentFilters.value.minPrice = priceFilter.value[0];
   currentFilters.value.maxPrice = priceFilter.value[1];
@@ -444,7 +444,7 @@ const changeSearchQuery = debounce(async () => {
     return;
   }
 
-  await Promise.all([loadCategories(), productSpecPageChange({ page: 1 })]);
+  await Promise.all([loadCategories(), productSpecPageChange({ page: 0 })]);
   currentFilters.value.search = productSpecSearchQuery.value;
 }, 1500);
 
