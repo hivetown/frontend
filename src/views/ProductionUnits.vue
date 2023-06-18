@@ -15,11 +15,11 @@
             }"
           >
             <b-card class="prod-card position-relative">
-              <!-- <img
+              <img
                 :src="unit.images![0].url"
                 class="square-image"
                 :alt="unit.images![0].alt"
-              /> -->
+              />
             </b-card>
             <b-card-text class="">
               <div>

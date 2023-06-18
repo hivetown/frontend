@@ -275,7 +275,7 @@ export default {
         !props.defaultProductionUnit.id)
     ) {
       throw new Error(
-        'When method is "update", producerProductId, defaultProductSpec, and defaultProductionUnit must be provided'
+        'Quando o método é "update", producerProductId, defaultProductSpec, e defaultProductionUnit devem ser fornecidos'
       );
     }
     const methodName = props.method === 'create' ? 'Criar' : 'Atualizar';
