@@ -20,12 +20,22 @@
             <div>
               <!---->
               <div v-if="nElementos != 0">
-                <CartItem
-                  v-for="cartItem in itensCarrinho.items"
-                  :cart-item="cartItem"
-                  @deleteCartItem="itemRemoved"
-                  @updateCartItem="refreshValues"
-                ></CartItem>
+                <div v-if="login">
+                  <CartItem
+                    v-for="cartItem in itensCarrinho.items"
+                    :cart-item="cartItem"
+                    @deleteCartItem="itemRemoved"
+                    @updateCartItem="refreshValues"
+                  ></CartItem>
+                </div>
+                <div v-else>
+                  <CartItem
+                    v-for="cartItem in itensCarrinhoNAU"
+                    :cart-item="cartItem"
+                    @deleteCartItem="itemRemoved"
+                    @updateCartItem="refreshValues"
+                  ></CartItem>
+                </div>
               </div>
               <div v-else>
                 <p>Não possui itens no carrinho.</p>
