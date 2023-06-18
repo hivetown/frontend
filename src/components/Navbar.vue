@@ -13,6 +13,28 @@
           <div class="d-flex nav-items-left">
             <div class="d-flex">
               <router-link
+                to="/products"
+                class="p-2 grey-txt text-decoration-none"
+                style="font-weight: 500"
+              >
+                <b-avatar
+                  class="nav-item"
+                  style="
+                    background-color: #f3f3f3 !important;
+                    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  "
+                >
+                  <i
+                    class="bi bi-bag"
+                    style="color: #164a41"
+                    font-scale="1.5"
+                  ></i>
+                </b-avatar>
+                Comprar
+              </router-link>
+            </div>
+            <div class="d-flex">
+              <router-link
                 to="/favoritos"
                 class="p-2 grey-txt text-decoration-none"
                 style="font-weight: 500"
@@ -95,23 +117,32 @@
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item v-if="permissions" href="/admin?page=1"
+                >Área de Admin</b-dropdown-item
+              >
               <div v-if="user.user.type === 'PRODUCER'">
-                <b-dropdown-item href="/produtosprodutor"
-                  >Produtos</b-dropdown-item
+                <b-dropdown-item
+                  ><router-link to="/produtosprodutor" class="linkcolor"
+                    >Produtos</router-link
+                  ></b-dropdown-item
                 >
-                <b-dropdown-item href="/unidadesproducao"
-                  >Unidades de Produção</b-dropdown-item
+                <b-dropdown-item
+                  ><router-link to="/unidadesproducao" class="linkcolor"
+                    >Unidades de Produção</router-link
+                  ></b-dropdown-item
                 >
-                <b-dropdown-item href="/transportes"
-                  >Transportes</b-dropdown-item
-                >
-                <b-dropdown-item href="/encomendas" class="linkcolor"
-                  >Encomendas</b-dropdown-item
+                <b-dropdown-item
+                  ><router-link to="/transportes" class="linkcolor"
+                    >Transportes</router-link
+                  ></b-dropdown-item
                 >
               </div>
-              <b-dropdown-item @click="logout" href="#"
-                >Terminar Sessão</b-dropdown-item
-              >
+              <b-dropdown-item>
+                <router-link to="/encomendas" class="linkcolor"
+                  >Encomendas</router-link
+                >
+              </b-dropdown-item>
+              <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
           </div>
         </b-navbar-nav>
@@ -180,14 +211,22 @@
 </template>
 <script lang="ts">
 import { useStore } from '@/store';
-import { computed } from 'vue';
-
+import { computed, watch, ref } from 'vue';
+import { hasPermission } from '@/utils/permissions';
+import { Permission } from '@/types';
 export default {
   setup() {
+    const requiredPermissions =
+      Permission.ALL_CONSUMER | Permission.ALL_PRODUCER;
     const store = useStore();
-
-    // computed user
     const user = computed(() => store.state.user);
+    const permissions = ref(false); // Transforme em uma variável reativa usando ref
+
+    watch(user, (newValue) => {
+      if (newValue) {
+        permissions.value = hasPermission(newValue?.user, requiredPermissions);
+      }
+    });
 
     const logout = async () => {
       await store.dispatch('logout');
@@ -195,6 +234,7 @@ export default {
 
     return {
       user,
+      permissions, // Retorne a variável permissions no objeto de retorno
       logout,
     };
   },
@@ -205,6 +245,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .linkcolor {
   color: var(--bs-dropdown-link-color);

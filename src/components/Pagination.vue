@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-pagination
-      class="pagination"
+      class="pagination mobile-pagination"
       v-model="currentPage"
       :total-rows="totalRows"
       :per-page="perPage"
@@ -79,5 +79,18 @@ export default {
 .pagination li:last-child .page-link:before {
   content: 'Última';
   margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .mobile-pagination {
+    width: 95%;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .pagination {
+    scale: 0.75;
+  }
 }
 </style>
