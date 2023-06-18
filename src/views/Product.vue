@@ -76,9 +76,8 @@
       <div class="separator-bottom" style="min-height: 30vh">
         <!-- Preço -->
         <div class="d-flex align-items-center gap-3">
-          <h3>
-            {{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€
-          </h3>
+          <h3>{{ defaultProduct.currentPrice }}€</h3>
+          <p>{{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€</p>
           <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
         </div>
         <div>
