@@ -1,375 +1,800 @@
 <template>
-  <form class="register" @submit.prevent="register">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a
-          :class="{
-            'nav-link active': activeTab === 'personal',
-            'inactive-tab': activeTab !== 'personal',
-          }"
-          @click="activeTab = 'personal'"
-          href="#"
-          >Dados pessoais</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          :class="{
-            'nav-link active': activeTab === 'address',
-            'inactive-tab': activeTab !== 'address',
-          }"
-          @click="activeTab = 'address'"
-          href="#"
-          >Morada</a
-        >
-      </li>
-      <li class="nav-item">
-        <a
-          :class="{
-            'nav-link active': activeTab === 'account',
-            'inactive-tab': activeTab !== 'account',
-          }"
-          @click="activeTab = 'account'"
-          href="#"
-          >Conta</a
-        >
-      </li>
-    </ul>
-    <div v-show="activeTab === 'personal'">
-      <label for="name">Nome</label>
-      <input
-        type="text"
-        placeholder="Insira o seu nome"
-        v-model="form.consumer.user.name"
-      />
-      <p v-if="errors.name">{{ errors.name }}</p>
+  <VeeForm id="formConsumer" @submit="register" class="flex flex-column gap-3">
+    <TabView v-model:active-index="activeIndex">
+      <TabPanel>
+        <template #header>
+          <i class="pi pi-user mx-2"></i>
+          <span>Dados Pessoais</span>
+        </template>
 
-      <label for="phone">Telemóvel</label>
-      <input
-        type="text"
-        placeholder="Telemóvel"
-        v-model="form.consumer.user.phone"
-      />
-      <p v-if="errors.phone">{{ errors.phone }}</p>
+        <div class="grid">
+          <div class="col-12 flex flex-column gap-2">
+            <label for="formName"
+              >Nome <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="name"
+              input-id="formName"
+              v-model="formValues.consumer.user.name"
+              :class="{
+                'p-invalid': formErrors['consumer.user.name'],
+              }"
+              aria-describedby="nameError"
+              placeholder="Nome"
+            />
 
-      <label for="vat">NIF</label>
-      <input type="text" placeholder="NIF" v-model="form.consumer.user.vat" />
-      <p v-if="errors.vat">{{ errors.vat }}</p>
+            <small
+              v-if="formErrors['consumer.user.name']"
+              class="p-error"
+              id="nameError"
+              >{{ formErrors['consumer.user.name'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 flex flex-column gap-2">
+            <label for="formPhone"
+              >Telemóvel <span class="text-red-500">*</span></label
+            >
+            <InputMask
+              autocomplete="tel-local"
+              input-id="formPhone"
+              v-model="formValues.consumer.user.phone"
+              :class="{
+                'p-invalid': formErrors['consumer.user.phone'],
+              }"
+              aria-describedby="phoneError"
+              placeholder="Telemóvel"
+              mask="999 999 999"
+            />
+
+            <small
+              v-if="formErrors['consumer.user.phone']"
+              class="p-error"
+              id="phoneError"
+              >{{ formErrors['consumer.user.phone'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 flex flex-column gap-2">
+            <label for="formvat">NIF <span class="text-red-500">*</span></label>
+            <InputMask
+              autocomplete="off"
+              input-id="formvat"
+              v-model="formValues.consumer.user.vat"
+              :class="{
+                'p-invalid': formErrors['consumer.user.vat'],
+              }"
+              aria-describedby="vatError"
+              placeholder="NIF"
+              mask="999999999"
+            />
+
+            <small
+              v-if="formErrors['consumer.user.vat']"
+              class="p-error"
+              id="vatError"
+              >{{ formErrors['consumer.user.vat'] }}</small
+            >
+          </div>
+        </div>
+      </TabPanel>
+
+      <TabPanel>
+        <template #header>
+          <i class="pi pi-map mx-2"></i>
+          <span>Morada</span>
+        </template>
+
+        <div class="grid">
+          <div class="col-6 md:col-4 lg:col-3 flex flex-column gap-2">
+            <label for="formNumber"
+              >Número <span class="text-red-500">*</span></label
+            >
+            <InputNumber
+              autocomplete="off"
+              input-id="formNumber"
+              v-model="formValues.address.number"
+              :class="{
+                'p-invalid': formErrors['address.number'],
+              }"
+              aria-describedby="numberError"
+              placeholder="Número"
+              :min="0"
+            />
+
+            <small
+              v-if="formErrors['address.number']"
+              class="p-error"
+              id="numberError"
+              >{{ formErrors['address.number'] }}</small
+            >
+          </div>
+
+          <div class="col-6 md:col-4 lg:col-3 flex flex-column gap-2">
+            <label for="formDoor"
+              >Porta <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="off"
+              input-id="formDoor"
+              v-model="formValues.address.door"
+              :class="{
+                'p-invalid': formErrors['address.number'],
+              }"
+              aria-describedby="doorError"
+              placeholder="Porta"
+            />
+
+            <small
+              v-if="formErrors['address.door']"
+              class="p-error"
+              id="doorError"
+              >{{ formErrors['address.door'] }}</small
+            >
+          </div>
+
+          <div class="col-6 md:col-4 lg:col-3 flex flex-column gap-2">
+            <label for="formFloor"
+              >Andar <span class="text-red-500">*</span></label
+            >
+            <InputNumber
+              autocomplete="off"
+              input-id="formFloor"
+              v-model="formValues.address.floor"
+              :class="{
+                'p-invalid': formErrors['address.floor'],
+              }"
+              aria-describedby="floorError"
+              placeholder="Andar"
+              :min="0"
+            />
+
+            <small
+              v-if="formErrors['address.floor']"
+              class="p-error"
+              id="floorError"
+              >{{ formErrors['address.floor'] }}</small
+            >
+          </div>
+
+          <div class="col-6 md:col-4 lg:col-3 flex flex-column gap-2">
+            <label for="formZipCode"
+              >Código Postal <span class="text-red-500">*</span></label
+            >
+            <InputMask
+              autocomplete="postal-code"
+              input-id="formZipCode"
+              v-model="formValues.address.zipCode"
+              :class="{
+                'p-invalid': formErrors['address.zipCode'],
+              }"
+              aria-describedby="zipCodeError"
+              placeholder="Código Postal"
+              mask="9999-999"
+            />
+
+            <small
+              v-if="formErrors['address.zipCode']"
+              class="p-error"
+              id="zipCodeError"
+              >{{ formErrors['address.zipCode'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-8 flex flex-column gap-2">
+            <label for="formStreet"
+              >Rua <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="address-line3\"
+              input-id="formStreet"
+              v-model="formValues.address.street"
+              :class="{
+                'p-invalid': formErrors['address.street'],
+              }"
+              aria-describedby="streetError"
+              placeholder="Rua"
+            />
+
+            <small
+              v-if="formErrors['address.street']"
+              class="p-error"
+              id="streetError"
+              >{{ formErrors['address.street'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 lg:col-4 flex flex-column gap-2">
+            <label for="formParish"
+              >Freguesia <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="address-level4"
+              input-id="formParish"
+              v-model="formValues.address.parish"
+              :class="{
+                'p-invalid': formErrors['address.parish'],
+              }"
+              aria-describedby="parishError"
+              placeholder="Freguesia"
+            />
+
+            <small
+              v-if="formErrors['address.parish']"
+              class="p-error"
+              id="parishError"
+              >{{ formErrors['address.parish'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 lg:col-4 flex flex-column gap-2">
+            <label for="formCounty"
+              >Concelho <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="address-level3"
+              input-id="formCounty"
+              v-model="formValues.address.county"
+              :class="{
+                'p-invalid': formErrors['address.county'],
+              }"
+              aria-describedby="countyError"
+              placeholder="Concelho"
+            />
+
+            <small
+              v-if="formErrors['address.county']"
+              class="p-error"
+              id="countyError"
+              >{{ formErrors['address.county'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 lg:col-4 flex flex-column gap-2">
+            <label for="formCity"
+              >Cidade <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="address-level2"
+              input-id="formCity"
+              v-model="formValues.address.city"
+              :class="{
+                'p-invalid': formErrors['address.city'],
+              }"
+              aria-describedby="cityError"
+              placeholder="Cidade"
+            />
+
+            <small
+              v-if="formErrors['address.city']"
+              class="p-error"
+              id="cityError"
+              >{{ formErrors['address.city'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 lg:col-4 flex flex-column gap-2">
+            <label for="formDistrict"
+              >Distrito <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="address-level1"
+              input-id="formDistrict"
+              v-model="formValues.address.district"
+              :class="{
+                'p-invalid': formErrors['address.district'],
+              }"
+              aria-describedby="districtError"
+              placeholder="Distrito"
+            />
+
+            <small
+              v-if="formErrors['address.district']"
+              class="p-error"
+              id="districtError"
+              >{{ formErrors['address.district'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 flex flex-column gap-2">
+            <label for="formLatitude"
+              >Latitude <span class="text-red-500">*</span></label
+            >
+            <InputNumber
+              input-id="formLatitude"
+              v-model="formValues.address.latitude"
+              :class="{
+                'p-invalid': formErrors['address.latitude'],
+              }"
+              aria-describedby="latitudeError"
+              placeholder="Latitude"
+              :min="-90"
+              :max="90"
+            />
+
+            <small
+              v-if="formErrors['address.latitude']"
+              class="p-error"
+              id="latitudeError"
+              >{{ formErrors['address.latitude'] }}</small
+            >
+          </div>
+
+          <div class="col-12 md:col-6 flex flex-column gap-2">
+            <label for="formLongitude"
+              >Longitude <span class="text-red-500">*</span></label
+            >
+            <InputNumber
+              input-id="formLongitude"
+              v-model="formValues.address.longitude"
+              :class="{
+                'p-invalid': formErrors['address.longitude'],
+              }"
+              aria-describedby="longitudeError"
+              placeholder="Longitude"
+              :min="-180"
+              :max="180"
+            />
+
+            <small
+              v-if="formErrors['address.longitude']"
+              class="p-error"
+              id="longitudeError"
+              >{{ formErrors['address.longitude'] }}</small
+            >
+          </div>
+        </div>
+      </TabPanel>
+
+      <TabPanel>
+        <template #header>
+          <i class="pi pi-envelope mx-2"></i>
+          <span>Autenticação</span>
+        </template>
+
+        <div class="grid">
+          <div class="col-12 flex flex-column gap-2">
+            <label for="formEmail"
+              >Email <span class="text-red-500">*</span></label
+            >
+            <InputText
+              autocomplete="on"
+              type="email"
+              input-id="formEmail"
+              v-model="formValues.consumer.user.email"
+              :class="{
+                'p-invalid': formErrors['consumer.user.email'],
+              }"
+              aria-describedby="emailError"
+              placeholder="Email"
+            />
+
+            <small
+              v-if="formErrors['consumer.user.email']"
+              class="p-error"
+              id="emailError"
+              >{{ formErrors['consumer.user.email'] }}</small
+            >
+          </div>
+
+          <div class="col-12 flex flex-column gap-2">
+            <label for="formPassword"
+              >Password <span class="text-red-500">*</span></label
+            >
+            <InputPassword
+              autocomplete="on"
+              input-id="formPassword"
+              v-model="formValues.password"
+              :class="{
+                'p-invalid': formErrors['password'],
+              }"
+              input-class="w-full"
+              aria-describedby="passwordError"
+              placeholder="Password"
+              toggle-mask
+              :feedback="false"
+            />
+
+            <small
+              v-if="formErrors['password']"
+              class="p-error"
+              id="passwordError"
+              ><span v-html="formErrors['password']"
+            /></small>
+          </div>
+
+          <div class="col-12 flex flex-column gap-2">
+            <label for="formConfirmPassword"
+              >Confirmar Password <span class="text-red-500">*</span></label
+            >
+            <InputPassword
+              autocomplete="off"
+              input-id="formConfirmPassword"
+              v-model="formValues.confirmPassword"
+              :class="{
+                'p-invalid': formErrors['confirmPassword'],
+              }"
+              input-class="w-full"
+              aria-describedby="confirmPasswordError"
+              placeholder="Confirmar Password"
+              toggle-mask
+              :feedback="false"
+            />
+
+            <small
+              v-if="formErrors['confirmPassword']"
+              class="p-error"
+              id="confirmPasswordError"
+              ><span v-html="formErrors['confirmPassword']"
+            /></small>
+          </div>
+        </div>
+      </TabPanel>
+    </TabView>
+
+    <div
+      :class="{
+        flex: true,
+        'mt-4': true,
+        'justify-content-end': activeIndex === 0,
+        'justify-content-between': activeIndex !== 0,
+      }"
+    >
+      <PrimeButton
+        v-if="activeIndex !== 0"
+        label="Anterior"
+        @click="prevPage"
+      />
+
+      <PrimeButton
+        :label="activeIndex !== 2 ? 'Seguinte' : 'Registar'"
+        :severity="activeIndex !== 2 ? 'primary' : 'success'"
+        @click="activeIndex !== 2 ? nextPage() : register()"
+        :loading="loading"
+      />
     </div>
-    <div v-show="activeTab === 'address'">
-      <label for="number">Número</label>
-      <input
-        type="number"
-        placeholder="Insira o seu número"
-        v-model="form.address.number"
-      />
-      <p v-if="errors.number">{{ errors.number }}</p>
-
-      <label for="door">Porta</label>
-      <input
-        type="text"
-        placeholder="Insira o lado da porta (esq, dir, frente) se aplicável"
-        v-model="form.address.door"
-      />
-      <p v-if="errors.door">{{ errors.door }}</p>
-
-      <label for="floor">Andar</label>
-      <input type="number" placeholder="Andar" v-model="form.address.floor" />
-      <p v-if="errors.floor">{{ errors.floor }}</p>
-
-      <label for="zip_code">Código Postal</label>
-      <input
-        type="text"
-        placeholder="Código Postal"
-        v-model="form.address.zipCode"
-      />
-      <p v-if="errors.zipCode">{{ errors.zipCode }}</p>
-
-      <label for="street">Rua</label>
-      <input type="text" placeholder="Rua" v-model="form.address.street" />
-      <p v-if="errors.street">{{ errors.street }}</p>
-
-      <label for="parish">Freguesia</label>
-      <input
-        type="text"
-        placeholder="Freguesia"
-        v-model="form.address.parish"
-      />
-      <p v-if="errors.parish">{{ errors.parish }}</p>
-
-      <label for="county">Concelho</label>
-      <input type="text" placeholder="Concelho" v-model="form.address.county" />
-      <p v-if="errors.county">{{ errors.county }}</p>
-
-      <label for="district">Distrito</label>
-      <input
-        type="text"
-        placeholder="Distrito"
-        v-model="form.address.district"
-      />
-      <p v-if="errors.district">{{ errors.district }}</p>
-
-      <label for="city">Cidade</label>
-      <input type="text" placeholder="Cidade" v-model="form.address.city" />
-      <p v-if="errors.city">{{ errors.city }}</p>
-
-      <label for="latitude">Latitude</label>
-      <input
-        type="text"
-        placeholder="Latitude"
-        v-model="form.address.latitude"
-      />
-      <p v-if="errors.latitude">{{ errors.latitude }}</p>
-
-      <label for="longitude">Longitude</label>
-      <input
-        type="text"
-        placeholder="Longitude"
-        v-model="form.address.longitude"
-      />
-      <p v-if="errors.longitude">{{ errors.longitude }}</p>
-    </div>
-    <div v-show="activeTab === 'account'">
-      <label for="email">Email</label>
-      <input
-        type="email"
-        placeholder="Email"
-        v-model="form.consumer.user.email"
-      />
-      <p v-if="errors.email">{{ errors.email }}</p>
-
-      <label for="password">Palavra passe</label>
-      <input
-        type="password"
-        placeholder="Palavra passe"
-        v-model="form.password"
-      />
-    </div>
-    <p v-if="errors.password">{{ errors.password }}</p>
-    <input type="submit" value="Registar" />
-  </form>
+  </VeeForm>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue';
-import { reactive } from 'vue';
 import { Address, Consumer } from '@/types';
 import { useStore } from '@/store';
-
-interface Errors {
-  name?: string;
-  number?: string;
-  door?: string;
-  floor?: string;
-  zipCode?: string;
-  street?: string;
-  parish?: string;
-  county?: string;
-  district?: string;
-  city?: string;
-  latitude?: string;
-  longitude?: string;
-  phone?: string;
-  vat?: string;
-  email?: string;
-  password?: string;
-}
+import { useField, useForm } from 'vee-validate';
+import PrimeButton from 'primevue/button';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import InputText from 'primevue/inputtext';
+import InputMask from 'primevue/inputmask';
+import InputNumber from 'primevue/inputnumber';
+import InputPassword from 'primevue/password';
 
 export default {
+  components: {
+    TabView,
+    TabPanel,
+    InputText,
+    InputMask,
+    InputNumber,
+    InputPassword,
+    PrimeButton,
+  },
   setup() {
-    const activeTab = ref('personal');
-    const errors = ref<Errors>({});
-    const form = reactive<{
-      consumer: Consumer;
-      password: string;
-      address: Address;
-    }>({
-      consumer: {
-        user: {
-          id: 0,
-          name: '',
-          phone: '',
-          vat: '',
-          email: '',
-          type: 'CONSUMER',
-        },
-      },
-      password: '',
-      address: {
-        id: 0,
-        number: 0,
-        door: '',
-        floor: 0,
-        zipCode: '',
-        street: '',
-        parish: '',
-        county: '',
-        district: '',
-        city: '',
-        latitude: 0,
-        longitude: 0,
+    const {
+      values: formValues,
+      errors: formErrors,
+      handleSubmit,
+    } = useForm({
+      initialValues: {
+        consumer: {
+          user: {},
+        } as Consumer,
+        password: '',
+        confirmPassword: '',
+        address: {} as Address,
       },
     });
-    const store = useStore();
-    const validateForm = () => {
-      errors.value = {};
 
-      const numRegex = /^[0-9]+$/;
+    // Default value for latitude and longitude form GeoLocation API
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        formValues.address.latitude = position.coords.latitude;
+        formValues.address.longitude = position.coords.longitude;
+      });
+    }
+
+    useField('consumer.user.name', (value: string) => {
+      if (!value) {
+        return 'O nome é obrigatório';
+      }
+
+      if (value.length < 3) {
+        return 'O nome tem de ter pelo menos 3 caracteres';
+      }
+
+      return true;
+    });
+
+    useField('consumer.user.phone', (value: string) => {
+      if (!value) {
+        return 'O telemóvel é obrigatório';
+      }
+
+      if (value.length < 9) {
+        return 'O telemóvel tem de ter pelo menos 9 caracteres';
+      }
+
+      if (Number.isNaN(value)) {
+        return 'O telemóvel tem de ser um número';
+      }
+
+      // Validate portuguese phone number with regex
+      const phoneRegex = /^[9][1236]\d\s*\d{3}\s*\d{3}$/;
+      if (!phoneRegex.test(value)) {
+        return 'O telemóvel tem de ser um número português';
+      }
+
+      return true;
+    });
+
+    useField('consumer.user.vat', (value: string) => {
+      if (!value) {
+        return 'O NIF é obrigatório';
+      }
+
+      if (value.length < 9) {
+        return 'O NIF tem de ter pelo menos 9 caracteres';
+      }
+
+      if (Number.isNaN(value)) {
+        return 'O NIF tem de ser um número';
+      }
+
+      return true;
+    });
+
+    useField('consumer.user.email', (value: string) => {
+      if (!value) {
+        return 'O email é obrigatório';
+      }
+
+      if (value.length < 3) {
+        return 'O email tem de ter pelo menos 3 caracteres';
+      }
+
+      // Validate email with regex
+      const emailRegex =
+        // eslint-disable-next-line no-useless-escape
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        return 'O email tem de ser válido';
+      }
+
+      return true;
+    });
+
+    useField('password', (value: string) => {
+      if (!value) {
+        return 'A password é obrigatória';
+      }
+
+      if (value.length < 8) {
+        return 'A password tem de ter pelo menos 8 caracteres';
+      }
+
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)) {
+        return 'A password deve conter pelo menos<br/><ul><li>8 caracteres</li><li>uma letra maiúscula</li><li>uma letra minúscula</li><li>um número</li></ul>';
+      }
+
+      return true;
+    });
+
+    useField('confirmPassword', (value: string) => {
+      if (!value) {
+        return 'A password é obrigatória';
+      }
+
+      if (value.length < 8) {
+        return 'A password tem de ter pelo menos 8 caracteres';
+      }
+
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(value)) {
+        return 'A password deve conter pelo menos<br/><ul><li>8 caracteres</li><li>uma letra maiúscula</li><li>uma letra minúscula</li><li>um número</li></ul>';
+      }
+
+      if (value !== formValues.password) {
+        return 'As passwords têm de ser iguais';
+      }
+
+      return true;
+    });
+
+    useField('address.number', (value: string) => {
+      if (!value || Number(value) === 0) {
+        return 'O número é obrigatório';
+      }
+
+      if (Number.isNaN(value)) {
+        return 'O número tem de ser um número';
+      }
+
+      if (value.length < 1) {
+        return 'O número tem de ter pelo menos 1 caracter';
+      }
+
+      return true;
+    });
+
+    useField('address.door', (value: string) => {
+      if (!value) {
+        return 'A porta é obrigatória';
+      }
+
+      if (value.length < 1) {
+        return 'A porta tem de ter pelo menos 1 caracter';
+      }
+
+      return true;
+    });
+
+    useField('address.floor', (value: string) => {
+      if (!value || Number(value) === 0) {
+        return 'O andar é obrigatório';
+      }
+
+      if (Number.isNaN(value)) {
+        return 'O andar tem de ser um número';
+      }
+
+      if (value.length < 1) {
+        return 'O andar tem de ter pelo menos 1 caracter';
+      }
+
+      return true;
+    });
+
+    useField('address.zipCode', (value: string) => {
+      if (!value) {
+        return 'O código postal é obrigatório';
+      }
+
+      if (value.length < 8) {
+        return 'O código postal tem de ter pelo menos 8 caracteres';
+      }
+
+      // Validate portuguese zip code with regex
       const zipRegex = /^[0-9]{4}-[0-9]{3}$/;
-      const stringRegex = /^[a-zA-Z\s]+$/;
-      // String regex has to be a not empty string starting with an uppercase letter
-      const latitudeRegex = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}$/;
-      const longitudeRegex =
-        /^-?((1[0-7]|[1-9])?\d(\.\d{1,6})?|180(\.0{1,6})?)$/;
-      const phoneRegex = /^[0-9]{9}$/;
-      const vatRegex = /^[0-9]{9}$/;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-      //the password must have at least 8 characters, 1 uppercase, 1 lowercase and 1 number
-
-      if (!form.consumer.user.name) {
-        errors.value.name = 'Por favor, preencha o seu nome.';
-      } else if (!stringRegex.test(form.consumer.user.name)) {
-        errors.value.name = 'O nome tem de começar com uma letra maiúscula.';
-      }
-      if (!form.address.number) {
-        errors.value.number = 'Por favor, preencha o número da sua morada.';
-      } else if (!numRegex.test(form.address.number.toString())) {
-        errors.value.number =
-          'Por favor, preencha um número válido do tipo: 123';
-      }
-      // validate floor
-      if (!form.address.floor) {
-        errors.value.floor = 'Por favor, preencha o andar da sua morada.';
-      } else if (!numRegex.test(form.address.floor.toString())) {
-        errors.value.floor = 'Por favor, preencha um andar válido do tipo: 3';
+      if (!zipRegex.test(value)) {
+        return 'O código postal tem de ser um código postal português';
       }
 
-      if (!form.address.zipCode) {
-        errors.value.zipCode = 'Por favor, preencha o seu código postal.';
-      } else if (!zipRegex.test(form.address.zipCode)) {
-        errors.value.zipCode =
-          'Por favor, preencha um código postal válido do tipo: 1234-567';
+      return true;
+    });
+
+    useField('address.street', (value: string) => {
+      if (!value) {
+        return 'A rua é obrigatória';
       }
 
-      // validate street
-      if (!form.address.street) {
-        errors.value.street = 'Por favor, preencha a sua rua.';
-      } else if (!stringRegex.test(form.address.street)) {
-        errors.value.street = 'A rua deve ser uma palavra válida.';
+      if (value.length < 3) {
+        return 'A rua tem de ter pelo menos 3 caracteres';
       }
 
-      if (!form.address.parish) {
-        errors.value.parish = 'Por favor, preencha a sua freguesia.';
-      } else if (!stringRegex.test(form.address.parish)) {
-        errors.value.parish = 'A freguesia deve ser uma palavra válida.';
+      return true;
+    });
+
+    useField('address.parish', (value: string) => {
+      if (!value) {
+        return 'A freguesia é obrigatória';
       }
 
-      if (!form.address.county) {
-        errors.value.county = 'Por favor, preencha o seu concelho.';
-      } else if (!stringRegex.test(form.address.county)) {
-        errors.value.county = 'O concelho deve ser uma palavra válida.';
+      if (value.length < 3) {
+        return 'A freguesia tem de ter pelo menos 3 caracteres';
       }
 
-      if (!form.address.district) {
-        errors.value.district = 'Por favor, preencha o seu distrito.';
-      } else if (!stringRegex.test(form.address.district)) {
-        errors.value.district = 'O distrito deve ser uma palavra válida.';
-      }
-      if (!form.address.city) {
-        errors.value.city = 'Por favor, preencha a sua cidade.';
-      } else if (!stringRegex.test(form.address.city)) {
-        errors.value.city = 'A cidade deve ser uma palavra válida.';
+      return true;
+    });
+
+    useField('address.county', (value: string) => {
+      if (!value) {
+        return 'O concelho é obrigatório';
       }
 
-      if (!form.consumer.user.phone) {
-        errors.value.phone = 'Por favor, preencha o seu número de telemóvel.';
-      } else if (!phoneRegex.test(form.consumer.user.phone)) {
-        errors.value.phone =
-          'Por favor, preencha um número de telemóvel válido do tipo: 912345678';
-      }
-      if (!form.address.latitude) {
-        errors.value.latitude = 'Por favor, preencha a sua latitude.';
-      } else if (!latitudeRegex.test(form.address.latitude.toString())) {
-        errors.value.latitude =
-          'Por favor, preencha uma latitude válida do tipo: 38.123456';
-      }
-      if (!form.address.longitude) {
-        errors.value.longitude = 'Por favor, preencha a sua longitude.';
-      } else if (!longitudeRegex.test(form.address.longitude.toString())) {
-        errors.value.longitude =
-          'Por favor, preencha uma longitude válida do tipo: -9.123456';
+      if (value.length < 3) {
+        return 'O concelho tem de ter pelo menos 3 caracteres';
       }
 
-      if (!form.consumer.user.vat) {
-        errors.value.vat = 'Por favor, preencha o seu NIF.';
-      } else if (!vatRegex.test(form.consumer.user.vat)) {
-        errors.value.vat =
-          'Por favor, preencha um NIF válido do tipo: 123456789';
+      return true;
+    });
+
+    useField('address.city', (value: string) => {
+      if (!value) {
+        return 'A cidade é obrigatória';
       }
-      if (!form.consumer.user.email) {
-        errors.value.email = 'Por favor, preencha o seu email.';
-      } else if (!emailRegex.test(form.consumer.user.email)) {
-        errors.value.email =
-          'Por favor, preencha um email válido do tipo: nome@mail.com';
+
+      if (value.length < 3) {
+        return 'A cidade tem de ter pelo menos 3 caracteres';
       }
-      if (!form.password) {
-        errors.value.password = 'Por favor, preencha a sua palavra-passe.';
-      } else if (!passwordRegex.test(form.password)) {
-        errors.value.password =
-          'A palavra-passe deve conter pelo menos 8 caracteres, uma letra maiúscula, uma minúscula e um número.';
+
+      return true;
+    });
+
+    useField('address.district', (value: string) => {
+      if (!value) {
+        return 'O distrito é obrigatório';
       }
-      return Object.keys(errors.value).length === 0;
+
+      if (value.length < 3) {
+        return 'O distrito tem de ter pelo menos 3 caracteres';
+      }
+
+      return true;
+    });
+
+    useField('address.latitude', (value: string) => {
+      if (!value && Number(value) !== 0) {
+        return 'A latitude é obrigatória';
+      }
+
+      if (Number.isNaN(Number(value))) {
+        return 'A latitude tem de ser um número';
+      }
+
+      if (value.length < -90 || value.length > 90) {
+        return 'A latitude tem de ser um número entre -90 e 90';
+      }
+
+      return true;
+    });
+
+    useField('address.longitude', (value: string) => {
+      if (!value && Number(value) !== 0) {
+        return 'A longitude é obrigatória';
+      }
+
+      if (Number.isNaN(Number(value))) {
+        return 'A longitude tem de ser um número';
+      }
+
+      if (value.length < -180 || value.length > 180) {
+        return 'A longitude tem de ser um número entre -180 e 180';
+      }
+
+      return true;
+    });
+
+    const store = useStore();
+
+    const activeIndex = ref(0);
+    const prevPage = () => {
+      activeIndex.value--;
+    };
+    const nextPage = () => {
+      activeIndex.value++;
     };
 
-    const register = async () => {
-      if (validateForm()) {
-        await store.dispatch('registerConsumer', form);
-      }
-    };
+    const loading = ref(false);
+    const register = handleSubmit(async () => {
+      loading.value = true;
+      await store.dispatch('registerConsumer', formValues);
+      loading.value = false;
+    });
 
     return {
-      form,
+      loading,
+      formValues,
+      formErrors,
       register,
-      errors,
-      activeTab,
+      prevPage,
+      nextPage,
+      activeIndex,
     };
   },
 };
 </script>
-<style>
-.nav-link {
-  border: 1px solid transparent;
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-}
 
-.nav-link.active {
-  border-color: #dee2e6 #dee2e6 #fff;
-  background-color: #fff;
-}
-
-.inactive-tab {
-  color: grey;
-  background-color: white;
-  border: none;
-}
-
-.inactive-tab:hover {
-  color: black;
-  background-color: #f5f5f5;
-  border: none;
-}
-
-.inactive-tab:focus {
-  color: black;
-  background-color: #f5f5f5;
-  border: none;
-  box-shadow: none;
-}
-
-.nav-tabs .nav-item .nav-link {
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
+<style scoped>
+#formConsumer {
+  max-width: 50vw;
 }
 </style>

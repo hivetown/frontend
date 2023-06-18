@@ -40,6 +40,7 @@ export const fetchProductCategoriesFields = (specId: number, catId: number) =>
     api.get<BaseItems<ProductSpecField>>(
         `/products/${specId}/categories/${catId}/fields`
     );
+
 export const fetchLocalProducts = (
     specId: number,
     addressId: number,

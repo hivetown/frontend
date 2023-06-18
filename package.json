@@ -97,7 +97,7 @@
   "bugs": {
     "url": "https://github.com/fcul-lti/frontend/issues"
   },
-  "homepage": "https://fc.ul.pt",
+  "homepage": "https://hivetown.pt",
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
