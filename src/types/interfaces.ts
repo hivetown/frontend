@@ -64,7 +64,7 @@ export interface Category {
 }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
-	deletedAt: string;
+	deletedAt?: string;
 	addresses?: Address[];
 }
 
