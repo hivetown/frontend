@@ -1,9 +1,12 @@
 import {
-    BaseItems,
     CreateProducer,
+    CreateProducerProduct,
+    UpdateProducerProduct,
+    BaseItems,
     Producer,
     ProductionUnit,
     reportProducerClients,
+    ProducerProduct,
 } from '@/types';
 import { api } from './_base';
 
@@ -12,20 +15,48 @@ export const createProducer = async (producer: CreateProducer) =>
 
 export const getProducersValues = (search?: string) =>
     api.get<any>('/producers', { params: { search } });
+export const fetchProducerProductionUnits = async (
+    producerId: number,
+    search?: string
+) =>
+    api.get<BaseItems<ProductionUnit>>(`/producers/${producerId}/units`, {
+        params: { search },
+    });
 
+export const createProducerProduct = async (
+    producerId: number,
+    product: CreateProducerProduct
+) => api.post<ProducerProduct>(`/producers/${producerId}/products`, product);
+
+export const updateProducerProduct = async (
+    producerId: number,
+    producerProductId: number,
+    product: UpdateProducerProduct
+) =>
+    api.put<ProducerProduct>(
+        `/producers/${producerId}/products/${producerProductId}`,
+        product
+    );
+
+export const deleteProducerProduct = async (
+    producerId: number,
+    producerProductId: number
+) => api.delete(`/producers/${producerId}/products/${producerProductId}`);
 export const fetchProducerReportClients = (
-		id: number,
-		dataInicio?: string,
-		dataFim?: string,
-		raio?: number,
-		view?: string
-	) =>
-		// TODO - substituir o tipo any pelo tipo correto
-		api.get<reportProducerClients[]>(
-			`/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
-		);
+    id: number,
+    dataInicio?: string,
+    dataFim?: string,
+    raio?: number,
+    view?: string
+) =>
+    // TODO - substituir o tipo any pelo tipo correto
+    api.get<reportProducerClients[]>(
+        `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
+    );
 export const fetchProducer = (id: number) =>
-		api.get<Producer>(`/producers/${id}`);
+    api.get<Producer>(`/producers/${id}`);
+
+
 
 //nao da com o includeall
 export const getProducers = (
@@ -44,9 +75,6 @@ export const fetchAllProducers = (
 api.get<BaseItems<Producer>>('/producers', {
         params: { page, pageSize, search },
     });
-
-export const fetchProducerProductionUnits = (id: number) =>
-    api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
 
 // TODO - descobrir se isto é usado em algum lado
 // export const fetchProductProducer = (specId: number) =>

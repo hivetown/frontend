@@ -103,16 +103,6 @@ export interface BaseItems<T> {
     pageSize: number;
 }
 
-export interface ProductionUnits {
-    id: number;
-    name: string;
-    description: string;
-    productionUnit: ProductionUnit;
-    products: ProducerProduct[];
-    address: Address;
-    images: Image[];
-}
-
 export interface Transport {
     id: number;
     licensePlate: string;
@@ -156,6 +146,21 @@ export interface OrderItem {
     producerProduct: ProducerProduct;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+}
+
+export interface CreateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
+    productSpecId: number;
+}
+
+export interface UpdateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
 }
 
 export type AuthenticatedUser = Consumer | Producer;
