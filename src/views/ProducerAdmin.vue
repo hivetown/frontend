@@ -4,7 +4,7 @@
   >
   <div id="container">
     <div id="titulo">
-      <h1>Vendedor {{ $route.params.id }}</h1>
+      <h1>Produtor {{ $route.params.id }}</h1>
     </div>
     <div class="cart">
       <b-card
@@ -27,6 +27,8 @@
         class="mb-2"
       >
         <b-card-text>
+			<strong v-if="user.deletedAt != null">Conta desativa</strong>
+			<br>
           <strong>Email: </strong>{{ user['user']['email'] || 'Não definido' }}
           <br />
           <strong>Telemóvel: </strong
@@ -83,10 +85,9 @@
               <p>Não existem unidades de produção associadas.</p>
             </div>
           </div>
-          <!-- {{ users['productionUnits'] }}-->
         </b-card-text>
-        <div class="editarConta">
-          <button
+        <div class="editarConta" >
+          <button v-if="user.deletedAt===null"
             href="#"
             style="margin-right: 10px !important"
             class="btn btn-outline-secondary btn-sm"
@@ -135,8 +136,6 @@
           </div>
         </div>
         <div class="botaoCancel">
-          <p></p>
-
           <button
             v-if="user['deletedAt'] === null"
             href="#"

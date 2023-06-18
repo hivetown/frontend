@@ -1,22 +1,30 @@
 <template>
   <h3>Produtores</h3>
-  <div class="card-container">
+  <div class="card-container" v-if="users">
     <div v-for="idx in qtd" :key="idx">
-      <!--TODO trocar para users.image-->
-
-      <b-card
-        id="b-card"
-        :title="users['items'][idx - 1]['user']['name']"
-        :img-src="users['items'][idx - 1]['user']['image']['url']"
-        :img-alt="users['items'][idx - 1]['user']['image']['alt']"
-        img-top
-        tag="article"
-        style="max-width: 17rem"
-        class="mb-2"
-      >
+<b-card
+  id="b-card"
+  :title="users.items[idx - 1]?.user?.name || ''"
+  :img-src="
+    users.items[idx - 1]?.user?.image?.url
+      ? users.items[idx - 1]?.user?.image?.url
+      : '../../public/semimagem.png'
+  "
+  :img-alt="
+    users.items[idx - 1]?.user?.image
+      ? users.items[idx - 1]?.user?.image?.alt || 'sem imagem'
+      : 'sem imagem'
+  "
+  img-top
+  tag="article"
+  style="max-width: 17rem"
+  class="mb-2"
+>
         <b-card-text>
           {{ users['items'][idx - 1]['user']['email'] }} <br />
-          {{ users['items'][idx - 1]['user']['type'] }}
+          <p v-if="users.items[idx-1].user.type==='PRODUCER'">Produtor</p>
+		  <p v-else>{{ users['items'][idx - 1]['user']['type'] }}</p>
+		  <p v-if="users.items[idx-1].deletedAt != null">Conta desativa</p>
         </b-card-text>
 
         <b-button
@@ -31,18 +39,17 @@
     :total-rows="totalItems"
     :per-page="pageSize"
     :current-page="page"
+	@page-changed="onPageChanged"
   >
   </Pagination>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
 import { getProducers, getProducersValues } from '../api/producers';
 import { onMounted, ref } from 'vue';
-export default {
-  components: { Pagination },
-  setup() {
-    const users = ref<any>(null);
+import { BaseItems, Producer } from '@types';
+    const users = ref<BaseItems<Producer>>();
     const qtd = ref(0);
     const page = ref(1);
     const pageSize = ref(24);
@@ -51,19 +58,40 @@ export default {
       try {
         const responseItems = await getProducersValues();
         page.value = responseItems.data.page;
+		const urlSearchParams = new URLSearchParams(window.location.search);
+		const pageParam = urlSearchParams.get('page');
+		if (pageParam) {
+			if (pageParam> responseItems.data.totalPages){
+				page.value = responseItems.data.totalPages;
+			}else{
+				page.value = Number(pageParam);
+			}
+		}
         pageSize.value = responseItems.data.pageSize;
         totalItems.value = responseItems.data.totalItems;
         const response = await getProducers(page.value, pageSize.value);
         users.value = response.data;
-        qtd.value = users.value.items.length;
+        qtd.value = Number(users.value?.items.length);
       } catch (error) {
         console.error(error);
       }
     });
+	function onPageChanged(newPageNumber: number): void {
+  page.value = newPageNumber;
+  myFunction();
+}
 
-    return { users, qtd, page, pageSize, totalItems };
-  },
-};
+function myFunction(): void {
+  const response = getProducers(page.value, pageSize.value);
+  response.then((res) => {
+    users.value = res.data;
+  });
+}
+
+function handlePageChange(value: number) {
+  page.value = value;
+}
+
 </script>
 <style scoped>
 .card-container {

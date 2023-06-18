@@ -28,6 +28,8 @@
         class="mb-2"
       >
         <b-card-text>
+			<strong v-if="user.deletedAt != null">Conta desativa</strong>
+			<br>
           <strong>Email: </strong>{{ user['user']['email'] || 'Não definido' }}
           <br />
           <strong>Telemóvel: </strong
@@ -72,8 +74,8 @@
           </div>
         </b-card-text>
 
-        <div class="editarConta">
-          <button
+        <div class="editarConta" >
+          <button v-if="user.deletedAt===null"
             href="#"
             style="margin-right: 10px !important"
             class="btn btn-outline-secondary btn-sm"
