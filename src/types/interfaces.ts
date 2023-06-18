@@ -49,6 +49,8 @@ export interface User {
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+    addresses?: Address[];
+    deletedAt?: string;
 }
 
 export interface Category {
@@ -61,6 +63,8 @@ export interface Category {
 }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
+    deletedAt?: string;
+    addresses?: Address[];
 }
 
 export interface CreateConsumer {
@@ -96,16 +100,6 @@ export interface BaseItems<T> {
     totalPages: number;
     page: number;
     pageSize: number;
-}
-
-export interface ProductionUnits {
-    id: number;
-    name: string;
-    description: string;
-    productionUnit: ProductionUnit;
-    products: ProducerProduct[];
-    address: Address;
-    images: Image[];
 }
 
 export interface Transport {
@@ -151,6 +145,21 @@ export interface OrderItem {
     producerProduct: ProducerProduct;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+}
+
+export interface CreateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
+    productSpecId: number;
+}
+
+export interface UpdateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
 }
 
 export type AuthenticatedUser = Consumer | Producer;

@@ -9,12 +9,11 @@
     <table v-if="!!orders?.items" style="border: 2px" class="table">
       <thead>
         <tr>
-          <th><h4>Exportar dados</h4></th>
-
-          <th><h4>Artigos</h4></th>
           <th>
             <h4>Código</h4>
           </th>
+          <th><h4>Artigos</h4></th>
+
           <th><h4>Estado</h4></th>
           <th><h4>Morada de entrega</h4></th>
 
@@ -24,22 +23,19 @@
             </div>
           </th>
           <th><h4>Total</h4></th>
-
+          <th><h4>Exportar dados</h4></th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(order, idx) in orders.items" :key="order.id">
           <td>
-            <input
-              id="name"
-              type="checkbox"
-              style="transform: scale(1.2)"
-              @change="onCheckboxChange()"
-              :value="order.id"
-              v-model="selectedOrders[idx]"
-            />
-            <span v-if="selectedOrders[idx]"></span>
+            <router-link
+              :to="'/encomenda/id' + order.id"
+              class="texto"
+              style="text-decoration: none; color: black"
+              >{{ order.id }}</router-link
+            >
           </td>
 
           <td>
@@ -58,24 +54,52 @@
           </td>
 
           <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              class="texto"
-              style="text-decoration: none; color: black"
-              >{{ order.id }}</router-link
-            >
-          </td>
-
-          <td>
-            <div style="display: inline-flex">
-              <i class="bi bi-check-all"></i>
+            <div style="display: inline-flex; gap: 0.5vh">
               <router-link
                 :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
-                <p class="texto">
-                  {{ orderStatusTranslation(order.generalStatus) }}
-                </p></router-link
+                <div class="status-info">
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) === 'Entregue'
+                    "
+                    class="bi bi-check-all"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Em processamento'
+                    "
+                    class="bi bi-arrow-repeat mr-2"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) === 'Pago'
+                    "
+                    class="bi bi-currency-euro"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Cancelada'
+                    "
+                    class="bi bi-x"
+                    style="margin-top: -0.5vh"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(order.generalStatus) ===
+                      'Em andamento'
+                    "
+                    class="bi bi-truck mr-2"
+                    >></i
+                  >
+
+                  <p class="texto">
+                    {{ orderStatusTranslation(order.generalStatus) }}
+                  </p>
+                </div></router-link
               >
             </div>
 
@@ -102,6 +126,7 @@
               >
             </div>
           </td>
+
           <td>
             <router-link
               :to="'/encomenda/id' + order.id"
@@ -136,17 +161,30 @@
             <router-link
               :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              class="texto"
-              >{{ order.orderDate.substring(0, 10) }}</router-link
+              ><span class="texto">{{
+                order.orderDate.substring(0, 10)
+              }}</span></router-link
             >
           </td>
+
           <td>
             <router-link
               :to="'/encomenda/id' + order.id"
               style="text-decoration: none; color: black"
-              class="texto"
-              >{{ order.totalPrice }}€</router-link
+              ><span class="texto">{{ order.totalPrice }}€</span></router-link
             >
+          </td>
+
+          <td>
+            <input
+              id="name"
+              type="checkbox"
+              style="transform: scale(2)"
+              @change="onCheckboxChange()"
+              :value="order.id"
+              v-model="selectedOrders[idx]"
+            />
+            <span v-if="selectedOrders[idx]"></span>
           </td>
 
           <td>
@@ -160,14 +198,15 @@
       </tbody>
     </table>
   </div>
-  <BButton
-    id="botao"
-    class="botao"
-    variant="outline-primary"
-    v-if="isExportButtonVisible"
-    @click="exportSelectedOrders"
-    >Exportar dados</BButton
-  >
+  <div class="btn-div" v-if="isExportButtonVisible">
+    <BButton
+      id="botao"
+      class="botao"
+      variant="outline-primary"
+      @click="exportSelectedOrders"
+      ><span>Exportar dados</span></BButton
+    >
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -319,12 +358,15 @@ function cancelarEncomendaImpossivel() {
 
 <style scoped>
 #morada2 {
-  font-size: 11px;
+  font-size: 0.8em;
 }
 .texto,
-i,
 #morada {
-  font-size: 13px;
+  font-size: 0.9em;
+}
+
+td i {
+  font-size: 1.3em;
 }
 .carousel-container {
   display: flex;
@@ -338,15 +380,25 @@ i,
 [v-cloak] {
   display: none;
 }
+
 .table thead th {
   position: sticky;
   top: 0;
-  background-color: #e9e5de !important;
+  background-color: #9dc88d !important;
   /* Prefixos do navegador */
   position: -webkit-sticky;
   position: -moz-sticky;
   position: -ms-sticky;
   z-index: 2;
+}
+
+.table thead th:first-child,
+.table tbody td:first-child {
+  text-align: center;
+}
+
+.table thead th:nth-last-child(2) {
+  text-align: center;
 }
 
 h3 {
@@ -356,27 +408,25 @@ h3 {
 }
 
 .table-container {
-  max-height: 450px; /* Altura máxima da tabela */
-  max-width: 1600px;
-  margin: auto;
-  max-width: 92%;
+  width: 90%;
+  max-height: 50vh; /* Altura máxima da tabela */
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   position: relative;
+  display: block;
+  margin: auto;
 }
-.table {
-  text-align: center;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  font-size: 16px;
-  border: 2px;
-}
-
 .table th,
 .table td {
-  padding: 10px;
-  font-size: 20px;
+  padding: 1.5vh;
+  font-size: 1.2em;
   text-align: left;
   border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+.table h4 {
+  color: #2a2a2a !important;
+  font-weight: bold !important;
+  font-size: 1.1em !important;
 }
 
 tr:hover {
@@ -384,9 +434,119 @@ tr:hover {
   z-index: -2;
 }
 
-.botao {
-  width: 190px;
-  margin-left: 80px;
-  margin-top: 20px;
+.btn-div {
+  width: 12%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+.botao {
+  padding: 0.7em;
+  background-color: #4d774e;
+  border-radius: 5em;
+  border: 2px solid #4d774e;
+}
+
+.botao2 {
+  padding: 0.6em;
+  border-radius: 0.8em;
+  border: 2px solid #f3f3f3;
+}
+
+.botao span {
+  color: white !important;
+}
+
+.botao:hover {
+  background-color: #3c5e3c !important;
+  border: 2px solid #3c5e3c !important;
+}
+
+.botao2:hover {
+  background-color: #f3f3f3 !important;
+  border: 2px solid #f3f3f3 !important;
+}
+
+.btn {
+  color: black !important;
+}
+
+.status-info {
+  display: flex;
+  gap: 0.5em;
+}
+
+.status-info i {
+  margin-top: -2%;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    width: 100% !important;
+    max-height: 100% !important;
+  }
+
+  .table h4 {
+    font-size: 0.75em !important;
+  }
+
+  .botao,
+  .botao2 {
+    font-size: 0.7em;
+  }
+
+  .texto,
+  #morada,
+  #morada2 {
+    font-size: 0.7em;
+  }
+
+  .table thead th {
+    min-width: 15vh;
+  }
+}
+/* @media (max-width: 768px) {
+  .table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+  .table thead,
+  .table tbody,
+  .table th,
+  .table td,
+  .table tr {
+    display: block;
+  }
+  .table thead {
+    position: relative;
+    visibility: hidden;
+  }
+  .table thead th {
+    position: absolute;
+    white-space: nowrap;
+    visibility: hidden;
+  }
+  .table tbody tr {
+    margin-bottom: 30px;
+  }
+  .table td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    white-space: normal;
+    text-align: left;
+  }
+  .table td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: bold;
+  }
+} */
 </style>

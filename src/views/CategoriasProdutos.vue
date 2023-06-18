@@ -171,12 +171,11 @@ export default defineComponent({
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
     const categoryId =
       parseInt(String(this.$route.query.categoryId)) || undefined;
-    const allProducts = await fetchAllProducts(
+    const allProducts = await fetchAllProducts({
       page,
       pageSize,
-      undefined,
-      categoryId
-    );
+      categoryId,
+    });
     this.allProducts = allProducts.data;
     // const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();

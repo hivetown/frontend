@@ -141,6 +141,9 @@
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
               <b-dropdown-item href="#">Definições</b-dropdown-item>
+              <b-dropdown-item v-if="permissions" href="/admin?page=1"
+                >Admin area</b-dropdown-item
+              >
               <div v-if="user.user.type === 'PRODUCER'">
                 <b-dropdown-item href="/produtosprodutor"
                   >Produtos</b-dropdown-item
@@ -228,31 +231,13 @@
   </div>
 </template>
 <script lang="ts">
-import { useStore } from '@/store';
-import { computed } from 'vue';
 import Modal from '../components/ModalNotifications.vue';
-import { getUnreadNotifications } from '../api/notifications';
-import { ref } from 'vue';
-const notificacoes = ref<number>();
-
+import { getUnreadNotifications } from '@/api/notifications';
+import { hasPermission } from '@/utils/permissions';
+import { Permission } from '@/types';
 export default {
   components: {
     Modal,
-  },
-  setup() {
-    const store = useStore();
-
-    // computed user
-    const user = computed(() => store.state.user);
-
-    const logout = async () => {
-      await store.dispatch('logout');
-    };
-
-    return {
-      user,
-      logout,
-    };
   },
   watch: {
     user: {
@@ -262,6 +247,20 @@ export default {
         this.atualizaNotificacoes(qtd);
       },
       deep: true,
+    },
+  },
+  computed: {
+    permissions() {
+      return (
+        this.$store.state.user &&
+        hasPermission(
+          this.$store.state.user?.user,
+          Permission.ALL_CONSUMER | Permission.ALL_PRODUCER
+        )
+      );
+    },
+    user() {
+      return this.$store.state.user;
     },
   },
   methods: {
@@ -281,11 +280,14 @@ export default {
     showModalFunction() {
       this.showModal = !this.showModal;
     },
+    logout() {
+      this.$store.dispatch('logout');
+    },
   },
   data() {
     return {
       showModal: false,
-      notificacoes,
+      notificacoes: 0,
     };
   },
   mounted() {
@@ -310,6 +312,7 @@ export default {
   },
 };
 </script>
+
 <style>
 .linkcolor:hover {
   color: var(--bs-dropdown-link-color);
