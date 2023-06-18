@@ -50,7 +50,7 @@ export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
 	addresses?: Address[];
-	deletedAt: string;
+	deletedAt?: string;
 
 }
 
