@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import Category from '@/components/Category.vue';
 import { Category as CategoryType } from '@/types';
-import { fetchCategorySubCategories } from '@/api';
+import { fetchAllCategories } from '@/api';
 import { PropType } from 'vue';
 </script>
 
@@ -41,7 +41,8 @@ export default {
   methods: {
     async fetchSubCategories(id: number) {
       const subCategories =
-        this.subCategoriesById[id] || (await fetchCategorySubCategories(id));
+        this.subCategoriesById[id] ||
+        (await fetchAllCategories({ parentId: id }));
       this.subCategoriesById[id] = subCategories;
       const category = this.categories.find((c) => c.id === id);
       if (category) {
