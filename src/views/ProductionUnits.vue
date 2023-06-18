@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1 class="mb-5">Unidades de Produção</h1>
+    <h2 class="mb-5 dgreen-txt main-txt">Unidades de Produção</h2>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <template v-if="allUnitsData?.items">
         <div v-for="unit in allUnitsData.items" :key="unit.id" class="col">
@@ -24,7 +24,7 @@
             <b-card-text class="">
               <div>
                 <div
-                  class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
+                  class="rounded-pill text-center mt-3 mb-3 w-25 prod-category"
                 >
                   {{ unit.id }}
                 </div>
@@ -70,6 +70,7 @@
           "
         >
           <Pagination
+            class="mobile-pagination-prods"
             v-if="allUnitsData"
             :total-rows="allUnitsData.totalItems"
             :per-page="allUnitsData.pageSize"
@@ -119,6 +120,10 @@ export default {
 </script>
 
 <style scoped>
+* {
+  color: black;
+  text-decoration: none;
+}
 .production-unit-card a {
   text-decoration: none;
 }
@@ -154,5 +159,16 @@ export default {
   align-items: center;
   font-size: 1.3rem;
   color: #333;
+}
+
+@media (max-width: 768px) {
+  h2 {
+    text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
+    margin-left: -14vh;
+  }
 }
 </style>
