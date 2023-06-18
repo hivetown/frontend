@@ -28,9 +28,9 @@
             </b-card>
             <b-card-text class="">
               <div>
-                <h5>{{ product.productSpec!.name }}</h5>
-                <p>UP: {{ product.productionUnit!.name }}</p>
-                <p class="grey-txt mt-3">
+                <h5 class="name-limited">{{ product.productSpec!.name }}</h5>
+                <p>Unidade: {{ product.productionUnit!.name }}</p>
+                <p class="grey-txt mt-3 description">
                   {{ product.productSpec!.description }}
                 </p>
                 <div class="d-flex gap-2">
@@ -175,6 +175,21 @@ h2 {
   text-transform: capitalize;
   font-size: 2em;
 }
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.name-limited {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 @media (max-width: 768px) {
   h2 {
@@ -183,6 +198,7 @@ h2 {
 
   .mobile-pagination-prods {
     scale: 0.8 !important;
+    margin-left: -12vh;
   }
 }
 </style>

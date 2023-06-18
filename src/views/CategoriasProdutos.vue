@@ -6,12 +6,13 @@
   <!-- Conteúdo da página -->
   <div class="d-flex parent">
     <!-- Barra lateral com os filtros -->
-    <div class="lat-bar" style="width: 20%">
+    <div class="lat-bar mobile-off-lat-bar" style="width: 20%">
       <div id="filters">
         <div>
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText
+              style="border-radius: 3em !important"
               :class="{ 'p-invalid': productSearchQueryError }"
               v-model="productSpecSearchQuery"
               @update:model-value="changeSearchQuery"
@@ -24,13 +25,14 @@
           }}</small>
         </div>
 
-        <div id="category-filter">
+        <div id="category-filter" class="mt-4">
           <h5 class="grey-txt">Categorias</h5>
           <div v-if="!categoriesTreeNodes.length">
             Sem categorias disponíveis
           </div>
           <div v-else>
             <Tree
+              class="cats-container"
               scroll-height="600px"
               :value="categoriesTreeNodes"
               @node-expand="expandCategory"
@@ -39,15 +41,17 @@
               @node-select="nodeSelect"
             >
               <template #default="slotProps">
-                <b-form-checkbox
-                  :checked="
-                    selectedCategoryTreeNode?.key === slotProps.node.key
-                  "
-                  :disabled="
-                    selectedCategoryTreeNode?.key === slotProps.node.key
-                  "
-                />
-                {{ slotProps.node.label }}
+                <div class="d-flex">
+                  <b-form-checkbox
+                    :checked="
+                      selectedCategoryTreeNode?.key === slotProps.node.key
+                    "
+                    :disabled="
+                      selectedCategoryTreeNode?.key === slotProps.node.key
+                    "
+                  />
+                  {{ slotProps.node.label }}
+                </div>
               </template>
             </Tree>
           </div>
@@ -64,11 +68,16 @@
           </div>
           <div v-else>
             <Slider
+              class="price-slider"
               v-model="priceFilter"
               @slideend="changePriceFilter"
               range
               :min="productsPricing.min"
               :max="productsPricing.max"
+              :pt="{
+                root: { style: 'width:60%;' },
+                range: { style: 'background-color: #ddd' },
+              }"
             />
             <span>{{ priceFilter[0] }}€</span>~<span
               >{{ priceFilter[1] }}€</span
@@ -93,11 +102,9 @@
     </div>
 
     <!-- Espeaço à direita -->
-    <div style="width: 100%">
-      <h3 class="parent dgreen-txt">
-        <template v-if="!selectedCategoryTreeNode"
-          >Nenhuma categoria selecionada</template
-        >
+    <div class="right-content" style="width: 100%">
+      <h3 class="parent dgreen-txt main-txt">
+        <template v-if="!selectedCategoryTreeNode">Todos os produtos</template>
         <template v-else>{{ selectedCategoryTreeNode.label }}</template>
       </h3>
       <!-- Diferentes vistas da página -->
@@ -134,7 +141,7 @@
                 :product-spec="product"
                 :can-compare="canCompareMoreProducts"
                 @compare="addProductToCompare"
-                class="col-12 md:col-6 lg:col-3 xl:col-2"
+                class="col-6 md:col-6 lg:col-3 xl:col-2"
               />
             </template>
           </div>
@@ -168,6 +175,150 @@
       </div>
     </div>
   </div>
+
+  <!-- Filtros no movo telemovel -->
+  <div class="card mobile-on-lat-bar" style="display: none">
+    <Accordion class="">
+      <AccordionTab header="Filtros">
+        <div id="filters">
+          <div id="category-filter">
+            <h5 class="grey-txt">Categorias</h5>
+            <div v-if="!categoriesTreeNodes.length">
+              Sem categorias disponíveis
+            </div>
+            <div v-else>
+              <Tree
+                class="cats-container"
+                scroll-height="600px"
+                :value="categoriesTreeNodes"
+                @node-expand="expandCategory"
+                :loading="loadingCategories"
+                selection-mode="single"
+                @node-select="nodeSelect"
+              >
+                <template #default="slotProps">
+                  <div class="d-flex">
+                    <b-form-checkbox
+                      :checked="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                      :disabled="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                    />
+                    {{ slotProps.node.label }}
+                  </div>
+                </template>
+              </Tree>
+            </div>
+          </div>
+
+          <div id="price-filter">
+            <h5 class="grey-txt mt-3">Preço</h5>
+            <div
+              v-if="
+                !productSpecs ||
+                !productSpecs.maxPrice ||
+                !productSpecs.minPrice
+              "
+            >
+              Sem preços disponíveis
+            </div>
+            <div v-else>
+              <Slider
+                class="price-slider"
+                v-model="priceFilter"
+                @slideend="changePriceFilter"
+                range
+                :min="productsPricing.min"
+                :max="productsPricing.max"
+                :pt="{
+                  root: { style: 'width:60%;' },
+                  range: { style: 'background-color: #ddd' },
+                }"
+              />
+              <span>{{ priceFilter[0] }}€</span>~<span
+                >{{ priceFilter[1] }}€</span
+              >
+            </div>
+          </div>
+
+          <div id="supplier-filter">
+            <h5 class="grey-txt mt-3">Fornecedor</h5>
+            <SupplierFilter></SupplierFilter>
+          </div>
+        </div>
+      </AccordionTab>
+    </Accordion>
+  </div>
+  <div class="right-content-mobile-on">
+    <CustomViews
+      v-if="productSpecs && productSpecs.pageSize"
+      :items="productSpecs.totalItems"
+      :amount="productSpecs.pageSize"
+      :prevent-redirect="true"
+      @update:page-size="
+        (pageSize) => productSpecPageChange({ rows: pageSize })
+      "
+    />
+    <div v-if="productSpecs">
+      <div v-if="productSpecs.totalItems === 0" class="parent">
+        <p>Não foram encontrados produtos para a categoria especificada</p>
+      </div>
+
+      <div v-else id="page-products">
+        <div class="grid m-3">
+          <template v-if="loadingProductSpecs">
+            <ProgressSpinner
+              style="width: 50px; height: 50px"
+              stroke-width="8"
+              fill="var(--surface-ground)"
+              animation-duration=".5s"
+              aria-label="Loading Product specifications"
+            />
+          </template>
+          <template v-else>
+            <ProductCard
+              v-for="product in productSpecs.items"
+              :key="product.id"
+              :product-spec="product"
+              :can-compare="canCompareMoreProducts"
+              @compare="addProductToCompare"
+              class="col-6 md:col-6 lg:col-3 xl:col-2"
+            />
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination-mobile-on">
+    <div
+      class="parent"
+      style="display: flex; flex-direction: column; justify-content: center"
+    >
+      <Paginator
+        :template="{
+          '640px': 'PrevPageLink CurrentPageReport NextPageLink',
+          '960px':
+            'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
+          '1300px':
+            'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
+          default:
+            'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown JumpToPageInput',
+        }"
+        :rows="productSpecs?.pageSize"
+        :total-records="productSpecs?.totalItems"
+        @page="productSpecPageChange"
+      >
+      </Paginator>
+
+      <p style="display: block; margin: auto">
+        Total de páginas: {{ productSpecs?.totalPages }}
+      </p>
+    </div>
+  </div>
+
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
   <CompareBanner
     v-if="isCompareBannerVisible"
@@ -192,6 +343,9 @@ import Paginator, { PageState } from 'primevue/paginator';
 import PathComponent from '@/components/PathComponent.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import CompareBanner from '@/components/CompareBanner.vue';
+import SupplierFilter from '@/components/SupplierFilter.vue';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
 
 const route = useRoute();
 const router = useRouter();
@@ -496,3 +650,59 @@ const routeMinPrice = Number(route.query.minPrice) || -1;
 const routeMaxPrice = Number(route.query.maxPrice) || -1;
 const priceFilter = ref<[number, number]>([routeMinPrice, routeMaxPrice]);
 </script>
+
+<style scoped>
+.cats-container {
+  /* background-color: red; */
+  border: 2px solid #f3f3f3;
+  border-radius: 0.5em;
+}
+
+.price-slider {
+  margin-top: 2vh;
+  width: 95%;
+  margin-bottom: 1vh;
+  margin-left: 1vh;
+}
+
+#supplier-filter {
+  margin-top: 4vh;
+}
+.right-content-mobile-on {
+  display: none;
+}
+
+.pagination-mobile-on {
+  display: none;
+}
+@media (max-width: 1111px) {
+  .mobile-off-lat-bar {
+    display: none;
+  }
+
+  .mobile-on-lat-bar {
+    display: block !important;
+    /* background-color: red; */
+  }
+
+  .right-content {
+    display: none;
+  }
+
+  .p-accordion {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+  }
+
+  .right-content-mobile-on {
+    display: block;
+  }
+
+  .pagination-mobile-on {
+    display: block;
+  }
+  .price-slider {
+    margin-left: 1vh;
+  }
+}
+</style>

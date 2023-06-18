@@ -61,6 +61,7 @@
         </div>
         <div class="parent" style="display: flex; justify-content: center">
           <Pagination
+            class="mobile-pagination-prods"
             v-if="allTransportsData"
             :total-rows="allTransportsData.totalItems"
             :per-page="allTransportsData.pageSize"
@@ -165,6 +166,11 @@ h2 {
 @media (max-width: 768px) {
   h2 {
     text-align: center;
+  }
+
+  .mobile-pagination-prods {
+    scale: 0.8 !important;
+    margin-left: -12vh;
   }
 }
 </style>

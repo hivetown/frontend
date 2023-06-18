@@ -50,7 +50,7 @@
             <!-- Dados dos fields -->
             <!-- Para cada categoria -->
             <div
-              style="width: 15%"
+              style="width: 30%"
               v-for="(productFields, idxProduct) in categories?.products"
               :key="idxProduct"
             >

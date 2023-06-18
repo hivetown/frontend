@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mobile-pagination">
     <b-pagination
       class="pagination mobile-pagination"
       v-model="currentPage"
