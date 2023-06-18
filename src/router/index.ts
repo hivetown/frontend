@@ -182,12 +182,9 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
 });
+
 router.beforeEach(async (to, from, next) => {
     let isAuthenticated = !!store.state.user;
-    if (!isAuthenticated) {
-        await store.dispatch('fetchAuthUser');
-        isAuthenticated = !!store.state.user;
-    }
 
     // Check if the user is authenticated
     if (!isAuthenticated) {

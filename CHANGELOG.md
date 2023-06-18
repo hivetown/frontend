@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/hivetown/frontend/compare/v1.2.3...v1.2.4) (2023-06-17)
+
+
+### Bug Fixes
+
+* stuff ([0abadbc](https://github.com/hivetown/frontend/commit/0abadbcbb17d95e6545771fa23bfe4969488bddd))
+
 ## [1.2.3](https://github.com/hivetown/frontend/compare/v1.2.2...v1.2.3) (2023-06-17)
 
 

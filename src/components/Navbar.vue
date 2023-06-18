@@ -86,7 +86,8 @@
                 class="nav-item"
                 :src="user.user.image?.url"
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
-              ></b-avatar>
+              >
+              </b-avatar>
               <span>{{ user.user.name }}</span>
             </router-link>
             <b-nav-item-dropdown
@@ -178,11 +179,13 @@
   </div>
 </template>
 <script lang="ts">
-import { computed } from 'vue';
 import { useStore } from '@/store';
+import { computed } from 'vue';
+
 export default {
   setup() {
     const store = useStore();
+
     // computed user
     const user = computed(() => store.state.user);
 

@@ -183,13 +183,7 @@
             @click="currentPage = 'vendedores'"
             :class="{ 'active-view': currentPage === 'vendedores' }"
           >
-            <h5 class="grey-txt">Outros vendedores</h5>
-          </b-nav-item>
-          <b-nav-item
-            @click="currentPage = 'unidade'"
-            :class="{ 'active-view': currentPage === 'unidade' }"
-          >
-            <h5 class="grey-txt">Unidade de produção</h5>
+            <h5 class="grey-txt">Vendedores</h5>
           </b-nav-item>
         </b-nav>
       </b-navbar>
@@ -323,6 +317,30 @@
                       <b-button class="buy-btn rounded-pill" style="scale: 0.85"
                         >Comprar agora</b-button
                       >
+                      <b-button
+                        v-if="
+                          selectedUnit &&
+                          selectedUnit === producerProduct.productionUnit?.id
+                        "
+                        class="buy-btn rounded-pill close-map-btn"
+                        style="scale: 0.85"
+                        @click="selectedUnit = null"
+                      >
+                        Fechar Mapa
+                      </b-button>
+                      <b-button
+                        v-else
+                        class="buy-btn rounded-pill map-btn"
+                        style="scale: 0.85"
+                        @click="selectProducer(producerProduct.productionUnit)"
+                      >
+                        {{
+                          selectedUnit &&
+                          selectedUnit === producerProduct.productionUnit
+                            ? 'Fechar Mapa'
+                            : 'Mapa'
+                        }}
+                      </b-button>
                       <button
                         type="button"
                         style="scale: 1.1"
@@ -336,94 +354,25 @@
                   </div>
                 </div>
               </div>
+              <div
+                v-if="
+                  selectedUnit &&
+                  selectedUnit === producerProduct.productionUnit
+                "
+              >
+                <Maps
+                  :selected-unit="selectedUnit"
+                  :producer-id="producerProduct.producer?.user.id || 0"
+                />
+              </div>
             </div>
           </div>
         </div>
         <div v-else>
-          <div v-if="producerLocalProducts.totalItems !== 0">
-            <p>
-              Vendedores encontrados num raio de 30km para o produto
-              selecionado:
-            </p>
-            <div
-              v-for="(producerProduct, index) in producerLocalProducts.items"
-              :key="index"
-            >
-              <div class="mt-4" style="background-color: ">
-                <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
-                <div
-                  class="mt-5 d-flex align-items-center gap-3"
-                  style="background-color: ; width: 70%"
-                  v-if="producerProduct.id != defaultProduct.id"
-                >
-                  <router-link
-                    v-if="producerProduct.producer"
-                    :to="'/producer/' + producerProduct.producer.user.id"
-                  >
-                    <b-avatar
-                      v-if="producerProduct.producer.user.image"
-                      class="nav-item"
-                      :src="producerProduct.producer.user.image.url"
-                      :alt="producerProduct.producer.user.image.alt"
-                      style="
-                        box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                        scale: 1.2;
-                      "
-                    >
-                    </b-avatar>
-                  </router-link>
-                  <div class="seller" v-if="producerProduct.producer">
-                    <h5>{{ producerProduct.producer.user.name }}</h5>
-                    <router-link
-                      :to="'/producer/' + producerProduct.producer.user.id"
-                    >
-                      <a href="#" class="grey-txt">Sobre o vendedor</a>
-                    </router-link>
-                  </div>
-                  <div style="margin-left: 30%; position: absolute">
-                    <div class="d-flex gap-5 align-items-center">
-                      <span>
-                        <h5>{{ producerProduct.currentPrice }}€</h5>
-                      </span>
-                      <div>
-                        <b-button
-                          class="buy-btn rounded-pill"
-                          style="scale: 0.85"
-                          >Comprar agora</b-button
-                        >
-                        <button
-                          type="button"
-                          style="scale: 1.1"
-                          class="btn btn-outline-secondary circle-btn"
-                          v-b-tooltip.hover
-                          title="Adicionar ao carrinho"
-                        >
-                          <i class="bi bi-cart"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <p>
-              O produto selecionado não se encontra disponível para venda num
-              raio de 30km de si.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="px-4" v-if="currentPage === 'unidade'">
-        <div style="background-color: ">
-          <div class="mt-4">
-            <h4>Unidade de produção do produto</h4>
-
-            <div class="parent" style="background-color: green; height: 30vh">
-              colocar o mapa aqui
-            </div>
-          </div>
+          <p>
+            O produto selecionado não se encontra disponível para venda num raio
+            de 30km de si.
+          </p>
         </div>
       </div>
     </div>
@@ -539,6 +488,7 @@
 <script lang="ts">
 // Componentes
 import PathComponent from '@/components/PathComponent.vue';
+import Maps from '../maps/maps.vue';
 import {
   fetchProduct,
   fetchProducerProducts,
@@ -553,6 +503,7 @@ import {
   BaseItems,
   Category,
   ProductSpecField,
+  SelectedUnit,
 } from '@/types';
 import { defineComponent, PropType } from 'vue';
 export default defineComponent({
@@ -563,6 +514,14 @@ export default defineComponent({
       type: Number as PropType<number>,
       required: true,
       validator: (v: number) => v >= 0 && v <= 5,
+    },
+    initialSelectedUnit: {
+      type: Object as PropType<SelectedUnit | null>,
+      default: null,
+    },
+    producerId: {
+      type: Number as PropType<number | undefined>,
+      default: undefined,
     },
   },
 
@@ -594,6 +553,7 @@ export default defineComponent({
       productCategoriesFields: [] as ProductSpecField[][],
       //   fields: {} as BaseItems<Category>,
       fields: [] as ProductSpecField[][],
+      selectedUnit: null as object | null | undefined | Number,
 
       //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
       checkboxValue: false,
@@ -613,6 +573,14 @@ export default defineComponent({
     selectImage(index: number) {
       this.selectedImage = this.productDetails.images[index].url;
       this.selectedImageAlt = this.productDetails.images[index].alt;
+    },
+
+    selectProducer(productionUnitId: object | null | undefined) {
+      if (this.selectedUnit === productionUnitId) {
+        this.selectedUnit = null; // Close the map div if already selected
+      } else {
+        this.selectedUnit = productionUnitId; // Set the selected production unit
+      }
     },
     async onCheckboxChange() {
       this.checkboxValue = !this.checkboxValue;
@@ -694,6 +662,6 @@ export default defineComponent({
     console.log(this.fields);
     this.productCategoriesFields = this.fields;
   },
-  components: { PathComponent },
+  components: { PathComponent, Maps },
 });
 </script>
