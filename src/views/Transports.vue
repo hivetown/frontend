@@ -59,14 +59,7 @@
             </div>
           </b-card-text>
         </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
+        <div class="parent" style="display: flex; justify-content: center">
           <Pagination
             v-if="allTransportsData"
             :total-rows="allTransportsData.totalItems"

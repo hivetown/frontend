@@ -1,74 +1,71 @@
 <template>
   <!-- TODO - fix pagination -->
-  <div class="container">
-    <h2 class="mb-5 dgreen-txt main-txt">Produtos</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
-      <template v-if="products && products.items && products.items.length > 0">
-        <div v-for="product in products.items" :key="product.id">
-          <!-- <div v-for="product in products" :key="product.id" class="col"> -->
-          <b-card class="prod-card position-relative">
-            <!-- <span class="position-absolute top-0 end-0 p-3 fav">
+  <div class="center-page">
+    <div class="container">
+      <h2 class="mb-5 dgreen-txt main-txt">Produtos</h2>
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
+        <template
+          v-if="products && products.items && products.items.length > 0"
+        >
+          <div v-for="product in products.items" :key="product.id">
+            <!-- <div v-for="product in products" :key="product.id" class="col"> -->
+            <b-card class="prod-card position-relative">
+              <!-- <span class="position-absolute top-0 end-0 p-3 fav">
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
-            <img
-              :src="product.productSpec!.images[0].url"
-              class="square-image"
-              :alt="product.productSpec!.images[0].alt"
-            />
-          </b-card>
-          <b-card-text class="">
-            <div>
-              <h5>{{ product.productSpec!.name }}</h5>
-              <p>UP: {{ product.productionUnit!.name }}</p>
-              <p class="grey-txt mt-3">
-                {{ product.productSpec!.description }}
-              </p>
-              <div class="d-flex gap-2">
-                <h4 class="mb-3">{{ product.currentPrice }}€</h4>
-                <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
-              </div>
-              <div class="d-flex gap-2">
-                <router-link :to="'/product/edit/' + product.id">
+              <img
+                :src="product.productSpec!.images[0].url"
+                class="square-image"
+                :alt="product.productSpec!.images[0].alt"
+              />
+            </b-card>
+            <b-card-text class="">
+              <div>
+                <h5>{{ product.productSpec!.name }}</h5>
+                <p>UP: {{ product.productionUnit!.name }}</p>
+                <p class="grey-txt mt-3">
+                  {{ product.productSpec!.description }}
+                </p>
+                <div class="d-flex gap-2">
+                  <h4 class="mb-3">{{ product.currentPrice }}€</h4>
+                  <!-- <p class="mt-1 grey-txt text-decoration-line-through">{{ product.oldPrice }}€</p> -->
+                </div>
+                <div class="d-flex gap-2">
+                  <router-link :to="'/product/edit/' + product.id">
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary circle-btn"
+                      v-b-tooltip.hover
+                      title="Editar produto"
+                    >
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                  </router-link>
                   <button
                     type="button"
                     class="btn btn-outline-secondary circle-btn"
                     v-b-tooltip.hover
-                    title="Editar produto"
+                    title="Remover produto"
                   >
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-trash"></i>
                   </button>
-                </router-link>
-                <button
-                  type="button"
-                  class="btn btn-outline-secondary circle-btn"
-                  v-b-tooltip.hover
-                  title="Remover produto"
-                >
-                  <i class="bi bi-trash"></i>
-                </button>
+                </div>
               </div>
-            </div>
-          </b-card-text>
+            </b-card-text>
+          </div>
+          <div class="parent" style="display: flex; justify-content: center">
+            <Pagination
+              v-if="allProductsData && allProductsData.data"
+              :total-rows="allProductsData.data.totalItems"
+              :per-page="allProductsData.data.pageSize"
+            >
+              ></Pagination
+            >
+          </div>
+        </template>
+        <div v-else>
+          <p>Ainda não tem produtos registados.</p>
         </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
-          <Pagination
-            v-if="allProductsData && allProductsData.data"
-            :total-rows="allProductsData.data.totalItems"
-            :per-page="allProductsData.data.pageSize"
-          >
-            ></Pagination
-          >
-        </div>
-      </template>
-      <div v-else>
-        <p>Ainda não tem produtos registados.</p>
       </div>
     </div>
   </div>
@@ -121,6 +118,10 @@ export default {
 };
 </script>
 <style scoped>
+.center-page {
+  display: flex;
+  justify-content: center;
+}
 .square-image {
   width: 100%;
   height: 100%;

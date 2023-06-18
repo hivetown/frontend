@@ -80,4 +80,16 @@ export default {
   content: 'Última';
   margin-right: 5px;
 }
+
+@media (max-width: 768px) {
+  .mobile-pagination {
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pagination {
+    scale: 0.75;
+  }
+}
 </style>
