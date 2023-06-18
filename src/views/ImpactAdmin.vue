@@ -125,40 +125,30 @@
         class="reportInfo d-none d-md-block"
       >
         <div class="d-flex">
-          <div class="user-info">
-            <!-- Imagem do user -->
-            <img
-              class="producer-image d-block mx-auto"
-              :src="userLoggedNImage.url"
-              :alt="userLoggedNImage.alt"
-            />
-            <!-- Nome do user -->
-            <h3 class="main-txt dgreen-txt">{{ userLoggedName }}</h3>
-          </div>
           <!-- Cards coloridos -->
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
-              title="Total ganho"
+              title="Total gasto"
               :value="reportCards.comprasTotais"
               color="#7CA2C3"
               :text-cancel="'Dinheiro devolvido:'"
               :cancel-value="reportCards.comprasTotaisCanceladas"
             ></ImpactDataCard>
+            <!-- <ImpactDataCard
+              icon="bi bi-currency-euro"
+              title="Total ganho"
+              :value="0"
+              color="#9DC88D"
+            ></ImpactDataCard> -->
             <ImpactDataCard
               icon="bi bi-box-seam"
-              title="Encomendas"
+              title="Total de encomendas"
               :value="reportCards.numeroEncomendas"
               color="#DC6942"
-              :text-cancel="'Encomendas canceladas:'"
+              :text-cancel="'Enc. canceladas:'"
               :cancel-value="reportCards.numeroEncomendasCanceladas"
             ></ImpactDataCard>
-            <!-- <ImpactDataCard
-              icon="bi bi-bag"
-              title="Tipos de produtoscomprados"
-              :value="reportCards.numeroProdutosEncomendados"
-              color="#F1B24A"
-            ></ImpactDataCard> -->
             <ImpactDataCard
               icon="bi bi-bag"
               title="Total de produtos"
@@ -187,8 +177,9 @@
         <!-- Dados alteráveis -->
         <div style="background-color: ">
           <!-- Evolução -->
-          <div class="parent d-flex" style="background-color: ; gap: 4%">
-            <div style="background-color: ; width: 43%">
+          <!-- <div class="parent d-flex" style="background-color: ; gap: 4%"> -->
+          <div class="parent">
+            <div style="width: 100%">
               <!-- Muda a cada view -->
               <h4
                 v-if="view == 'numeroEncomendas' && graficosGerados"
@@ -201,13 +192,13 @@
                 v-if="view == 'totalProdutos' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Quantidade de produtos diferentes encomendados
+                Quantidade de produtos encomendados
               </h4>
               <h4
                 v-if="view == 'numeroProdutosEncomendados' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Quantidade de produtos encomendados
+                Quantidade de produtos diferentes encomendados
               </h4>
               <h4
                 v-if="view == 'comprasTotais' && graficosGerados"
@@ -218,13 +209,16 @@
               <!-- Gráfico de linhas -->
               <div class="graph-container">
                 <LineChart
+                  style="max-height: 400px !important"
                   v-if="graficosGerados"
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
               </div>
             </div>
-            <div style="background-color: ; width: 53%">
+          </div>
+          <div class="parent">
+            <div style="width: 100%">
               <div>
                 <!-- Muda a cada tipo: produtos ou clientes -->
                 <h4
@@ -243,6 +237,7 @@
                 <div class="graph-container">
                   <div v-if="barChartView == 'products'">
                     <BarChart
+                      style="max-height: 400px !important"
                       v-if="graficosGerados"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
@@ -250,6 +245,7 @@
                   </div>
                   <div v-if="barChartView == 'clients'">
                     <BarChart
+                      style="max-height: 400px !important"
                       v-if="graficosGerados"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
@@ -267,7 +263,7 @@
             TODO - Implementar categorias - Items canelados nos dados se der -
            -->
           <!-- {{ reportProducerClients }} -->
-          <div class="mt-5 parent" style="height: 40vh"></div>
+          <div class="mt-5 parent" style="height: 10vh"></div>
         </div>
       </div>
     </div>
@@ -277,7 +273,7 @@
 <script lang="ts">
 import DatePicker from '@/components/DatePicker.vue';
 import Slider from 'primevue/slider';
-import { ChartData, Point } from 'chart.js';
+import { ChartData } from 'chart.js';
 import DropdownCustom from '@/components/DropdownCustom.vue';
 import ImpactDataCard from '@/components/ImpactDataCard.vue';
 import InlineMessage from 'primevue/inlinemessage';
@@ -298,11 +294,11 @@ import {
 } from '@/types';
 import {
   fetchAllCategories,
-  fetchReportCards,
-  fetchReportMap,
-  fetchReportEvolution,
-  fetchReportProducts,
-  fetchProducerReportClients,
+  fetchAdminReportCards,
+  fetchAdminReportMap,
+  fetchAdminReportEvolution,
+  fetchAdminReportProducts,
+  fetchAdminReportClients,
 } from '@/api';
 
 export default defineComponent({
@@ -330,9 +326,9 @@ export default defineComponent({
 
       // Reports
       reportCards: {} as ReportCard,
-      reportMap: {} as ReportMap[],
-      reportEvolution: {} as Record<string, ReportEvolution>, // TODO - ver se é preciso alterar esta interface
-      reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
+      reportMap: [] as ReportMap[],
+      reportEvolution: {} as Record<string, ReportEvolution>,
+      reportBarChart: [] as ReportBarChartProduct[],
       selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
 
@@ -343,13 +339,12 @@ export default defineComponent({
         labels: ['no data'] as string[],
         datasets: [
           {
-            label: 'Gráfico de linha',
-            data: [] as (number | [number, number] | null)[],
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
+            data: [] as (number | null)[],
+            borderColor: 'rgba(255, 0, 0, 1)',
+            fill: false,
           },
         ],
-      } as ChartData<'line', (number | Point | null)[], unknown>,
+      } as ChartData<'line', (number | null)[], unknown>,
       lineChartOptions: {
         plugins: {
           legend: {
@@ -361,10 +356,6 @@ export default defineComponent({
       // Gráfico de barras
       barGraphLabels: [] as string[],
       barGraphData: [] as number[],
-      //   barChartData: {
-      //     labels: ['no data'] as string[],
-      //     datasets: [] as string[],
-      //   } as Object,
       barChartData: {
         labels: ['no data'],
         datasets: [
@@ -400,7 +391,7 @@ export default defineComponent({
   },
 
   async beforeMount() {
-    // Ir buscar o utilizador que está logado
+    // Ir buscar os dados do utilizador que está logado
     const store = this.$store;
     const userLoggedId = computed(() => store.state.user);
     if (userLoggedId.value) {
@@ -428,13 +419,7 @@ export default defineComponent({
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
       } else {
-        this.loadGraphs(
-          this.userLoggedId,
-          this.startDate,
-          this.endDate,
-          this.raio,
-          this.view
-        );
+        this.loadGraphs(this.startDate, this.endDate, this.raio, this.view);
       }
     },
     updateBarChart() {
@@ -458,35 +443,27 @@ export default defineComponent({
 
     // Carrega os dados usados nos gráficos
     async loadGraphs(
-      id: number,
       dataInicio: string,
       dataFim: string,
       raio: number,
       view: string
     ) {
       // Ir buscar os dados dos cards
-
-      const reportCards = await fetchReportCards(
-        this.userLoggedId,
+      const reportCards = await fetchAdminReportCards(
         dataInicio,
         dataFim,
         raio
       );
       this.reportCards = reportCards.data;
+      console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
-      const reportMap = await fetchReportMap(
-        this.userLoggedId,
-        dataInicio,
-        dataFim,
-        raio
-      );
+      const reportMap = await fetchAdminReportMap(dataInicio, dataFim, raio);
       this.reportMap = reportMap.data;
       //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
 
       // Ir buscar os dados da evolução (gráfico de linhas)
-      const reportEvolution = await fetchReportEvolution(
-        this.userLoggedId,
+      const reportEvolution = await fetchAdminReportEvolution(
         dataInicio,
         dataFim,
         raio,
@@ -494,12 +471,10 @@ export default defineComponent({
       );
       this.reportEvolution = reportEvolution.data;
       this.updateGraphData(view, 'line');
-      console.log(this.reportEvolution);
 
       // Ir buscar os dados do gráfico de barras
       // Produtos
-      const reportBarChart = await fetchReportProducts(
-        this.userLoggedId,
+      const reportBarChart = await fetchAdminReportProducts(
         dataInicio,
         dataFim,
         raio,
@@ -507,10 +482,12 @@ export default defineComponent({
       );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData(view, 'bar');
+      console.log(
+        'Dados do gráfico de barras: ' + JSON.stringify(this.reportBarChart)
+      );
 
       // Clientes
-      const producerClients = await fetchProducerReportClients(
-        this.userLoggedId,
+      const producerClients = await fetchAdminReportClients(
         dataInicio,
         dataFim,
         raio,
@@ -653,7 +630,6 @@ export default defineComponent({
 
 .data-cards {
   display: flex;
-  justify-content: flex-end;
   padding: 3vh;
   gap: 4vh;
   width: 65%;

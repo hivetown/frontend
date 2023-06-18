@@ -48,6 +48,8 @@ export interface User {
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+    addresses?: Address[];
+    deletedAt?: string;
 }
 
 export interface Category {
@@ -60,6 +62,8 @@ export interface Category {
 }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
+    deletedAt?: string;
+    addresses?: Address[];
 }
 
 export interface CreateConsumer {
