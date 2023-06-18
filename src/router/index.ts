@@ -13,9 +13,10 @@ import ProductionUnitProducts from '@/views/ProductionUnitProducts.vue';
 import Transports from '@/views/Transports.vue';
 import Login from '@/views/Login.vue';
 import Register from '@/views/Register.vue';
-import ImpactProducer from '@/views/ImpactProducer.vue';
-import ConsentPage from '@/views/ConsentPage.vue';
 import ImpactConsumer from '@/views/ImpactConsumer.vue';
+import ImpactProducer from '@/views/ImpactProducer.vue';
+import ImpactAdmin from '@/views/ImpactAdmin.vue';
+import ConsentPage from '@/views/ConsentPage.vue';
 import Order from '@/views/Order.vue';
 import OrderHistory from '@/views/OrderHistory.vue';
 import Success from '@/views/Success.vue';
@@ -23,6 +24,7 @@ import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
 import { store } from '@/store';
+import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
 import { createPopup } from '@/utils/popup';
 
@@ -110,6 +112,17 @@ const routes = [
         path: '/registration',
         name: 'Registration',
         component: Register,
+    },
+
+    {
+        path: '/impactAdmin',
+        name: 'ImpactAdmin',
+        component: ImpactAdmin,
+        meta: {
+            requiresAuth: true,
+            requiredPermissions:
+                Permission.ALL_CONSUMER | Permission.ALL_PRODUCER,
+        },
     },
     {
         path: '/produtosprodutor',

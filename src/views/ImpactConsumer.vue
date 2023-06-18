@@ -1,129 +1,86 @@
 <!-- TODO - validar os campos -->
-<!-- TODO - mostrar as encomendas canceladas de alguma forma -->
 <template>
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
       <!-- Barra lateral -->
-      <div
-        class="reportSidebar"
-        style="
-          width: 20%;
-          border-right: 2px solid #f3f3f3;
-          padding: 0.5vh;
-          background-color: ;
-        "
-      >
-        <div class="">
-          <div class="parent">
-            <!-- Views -->
-            <div class="mt-4 mb-4">
-              <p>Escolha o que deseja visualizar:</p>
-              <DropdownCustom class="required-field" @view="handleViewSelect" />
+      <div style="width: 20%; border-right: 2px solid #f3f3f3; padding: 0.5vh">
+        <div class="parent">
+          <!-- Views -->
+          <div class="mt-4 mb-4">
+            <p>Escolha o que deseja visualizar:</p>
+            <DropdownCustom class="required-field" @view="handleViewSelect" />
+          </div>
+          <div>
+            <p>Escolha as datas a visualizar:</p>
+            <!-- Datas -->
+            <div class="d-flex gap-2 align-items-center">
+              <DatePicker
+                style="display: flex; justify-content: center"
+                @date="handleDateSelect"
+                :id="'datePicker1'"
+              ></DatePicker>
+              <i
+                class="bi bi-arrow-right-short dgreen-txt"
+                style="font-size: 1.5em"
+              ></i>
+              <DatePicker
+                style="display: flex; justify-content: center"
+                @date="handleDateSelect"
+                :id="'datePicker2'"
+              ></DatePicker>
             </div>
-            <div>
-              <!-- Produtos ou clientes -->
-              <div class="d-flex gap-4">
-                <div class="mb-4">
-                  <RadioButton
-                    v-model="barChartView"
-                    input-id="products"
-                    name="produtos"
-                    value="products"
-                    class="custom-radio-button"
-                    @click="updateBarChart()"
-                  />
-                  <label for="products" class="ml-2">Produtos</label>
-                </div>
-                <div>
-                  <RadioButton
-                    v-model="barChartView"
-                    input-id="clients"
-                    name="clientes"
-                    value="clients"
-                    class="custom-radio-button"
-                    @click="updateBarChart()"
-                  />
-                  <label for="clients" class="ml-2">Clientes</label>
-                </div>
-              </div>
+          </div>
+          <p class="mt-4">Indique o raio a visualizar:</p>
+          <!-- Slider do raio -->
+          <div class="d-flex gap-3">
+            <div
+              style="
+                border: 1px solid #ced4da;
+                padding: 0.5vh;
+                border-radius: 9%;
+                width: 12vh;
+                height: 4vh;
+              "
+              class="slider-before"
+            >
+              <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
             </div>
-            <div>
-              <!-- Datas -->
-              <p>Escolha as datas a visualizar:</p>
-              <div class="d-flex gap-2 align-items-center">
-                <DatePicker
-                  style="display: flex; justify-content: center"
-                  @date="handleDateSelect"
-                  :id="'datePicker1'"
-                ></DatePicker>
-                <i
-                  class="bi bi-arrow-right-short dgreen-txt"
-                  style="font-size: 1.5em"
-                ></i>
-                <DatePicker
-                  style="display: flex; justify-content: center"
-                  @date="handleDateSelect"
-                  :id="'datePicker2'"
-                ></DatePicker>
-              </div>
-            </div>
-            <!-- Slider do raio -->
-            <p class="mt-4">Indique o raio a visualizar:</p>
-            <div class="d-flex gap-3">
-              <div
-                style="
-                  border: 1px solid #ced4da;
-                  padding: 0.5vh;
-                  border-radius: 9%;
-                  width: 12vh;
-                  height: 4vh;
-                "
-                class="slider-before"
-              >
-                <p class="text-center" style="color: #5a5a5a">{{ raio }} km</p>
-              </div>
-              <Slider
-                v-model="raio"
-                :max="100000"
-                :pt="{
-                  root: { style: 'width:60%;' },
-                  handle: {
-                    style:
-                      'background-color: #F1B24A; border: 1px solid #F1B24A;',
-                  },
-                  range: { style: 'background-color: #F1B24A' },
-                }"
-                class="slider-raio"
-              />
-            </div>
-            <!-- Escolher categoria -->
-            <!-- TODO - tornar funcional -->
-            <div>
-              <p class="mt-4">Escolha a categoria a visualizar:</p>
-              <CategoryFilter :categories="allCategories"></CategoryFilter>
-            </div>
-            <div class="mt-4 btn-report-mobile">
-              <!-- Botão gerar gráficos -->
-              <ButtonPV
-                :disabled="!allDataAvailable"
-                @click="generateGraphs()"
-                label="Gerar gráficos"
-                :pt="{
-                  root: {
-                    style: 'background-color:#F1B24A; border:#F1B24A;',
-                  },
-                }"
-                rounded
-              />
-            </div>
+            <Slider
+              v-model="raio"
+              :max="100000"
+              :pt="{
+                root: { style: 'width:60%;' },
+                handle: {
+                  style:
+                    'background-color: #F1B24A; border: 1px solid #F1B24A;',
+                },
+                range: { style: 'background-color: #F1B24A' },
+              }"
+              class="slider-raio"
+            />
+          </div>
+          <!-- Escolher categoria -->
+          <div>
+            <p class="mt-4">Escolha a categoria a visualizar:</p>
+            <CategoryFilter :categories="allCategories"></CategoryFilter>
+          </div>
+          <div class="mt-4">
+            <!-- Botão -->
+            <ButtonPV
+              :disabled="!allDataAvailable"
+              @click="generateGraphs()"
+              label="Gerar gráficos"
+              :pt="{
+                root: {
+                  style: 'background-color:#F1B24A; border:#F1B24A;',
+                },
+              }"
+              rounded
+            />
           </div>
         </div>
       </div>
-      <!-- Lado esquerdo da barra -->
-      <div
-        style="width: 80%; background-color: "
-        class="reportInfo d-none d-md-block"
-      >
+      <div style="width: 80%; background-color: ">
         <div class="d-flex">
           <div class="user-info">
             <!-- Imagem do user -->
@@ -132,14 +89,12 @@
               :src="userLoggedNImage.url"
               :alt="userLoggedNImage.alt"
             />
-            <!-- Nome do user -->
             <h3 class="main-txt dgreen-txt">{{ userLoggedName }}</h3>
           </div>
-          <!-- Cards coloridos -->
           <div class="data-cards">
             <ImpactDataCard
               icon="bi bi-currency-euro"
-              title="Total ganho"
+              title="Total gasto"
               :value="reportCards.comprasTotais"
               color="#7CA2C3"
               :text-cancel="'Dinheiro devolvido:'"
@@ -171,9 +126,10 @@
         </div>
 
         <div class="parent mt-5 mb-2">
+          <!-- TODO - por a alterar sozinho -->
           <InlineMessage v-if="!graficosGerados" severity="warn" class="mb-5"
-            >Para visualizar os dados tem de escolher valores para todos os
-            filtros obrigatórios</InlineMessage
+            >Para visualizar os dados tem de escolher valores para os
+            filtros</InlineMessage
           >
 
           <!-- Período temporal -->
@@ -213,7 +169,7 @@
                 v-if="view == 'comprasTotais' && graficosGerados"
                 class="py-4 dgreen-txt"
               >
-                Histórico de faturação
+                Histórico de gastos
               </h4>
               <!-- Gráfico de linhas -->
               <div class="graph-container">
@@ -226,35 +182,16 @@
             </div>
             <div style="background-color: ; width: 53%">
               <div>
-                <!-- Muda a cada tipo: produtos ou clientes -->
-                <h4
-                  v-if="graficosGerados && barChartView == 'products'"
-                  class="py-4 dgreen-txt"
-                >
+                <h4 v-if="graficosGerados" class="py-4 dgreen-txt">
                   Produtos encomendados
-                </h4>
-                <h4
-                  v-if="graficosGerados && barChartView == 'clients'"
-                  class="py-4 dgreen-txt"
-                >
-                  Produtos encomendados por consumidor
                 </h4>
                 <!-- Gráfico de barras -->
                 <div class="graph-container">
-                  <div v-if="barChartView == 'products'">
-                    <BarChart
-                      v-if="graficosGerados"
-                      :chart-data="barChartData"
-                      :chart-options="barChartOptions"
-                    ></BarChart>
-                  </div>
-                  <div v-if="barChartView == 'clients'">
-                    <BarChart
-                      v-if="graficosGerados"
-                      :chart-data="barChartData"
-                      :chart-options="barChartOptions"
-                    ></BarChart>
-                  </div>
+                  <BarChart
+                    v-if="graficosGerados"
+                    :chart-data="barChartData"
+                    :chart-options="barChartOptions"
+                  ></BarChart>
                 </div>
               </div>
             </div>
@@ -266,7 +203,6 @@
           >
             TODO - Implementar categorias - Items canelados nos dados se der -
            -->
-          <!-- {{ reportProducerClients }} -->
           <div class="mt-5 parent" style="height: 40vh"></div>
         </div>
       </div>
@@ -285,7 +221,6 @@ import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
-import RadioButton from 'primevue/radiobutton';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -298,17 +233,16 @@ import {
 } from '@/types';
 import {
   fetchAllCategories,
-  fetchReportCards,
-  fetchReportMap,
-  fetchReportEvolution,
-  fetchReportProducts,
-  fetchProducerReportClients,
+  fetchAdminReportCards,
+  fetchAdminReportMap,
+  fetchAdminReportEvolution,
+  fetchAdminReportProducts,
+  fetchAdminReportClients,
 } from '@/api';
 
 export default defineComponent({
   data() {
     return {
-      nuncaGerados: true as boolean,
       graficosGerados: false as boolean,
 
       view: '' as string,
@@ -319,7 +253,6 @@ export default defineComponent({
       userLoggedId: 0 as number,
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
-      userLoggedType: '' as string,
 
       // Categorias
       allCategories: [] as Category[],
@@ -388,7 +321,7 @@ export default defineComponent({
   },
   computed: {
     allDataAvailable() {
-      // Verifica se os dados obrigatórios já foram preenchidos
+      // Verifica se todos os dados são diferentes de undefined
       return (
         this.userLoggedId !== 0 &&
         this.startDate !== 'Indefinido' &&
@@ -406,7 +339,6 @@ export default defineComponent({
     if (userLoggedId.value) {
       this.userLoggedId = userLoggedId.value['user']['id'];
       this.userLoggedName = userLoggedId.value['user']['name'];
-      this.userLoggedType = userLoggedId.value['user']['type'];
       if (userLoggedId.value['user']['image']) {
         this.userLoggedNImage = userLoggedId.value['user']['image'];
       }
@@ -419,11 +351,10 @@ export default defineComponent({
     this.allCategories = allCategories;
   },
   methods: {
-    // Gerar os gráficos
     generateGraphs() {
-      this.nuncaGerados = false;
       this.graficosGerados = true;
       // Ir buscar os dados dos gráficos
+      // TODO - alerar o id
       if (this.selectedCategory != 0) {
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
@@ -437,13 +368,6 @@ export default defineComponent({
         );
       }
     },
-    updateBarChart() {
-      // Se nunca foi gerado nenhuma vez, gera o gráfico de barras
-      if (!this.nuncaGerados) {
-        this.generateGraphs();
-      }
-    },
-    // Define as datas de início e fim (usa um emit)
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
         this.startDate = selectedDate[0];
@@ -451,12 +375,11 @@ export default defineComponent({
         this.endDate = selectedDate[0];
       }
     },
-    // Define a view selecionana no dropdown (usa um emit)
     handleViewSelect(selectedView: any) {
+      // TODO - fazer debug da view atualizada para alterar a legendas dos gráficos
       this.view = selectedView.code;
     },
 
-    // Carrega os dados usados nos gráficos
     async loadGraphs(
       id: number,
       dataInicio: string,
@@ -465,27 +388,21 @@ export default defineComponent({
       view: string
     ) {
       // Ir buscar os dados dos cards
-      const reportCards = await fetchReportCards(
-        this.userLoggedId,
+      const reportCards = await fetchAdminReportCards(
         dataInicio,
         dataFim,
         raio
       );
       this.reportCards = reportCards.data;
+      //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
 
       // Ir buscar os dados do mapa
-      const reportMap = await fetchReportMap(
-        this.userLoggedId,
-        dataInicio,
-        dataFim,
-        raio
-      );
+      const reportMap = await fetchAdminReportMap(dataInicio, dataFim, raio);
       this.reportMap = reportMap.data;
       //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
 
       // Ir buscar os dados da evolução (gráfico de linhas)
-      const reportEvolution = await fetchReportEvolution(
-        this.userLoggedId,
+      const reportEvolution = await fetchAdminReportEvolution(
         dataInicio,
         dataFim,
         raio,
@@ -497,8 +414,7 @@ export default defineComponent({
 
       // Ir buscar os dados do gráfico de barras
       // Produtos
-      const reportBarChart = await fetchReportProducts(
-        this.userLoggedId,
+      const reportBarChart = await fetchAdminReportProducts(
         dataInicio,
         dataFim,
         raio,
@@ -508,8 +424,7 @@ export default defineComponent({
       this.updateGraphData(view, 'bar');
 
       // Clientes
-      const producerClients = await fetchProducerReportClients(
-        this.userLoggedId,
+      const producerClients = await fetchAdminReportClients(
         dataInicio,
         dataFim,
         raio,
@@ -519,9 +434,10 @@ export default defineComponent({
       this.updateGraphData(view, 'bar');
     },
 
-    // Atualizar os dados dos gráficos
+    // Atualizar os dados do gráfico de linhas
+    // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
-      // Gráfico de linhas
+      // Limpar os arrays de dados
       if (grapthType == 'line') {
         this.lineGraphLabels = [];
         this.lineGraphData = [];
@@ -539,7 +455,6 @@ export default defineComponent({
             this.lineGraphData.push(valor.comprasTotais!); // Só as que não foram canceladas
           }
         }
-        console.log(this.reportEvolution);
         this.lineChartData = {
           labels: this.lineGraphLabels,
           datasets: [
@@ -616,6 +531,16 @@ export default defineComponent({
             ],
           };
         }
+        this.barChartData = {
+          labels: this.barGraphLabels,
+          datasets: [
+            {
+              label: 'Quantidade',
+              backgroundColor: '#9DC88D',
+              data: this.barGraphData,
+            },
+          ],
+        };
       }
     },
   },
@@ -629,7 +554,6 @@ export default defineComponent({
     InlineMessage,
     ButtonPV,
     CategoryFilter,
-    RadioButton,
   },
 });
 </script>
@@ -679,22 +603,5 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: -0.7rem;
-}
-
-/* Mobile */
-@media (max-width: 767px) {
-  .reportSidebar {
-    /* background-color: red; */
-    width: 100% !important;
-  }
-
-  .reportInfo {
-    display: none;
-  }
-
-  .btn-report-mobile {
-    display: flex;
-    justify-content: center;
-  }
 }
 </style>

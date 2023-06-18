@@ -69,11 +69,13 @@ export default {
 #loginLink {
   margin-left: 17px;
 }
+
 .p-field-radiobutton {
   display: flex;
   flex-direction: column;
   margin-top: 20px;
 }
+
 /* create border around the form */
 .forms {
   border: 1px solid #ccc;
