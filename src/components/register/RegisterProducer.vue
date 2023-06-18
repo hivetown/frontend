@@ -1,5 +1,8 @@
 <template>
-  <VeeForm @submit="register" class="flex flex-column gap-3">
+  <VeeForm
+    @submit="($e) => register($e as Event)"
+    class="flex flex-column gap-3"
+  >
     <div class="grid">
       <div class="col-12 flex flex-column gap-2">
         <label for="formName">Nome <span class="text-red-500">*</span></label>

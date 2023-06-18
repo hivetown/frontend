@@ -4,7 +4,10 @@
       <template #title> Entrar </template>
 
       <template #content>
-        <VeeForm @submit="login" class="flex flex-column gap-3">
+        <VeeForm
+          @submit="($e) => login($e as Event)"
+          class="flex flex-column gap-3"
+        >
           <div class="flex flex-column gap-2">
             <label for="formEmail"
               >Email <span class="text-red-500">*</span></label
