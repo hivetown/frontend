@@ -1,6 +1,7 @@
 import { store } from '@/store';
 import { ApiRequest } from '@/types';
 import { createPopup } from '@/utils/popup';
+import { config } from '@/config';
 import axios, { AxiosError } from 'axios';
 
 function makeApi(baseURL: string, options: ApiRequest = {}) {
@@ -49,4 +50,4 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     return api;
 }
 
-export const api = makeApi(import.meta.env.VITE_API_URL!);
+export const api = makeApi(config.apiUrl);
