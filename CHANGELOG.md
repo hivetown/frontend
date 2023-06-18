@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/hivetown/frontend/compare/v2.0.1...v2.0.2) (2023-06-18)
+
+
+### Bug Fixes
+
+* navigation ([1c5da26](https://github.com/hivetown/frontend/commit/1c5da267f71ca87b7678ebd2bfe7036cd74bc8a6))
+
 ## [2.0.1](https://github.com/hivetown/frontend/compare/v2.0.0...v2.0.1) (2023-06-18)
 
 
