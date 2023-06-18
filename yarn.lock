@@ -1265,24 +1265,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@import-meta-env/unplugin@npm:^0.4.8":
-  version: 0.4.8
-  resolution: "@import-meta-env/unplugin@npm:0.4.8"
-  dependencies:
-    magic-string: ^0.30.0
-    object-hash: ^3.0.0
-    picocolors: ^1.0.0
-    unplugin: 1.2.0
-  peerDependencies:
-    "@import-meta-env/cli": ^0.5.1 || ^0.6.0
-    dotenv: ^11.0.0 || ^12.0.4 || ^13.0.1 || ^14.3.2 || ^15.0.1 || ^16.0.0
-  peerDependenciesMeta:
-    "@import-meta-env/cli":
-      optional: true
-  checksum: b420e8f5f3b23f36e28367acce7b9571be4e782ebecbb8d6ffea53a010d6a969b4db6f64caabb34bd5692fa86f5103b78bbb14accef086655a46e785f55a0cf9
-  languageName: node
-  linkType: hard
-
 "@isaacs/cliui@npm:^8.0.2":
   version: 8.0.2
   resolution: "@isaacs/cliui@npm:8.0.2"
@@ -1785,7 +1767,6 @@ __metadata:
     "@commitlint/cli": ^17.1.2
     "@commitlint/config-conventional": ^17.1.0
     "@fortawesome/fontawesome-free": ^6.4.0
-    "@import-meta-env/unplugin": ^0.4.8
     "@popperjs/core": ^2.11.6
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/prettier-config": ^1.4.4
@@ -8053,13 +8034,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-hash@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "object-hash@npm:3.0.0"
-  checksum: 80b4904bb3857c52cc1bfd0b52c0352532ca12ed3b8a6ff06a90cd209dfda1b95cee059a7625eb9da29537027f68ac4619363491eedb2f5d3dddbba97494fd6c
-  languageName: node
-  linkType: hard
-
 "object-inspect@npm:^1.12.3, object-inspect@npm:^1.9.0":
   version: 1.12.3
   resolution: "object-inspect@npm:1.12.3"
@@ -10118,18 +10092,6 @@ __metadata:
   version: 2.0.0
   resolution: "universalify@npm:2.0.0"
   checksum: 2406a4edf4a8830aa6813278bab1f953a8e40f2f63a37873ffa9a3bc8f9745d06cc8e88f3572cb899b7e509013f7f6fcc3e37e8a6d914167a5381d8440518c44
-  languageName: node
-  linkType: hard
-
-"unplugin@npm:1.2.0":
-  version: 1.2.0
-  resolution: "unplugin@npm:1.2.0"
-  dependencies:
-    acorn: ^8.8.2
-    chokidar: ^3.5.3
-    webpack-sources: ^3.2.3
-    webpack-virtual-modules: ^0.5.0
-  checksum: 0526e03d47309c01f2e29018449ad15bb95fb7d47fd34c5bda61fd6eb5e7377579214d21c0dad60701b3ca1b6b3d38e716d5386c839a8c7c5c383668c75438f3
   languageName: node
   linkType: hard
 
