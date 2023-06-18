@@ -326,9 +326,9 @@ export default defineComponent({
 
       // Reports
       reportCards: {} as ReportCard,
-      reportMap: {} as ReportMap[],
+      reportMap: [] as ReportMap[],
       reportEvolution: {} as Record<string, ReportEvolution>,
-      reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
+      reportBarChart: [] as ReportBarChartProduct[],
       selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
 
@@ -337,8 +337,14 @@ export default defineComponent({
       lineGraphData: [] as number[],
       lineChartData: {
         labels: ['no data'] as string[],
-        datasets: [] as string[],
-      } as any,
+        datasets: [
+          {
+            data: [] as (number | null)[],
+            borderColor: 'rgba(255, 0, 0, 1)',
+            fill: false,
+          },
+        ],
+      } as ChartData<'line', (number | null)[], unknown>,
       lineChartOptions: {
         plugins: {
           legend: {
