@@ -1,16 +1,7 @@
 <template>
   <!-- Caminho seguido até esta página -->
-  <div class="parent mb-4">
-    <!-- TODO por isto automático -->
-    <b-breadcrumb>
-      <b-breadcrumb-item href="#home"
-        ><i class="bi bi-house-fill"></i>Home</b-breadcrumb-item
-      >
-      <b-breadcrumb-item href="#foo">Foo</b-breadcrumb-item>
-      <b-breadcrumb-item href="#bar">Bar</b-breadcrumb-item>
-      <b-breadcrumb-item active>Baz</b-breadcrumb-item>
-    </b-breadcrumb>
-  </div>
+  <!-- TODO por isto automático -->
+  <PathComponent :path-list="path"></PathComponent>
 
   <!-- Conteúdo da página -->
   <div class="d-flex parent">
@@ -35,14 +26,14 @@
           <SupplierFilter></SupplierFilter>
         </div>
 
-        <div
+        <!-- <div
           id="reting-filter"
           class="mt-4"
           style="border-top: 1px solid #f3f3f3"
         >
           <h5 class="grey-txt mt-3">Avaliação</h5>
           <RatingFilter></RatingFilter>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -89,14 +80,7 @@
           </div>
         </div>
       </div>
-      <div
-        class=""
-        style="
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: center;
-        "
-      >
+      <div class="parent" style="display: flex; justify-content: center">
         <Pagination
           v-if="allProducts"
           :total-rows="allProducts.totalItems"
@@ -120,10 +104,11 @@
 
 <script setup lang="ts">
 // Filtros
+import PathComponent from '@/components/PathComponent.vue';
 import CategoryFilter from '@/components/CategoryFilter.vue';
 import PriceFilter from '@/components/PriceFilter.vue';
 import SupplierFilter from '@/components/SupplierFilter.vue';
-import RatingFilter from '@/components/RatingFilter.vue';
+// import RatingFilter from '@/components/RatingFilter.vue';
 import Pagination from '@/components/Pagination.vue';
 
 // Componentes auxiliares
@@ -142,6 +127,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
+      path: [['Produtos', '/products']] as string[][],
       // Dados da BD
       // Produtos
       allProducts: {} as BaseItems<ProductSpec>,
@@ -185,12 +171,11 @@ export default defineComponent({
     const pageSize = parseInt(String(this.$route.query.pageSize)) || 24;
     const categoryId =
       parseInt(String(this.$route.query.categoryId)) || undefined;
-    const allProducts = await fetchAllProducts(
+    const allProducts = await fetchAllProducts({
       page,
       pageSize,
-      undefined,
-      categoryId
-    );
+      categoryId,
+    });
     this.allProducts = allProducts.data;
     // const allProducts = allProductsData.data.items;
     const allCategoriesData = await fetchAllCategories();
@@ -225,6 +210,7 @@ export default defineComponent({
     this.mostExpensiveProduct = maxPriceProduct;
   },
   components: {
+    PathComponent,
     ProductCard,
     Pagination,
     CustomViews,
@@ -232,7 +218,7 @@ export default defineComponent({
     CategoryFilter,
     PriceFilter,
     SupplierFilter,
-    RatingFilter,
+    // RatingFilter,
   },
 });
 </script>

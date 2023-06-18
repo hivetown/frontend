@@ -1,15 +1,45 @@
 import {
-    BaseItems,
     CreateProducer,
+    CreateProducerProduct,
+    UpdateProducerProduct,
+    BaseItems,
     Producer,
     ProductionUnit,
     reportProducerClients,
+    ProducerProduct,
 } from '@/types';
 import { api } from './_base';
 
 export const createProducer = async (producer: CreateProducer) =>
     api.post('/producers', producer);
 
+export const fetchProducerProductionUnits = async (
+    producerId: number,
+    search?: string
+) =>
+    api.get<BaseItems<ProductionUnit>>(`/producers/${producerId}/units`, {
+        params: { search },
+    });
+
+export const createProducerProduct = async (
+    producerId: number,
+    product: CreateProducerProduct
+) => api.post<ProducerProduct>(`/producers/${producerId}/products`, product);
+
+export const updateProducerProduct = async (
+    producerId: number,
+    producerProductId: number,
+    product: UpdateProducerProduct
+) =>
+    api.put<ProducerProduct>(
+        `/producers/${producerId}/products/${producerProductId}`,
+        product
+    );
+
+export const deleteProducerProduct = async (
+    producerId: number,
+    producerProductId: number
+) => api.delete(`/producers/${producerId}/products/${producerProductId}`);
 export const fetchProducerReportClients = (
     id: number,
     dataInicio?: string,
@@ -32,9 +62,6 @@ export const fetchAllProducers = (
     api.get<BaseItems<Producer>>('/producers', {
         params: { page, pageSize, search },
     });
-
-export const fetchProducerProductionUnits = (id: number) =>
-    api.get<BaseItems<ProductionUnit>>(`/producers/${id}/units`);
 
 // TODO - descobrir se isto é usado em algum lado
 // export const fetchProductProducer = (specId: number) =>

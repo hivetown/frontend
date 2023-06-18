@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.0.0](https://github.com/hivetown/frontend/compare/v1.3.0...v2.0.0) (2023-06-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* use docker provided .env file in prod
+* use config file instead of env variables
+
+### Features
+
+* use config file instead of env variables ([09d1981](https://github.com/hivetown/frontend/commit/09d19810e8d8a159edd4cbac6c48dc7e5a77ed58))
+* use docker provided .env file in prod ([55c3886](https://github.com/hivetown/frontend/commit/55c3886ea49d9ec7ae31a353c06212ec9950b20e))
+
+## [1.3.0](https://github.com/hivetown/frontend/compare/v1.2.4...v1.3.0) (2023-06-18)
+
+
+### Features
+
+* create, edit, and remove producer products ([c19b18a](https://github.com/hivetown/frontend/commit/c19b18a9e2a751521daf5413032206b2f5137523))
+* create, edit, and remove producer products on production units ([09465f3](https://github.com/hivetown/frontend/commit/09465f3ae7adf4152286322e0aad03c4d86708c3))
+
+## [1.2.4](https://github.com/hivetown/frontend/compare/v1.2.3...v1.2.4) (2023-06-17)
+
+
+### Bug Fixes
+
+* stuff ([0abadbc](https://github.com/hivetown/frontend/commit/0abadbcbb17d95e6545771fa23bfe4969488bddd))
+
+## [1.2.3](https://github.com/hivetown/frontend/compare/v1.2.2...v1.2.3) (2023-06-17)
+
+
+### Bug Fixes
+
+* changes after review ([70322a3](https://github.com/hivetown/frontend/commit/70322a3cb7f27796203c0ff09cd0ce470dab94f0))
+
 ## [1.2.2](https://github.com/hivetown/frontend/compare/v1.2.1...v1.2.2) (2023-06-16)
 
 
