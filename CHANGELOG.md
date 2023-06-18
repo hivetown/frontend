@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/hivetown/frontend/compare/v1.3.0...v2.0.0) (2023-06-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* use docker provided .env file in prod
+* use config file instead of env variables
+
+### Features
+
+* use config file instead of env variables ([09d1981](https://github.com/hivetown/frontend/commit/09d19810e8d8a159edd4cbac6c48dc7e5a77ed58))
+* use docker provided .env file in prod ([55c3886](https://github.com/hivetown/frontend/commit/55c3886ea49d9ec7ae31a353c06212ec9950b20e))
+
 ## [1.3.0](https://github.com/hivetown/frontend/compare/v1.2.4...v1.3.0) (2023-06-18)
 
 
