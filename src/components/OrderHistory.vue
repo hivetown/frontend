@@ -60,7 +60,12 @@
                 style="text-decoration: none; color: black"
               >
                 <div class="status-info">
-                  <i class="bi bi-check-all"></i>
+                  <i v-if="orderStatusTranslation(order.generalStatus)==='Entregue' " class="bi bi-check-all"></i>
+				  <i v-if="orderStatusTranslation(order.generalStatus)==='Em processamento' " class="bi bi-arrow-repeat mr-2"></i>
+                  <i v-if="orderStatusTranslation(order.generalStatus)==='Pago' " class="bi bi-currency-euro"></i>
+                  <i v-if="orderStatusTranslation(order.generalStatus)==='Cancelada' " class="bi bi-x-lg"></i>
+                  <i v-if="orderStatusTranslation(order.generalStatus)==='Em andamento' " class="bi bi-truck mr-2">></i>
+
                   <p class="texto">
                     {{ orderStatusTranslation(order.generalStatus) }}
                   </p>
