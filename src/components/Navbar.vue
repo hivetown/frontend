@@ -16,16 +16,15 @@
               v-if="$store.state.user"
               class="d-flex"
             >
-			
               <!--todo por se user logado-->
-			  
+
               <b-avatar
                 @click="showModalFunction"
                 class="nav-item"
                 style="
                   background-color: #f3f3f3 !important;
                   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-				  margin-top: 5%;
+                  margin-top: 5%;
                 "
               >
                 <i
@@ -47,12 +46,12 @@
                   height: 20px;
                   border-radius: 50%;
                 "
-                >{{ notificacoes}}</b-badge
+                >{{ notificacoes }}</b-badge
               >
-              <Modal v-if="showModal"  @qtdNotificacoes="atualizaNotificacoes"  />
+              <Modal v-if="showModal" @qtdNotificacoes="atualizaNotificacoes" />
               <p
                 class="p-2 grey-txt text-decoration-none"
-                style="font-weight: 500; margin-top: 5%; cursor: pointer;"
+                style="font-weight: 500; margin-top: 5%; cursor: pointer"
               >
                 Notificações
               </p>
@@ -153,9 +152,12 @@
                   >Transportes</b-dropdown-item
                 >
               </div>
-			  <b-dropdown-item href="/encomendas" class="linkcolor"
-				v-if="user.user.type==='CONSUMER'" >Encomendas</b-dropdown-item
-                >
+              <b-dropdown-item
+                href="/encomendas"
+                class="linkcolor"
+                v-if="user.user.type === 'CONSUMER'"
+                >Encomendas</b-dropdown-item
+              >
               <b-dropdown-item @click="logout" href="#"
                 >Terminar Sessão</b-dropdown-item
               >
@@ -224,7 +226,6 @@
       </b-nav-item>
     </b-nav>
   </div>
-
 </template>
 <script lang="ts">
 import { useStore } from '@/store';
@@ -232,11 +233,10 @@ import { computed } from 'vue';
 import Modal from '../components/ModalNotifications.vue';
 import { getUnreadNotifications } from '../api/notifications';
 import { ref } from 'vue';
-import { BaseItems, Notification } from '@types';
 const notificacoes = ref<number>();
-	
+
 export default {
-components: {
+  components: {
     Modal,
   },
   setup() {
@@ -255,27 +255,27 @@ components: {
     };
   },
   watch: {
-  user: {
-    handler: async function (newValue, oldValue) {
-      const responseItem = await getUnreadNotifications();
-      const qtd = responseItem.data.items.length;
-      this.atualizaNotificacoes(qtd);
-    },
-    deep: true,
-  },
-},
-  methods: {
-	async atualizaNotificacoes(quantidade:number) {
-		console.log(quantidade);
-    
-		try {
+    user: {
+      handler: async function () {
         const responseItem = await getUnreadNotifications();
+        const qtd = responseItem.data.items.length;
+        this.atualizaNotificacoes(qtd);
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    async atualizaNotificacoes(quantidade: number) {
+      console.log(quantidade);
+
+      try {
+        await getUnreadNotifications();
         this.notificacoes = quantidade;
       } catch (error) {
         console.error(error);
       }
-	},
-	isMobile() {
+    },
+    isMobile() {
       return window.innerWidth < 768;
     },
     showModalFunction() {
@@ -289,30 +289,28 @@ components: {
     };
   },
   mounted() {
-  const fetchAndSetNotifications = async () => {
-    if (this.user) {
-      try {
-        const responseItem = await getUnreadNotifications();
-        this.notificacoes = responseItem.data.items.length;
-      } catch (error) {
-        console.error(error);
+    const fetchAndSetNotifications = async () => {
+      if (this.user) {
+        try {
+          const responseItem = await getUnreadNotifications();
+          this.notificacoes = responseItem.data.items.length;
+        } catch (error) {
+          console.error(error);
+        }
       }
-    }
-  };
+    };
 
-  // Chama a função após um atraso inicial de 2000 milissegundos
-  setTimeout(() => {
-    fetchAndSetNotifications();
+    // Chama a função após um atraso inicial de 2000 milissegundos
+    setTimeout(() => {
+      fetchAndSetNotifications();
 
-    // Chama a função a cada 3 minutos
-    setInterval(fetchAndSetNotifications, 180000);
-  }, 3000);
-},
+      // Chama a função a cada 3 minutos
+      setInterval(fetchAndSetNotifications, 180000);
+    }, 3000);
+  },
 };
 </script>
 <style>
-
-
 .linkcolor:hover {
   color: var(--bs-dropdown-link-color);
   background: none;
@@ -359,9 +357,9 @@ components: {
 }
 
 @media (max-width: 767px) {
-    .b-badge{
-		margin-top: 20px
-	}
+  .b-badge {
+    margin-top: 20px;
+  }
   .nav-home {
     /* background-color: red; */
     justify-content: space-evenly;
