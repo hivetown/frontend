@@ -154,6 +154,7 @@ export default {
 </script>
 
 <style scoped>
+
 hr {
   color: black;
 }
@@ -193,6 +194,7 @@ hr {
 .active {
   background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
   border-color: #d3e3e6 !important;
+  color: #000 !important;
 }
 @media (max-width: 767px) {
   #popup {
