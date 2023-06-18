@@ -16,7 +16,7 @@ export const fetchAllCategories = ({
     // Product filters
     productMinPrice?: number;
     productMaxPrice?: number;
-}) =>
+} = {}) =>
     api.get<BaseItems<Category>>('/categories', {
         params: {
             parentId,
