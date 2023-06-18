@@ -26,27 +26,43 @@
 
         <div id="category-filter">
           <h5 class="grey-txt">Categorias</h5>
-          <Tree
-            scroll-height="600px"
-            :value="categoriesTreeNodes"
-            @node-expand="expandCategory"
-            :loading="loadingCategories"
-            selection-mode="single"
-            @node-select="nodeSelect"
-          >
-            <template #default="slotProps">
-              <b-form-checkbox
-                :checked="selectedCategoryTreeNode?.key === slotProps.node.key"
-                :disabled="selectedCategoryTreeNode?.key === slotProps.node.key"
-              />
-              {{ slotProps.node.label }}
-            </template>
-          </Tree>
+          <div v-if="!categoriesTreeNodes.length">
+            Sem categorias disponíveis
+          </div>
+          <div v-else>
+            <Tree
+              scroll-height="600px"
+              :value="categoriesTreeNodes"
+              @node-expand="expandCategory"
+              :loading="loadingCategories"
+              selection-mode="single"
+              @node-select="nodeSelect"
+            >
+              <template #default="slotProps">
+                <b-form-checkbox
+                  :checked="
+                    selectedCategoryTreeNode?.key === slotProps.node.key
+                  "
+                  :disabled="
+                    selectedCategoryTreeNode?.key === slotProps.node.key
+                  "
+                />
+                {{ slotProps.node.label }}
+              </template>
+            </Tree>
+          </div>
         </div>
 
         <div id="price-filter">
-          <div v-if="productSpecs">
-            <h5 class="grey-txt mt-3">Preço</h5>
+          <h5 class="grey-txt mt-3">Preço</h5>
+          <div
+            v-if="
+              !productSpecs || !productSpecs.maxPrice || !productSpecs.minPrice
+            "
+          >
+            Sem preços disponíveis
+          </div>
+          <div v-else>
             <Slider
               v-model="priceFilter"
               @slideend="changePriceFilter"
@@ -57,9 +73,6 @@
             <span>{{ priceFilter[0] }}€</span>~<span
               >{{ priceFilter[1] }}€</span
             >
-          </div>
-          <div v-else>
-            <!-- TODO skeleton -->
           </div>
         </div>
 
