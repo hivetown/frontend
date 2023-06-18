@@ -232,9 +232,9 @@
 </template>
 <script lang="ts">
 import Modal from '../components/ModalNotifications.vue';
-import { getUnreadNotifications } from '@/api/notifications';
 import { hasPermission } from '@/utils/permissions';
 import { Permission } from '@/types';
+import { getUnreadNotifications } from '@/api/notifications';
 export default {
   components: {
     Modal,
