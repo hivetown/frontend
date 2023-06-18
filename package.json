@@ -49,6 +49,7 @@
 		"sass": "^1.56.0",
 		"stripe": "^11.18.0",
 		"sweetalert2": "^11.7.12",
+		"vee-validate": "^4.9.6",
 		"vue": "^3.2.41",
 		"vue-chartjs": "^5.2.0",
 		"vue-router": "^4.2.1",

@@ -1815,6 +1815,7 @@ __metadata:
     typedoc: ^0.23.17
     typedoc-plugin-mdn-links: ^2.0.0
     typescript: ^4.6.4
+    vee-validate: ^4.9.6
     vite: ^3.2.0
     vue: ^3.2.41
     vue-chartjs: ^5.2.0
@@ -9883,6 +9884,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^3.10.0":
+  version: 3.12.0
+  resolution: "type-fest@npm:3.12.0"
+  checksum: 11cb6f40e42f92c462a13677eafedf5c48353eaefa8e489a146e55fe0ae5cecd59a2ba03cd6b294345b5ea304361891a6313c23ed959fa0117f63fb71ee6cbab
+  languageName: node
+  linkType: hard
+
 "typed-array-length@npm:^1.0.4":
   version: 1.0.4
   resolution: "typed-array-length@npm:1.0.4"
@@ -10134,6 +10142,18 @@ __metadata:
     spdx-correct: ^3.0.0
     spdx-expression-parse: ^3.0.0
   checksum: 35703ac889d419cf2aceef63daeadbe4e77227c39ab6287eeb6c1b36a746b364f50ba22e88591f5d017bc54685d8137bc2d328d0a896e4d3fd22093c0f32a9ad
+  languageName: node
+  linkType: hard
+
+"vee-validate@npm:^4.9.6":
+  version: 4.9.6
+  resolution: "vee-validate@npm:4.9.6"
+  dependencies:
+    "@vue/devtools-api": ^6.5.0
+    type-fest: ^3.10.0
+  peerDependencies:
+    vue: ^3.3.0
+  checksum: 010cd9180cfd1651f8702cd4d1e377e283a42c210fc97d8e6571b6f06e2de48c3e7a9d280353a6a574a4e26caa589568b313f14d4195f08e0822ed9f6e9f17e4
   languageName: node
   linkType: hard
 
