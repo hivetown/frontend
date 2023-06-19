@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/hivetown/frontend/compare/v2.0.4...v2.1.0) (2023-06-19)
+
+
+### Features
+
+* show products loading on page start ([5da3276](https://github.com/hivetown/frontend/commit/5da3276796a388c0ec310ef9500b82182e7a8147))
+
 ## [2.0.4](https://github.com/hivetown/frontend/compare/v2.0.3...v2.0.4) (2023-06-18)
 
 
