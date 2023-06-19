@@ -118,22 +118,21 @@
         "
       />
 
-      <div v-if="productSpecs">
-        <div v-if="productSpecs.totalItems === 0" class="parent">
+      <div>
+        <div v-if="productSpecs?.totalItems === 0" class="parent">
           <p>Não foram encontrados produtos para a categoria especificada</p>
         </div>
 
         <div v-else id="page-products">
           <div class="grid m-3">
-            <template v-if="loadingProductSpecs">
-              <ProgressSpinner
-                style="width: 50px; height: 50px"
-                stroke-width="8"
-                fill="var(--surface-ground)"
-                animation-duration=".5s"
-                aria-label="Loading Product specifications"
-              />
-            </template>
+            <ProgressSpinner
+              v-if="loadingProductSpecs || !productSpecs"
+              style="width: 50px; height: 50px"
+              stroke-width="8"
+              fill="var(--surface-ground)"
+              animation-duration=".5s"
+              aria-label="Loading Product specifications"
+            />
             <template v-else>
               <ProductCard
                 v-for="product in productSpecs.items"
@@ -147,6 +146,7 @@
           </div>
         </div>
         <div
+          v-if="productSpecs"
           style="
             display: flex;
             justify-content: center;
@@ -261,22 +261,21 @@
         (pageSize) => productSpecPageChange({ rows: pageSize })
       "
     />
-    <div v-if="productSpecs">
-      <div v-if="productSpecs.totalItems === 0" class="parent">
+    <div>
+      <div v-if="productSpecs?.totalItems === 0" class="parent">
         <p>Não foram encontrados produtos para a categoria especificada</p>
       </div>
 
       <div v-else id="page-products">
         <div class="grid m-3">
-          <template v-if="loadingProductSpecs">
-            <ProgressSpinner
-              style="width: 50px; height: 50px"
-              stroke-width="8"
-              fill="var(--surface-ground)"
-              animation-duration=".5s"
-              aria-label="Loading Product specifications"
-            />
-          </template>
+          <ProgressSpinner
+            v-if="loadingProductSpecs || !productSpecs"
+            style="width: 50px; height: 50px"
+            stroke-width="8"
+            fill="var(--surface-ground)"
+            animation-duration=".5s"
+            aria-label="Loading Product specifications"
+          />
           <template v-else>
             <ProductCard
               v-for="product in productSpecs.items"
@@ -292,7 +291,7 @@
     </div>
   </div>
 
-  <div class="pagination-mobile-on">
+  <div v-if="productSpecs" class="pagination-mobile-on">
     <div
       class="parent"
       style="display: flex; flex-direction: column; justify-content: center"
@@ -307,14 +306,14 @@
           default:
             'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown JumpToPageInput',
         }"
-        :rows="productSpecs?.pageSize"
-        :total-records="productSpecs?.totalItems"
+        :rows="productSpecs.pageSize"
+        :total-records="productSpecs.totalItems"
         @page="productSpecPageChange"
       >
       </Paginator>
 
       <p style="display: block; margin: auto">
-        Total de páginas: {{ productSpecs?.totalPages }}
+        Total de páginas: {{ productSpecs.totalPages }}
       </p>
     </div>
   </div>
