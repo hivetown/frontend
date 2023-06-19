@@ -1,9 +1,6 @@
-export interface Product {
-    id: number;
-    currentPrice: number;
-    productionDate: Date;
-    productSpec?: ProductSpec;
-    producer?: Producer;
+export interface ProductSpecs extends BaseItems<ProductSpec> {
+    maxPrice: number;
+    minPrice: number;
 }
 
 export interface ProductSpec {
@@ -15,7 +12,14 @@ export interface ProductSpec {
     maxPrice: number;
     producersCount: number;
     images: Image[];
-    products?: Product[];
+    products?: ProducerProduct[];
+}
+
+export interface Image {
+    id: number;
+    name: string;
+    url: string;
+    alt: string;
 }
 
 export interface ProducerProduct {
@@ -43,12 +47,15 @@ export interface User {
     vat: string;
     role?: Role;
     image?: Image;
+    disableEmails?: boolean;
     type: 'PRODUCER' | 'CONSUMER';
 }
 
 export interface Producer {
     user: User & { type: 'PRODUCER' };
     imageShowcase: Image[];
+    addresses?: Address[];
+    deletedAt?: string;
 }
 
 export interface Category {
@@ -61,6 +68,8 @@ export interface Category {
 }
 export interface Consumer {
     user: User & { type: 'CONSUMER' };
+    deletedAt?: string;
+    addresses?: Address[];
 }
 
 export interface CreateConsumer {
@@ -79,7 +88,8 @@ export interface ProductionUnit {
     id: number;
     name: string;
     address: Address;
-    producer?: Producer;
+    producer?: Producer | number;
+    images?: Image[];
     deletedAt: Date | null;
 }
 
@@ -95,6 +105,15 @@ export interface BaseItems<T> {
     totalPages: number;
     page: number;
     pageSize: number;
+}
+
+export interface Transport {
+    id: number;
+    licensePlate: string;
+    productionUnit?: ProductionUnit;
+    status: string;
+    shipments?: Shipment[];
+    image: Image;
 }
 
 export interface Address {
@@ -133,11 +152,19 @@ export interface OrderItem {
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
-export interface Image {
-    id: number;
-    name: string;
-    url: string;
-    alt: string;
+export interface CreateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
+    productSpecId: number;
+}
+
+export interface UpdateProducerProduct {
+    currentPrice: number;
+    productionDate: Date;
+    stock: number;
+    productionUnitId: number;
 }
 
 export type AuthenticatedUser = Consumer | Producer;
@@ -160,6 +187,33 @@ export interface FieldPossibleValue {
     value: string;
 }
 
+export interface SelectedUnit {
+    id: number;
+    name: string;
+    address: Address;
+    producer: Producer;
+    deletedAt: Date | null;
+}
+
+export interface Location {
+    items: {
+        city: string;
+        county: string;
+        district: string;
+        door: string;
+        floor: number;
+        id: number;
+        latitude: number;
+        longitude: number;
+        number: number;
+        parish: string;
+        street: string;
+        zipCode: string;
+    }[];
+    baseItems: BaseItems<{
+        address: Address;
+    }>;
+}
 export interface ReportCard {
     id: number;
     numeroEncomendas: number;
@@ -264,6 +318,16 @@ export interface Carrier {
     productionUnit: ProductionUnit;
     status: CarrierStatus;
     image: Image;
+}
+
+export interface Notification {
+    id: number;
+    actor: User | number;
+    notifier: User;
+    createdAt: string;
+    readAt: string | null;
+    title: string;
+    message: string;
 }
 
 export interface ProductSpecFieldWithCategory {

@@ -8,8 +8,9 @@
       </p>
     </div>
     <!-- Produtos a comparar -->
-    <div class="d-flex mt-5 px-3 justify-content-around">
+    <div class="d-flex mt-5 justify-content-end" style="gap: 10%">
       <ProductCard
+        style="width: 30%"
         v-for="product in products"
         :key="product.id"
         :product-spec="product"

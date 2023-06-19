@@ -1,129 +1,141 @@
-a
 <template>
-  <div class="table-container" style="overflow: auto">
-    <table class="table table-striped" v-if="orderItems">
-      <thead>
-        <tr>
-          <th id="col" scope="col">Artigo</th>
-          <th id="col" scope="col"></th>
-          <th id="col" scope="col">Fornecedor</th>
-          <th id="col" scope="col">Preço</th>
-          <th id="col" scope="col">Quantidade</th>
-          <th id="col" scope="col">Eventos</th>
-          <th id="col" scope="col">Estado</th>
-          <th id="col" scope="col">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="orderItem in orderItems.items"
-          :key="orderItem.producerProduct.id"
-        >
-          <!-- Typescript (it has productSpec but typings) -->
-          <td>
-            <!-- TOOD URL do producerproduct -->
-            <router-link
-              :to="
+  <div class="parent" style="background-color: ">
+    <div class="table-container" style="overflow: auto">
+      <table class="table table-striped" v-if="orderItems">
+        <thead>
+          <tr>
+            <th id="col" scope="col">Artigo</th>
+            <th id="col" scope="col"></th>
+            <th id="col" scope="col">Fornecedor</th>
+            <th id="col" scope="col">Preço</th>
+            <th id="col" scope="col">Quantidade</th>
+            <th id="col" scope="col">Eventos</th>
+            <th id="col" scope="col">Estado</th>
+            <th id="col" scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="orderItem in orderItems.items"
+            :key="orderItem.producerProduct.id"
+          >
+            <!-- Typescript (it has productSpec but typings) -->
+            <td>
+              <!-- TOOD URL do producerproduct -->
+              <router-link
+                :to="
                 '/products/' +
                 orderItem.producerProduct.productSpec!.id +
                 '/products/' +
                 orderItem.producerProduct.id
               "
-              ><img
-                v-if="orderItem.producerProduct.productSpec!.images"
-                :src="orderItem.producerProduct.productSpec!.images[0].url"
-                :alt="orderItem.producerProduct.productSpec!.images[0].alt"
-                style="height: 50px"
-              />
-              <p class="texto" v-else>Imagem <br />indisponível</p></router-link
-            >
-          </td>
-          <td>
-            <router-link
-              class="texto"
-              :to="'/products/' + orderItem.producerProduct.productSpec!.id"
-              >{{ orderItem.producerProduct.productSpec!.name }}</router-link
-            >
-          </td>
-          <td>
-            <router-link
-              class="texto"
-              :to="'/producer/'+orderItem.producerProduct.producer!.user.id"
-              ><p class="texto">
-                {{ orderItem.producerProduct.producer!.user.name }}
-              </p></router-link
-            >
-          </td>
-          <td>
-            <p class="texto">{{ orderItem['price'] }} €</p>
-          </td>
-          <td>
-            <p class="texto">{{ orderItem['quantity'] }}</p>
-          </td>
-          <td v-if="eventos[orderItem.producerProduct.id]">
-            <p class="texto">
-              Última verificação:
-              {{ eventos[orderItem.producerProduct.id].date.substring(0, 10) }}
-              {{ eventos[orderItem.producerProduct.id].date.substring(11, 19) }}
-            </p>
-            <p class="texto">
-              Encontra-se em:
-              {{ eventos[orderItem.producerProduct.id].address.street }},
-              {{ eventos[orderItem.producerProduct.id].address.parish }},
-              {{ eventos[orderItem.producerProduct.id].address.city }}
-            </p>
-          </td>
-          <td>
-            <div
-              v-if="orderItem['status'] === 'Delivered'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-check-all"></i>
-              <p class="texto">Entregue</p>
-            </div>
-            <div
-              v-if="orderItem['status'] === 'Processing'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-arrow-repeat"></i>
-              <p class="texto">Em processamento</p>
-            </div>
-            <div
-              v-if="orderItem['status'] === 'Paid'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-cash-coin"></i>
-              <p class="texto">Pago</p>
-            </div>
-            <div
-              v-if="orderItem['status'] === 'Canceled'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-x-lg"></i>
-              <p class="texto">Cancelado</p>
-            </div>
-            <div
-              v-if="orderItem['status'] === 'Shipped'"
-              style="display: inline-flex"
-            >
-              <i class="bi bi-truck"></i>
-              <p class="texto">Em andamento</p>
-            </div>
-          </td>
+                ><img
+                  v-if="orderItem.producerProduct.productSpec!.images"
+                  :src="orderItem.producerProduct.productSpec!.images[0].url"
+                  :alt="orderItem.producerProduct.productSpec!.images[0].alt"
+                  style="height: 50px"
+                />
+                <p class="texto" v-else>
+                  Imagem <br />indisponível
+                </p></router-link
+              >
+            </td>
+            <td>
+              <router-link
+                class="texto"
+                :to="'/products/' + orderItem.producerProduct.productSpec!.id"
+                ><span style="color: black !important">{{
+                  orderItem.producerProduct.productSpec!.name
+                }}</span></router-link
+              >
+            </td>
+            <td>
+              <router-link
+                class="texto"
+                :to="'/producer/'+orderItem.producerProduct.producer!.user.id"
+                ><span style="color: black !important">
+                  {{ orderItem.producerProduct.producer!.user.name }}
+                </span></router-link
+              >
+            </td>
+            <td>
+              <p class="texto">{{ orderItem['price'] }} €</p>
+            </td>
+            <td class="text-center">
+              <p class="texto">{{ orderItem['quantity'] }}</p>
+            </td>
+            <td v-if="eventos[orderItem.producerProduct.id]">
+              <p class="texto">
+                Última verificação:
+                {{
+                  eventos[orderItem.producerProduct.id].date.substring(0, 10)
+                }}
+                {{
+                  eventos[orderItem.producerProduct.id].date.substring(11, 19)
+                }}
+              </p>
+              <p class="texto">
+                Encontra-se em:
+                {{ eventos[orderItem.producerProduct.id].address.street }},
+                {{ eventos[orderItem.producerProduct.id].address.parish }},
+                {{ eventos[orderItem.producerProduct.id].address.city }}
+              </p>
+            </td>
+            <td>
+              <div
+                class="status-info"
+                v-if="orderItem['status'] === 'Delivered'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-check-all"></i>
+                <p class="texto">Entregue</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Processing'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-arrow-repeat mr-2"></i>
+                <p class="texto">Em processamento</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Paid'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-currency-euro"></i>
+                <p class="texto">Pago</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Canceled'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-x-lg"></i>
+                <p class="texto">Cancelado</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Shipped'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-truck mr-2"></i>
+                <p class="texto">Em andamento</p>
+              </div>
+            </td>
 
-          <td>
-            <p class="texto">
-              {{ orderItem['quantity'] * orderItem['price'] }}
-              €
-            </p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td>
+              <p class="texto">
+                {{ orderItem['quantity'] * orderItem['price'] }}
+                €
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br />
+    <div class="resumo" style="background-color: ">
+      <h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5>
+      <h3 class="">Total: {{ totalSum }}€</h3>
+    </div>
   </div>
-  <br />
-  <h5 class="resumo" id="data">Encomenda efetuada em: {{ date }}</h5>
-  <h3 class="resumo">Total: {{ totalSum }}€</h3>
 </template>
 
 <script setup lang="ts">
@@ -201,9 +213,12 @@ onBeforeMount(async () => {
   }
 }
 .texto {
-  font-size: 13px;
+  text-decoration: none;
 }
 
+.texto span:hover {
+  text-decoration: underline;
+}
 .table thead th {
   position: sticky;
   top: 0;
@@ -213,56 +228,43 @@ onBeforeMount(async () => {
   position: -ms-sticky;
   z-index: 2;
 }
-
 .table th,
 .table td {
-  padding: 10px;
-  font-size: 20px;
+  padding: 1vh;
+  font-size: 1.2em;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
-tr:hover {
-  background-color: #f5f5f5;
-  z-index: -2;
-}
-
-span {
-  color: black;
-}
-.numero {
-  color: black;
-  text-decoration: none;
-}
-
 th {
-  background-color: #e9e5de !important;
-  font-size: 30px;
-  color: rgb(0, 0, 0);
+  background-color: #9dc88d !important;
+  font-size: 1.3em !important;
+  padding: 1.5vh !important;
+  color: #2a2a2a !important;
 }
 
 .table {
   max-height: 80%; /* Altura máxima da tabela */
   margin: auto;
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
+  overflow-x: scroll;
   position: relative;
 }
 .resumo {
   margin-top: 20px;
-  font-size: 15px;
   text-align: right;
 }
 .table-container {
   max-height: 450px; /* Altura máxima da tabela */
   margin: auto;
   margin-top: 0px;
-  max-width: 100%;
+  /* max-width: 100%; */
   overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
   position: relative;
 }
-#col {
+/* #col {
   font-size: 15px !important;
-}
+} */
 
 @media (max-width: 768px) {
   /* regras de estilo para telas menores que 768px */
@@ -313,9 +315,10 @@ th {
 
   .table th,
   .table td {
+    justify-content: center !important;
+    align-items: center !important;
     padding: 5px;
     font-size: 10px;
-    text-align: left;
     border-bottom: 1px solid #ddd;
   }
   h4,
@@ -323,14 +326,17 @@ th {
   p {
     font-size: 12px !important;
   }
+
   i {
     font-size: 13px !important;
   }
   .resumo {
     margin-top: 10px;
-    font-size: 15px;
     text-align: right;
     margin-right: 30px;
+  }
+  .resumo h3 {
+    font-size: 15px;
   }
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <!-- TODO fazer de forma recursiva para ir buscar as outras páginas -->
   <div>
-    <b-form-input
+    <!-- <b-form-input
       class="mt-3 mb-3 light-search"
       type="search"
       placeholder="Pesquisar fornecedores"
-    />
+    /> -->
 
     <p class="producer-txt mb-1 parent">
       {{ producerAmount }} fornecedores encontrados:

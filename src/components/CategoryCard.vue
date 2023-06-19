@@ -38,7 +38,7 @@
 </style>
 
 <script lang="ts">
-import { Image } from '@types';
+import { Image } from '@/types';
 import { PropType } from 'vue';
 export default {
   props: {
