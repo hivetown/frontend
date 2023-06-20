@@ -1,60 +1,107 @@
 <template>
-  <div id="notificacoes">
-    <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
-      <h5>Notificações</h5>
-      <div class="content">
-        <p v-if="notificacoes?.totalItems == 0">
-          Não existem notificações novas.
-        </p>
-        <b-list-group v-else>
-          <template v-if="notificacoes">
-            <b-list-group-item
-              v-for="notificacao in notificacoes.items"
-              :key="notificacao.id"
-              :active="notificacao?.readAt == null"
-              class="flex-column align-items-start"
-            >
-              <div
-                class="d-flex w-100 justify-content-between"
-                @click="marcarComoLida(notificacao)"
-              >
-                <h5 class="mb-1">{{ notificacao.title }}</h5>
-                <small
-                  >{{ notificacao.createdAt.substring(0, 10) }}
-                  {{ notificacao.createdAt.substring(11, 19) }}</small
-                >
-              </div>
-              <p class="mb-1">{{ notificacao.message }}</p>
-              <small
-                v-if="notificacao.readAt == null"
-                @click="marcarComoLida(notificacao)"
-              >
-                <u style="cursor: pointer">Marcar como lida</u>
-              </small>
-
-              <small v-else @click="marcarComoNaoLida(notificacao)">
-                <u style="cursor: pointer">Marcar como não lida</u></small
-              >
-              <hr />
-            </b-list-group-item>
-          </template>
-          <hr />
-        </b-list-group>
-
-        <button
-          class="btn btn-primary"
-          v-if="
-            notificacoes.totalItems > 24 &&
-            notificacoes.page != notificacoes.totalPages
-          "
-          @click="carregaMais"
-        >
-          Carregar mais
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
+	<div id="notificacoes">
+	  <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
+		<h5>Notificações</h5>
+		<div class="content">
+		  <b-tabs>
+			<b-tab title="Notificacoes não lidas">
+			  <!-- Conteúdo da aba de notificacoes nao lidas -->
+			  <p v-if="notificacoesNovas.totalItems==0">
+				<br>
+				Não existem notificações não lidas.
+				<br>
+			  </p>
+			  <b-list-group v-else>
+				<template v-if="notificacoes">
+				  <b-list-group-item
+					v-for="notificacao in notificacoesNovas.items"
+					:key="notificacao.id"
+					:active="notificacao?.readAt == null"
+					class="flex-column align-items-start"
+				  >
+					<div
+					  class="d-flex w-100 justify-content-between"
+					  @click="marcarComoLida(notificacao)"
+					>
+					  <h5 class="mb-1">{{ notificacao.title }}</h5>
+					  <small
+						>{{ notificacao.createdAt.substring(0, 10) }}
+						{{ notificacao.createdAt.substring(11, 19) }}</small
+					  >
+					</div>
+					<p class="mb-1">{{ notificacao.message }}</p>
+					<small
+					  v-if="notificacao.readAt == null"
+					  @click="marcarComoLida(notificacao)"
+					>
+					  <u style="cursor: pointer">Marcar como lida</u>
+					</small>
+  
+					<small v-else @click="marcarComoNaoLida(notificacao)">
+					  <u style="cursor: pointer">Marcar como não lida</u>
+					</small>
+					<hr />
+				  </b-list-group-item>
+				</template>
+				<hr />
+			  </b-list-group>
+			</b-tab>
+			<b-tab title="Todas as notificações">
+			  <p v-if="notificacoes?.totalItems == 0">
+				Não existem notificações novas.
+			  </p>
+			  <b-list-group v-else>
+				<template v-if="notificacoes">
+				  <b-list-group-item
+					v-for="notificacao in notificacoes.items"
+					:key="notificacao.id"
+					:active="notificacao?.readAt == null"
+					class="flex-column align-items-start"
+				  >
+					<div
+					  class="d-flex w-100 justify-content-between"
+					  @click="marcarComoLida(notificacao)"
+					>
+					  <h5 class="mb-1">{{ notificacao.title }}</h5>
+					  <small
+						>{{ notificacao.createdAt.substring(0, 10) }}
+						{{ notificacao.createdAt.substring(11, 19) }}</small
+					  >
+					</div>
+					<p class="mb-1">{{ notificacao.message }}</p>
+					<small
+					  v-if="notificacao.readAt == null"
+					  @click="marcarComoLida(notificacao)"
+					>
+					  <u style="cursor: pointer">Marcar como lida</u>
+					</small>
+  
+					<small v-else @click="marcarComoNaoLida(notificacao)">
+					  <u style="cursor: pointer">Marcar como não lida</u>
+					</small>
+					<hr />
+				  </b-list-group-item>
+				</template>
+				<hr />
+			  </b-list-group>
+  
+			  <button
+				class="btn btn-primary"
+				v-if="
+				  notificacoes.totalItems > 24 &&
+				  notificacoes.page != notificacoes.totalPages
+				"
+				@click="carregaMais"
+			  >
+				Carregar mais
+			  </button>
+			</b-tab>
+		  </b-tabs>
+		</div>
+	  </div>
+	</div>
+  </template>
+  
 
 <script lang="ts">
 import {
@@ -74,6 +121,8 @@ export default {
       notificacoes: { page: 1, pageSize: 24 } as BaseItems<Notification>,
       showPopup: true,
       quantidade: 0 as number,
+	  notificacoesNovas: { page: 1, pageSize: 24 } as BaseItems<Notification>,
+
     };
   },
   async beforeMount() {
@@ -83,7 +132,8 @@ export default {
         this.notificacoes.pageSize
       )
     ).data;
-    this.quantidade = (await getUnreadNotifications()).data.totalItems; //para ter p depois enviar no emit
+    this.notificacoesNovas = ((await getUnreadNotifications()).data); //para ter p depois enviar no emit
+	this.quantidade = this.notificacoesNovas.totalItems;
   },
   methods: {
     async carregaMais() {
@@ -124,7 +174,15 @@ export default {
         console.error(error);
       }
     },
-
+	async getUnreadNotifications() {
+      try {
+        const responseItem = await getUnreadNotifications();
+        this.notificacoesNovas = responseItem.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+	
     async marcarComoNaoLida(notification: Notification) {
       await postUnread(notification.id);
       this.quantidade = this.quantidade + 1;
@@ -155,7 +213,7 @@ hr {
   border-radius: 1%;
   position: absolute;
   top: 68%;
-  right: 16%;
+  right: 26%;
   width: 500px;
   background-color: #f3f3f3;
   border: 1px solid #ccc;
