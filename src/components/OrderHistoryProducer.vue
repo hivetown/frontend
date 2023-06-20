@@ -1,0 +1,366 @@
+<template>
+	<h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 0">
+	  <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+	  encomendas.
+	</h3>
+  
+	<div class="table-container" style="overflow: auto">
+	  <div></div>
+	  <table v-if="!!orders?.items" style="border: 2px" class="table">
+		<thead>
+		  <tr>
+			<th>
+			  <h4>Código</h4>
+			</th>
+			<th><h4>Morada de entrega</h4></th>
+			<th><h4>Estado da encomenda</h4></th>
+			<th><h4>Unidade de produção</h4></th>
+			<th><h4>Ver detalhes</h4></th>
+
+		  </tr>
+		</thead>
+		<tbody>
+			
+		  <tr v-for="(order, idx) in orders.items" :key="order.id">
+
+			<td>
+			  <router-link
+				:to="'/encomenda/id' + order.id"
+				class="texto"
+				style="text-decoration: none; color: black"
+				>{{ order.id }}</router-link
+			  >
+			</td>
+			<td>
+			  <router-link
+				:to="'/encomenda/id' + order.id"
+				style="text-decoration: none; color: black"
+				><p id="morada2">
+				  {{ order.shippingAddress.street }}, nº{{
+					order.shippingAddress.number
+				  }}, andar {{ order.shippingAddress.floor }}
+				</p></router-link
+			  >
+  
+			  <router-link
+				:to="'/encomenda/id' + order.id"
+				style="text-decoration: none; color: black"
+				><p id="morada2">
+				  {{ order.shippingAddress.zipCode }},
+				  {{ order.shippingAddress.city }}
+				</p></router-link
+			  >
+  
+			  <router-link
+				:to="'/encomenda/id' + order.id"
+				style="text-decoration: none; color: black"
+				><p id="morada2">
+				  {{ order.shippingAddress.latitude }},
+				  {{ order.shippingAddress.longitude }}
+				</p></router-link
+			  >
+			</td>
+			<td>
+				<i
+                    v-if="
+                      orderStatusTranslation(ordersState[order.id]) === 'Entregue'
+                    "
+                    class="bi bi-check-all"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(ordersState[order.id]) ===
+                      'Em processamento'
+                    "
+                    class="bi bi-arrow-repeat mr-2"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(ordersState[order.id]) === 'Pago'
+                    "
+                    class="bi bi-currency-euro"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(ordersState[order.id]) ===
+                      'Cancelada'
+                    "
+                    class="bi bi-x"
+                    style="margin-top: -0.5vh"
+                  ></i>
+                  <i
+                    v-if="
+                      orderStatusTranslation(ordersState[order.id]) ===
+                      'Em andamento'
+                    "
+                    class="bi bi-truck mr-2"
+                    ></i
+                  >
+
+				{{ orderStatusTranslation(ordersState[order.id]) }}
+			</td>
+			<td>
+				{{ ordersUP[order.id] }}
+			</td>
+			<td>
+			  <router-link :to="'/encomenda/id' + order.id">
+				<BButton class="botao2" variant="outline-primary"
+				  >Ver detalhes</BButton
+				>
+			  </router-link>
+			</td>
+		  </tr>
+		</tbody>
+	  </table>
+	
+	</div>
+	<Pagination
+    :total-rows="totalItems"
+    :per-page="pageSize"
+    :current-page="page"
+    @page-changed="onPageChanged"
+  >
+  </Pagination>
+  </template>
+  
+  <script setup lang="ts">
+  import Pagination from '../components/Pagination.vue';
+  import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
+  import { onMounted, ref, computed } from 'vue';
+  import { fetchAllOrdersProducer, cancelOrder, fetchAllItemsProducer } from '../api/orders';
+  import { useStore } from '@/store';
+  const store = useStore();
+  const user2 = computed(() => store.state.user);
+  
+  const orderStatusTranslation = (status: string) => {
+	switch (status) {
+	  case 'Delivered':
+		return 'Entregue';
+	  case 'Paid':
+		return 'Pago';
+	  case 'Processing':
+		return 'Em processamento';
+	  case 'Shipped':
+		return 'Em andamento';
+	  case 'Canceled':
+		return 'Cancelada';
+	  default:
+		return 'Desconhecido';
+	}
+  };
+  const page = ref(1);
+  const pageSize = ref(24);
+  const totalItems = ref(0);
+  const orders = ref<BaseItems<Order>>();
+  /**
+   * {
+   * 	id: Image
+   * }
+   */
+  const ordersImage = ref<{ [id: number]: Image }>({});
+  const ordersUP = ref<{ [id: number]: string }>({});
+  const ordersState = ref<{ [id: number]: string }>({});
+
+  const selectedOrders = ref([]);
+  
+ 
+  
+  const findFirstImage = (order: OrderItem[]) => {
+	const image = order.find(
+	  (item) => item.producerProduct.productSpec?.images.length
+	);
+	return image ? image.producerProduct.productSpec?.images[0] : undefined;
+  };
+  
+  onMounted(async () => {
+	if (user2.value && user2.value.user && user2.value.user.id) {
+	  const response = await fetchAllOrdersProducer(user2.value.user.id, page.value, pageSize.value);
+	  orders.value = response.data;
+	  totalItems.value=response.data.totalItems;
+	  page.value=response.data.page;
+	  pageSize.value=response.data.pageSize;
+	  for (const order of orders.value.items) {
+		const orderItems = await fetchAllItemsProducer(
+		  user2.value.user.id,
+		  order.id.toString()
+		);
+		const image = findFirstImage(orderItems.data.items);
+		if (image) {
+		  ordersImage.value[order.id] = image;
+		}
+		ordersUP.value[order.id] = orderItems?.data?.items[0]?.producerProduct?.productionUnit?.name ?? '';
+		ordersState.value[order.id] = orderItems?.data?.items[0]?.status ?? '';
+
+	  }
+	}
+  });
+  
+
+  function onPageChanged(newPageNumber: number): void {
+  page.value = newPageNumber;
+  myFunction();
+}
+function myFunction(): void {
+	if (user2.value && user2.value.user && user2.value.user.id) {
+
+  const response = fetchAllOrdersProducer(user2.value.user.id, page.value, pageSize.value);
+  response.then((res) => {
+    orders.value = res.data;
+  });
+}
+}
+  
+
+  </script>
+  
+  <style scoped>
+  #morada2 {
+	font-size: 0.8em;
+  }
+  .texto,
+  #morada {
+	font-size: 0.9em;
+  }
+  
+  td i {
+	font-size: 1.3em;
+  }
+  .carousel-container {
+	display: flex;
+	flex-wrap: wrap;
+  }
+  .semEncomendas,
+  #icon {
+	font-size: 110px !important;
+  }
+  
+  [v-cloak] {
+	display: none;
+  }
+  
+  .table thead th {
+	position: sticky;
+	top: 0;
+	background-color: #9dc88d !important;
+	/* Prefixos do navegador */
+	position: -webkit-sticky;
+	position: -moz-sticky;
+	position: -ms-sticky;
+	z-index: 2;
+  }
+  
+  .table thead th:first-child,
+  .table tbody td:first-child {
+	text-align: center;
+  }
+  
+  .table thead th:nth-last-child(2) {
+	text-align: center;
+  }
+  
+  h3 {
+	text-align: center;
+	margin-top: 150px;
+	margin-bottom: 150px;
+  }
+  
+  .table-container {
+	width: 90%;
+	max-height: 50vh; /* Altura máxima da tabela */
+	overflow-y: scroll; /* Adiciona uma barra de rolagem vertical */
+	position: relative;
+	display: block;
+	margin: auto;
+  }
+  .table th,
+  .table td {
+	padding: 1.5vh;
+	font-size: 1.2em;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+	vertical-align: middle;
+  }
+  .table h4 {
+	color: #2a2a2a !important;
+	font-weight: bold !important;
+	font-size: 1.1em !important;
+  }
+  
+  tr:hover {
+	background-color: #f5f5f5;
+	z-index: -2;
+  }
+  
+  .btn-div {
+	width: 12%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  }
+  .botao {
+	padding: 0.7em;
+	background-color: #4d774e;
+	border-radius: 5em;
+	border: 2px solid #4d774e;
+  }
+  
+  .botao2 {
+	padding: 0.6em;
+	border-radius: 0.8em;
+	border: 2px solid #f3f3f3;
+  }
+  
+  .botao span {
+	color: white !important;
+  }
+  
+  .botao:hover {
+	background-color: #3c5e3c !important;
+	border: 2px solid #3c5e3c !important;
+  }
+  
+  .botao2:hover {
+	background-color: #f3f3f3 !important;
+	border: 2px solid #f3f3f3 !important;
+  }
+  
+  .btn {
+	color: black !important;
+  }
+  
+  .status-info {
+	display: flex;
+	gap: 0.5em;
+  }
+  
+  .status-info i {
+	margin-top: -2%;
+  }
+  
+  @media (max-width: 768px) {
+	.table-container {
+	  width: 100% !important;
+	  max-height: 100% !important;
+	}
+  
+	.table h4 {
+	  font-size: 0.75em !important;
+	}
+  
+	.botao,
+	.botao2 {
+	  font-size: 0.7em;
+	}
+  
+	.texto,
+	#morada,
+	#morada2 {
+	  font-size: 0.7em;
+	}
+  
+	.table thead th {
+	  min-width: 15vh;
+	}
+  }
+  </style>
+  

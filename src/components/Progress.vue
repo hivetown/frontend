@@ -2,6 +2,9 @@
   <div class="root">
     <div class="container">
       <ul class="progressbar">
+		<li v-if="$store.state.user?.user?.type === 'PRODUCER'"
+		props.order.generalStatus=""></li>
+		{{ props }}
         <li
           :class="
             props.order.generalStatus === 'Processing' ||

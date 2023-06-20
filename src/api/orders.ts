@@ -16,8 +16,26 @@ export const fetchAllItems = (
         }
     );
 
+
+export const fetchAllOrdersProducer = (userId: number, page: number, pageSize: number) =>
+    api.get<BaseItems<Order>>(`/producers/${userId}/orders?page=${page}&pageSize=${pageSize}`);
+
+export const fetchAllItemsProducer = (
+    userId: number,
+    orderId: string,
+    search?: string
+) =>
+    api.get<BaseItems<OrderItem>>(
+        `/producers/${userId}/orders/${orderId}/items`,
+        {
+            params: { search },
+        }
+    );
 export const fetchOrder = (userId: number, orderId: string) =>
     api.get<Order>(`/consumers/${userId}/orders/${orderId}`);
+
+export const fetchOrderProducer = (userId: number, orderId: string) =>
+    api.get<Order>(`/producers/${userId}/orders/${orderId}`);
 
 export const getShipment = (
     consumerId: number,
