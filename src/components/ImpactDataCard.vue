@@ -66,6 +66,10 @@
   margin: auto;
 }
 
+.cancel-txt {
+  margin-top: 3vh;
+}
+
 @media (max-width: 767px) {
   .text-container {
     max-width: 100% !important;
