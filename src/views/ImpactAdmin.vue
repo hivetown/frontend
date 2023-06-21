@@ -423,13 +423,25 @@
         </div>
       </div>
       <!-- Período temporal -->
-      <div class="time-period">
-        <p v-if="graficosGerados">
+      <div v-if="graficosGerados" class="time-period">
+        <p>
           A mostrar dados entre: "
           <span class="fw-bold">{{ startDate }}</span
           >" e " <span class="fw-bold">{{ endDate }}</span
           >"
         </p>
+      </div>
+      <!-- TODO - Isto mas para quando os gráficos estiverem efetivamente a carregar
+		   Depois da pessoa ter escolhido os filtros -->
+      <div v-if="!graficosGerados" class="mt-5">
+        <Skeleton
+          class="d-block mx-auto"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
+        <Skeleton
+          class="d-block mx-auto mt-4"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
       </div>
 
       <div class="evolution-line-graph">
@@ -532,6 +544,7 @@ import CategoryFilter from '@/components/CategoryFilter.vue';
 import RadioButton from 'primevue/radiobutton';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import Skeleton from 'primevue/skeleton';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -859,6 +872,7 @@ export default defineComponent({
     RadioButton,
     Accordion,
     AccordionTab,
+    Skeleton,
   },
 });
 </script>
