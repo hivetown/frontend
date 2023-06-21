@@ -838,14 +838,14 @@ export default defineComponent({
 </style>
 <style>
 .mobile-view,
-.report-info-mobile,
-.hide {
+.report-info-mobile {
   display: none !important;
 }
 
 /* Mobile */
 @media (max-width: 767px) {
-  .normal-view {
+  .normal-view,
+  .hide {
     display: none !important;
   }
 
