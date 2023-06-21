@@ -5,7 +5,7 @@
     <div class="d-flex">
       <!-- Barra lateral -->
       <div
-        class="reportSidebar"
+        class="reportSidebar normal-view"
         style="
           width: 20%;
           border-right: 2px solid #f3f3f3;
@@ -119,6 +119,125 @@
           </div>
         </div>
       </div>
+
+      <!-- Barra mobile -->
+      <div class="reportSidebar mobile-view">
+        <Accordion class="">
+          <AccordionTab header="Filtros"
+            ><div class="">
+              <div class="parent">
+                <!-- Views -->
+                <div class="mt-4 mb-4">
+                  <p>Escolha o que deseja visualizar:</p>
+                  <DropdownCustom
+                    class="required-field"
+                    @view="handleViewSelect"
+                  />
+                </div>
+                <div>
+                  <!-- Produtos ou clientes -->
+                  <div class="d-flex gap-4">
+                    <div class="mb-4">
+                      <RadioButton
+                        v-model="barChartView"
+                        input-id="products"
+                        name="produtos"
+                        value="products"
+                        class="custom-radio-button"
+                        @click="updateBarChart()"
+                      />
+                      <label for="products" class="ml-2">Produtos</label>
+                    </div>
+                    <div>
+                      <RadioButton
+                        v-model="barChartView"
+                        input-id="clients"
+                        name="clientes"
+                        value="clients"
+                        class="custom-radio-button"
+                        @click="updateBarChart()"
+                      />
+                      <label for="clients" class="ml-2">Clientes</label>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <!-- Datas -->
+                  <p>Escolha as datas a visualizar:</p>
+                  <div class="d-flex gap-2 align-items-center">
+                    <DatePicker
+                      style="display: flex; justify-content: center"
+                      @date="handleDateSelect"
+                      :id="'datePicker1'"
+                    ></DatePicker>
+                    <i
+                      class="bi bi-arrow-right-short dgreen-txt"
+                      style="font-size: 1.5em"
+                    ></i>
+                    <DatePicker
+                      style="display: flex; justify-content: center"
+                      @date="handleDateSelect"
+                      :id="'datePicker2'"
+                    ></DatePicker>
+                  </div>
+                </div>
+                <!-- Slider do raio -->
+                <p class="mt-4">Indique o raio a visualizar:</p>
+                <div class="d-flex gap-3">
+                  <div
+                    style="
+                      border: 1px solid #ced4da;
+                      padding: 0.5vh;
+                      border-radius: 9%;
+                      width: 12vh;
+                      height: 4vh;
+                    "
+                    class="slider-before"
+                  >
+                    <p class="text-center" style="color: #5a5a5a">
+                      {{ raio }} km
+                    </p>
+                  </div>
+                  <Slider
+                    v-model="raio"
+                    :max="100000"
+                    :pt="{
+                      root: { style: 'width:60%;' },
+                      handle: {
+                        style:
+                          'background-color: #F1B24A; border: 1px solid #F1B24A;',
+                      },
+                      range: { style: 'background-color: #F1B24A' },
+                    }"
+                    class="slider-raio"
+                  />
+                </div>
+                <!-- Escolher categoria -->
+                <!-- TODO - tornar funcional -->
+                <div>
+                  <p class="mt-4">Escolha a categoria a visualizar:</p>
+                  <CategoryFilter :categories="allCategories"></CategoryFilter>
+                </div>
+                <div class="mt-4 btn-report-mobile">
+                  <!-- Botão gerar gráficos -->
+                  <ButtonPV
+                    :disabled="!allDataAvailable"
+                    @click="generateGraphs()"
+                    label="Gerar gráficos"
+                    :pt="{
+                      root: {
+                        style: 'background-color:#F1B24A; border:#F1B24A;',
+                      },
+                    }"
+                    rounded
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionTab>
+        </Accordion>
+      </div>
+
       <!-- Lado esquerdo da barra -->
       <div
         style="width: 80%; background-color: "
@@ -271,6 +390,147 @@
         </div>
       </div>
     </div>
+    <!-- lado esquerdo da barra mobile -->
+    <div class="report-info-mobile">
+      <InlineMessage v-if="!graficosGerados" severity="warn" class="mt-5"
+        >Para visualizar os dados tem de escolher valores para todos os filtros
+        obrigatórios</InlineMessage
+      >
+
+      <div class="d-flex cards-container-mobile">
+        <!-- Cards coloridos -->
+        <div class="data-cards">
+          <ImpactDataCard
+            icon="bi bi-currency-euro"
+            title="Total gasto"
+            :value="reportCards.comprasTotais"
+            color="#7CA2C3"
+            :text-cancel="'Dinheiro devolvido:'"
+            :cancel-value="reportCards.comprasTotaisCanceladas"
+          ></ImpactDataCard>
+          <ImpactDataCard
+            icon="bi bi-box-seam"
+            title="Total de encomendas"
+            :value="reportCards.numeroEncomendas"
+            color="#DC6942"
+            :text-cancel="'Enc. canceladas:'"
+            :cancel-value="reportCards.numeroEncomendasCanceladas"
+          ></ImpactDataCard>
+          <ImpactDataCard
+            icon="bi bi-bag"
+            title="Total de produtos"
+            :value="reportCards.totalProdutos"
+            color="#F1B24A"
+            :text-cancel="'Produtos devolvidos:'"
+            :cancel-value="reportCards.totalProdutosCancelados"
+          ></ImpactDataCard>
+        </div>
+      </div>
+      <!-- Período temporal -->
+      <div v-if="graficosGerados" class="time-period">
+        <p>
+          A mostrar dados entre: "
+          <span class="fw-bold">{{ startDate }}</span
+          >" e " <span class="fw-bold">{{ endDate }}</span
+          >"
+        </p>
+      </div>
+      <!-- TODO - Isto mas para quando os gráficos estiverem efetivamente a carregar
+		   Depois da pessoa ter escolhido os filtros -->
+      <div v-if="!graficosGerados" class="mt-5">
+        <Skeleton
+          class="d-block mx-auto"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
+        <Skeleton
+          class="d-block mx-auto mt-4"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
+      </div>
+
+      <div class="evolution-line-graph">
+        <div class="parent">
+          <div style="width: 100%">
+            <!-- Muda a cada view -->
+            <h4
+              v-if="view == 'numeroEncomendas' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Histórico de encomendas
+            </h4>
+
+            <h4
+              v-if="view == 'totalProdutos' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Quantidade de produtos encomendados
+            </h4>
+            <h4
+              v-if="view == 'numeroProdutosEncomendados' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Quantidade de produtos diferentes encomendados
+            </h4>
+            <h4
+              v-if="view == 'comprasTotais' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Histórico de faturação
+            </h4>
+            <!-- Gráfico de linhas -->
+            <div class="graph-container">
+              <LineChart
+                style="max-height: 400px !important"
+                v-if="graficosGerados"
+                :chart-data="lineChartData"
+                :chart-options="lineChartOptions"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bar-graph">
+        <div class="parent">
+          <div style="width: 100%">
+            <div>
+              <!-- Muda a cada tipo: produtos ou clientes -->
+              <h4
+                v-if="graficosGerados && barChartView == 'products'"
+                class="py-4 dgreen-txt"
+              >
+                Produtos encomendados
+              </h4>
+              <h4
+                v-if="graficosGerados && barChartView == 'clients'"
+                class="py-4 dgreen-txt"
+              >
+                Produtos encomendados por consumidor
+              </h4>
+              <!-- Gráfico de barras -->
+              <div class="graph-container">
+                <div v-if="barChartView == 'products'">
+                  <BarChart
+                    style="max-height: 400px !important"
+                    v-if="graficosGerados"
+                    :chart-data="barChartData"
+                    :chart-options="barChartOptions"
+                  ></BarChart>
+                </div>
+                <div v-if="barChartView == 'clients'">
+                  <BarChart
+                    style="max-height: 400px !important"
+                    v-if="graficosGerados"
+                    :chart-data="barChartData"
+                    :chart-options="barChartOptions"
+                  ></BarChart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -286,6 +546,9 @@ import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import CategoryFilter from '@/components/CategoryFilter.vue';
 import RadioButton from 'primevue/radiobutton';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+import Skeleton from 'primevue/skeleton';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -630,11 +893,14 @@ export default defineComponent({
     ButtonPV,
     CategoryFilter,
     RadioButton,
+    Accordion,
+    AccordionTab,
+    Skeleton,
   },
 });
 </script>
 
-<style>
+<style scoped>
 .user-info {
   width: 35%;
   padding: 3vh;
@@ -680,21 +946,55 @@ export default defineComponent({
   top: 0;
   left: -0.7rem;
 }
+</style>
+<style>
+.mobile-view,
+.report-info-mobile {
+  display: none !important;
+}
 
 /* Mobile */
 @media (max-width: 767px) {
-  .reportSidebar {
-    /* background-color: red; */
-    width: 100% !important;
-  }
-
-  .reportInfo {
+  .normal-view {
     display: none;
   }
 
-  .btn-report-mobile {
-    display: flex;
-    justify-content: center;
+  .mobile-view,
+  .report-info-mobile {
+    display: block !important;
+  }
+
+  .cards-container-mobile {
+    align-items: center;
+    justify-content: center !important;
+  }
+
+  .data-cards {
+    margin-top: 3vh;
+    width: 100% !important;
+    /* background-color: red; */
+    gap: 1vh !important;
+    padding: 1vh !important;
+  }
+
+  .impact-data-card {
+    min-width: 30%;
+  }
+
+  .time-period {
+    /* background-color: red; */
+    margin-top: 10vh;
+    text-align: center;
+  }
+
+  .time-period p {
+    font-size: 0.8em;
+  }
+
+  .evolution-line-graph h4,
+  .bar-graph h4 {
+    font-size: 1.2em;
+    margin-bottom: -2vh;
   }
 }
 </style>
