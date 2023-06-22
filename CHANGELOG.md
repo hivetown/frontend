@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.2.0](https://github.com/hivetown/frontend/compare/v2.1.0...v2.2.0) (2023-06-22)
+
+
+### Features
+
+* change primevue theme ([08a15d0](https://github.com/hivetown/frontend/commit/08a15d01b92cf40be61a3953d2060eec2ab491b7))
+
+
+### Bug Fixes
+
+* focus ring color ([d92ac21](https://github.com/hivetown/frontend/commit/d92ac216fb1d688b41a71f8a9c04d1bd8d223141))
+
 ## [2.1.0](https://github.com/hivetown/frontend/compare/v2.0.4...v2.1.0) (2023-06-19)
 
 
