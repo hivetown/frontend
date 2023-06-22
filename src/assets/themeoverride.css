@@ -1,3 +1,4 @@
 :root {
-	--focus-ring: 0 0 0 0.2rem var(--primary-color) !important;
+	/* --focus-ring: 0 0 0 0.2rem var(--primary-color) !important; */
+	--focus-ring: rgba(241, 178, 74, 0.5) !important;
 }
