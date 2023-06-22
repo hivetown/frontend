@@ -19,20 +19,20 @@
           <td class="left-column">
             <div>
               <!---->
-              <div v-if="nElementos != 0">
+              <div v-if="itemsNumber != 0">
                 <div v-if="login">
                   <CartItem
-                    v-for="cartItem in itensCarrinho.items"
+                    v-for="cartItem in itemsCart.items"
                     :cart-item="cartItem"
-                    @deleteCartItem="itemRemoved"
+                    @deleteCartItem="removeItem"
                     @updateCartItem="refreshValues"
                   ></CartItem>
                 </div>
                 <div v-else>
                   <CartItem
-                    v-for="cartItem in itensCarrinhoNAU"
+                    v-for="cartItem in itemsCartNAU"
                     :cart-item="cartItem"
-                    @deleteCartItem="itemRemoved"
+                    @deleteCartItem="removeItem"
                     @updateCartItem="refreshValues"
                   ></CartItem>
                 </div>
@@ -73,6 +73,191 @@
   </div>
 </template>
 
+<!-- Sim, existem dois scripts mas se não estiver assim  -->
+<!-- não funciona de todo por isso é melhor deixar estar -->
+<script setup lang="ts">
+import CartItem from '@/components/CartItem.vue';
+</script>
+<script lang="ts">
+import { fetchCartItems } from '../api/consumers';
+import { fetchProduct } from '../api/products';
+import { Cart, Image } from '@/types';
+import { computed } from 'vue';
+// N.A.U. - Import
+import { CartNAU } from '@/utils/cartItemNAU.js';
+import { ProductSpec } from '../types/interfaces';
+
+export default {
+  data() {
+    return {
+      // Informações dos itens do carrinho do user
+      itemsCart: {} as Cart,
+
+      // N.A.U. - Começar carrinho
+      cartNAU: new CartNAU(),
+      itemsCartNAU: [] as Array<ProductSpec>,
+      itemsCartNAUQuantities: [] as number[],
+
+      // Verificador de login para o checkLogin()
+      login: false,
+
+      // Contador de itens e preço total
+      itemsNumber: 0,
+      itemsPrice: '0,00 €',
+
+      // Guardar informações do login
+      userLoggedId: 0 as number,
+      userLoggedName: '' as string,
+      userLoggedNImage: {} as Image,
+      userLoggedType: '' as string,
+    };
+  },
+
+  methods: {
+    // Botão de voltar para trás
+    goBack() {
+      window.history.back();
+    },
+
+    // Remover item do carrinho
+    removeItem(idToRmv: number) {
+      const indexToRemove = this.itemsCart.items.findIndex(
+        (item) => item.producerProduct!.id === idToRmv
+      );
+      if (indexToRemove !== -1) {
+        this.itemsCart.items.splice(indexToRemove, 1);
+        this.refreshValues();
+      }
+    },
+
+    // Buscar número de itens
+    getItems() {
+      if (this.checkLogin()) {
+        // Se existir login, buscar o número de itens
+        return this.itemsNumber;
+        // Se não existir login, TODO
+      } else {
+        return 0;
+      }
+    },
+
+    // Buscar preço total
+    getPrice() {
+      // Se existir login, buscar o do contador
+      if (this.checkLogin()) {
+        return this.itemsPrice;
+        // Se não existir login, TODO
+      } else {
+        return '0,00 €';
+      }
+    },
+
+    // Contador de itens
+    countItems() {
+      let totalQtd = 0;
+      let items;
+      if (this.login) {
+        items = this.itemsCart['items'];
+        for (let i = 0; i < items.length; i++) {
+          totalQtd += parseFloat(JSON.stringify(items[i].quantity));
+        }
+      } else {
+        for (let i = 0; i < this.itemsCartNAUQuantities.length; i++) {
+          totalQtd += this.itemsCartNAUQuantities[i];
+        }
+      }
+      return totalQtd;
+    },
+
+    // Contador de preço total
+    countPrice() {
+      let totalSum = 0;
+      for (let i = 0; i < this.itemsCart['items'].length; i++) {
+        totalSum +=
+          parseFloat(
+            JSON.stringify(
+              this.itemsCart['items'][i].producerProduct?.currentPrice
+            )
+          ) * parseFloat(JSON.stringify(this.itemsCart['items'][i].quantity));
+      }
+      totalSum = parseInt(totalSum.toFixed(2));
+      const toCurrency = totalSum.toLocaleString('pt-PT', {
+        style: 'currency',
+        currency: 'EUR',
+      });
+      return toCurrency;
+    },
+
+    // Atualizar info dos itens do carrinho, quantidade de itens e preço total
+    async refreshValues() {
+      // para AU
+      if (this.login) {
+        const itemsCart = await fetchCartItems(this.userLoggedId);
+        console.log('itemsCart:', itemsCart);
+        console.log('tipo de itemsCart:', typeof itemsCart);
+        this.itemsCart = itemsCart.data;
+        this.itemsNumber = this.countItems();
+        this.itemsPrice = this.countPrice();
+        console.log('não passou');
+
+        // para NAU
+      } else {
+        let itemsCart: Array<ProductSpec> = [];
+        const cartInCartNAU = this.cartNAU.getCart();
+        console.log('cartInCartNAU', cartInCartNAU);
+        for (let i = 0; i < this.cartNAU.getCart().length; i++) {
+          const newItem = await fetchProduct(
+            cartInCartNAU[i].producerProduct.productSpec.id
+          );
+          itemsCart.push(newItem.data);
+          this.itemsCartNAUQuantities.push(cartInCartNAU.quantity);
+        }
+
+        // Resto
+        this.itemsCartNAU = itemsCart;
+        console.log('itemsCart', this.itemsCartNAU);
+        this.itemsNumber = this.countItems();
+        this.itemsPrice = this.countPrice();
+        console.log('passou');
+      }
+    },
+
+    // Verificar o login do user
+    checkLogin() {
+      //Guardar em Vars informação do User    const store = useStore();
+      const userLoggedId = computed(() => this.$store.state.user);
+
+      // Verifica se o login foi não executado
+      if (this.login == false) {
+        // Confirmação que existe informação para guardar
+        if (userLoggedId.value) {
+          this.login = true;
+          this.userLoggedId = userLoggedId.value['user']['id'];
+          this.userLoggedName = userLoggedId.value['user']['name'];
+          this.userLoggedType = userLoggedId.value['user']['type'];
+          if (userLoggedId.value['user']['image']) {
+            this.userLoggedNImage = userLoggedId.value['user']['image'];
+          }
+          this.refreshValues();
+          return true;
+          // Caso não exista não há user
+        } else {
+          this.refreshValues();
+          return false;
+        }
+        // Se existir login
+      } else {
+        return true;
+      }
+    },
+  },
+
+  // Buscar Info do Carrinho
+  async beforeMount() {
+    this.checkLogin();
+  },
+};
+</script>
 <style scoped>
 .container {
   display: flex;
@@ -83,20 +268,6 @@ table {
   border: 1px solid #aaa;
   width: 100%;
   border-collapse: collapse;
-}
-
-@media (max-width: 800px) {
-  tr {
-    display: block;
-  }
-
-  td {
-    border: 1px solid black;
-    padding-left: 10px;
-    padding-right: 10px;
-    display: inline-block;
-    word-break: break-all;
-  }
 }
 
 .left-column {
@@ -111,139 +282,6 @@ table {
   float: right;
   text-align: center;
 }
-</style>
-
-<!-- Sim, existem dois scripts mas se não estiver assim  -->
-<!-- não funciona de todo por isso é melhor deixar estar -->
-<script setup lang="ts">
-import CartItem from '@/components/CartItem.vue';
-</script>
-<script lang="ts">
-import { deleteCartItem, fetchCartItems } from '../api/consumers';
-//import { Product } from '@/types';
-//import { defineComponent } from 'vue';
-import { Cart, Image } from '@/types';
-import { computed } from 'vue';
-//import { getSystemErrorMap } from 'util';
-
-export default {
-  data() {
-    return {
-      itensCarrinho: {} as Cart,
-      login: false,
-
-      selected: null,
-      options: [
-        { value: null, text: '--Escolha o local de recolha--', disabled: true },
-        { value: 1, text: 'Morada nº1' },
-        { value: 2, text: 'Morada nº2' },
-        { value: 3, text: 'Ponto de Recolha' },
-        { value: 4, text: 'Loja' },
-      ],
-
-      nElementos: 0,
-      precoTotal: '0,00 €',
-
-      userLoggedId: 0 as number,
-      userLoggedName: '' as string,
-      userLoggedNImage: {} as Image,
-      userLoggedType: '' as string,
-    };
-  },
-
-  // Botão "Voltar"
-  methods: {
-    goBack() {
-      window.history.back();
-    },
-
-    itemRemoved(idToRmv: number) {
-      const indexToRemove = this.itensCarrinho.items.findIndex(
-        (item) => item.producerProduct!.id === idToRmv
-      );
-      if (indexToRemove !== -1) {
-        this.itensCarrinho.items.splice(indexToRemove, 1);
-        this.refreshValues();
-      }
-    },
-
-    getItems() {
-      if (this.login == true) {
-        return this.nElementos;
-      } else {
-        return 0;
-      }
-    },
-
-    getPrice() {
-      if (this.login == true) {
-        return this.precoTotal;
-      } else {
-        return '0,00 €';
-      }
-    },
-
-    countItems() {
-      let totalQtd = 0;
-      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
-        totalQtd += parseFloat(
-          JSON.stringify(this.itensCarrinho['items'][i].quantity)
-        );
-      }
-      return totalQtd;
-    },
-
-    countPrice() {
-      let totalSum = 0;
-      for (let i = 0; i < this.itensCarrinho['items'].length; i++) {
-        totalSum +=
-          parseFloat(
-            JSON.stringify(
-              this.itensCarrinho['items'][i].producerProduct?.currentPrice
-            )
-          ) *
-          parseFloat(JSON.stringify(this.itensCarrinho['items'][i].quantity));
-      }
-      totalSum = parseInt(totalSum.toFixed(2));
-      const toCurrency = totalSum.toLocaleString('pt-PT', {
-        style: 'currency',
-        currency: 'EUR',
-      });
-      return toCurrency;
-    },
-
-    async refreshValues() {
-      const itensCarrinho = await fetchCartItems(this.userLoggedId);
-      this.itensCarrinho = itensCarrinho.data;
-      this.nElementos = this.countItems();
-      this.precoTotal = this.countPrice();
-    },
-
-    checkLogin() {
-      //Guardar em Vars informação do User    const store = useStore();
-      const userLoggedId = computed(() => this.$store.state.user);
-      if (userLoggedId.value) {
-        this.login = true;
-        this.userLoggedId = userLoggedId.value['user']['id'];
-        this.userLoggedName = userLoggedId.value['user']['name'];
-        this.userLoggedType = userLoggedId.value['user']['type'];
-        if (userLoggedId.value['user']['image']) {
-          this.userLoggedNImage = userLoggedId.value['user']['image'];
-        }
-      }
-      if (this.$store.state.user != undefined) {
-        this.refreshValues();
-      }
-    },
-  },
-
-  // Buscar Info do Carrinho
-  async beforeMount() {
-    this.checkLogin();
-  },
-};
-</script>
-<style scoped>
 .wrapper-mains {
   height: auto;
   background: white;
