@@ -169,6 +169,9 @@
               <b-dropdown-item v-if="permissions" to="/admin?page=1"
                 >Área de admin</b-dropdown-item
               >
+              <b-dropdown-item v-if="permissions" to="/impactAdmin"
+                >Relatórios de impacto</b-dropdown-item
+              >
               <div v-if="store.state.user.user.type === 'PRODUCER'">
                 <b-dropdown-item to="/produtosprodutor"
                   >Produtos</b-dropdown-item
@@ -177,12 +180,20 @@
                   >Unidades de Produção</b-dropdown-item
                 >
                 <b-dropdown-item to="/transportes">Transportes</b-dropdown-item>
+                <b-dropdown-item to="/impactProducer"
+                  >Relatórios de impacto</b-dropdown-item
+                >
               </div>
               <b-dropdown-item
                 to="/encomendas"
                 class="linkcolor"
                 v-if="store.state.user.user.type === 'CONSUMER'"
                 >Encomendas</b-dropdown-item
+              >
+              <b-dropdown-item
+                to="/impactConsumer"
+                v-if="store.state.user.user.type === 'CONSUMER'"
+                >Relatórios de impacto</b-dropdown-item
               >
               <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>
