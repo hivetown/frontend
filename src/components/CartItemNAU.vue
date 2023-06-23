@@ -1,31 +1,12 @@
-CartItemNAU
 <template>
   <div class="d-flex gap-4">
     <!-- Ir para a página do item -->
-    <div v-if="login">
-      <router-link :to="'/products/' + cartItem.producerProduct.productSpec.id">
-        <!-- Imagem do produto -->
-        <b-card class="prod-card">
-          <img
-            :src="cartItemImageURL"
-            class="square-image"
-            alt="Product image"
-          />
-        </b-card>
-      </router-link>
-    </div>
-    <div v-else>
-      <router-link :to="'/products/' + cartItem.id">
-        <!-- Imagem do produto -->
-        <b-card class="prod-card">
-          <img
-            :src="cartItemImageURL"
-            class="square-image"
-            alt="Product image"
-          />
-        </b-card>
-      </router-link>
-    </div>
+    <router-link :to="'/products/' + cartItem.productSpec">
+      <!-- Imagem do produto -->
+      <b-card class="prod-card">
+        <img :src="cartItemImageURL" class="square-image" alt="Product image" />
+      </b-card>
+    </router-link>
     <!-- Detalhes do item -->
     <b-card-text class="w-100">
       <div style="margin-top: 45px">
@@ -95,7 +76,7 @@ CartItemNAU
 </template>
 
 <script lang="ts">
-import { fetchProduct, deleteCartItem } from '@/api';
+import { fetchProduct } from '@/api';
 import { CartItem, Image } from '@/types';
 import { PropType } from 'vue';
 // N.A.U. - Import
@@ -125,22 +106,16 @@ export default {
   props: {
     // Isto são coisas que se recebe do componente pai
     cartItem: {
-      type: Object as PropType<CartItem>,
+      type: Object as PropType<Object>,
       required: true,
     },
   },
 
   methods: {
     // ------------------ N.A.U. ------------------
-    // N.A.U. - Adicionar item ao carrinho
-    // Exemplo para CartItem.vue itemAddNAU(this.cartItem)
-    itemAddNAU(cartItem: CartItem) {
-      this.CartNAU.addItem(cartItem);
-    },
-
     // N.A.U. - APAGAR CART - TEMPORÁRIO
     excludecache() {
-      this.CartNAU.cleanCart();
+      this.cartNAU.cleanCart();
     },
     // --------------------------------------------
 
@@ -148,7 +123,8 @@ export default {
     async getDetails() {
       await this.checkLogin();
       this.setupQts();
-      this.cartItemDetails = await fetchProduct(this.cartItem.id);
+
+      this.cartItemDetails = await fetchProduct(this.cartItem.productSpec);
       this.cartItemDetails = this.cartItemDetails.data;
       this.cartItemImageURL = this.cartItemDetails.images[0].url;
 
@@ -172,7 +148,7 @@ export default {
 
       const i = this.findIndex();
       if (i !== undefined) {
-        for (let y = 1; y <= cartInCartNAU[i].producerProduct.stock; y++) {
+        for (let y = 1; y <= cartInCartNAU[i].stock; y++) {
           const build = { value: y, text: y.toString() };
           opts.push(build);
         }
@@ -191,10 +167,9 @@ export default {
     findIndex() {
       this.getCartNAU();
       const cartInCartNAU = this.cartNAU.getCart();
+      console.log('EsteCartItem', this.cartItem);
       for (let i = 0; i < this.cartNAU.getCart().length; i++) {
-        if (
-          cartInCartNAU[i].producerProduct.productSpec.id === this.cartItem.id
-        ) {
+        if (cartInCartNAU[i].id === this.cartItem.id) {
           return i;
         }
       }
@@ -206,10 +181,7 @@ export default {
       const cartInCartNAU = this.cartNAU.getCart();
       const i = this.findIndex();
       if (i !== undefined) {
-        return (
-          cartInCartNAU[i].producerProduct.currentPrice *
-          cartInCartNAU[i].quantity
-        );
+        return cartInCartNAU[i].currentPrice * cartInCartNAU[i].quantity;
       }
       return 0;
     },

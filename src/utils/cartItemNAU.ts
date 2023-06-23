@@ -1,7 +1,5 @@
-import { CartItem } from '@/types';
-
 export class CartNAU {
-    cart: CartItem[];
+    cart: object[];
 
     constructor() {
         this.cart = [];
@@ -29,7 +27,7 @@ export class CartNAU {
     }
 
     //método para adicionar um item (adiciona à lista e chama o de escrever)
-    addItem(item: CartItem) {
+    addItemByItem(item: object) {
         // Verifica se o carrinho existe
         this.checkCartExists();
         // Verifica se o item não está no carrinho
@@ -41,10 +39,10 @@ export class CartNAU {
     }
 
     //método para remover um item (remove da lista e chama o de escrever)
-    removeItem(item: CartItem) {
+    removeItem(item: object) {
         this.cart = this.getCart();
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.id == this.cart[i].producerProduct.productSpec?.id) {
+            if (item.id == this.cart[i].id) {
                 this.cart.splice(i, 1);
             }
         }
@@ -52,7 +50,7 @@ export class CartNAU {
     }
 
     //método para editar (edita na lista e chama-o de escrever)
-    substituteCartItem(itemBef: CartItem, itemAft: CartItem) {
+    substituteCartItem(itemBef: object, itemAft: object) {
         let indexToEdit = this.cart.indexOf(itemBef);
         this.cart[indexToEdit] = itemAft;
     }
@@ -66,21 +64,15 @@ export class CartNAU {
     checkCartExists() {
         const cartData = localStorage.getItem('cartNAU');
         if (cartData) {
-            this.cart = JSON.parse(cartData) as CartItem[];
+            this.cart = JSON.parse(cartData) as object[];
         }
     }
 
     //método para verificar itens repetidos:
-    checkItemInCart(item: CartItem) {
-        console.log('item', item);
-        console.log('productSpec', item.producerProduct.productSpec);
-        console.log('cartGuardado', this.cart);
+    checkItemInCart(item: object) {
         if (this.cart.length !== 0) {
             for (let i = 0; i < this.cart.length; i++) {
-                if (
-                    item.producerProduct.productSpec?.id ==
-                    this.cart[i].producerProduct.productSpec?.id
-                ) {
+                if (item.productSpec == this.cart[i].productSpec) {
                     this.incrementQuantity(i);
                     return true;
                 }
@@ -89,10 +81,12 @@ export class CartNAU {
         return false;
     }
 
-    changeQuantity(item: CartItem, quantity: number) {
+    changeQuantity(item: object, quantity: number) {
         this.cart = this.getCart();
+        console.log('item', item);
+        console.log('item id', item.id);
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.id == this.cart[i].producerProduct.productSpec?.id) {
+            if (item.id == this.cart[i].id) {
                 this.cart[i].quantity = quantity;
             }
         }
@@ -100,8 +94,7 @@ export class CartNAU {
     }
 
     //para add +1 de quantidade
-    incrementQuantity(producerProduct: number) {
-        this.cart[producerProduct]['quantity'] =
-            this.cart[producerProduct]['quantity'] + 1;
+    incrementQuantity(id: number) {
+        this.cart[id].quantity = this.cart[id].quantity + 1;
     }
 }

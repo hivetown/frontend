@@ -14,6 +14,8 @@
         Aqui poderá consultar os itens que estão atualmente no seu carrinho:
       </h5>
 
+      <button @click="cleanCart()">Limpar Carrinho</button>
+
       <table class="table table-responsive-md">
         <tr>
           <td class="left-column">
@@ -81,8 +83,7 @@ import CartItem from '@/components/CartItem.vue';
 import CartItemNAU from '@/components/CartItemNAU.vue';
 </script>
 <script lang="ts">
-import { fetchCartItems } from '../api/consumers';
-import { fetchProduct } from '../api/products';
+import { fetchCartItems, deleteCart } from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 // N.A.U. - Import
@@ -119,6 +120,15 @@ export default {
     // Botão de voltar para trás
     goBack() {
       window.history.back();
+    },
+
+    cleanCart() {
+      if (this.login) {
+        deleteCart(this.userLoggedId);
+      } else {
+        this.cartNAU.cleanCart();
+      }
+      this.refreshValues();
     },
 
     // Remover item do carrinho
@@ -193,8 +203,7 @@ export default {
         let totalSum = 0;
 
         for (let i = 0; i < carrinho.length; i++) {
-          totalSum +=
-            carrinho[i].producerProduct.currentPrice * carrinho[i].quantity;
+          totalSum += carrinho[i].currentPrice * carrinho[i].quantity;
         }
         totalSum = parseInt(totalSum.toFixed(2));
         toCurrency = totalSum.toLocaleString('pt-PT', {
@@ -223,11 +232,13 @@ export default {
 
         const cartInCartNAU = this.cartNAU.getCart();
 
+        //for (let i = 0; i < this.cartNAU.getCart().length; i++) {
+        //  const newItem = await fetchProduct(cartInCartNAU[i].productSpec);
+        //  itemsCart.push(newItem.data);
+        //  this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
+        //}
         for (let i = 0; i < this.cartNAU.getCart().length; i++) {
-          const newItem = await fetchProduct(
-            cartInCartNAU[i].producerProduct.productSpec.id
-          );
-          itemsCart.push(newItem.data);
+          itemsCart.push(cartInCartNAU[i]);
           this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
         }
 

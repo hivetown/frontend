@@ -30,7 +30,9 @@ export const addCartItem = (
 
 export const deleteCartItem = (consumer: number, producerProduct: number) =>
     api.delete(`/consumers/${consumer}/cart/${producerProduct}`);
-// O método (delete) vê-se no @ da API
+
+export const deleteCart = (consumer: number) =>
+    api.delete(`/consumers/${consumer}/cart`);
 
 export const updateQuantityCartItem = (
     consumer: number,

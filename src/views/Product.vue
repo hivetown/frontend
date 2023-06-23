@@ -941,6 +941,7 @@ import {
   SelectedUnit,
 } from '@/types';
 import { computed, defineComponent, PropType } from 'vue';
+import { CartNAU } from '@/utils/cartItemNAU.js';
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -992,10 +993,13 @@ export default defineComponent({
 
       //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
       checkboxValue: false,
+
+      // PARA USERS NÃO AUTENTIFICADOS
+      cartNAU: new CartNAU(),
     };
   },
   methods: {
-    // /------------------------------------------------------------------------------------------------------------------------------
+    // /-------------------------------------Cart-------------------------------------------------------------------------------------
 
     async addItemToCart(idToAdd: number) {
       console.log('teste0');
@@ -1008,8 +1012,19 @@ export default defineComponent({
           this.quantity
         );
       } else {
-        console.log('affff');
-        // nothing
+        const cartNAUInstance = new CartNAU();
+        this.cartNAU = cartNAUInstance;
+        console.log('idtoadd', idToAdd);
+        console.log('opções', this.producerProducts.items);
+        for (let i = 0; i < this.producerProducts.items.length; i++) {
+          if (this.producerProducts.items[i].id === idToAdd) {
+            await this.cartNAU.addItemByItem(this.producerProducts.items[i]);
+            await this.cartNAU.changeQuantity(
+              this.producerProducts.items[i],
+              this.quantity
+            );
+          }
+        }
       }
     },
 
