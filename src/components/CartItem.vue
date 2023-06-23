@@ -181,7 +181,6 @@ export default {
 
     // Atualizar quantidade do item
     async updateQnt(): Promise<void> {
-      console.log('cartItem', this.cartItem);
       try {
         this.getLoginInfo();
         await updateQuantityCartItem(
@@ -193,7 +192,6 @@ export default {
       } catch (error) {
         if (error instanceof Error) {
           if (error.message === 'Request failed with status code 400') {
-            console.log('Produto fora de stock');
           } else {
             console.log(error.message);
           }
@@ -212,7 +210,6 @@ export default {
           this.userLoggedNImage = userLoggedId.value['user']['image'];
         }
       }
-      console.log(this.userLoggedId);
     },
   },
 };

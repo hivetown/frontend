@@ -140,24 +140,12 @@ export default {
 
     // Buscar número de itens
     getItems() {
-      if (this.login) {
-        // Se existir login, buscar o número de itens
-        return this.itemsNumber;
-        // Se não existir login, TODO
-      } else {
-        return 0;
-      }
+      return this.itemsNumber;
     },
 
     // Buscar preço total
     getPrice() {
-      // Se existir login, buscar o do contador
-      if (this.login) {
-        return this.itemsPrice;
-        // Se não existir login, TODO
-      } else {
-        return '10,00 €';
-      }
+      return this.itemsPrice;
     },
 
     // Contador de itens
@@ -169,12 +157,15 @@ export default {
         for (let i = 0; i < items.length; i++) {
           totalQtd += parseFloat(JSON.stringify(items[i].quantity));
         }
+        return totalQtd;
       } else {
-        for (let i = 0; i < this.cartNAU.getCart().length; i++) {
-          totalQtd += this.itemsCartNAUQuantities[i];
+        const carrinho = this.cartNAU.getCart();
+        let totalQtd = 0;
+        for (let i = 0; i < carrinho.length; i++) {
+          totalQtd += carrinho[i].quantity;
         }
+        return totalQtd;
       }
-      return totalQtd;
     },
 
     // Contador de preço total
@@ -196,11 +187,22 @@ export default {
           style: 'currency',
           currency: 'EUR',
         });
+        return toCurrency;
       } else {
-        toCurrency = 'yup';
-      }
+        const carrinho = this.cartNAU.getCart();
+        let totalSum = 0;
 
-      return toCurrency;
+        for (let i = 0; i < carrinho.length; i++) {
+          totalSum +=
+            carrinho[i].producerProduct.currentPrice * carrinho[i].quantity;
+        }
+        totalSum = parseInt(totalSum.toFixed(2));
+        toCurrency = totalSum.toLocaleString('pt-PT', {
+          style: 'currency',
+          currency: 'EUR',
+        });
+        return toCurrency;
+      }
     },
 
     // Atualizar info dos itens do carrinho, quantidade de itens e preço total
@@ -208,14 +210,11 @@ export default {
       // para AU
       if (this.login) {
         const itemsCart = await fetchCartItems(this.userLoggedId);
-        console.log('itemsCart:', itemsCart);
-        console.log('tipo de itemsCart:', typeof itemsCart);
 
         // Resto AU
         this.itemsCart = itemsCart.data;
         this.itemsNumber = this.countItems();
         this.itemsPrice = this.countPrice();
-        console.log('itemsCart', this.itemsCart.items);
 
         // para NAU
       } else {
@@ -225,24 +224,17 @@ export default {
         const cartInCartNAU = this.cartNAU.getCart();
 
         for (let i = 0; i < this.cartNAU.getCart().length; i++) {
-          //console.log('quantosis', i);
           const newItem = await fetchProduct(
             cartInCartNAU[i].producerProduct.productSpec.id
           );
           itemsCart.push(newItem.data);
-          //console.log('quantidade', cartInCartNAU[i].quantity);
           this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
-          //console.log('quantidadeCart', this.itemsCartNAUQuantities.length);
         }
-
-        console.log('Quantities', this.itemsCartNAUQuantities);
 
         // Resto NAU
         this.itemsCartNAU = itemsCart;
-        console.log('itemsCart', this.itemsCartNAU);
         this.itemsNumber = this.countItems();
         this.itemsPrice = this.countPrice();
-        console.log('passou');
       }
     },
 

@@ -149,7 +149,6 @@ export default {
       await this.checkLogin();
       this.setupQts();
       this.cartItemDetails = await fetchProduct(this.cartItem.id);
-      console.log('detalhes', this.cartItemDetails);
       this.cartItemDetails = this.cartItemDetails.data;
       this.cartItemImageURL = this.cartItemDetails.images[0].url;
 
@@ -176,7 +175,6 @@ export default {
         for (let y = 1; y <= cartInCartNAU[i].producerProduct.stock; y++) {
           const build = { value: y, text: y.toString() };
           opts.push(build);
-          console.log('testeeee');
         }
       }
       this.options = opts;
@@ -185,16 +183,15 @@ export default {
 
     // Atualizar quantidade do item
     updateQnt(newQnt: number) {
-      console.log('encontrou');
       this.cartNAU.changeQuantity(this.cartItem, newQnt);
       this.$emit('updateCartItem');
-      console.log('correu)');
     },
 
+    // Encontrar indice na local storage do item
     findIndex() {
       this.getCartNAU();
       const cartInCartNAU = this.cartNAU.getCart();
-      for (let i = 1; i < this.cartNAU.getCart().length; i++) {
+      for (let i = 0; i < this.cartNAU.getCart().length; i++) {
         if (
           cartInCartNAU[i].producerProduct.productSpec.id === this.cartItem.id
         ) {
@@ -209,7 +206,6 @@ export default {
       const cartInCartNAU = this.cartNAU.getCart();
       const i = this.findIndex();
       if (i !== undefined) {
-        console.log('ass', cartInCartNAU[i].producerProduct.stock);
         return (
           cartInCartNAU[i].producerProduct.currentPrice *
           cartInCartNAU[i].quantity
