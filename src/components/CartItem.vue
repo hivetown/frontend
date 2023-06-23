@@ -105,6 +105,8 @@ export default {
         );
         this.cartItemDetails = this.cartItemDetails.data;
         this.cartItemImageURL = this.cartItemDetails.images[0].url;
+
+        console.log(this.cartItemDetails);
       }
     },
 
@@ -183,7 +185,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .square-image {
   width: 50%;
   height: 50%;

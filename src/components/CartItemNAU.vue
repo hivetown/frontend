@@ -59,6 +59,7 @@ import { fetchProduct } from '@/api';
 import { PropType } from 'vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU.js';
+import { CartItem, ProducerProduct } from '@/types';
 
 export default {
   data() {
@@ -84,7 +85,7 @@ export default {
   props: {
     // Isto são coisas que se recebe do componente pai
     cartItem: {
-      type: Object as PropType<Object>,
+      type: Object as PropType<ProducerProduct>,
       required: true,
     },
   },
@@ -102,7 +103,9 @@ export default {
       await this.checkLogin();
       this.setupQts();
 
-      this.cartItemDetails = await fetchProduct(this.cartItem.productSpec);
+      this.cartItemDetails = await fetchProduct(
+        Number(this.cartItem.productSpec)
+      );
       this.cartItemDetails = this.cartItemDetails.data;
       this.cartItemImageURL = this.cartItemDetails.images[0].url;
 
@@ -169,7 +172,7 @@ export default {
       try {
         this.getCartNAU();
         if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
-          this.cartNAU.removeItem(this.cartItem);
+          this.cartNAU.removeItem(this.cartItem.producerProduct);
           this.$emit('deleteCartItem', this.cartItem.id);
         } else {
           /* do nothing */
@@ -189,7 +192,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .square-image {
   width: 50%;
   height: 50%;

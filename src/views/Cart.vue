@@ -310,11 +310,11 @@ table {
   text-align: center;
 }
 .wrapper-mains {
-  height: auto;
+  /* height: auto;
   background: white;
   text-align: center;
   margin: auto;
-  padding: 20px;
+  padding: 20px; */
 }
 .textarea {
   display: block;

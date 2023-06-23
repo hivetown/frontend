@@ -1,5 +1,7 @@
+import { CartItem } from '@types';
+
 export class CartNAU {
-    cart: object[];
+    cart: CartItem[];
 
     constructor() {
         this.cart = [];
@@ -27,7 +29,7 @@ export class CartNAU {
     }
 
     //método para adicionar um item (adiciona à lista e chama o de escrever)
-    addItemByItem(item: object) {
+    addItemByItem(item: CartItem) {
         // Verifica se o carrinho existe
         this.checkCartExists();
         // Verifica se o item não está no carrinho
@@ -39,10 +41,10 @@ export class CartNAU {
     }
 
     //método para remover um item (remove da lista e chama o de escrever)
-    removeItem(item: object) {
+    removeItem(item: CartItem) {
         this.cart = this.getCart();
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.id == this.cart[i].id) {
+            if (item.producerProduct.id == this.cart[i].producerProduct.id) {
                 this.cart.splice(i, 1);
             }
         }
@@ -50,7 +52,7 @@ export class CartNAU {
     }
 
     //método para editar (edita na lista e chama-o de escrever)
-    substituteCartItem(itemBef: object, itemAft: object) {
+    substituteCartItem(itemBef: CartItem, itemAft: CartItem) {
         let indexToEdit = this.cart.indexOf(itemBef);
         this.cart[indexToEdit] = itemAft;
     }
@@ -64,15 +66,17 @@ export class CartNAU {
     checkCartExists() {
         const cartData = localStorage.getItem('cartNAU');
         if (cartData) {
-            this.cart = JSON.parse(cartData) as object[];
+            this.cart = JSON.parse(cartData) as CartItem[];
         }
     }
 
     //método para verificar itens repetidos:
-    checkItemInCart(item: object) {
+    checkItemInCart(item: CartItem) {
         if (this.cart.length !== 0) {
             for (let i = 0; i < this.cart.length; i++) {
-                if (item.id == this.cart[i].id) {
+                if (
+                    item.producerProduct.id == this.cart[i].producerProduct.id
+                ) {
                     this.incrementQuantity(i);
                     return true;
                 }
@@ -81,12 +85,12 @@ export class CartNAU {
         return false;
     }
 
-    changeQuantity(item: object, quantity: number) {
+    changeQuantity(item: CartItem, quantity: number) {
         this.cart = this.getCart();
         console.log('item', item);
-        console.log('item id', item.id);
+        console.log('item id', item.producerProduct.id);
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.id == this.cart[i].id) {
+            if (item.producerProduct.id == this.cart[i].producerProduct.id) {
                 this.cart[i].quantity = quantity;
             }
         }
