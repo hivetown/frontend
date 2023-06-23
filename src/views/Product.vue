@@ -124,6 +124,7 @@
 
           <div class="aux-btns d-flex align-items-center gap-1">
             <button
+              @click="addItemToCart(defaultProduct.id)"
               type="button"
               class="btn btn-outline-secondary circle-btn"
               v-b-tooltip.hover
@@ -273,6 +274,7 @@
 
         <div class="aux-btns d-flex align-items-center gap-1">
           <button
+            @click="addItemToCart(defaultProduct.id)"
             type="button"
             class="btn btn-outline-secondary circle-btn"
             v-b-tooltip.hover
@@ -477,6 +479,7 @@
                         }}
                       </b-button>
                       <button
+                        @click="addItemToCart(producerProduct.id)"
                         type="button"
                         style="scale: 1.1"
                         class="btn btn-outline-secondary circle-btn"
@@ -693,6 +696,7 @@
                         }}
                       </b-button>
                       <button
+                        @click="addItemToCart(producerProduct.id)"
                         type="button"
                         style="scale: 1.1"
                         class="btn btn-outline-secondary circle-btn"
@@ -926,6 +930,7 @@ import {
   fetchProductCategoriesFields,
   fetchLocalProducts,
   getConsumerAddresses,
+  addCartItem,
 } from '@/api';
 import {
   ProductSpec,
@@ -935,7 +940,7 @@ import {
   ProductSpecField,
   SelectedUnit,
 } from '@/types';
-import { defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType } from 'vue';
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -965,7 +970,7 @@ export default defineComponent({
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
-      quantity: 0, // Quantidade de produtos a comprar
+      quantity: 1, // Quantidade de produtos a comprar
       currentPage: 'detalhes', // Página atual das tabs do produto
       lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
       // Dados da BD
@@ -990,6 +995,26 @@ export default defineComponent({
     };
   },
   methods: {
+    // /------------------------------------------------------------------------------------------------------------------------------
+
+    async addItemToCart(idToAdd: number) {
+      console.log('teste0');
+      const userLoggedId = computed(() => this.$store.state.user);
+      if (userLoggedId.value) {
+        console.log('iffff');
+        await addCartItem(
+          userLoggedId.value['user']['id'],
+          idToAdd,
+          this.quantity
+        );
+      } else {
+        console.log('affff');
+        // nothing
+      }
+    },
+
+    // /------------------------------------------------------------------------------------------------------------------------------
+
     // Aumentar e diminuir a quantidade de produtos
     increment() {
       this.quantity++;
@@ -1036,7 +1061,6 @@ export default defineComponent({
       }
     },
   },
-
   // A fazer antes de montar o componente
   async beforeMount() {
     // SpecId escolhida

@@ -42,15 +42,16 @@
 
         <!-- Botões -->
         <div class="d-flex gap-2 buttons">
-          <button
-            @click="itemAdded(productSpec.id)"
-            type="button"
-            class="btn btn-outline-secondary circle-btn"
-            v-b-tooltip.hover
-            title="Adicionar ao carrinho"
-          >
-            <i class="bi bi-cart"></i>
-          </button>
+          <router-link :to="'/products/' + productSpec.id">
+            <button
+              type="button"
+              class="btn btn-outline-secondary circle-btn"
+              v-b-tooltip.hover
+              title="Adicionar ao carrinho"
+            >
+              <i class="bi bi-cart"></i>
+            </button>
+          </router-link>
 
           <router-link :to="'/products/' + productSpec.id">
             <button
@@ -145,7 +146,6 @@
 import { fetchProductCategories } from '@/api';
 import { Category, ProductSpec, Image } from '@/types';
 import { PropType, computed } from 'vue';
-import { addCartItem } from '../api/consumers';
 </script>
 
 <script lang="ts">
@@ -155,11 +155,6 @@ export default {
       isFavorite: false, // Se o produto está nos favoritos
       productCategory: {} as Category, // Categoria do produto
       selectedId: null as number | null, // Id do produto selecionado
-
-      userLoggedId: 0 as number,
-      userLoggedName: '' as string,
-      userLoggedNImage: {} as Image,
-      userLoggedType: '' as string,
     };
   },
   computed: {
@@ -195,41 +190,7 @@ export default {
     setupCompare() {
       this.$emit('compare', this.productSpec);
     },
-
-    // Adicionar Items ao carrinho -----
-    async itemAdded(idToAdd: number) {
-      if (this.userLoggedId === undefined) {
-        const itemInfo = await fetchProduct(idToAdd);
-        const itemInfo2 = await fetchProducerProducts(idToAdd);
-
-        console.log('info', itemInfo);
-        console.log('info2', itemInfo2);
-
-        console.log();
-      } else {
-        console.log('productSpec', this.productSpec);
-        this.getLoginInfo();
-        console.log(idToAdd);
-        await addCartItem(this.userLoggedId, idToAdd, 1);
-      }
-    },
-
-    getLoginInfo() {
-      const userLoggedId = computed(() => this.$store.state.user);
-      if (userLoggedId.value) {
-        this.userLoggedId = userLoggedId.value['user']['id'];
-        this.userLoggedName = userLoggedId.value['user']['name'];
-        this.userLoggedType = userLoggedId.value['user']['type'];
-        if (userLoggedId.value['user']['image']) {
-          this.userLoggedNImage = userLoggedId.value['user']['image'];
-        }
-      }
-      console.log(this.userLoggedId);
-    },
   },
-
-  // /--------------------------------
-
   async beforeMount() {
     const productCategories = await fetchProductCategories(this.productSpec.id);
     this.productCategory = productCategories.data.items[0];
