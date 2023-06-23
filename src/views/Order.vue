@@ -10,9 +10,9 @@
         <Progress
           :order="order"
           :length="4"
-          v-if="order.generalStatus !== 'Canceled' && $store.state.user?.user?.type ==='CONSUMER' "
+          v-if="order.status !== 'Canceled' && $store.state.user?.user?.type ==='CONSUMER' "
         ></Progress>
-        <i v-if="order.generalStatus === 'Canceled'" class="bi bi-x-circle">Encomenda cancelada</i>
+        <i v-if="order.status === 'Canceled'" class="bi bi-x-circle">Encomenda cancelada</i>
       </div>
       <div
         class="tabela"

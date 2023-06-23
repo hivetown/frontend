@@ -1,6 +1,7 @@
 <template>
   <div class="parent" style="background-color: ">
     <div class="table-container" style="overflow: auto" v-if="$store.state.user?.user?.type === 'CONSUMER'">
+		<h5 class="" id="data" style="margin-right: 0px; text-align: right;">Encomenda efetuada em: {{ date }}</h5>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -130,7 +131,6 @@
         </tbody>
       </table>
 	  <div class="resumo" style="background-color: ">
-      <h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5>
       <h3 class="">Total: {{ totalSum }}€</h3>
     </div>
     </div>
@@ -138,6 +138,7 @@
     
 	<!--HISTORICO PRODUCER-->
 	<div class="table-container" style="overflow: auto" v-if="$store.state.user?.user?.type === 'PRODUCER'">
+		<div style="text-align: right;"><h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5></div>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -259,7 +260,6 @@
         </tbody>
       </table>
 	  <div class="resumo" style="background-color: ">
-      <h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5>
      
     </div>
     </div>
@@ -270,7 +270,7 @@
 
 <script setup lang="ts">
 import { ref, computed, PropType, onBeforeMount } from 'vue';
-import { fetchAllItems, fetchAllItemsProducer } from '../api/orders';
+import { fetchAllItems, fetchAllItemsProducer, fetchAllOrders } from '../api/orders';
 import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
@@ -294,16 +294,15 @@ const props = defineProps({
 onBeforeMount(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
-	console.log(user2.value)
 	if (user2.value.user.type==="CONSUMER"){
 		const responseItem = await fetchAllItems(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
-		date.value = props.order.orderDate.substring(0, 10);
+		date.value = props.order.orderDate; 
+		console.log(props.order.orderDate);
 	} else{
 		const responseItem = await fetchAllItemsProducer(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
 		date.value = props.order.orderDate.substring(0, 10);
-		console.log(responseItem.data);
 	
 	}
 	if (user2.value.user.type==="CONSUMER"){
@@ -317,7 +316,6 @@ onBeforeMount(async () => {
           orderItem.producerProduct.id
         )
       ).data;
-
       eventos.value[orderItem.producerProduct.id] =
         responseShipment.events[responseShipment.events.length - 1];
     }

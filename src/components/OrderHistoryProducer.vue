@@ -5,7 +5,6 @@
 	</h3>
   
 	<div class="table-container" style="overflow: auto">
-	  <div></div>
 	  <table v-if="!!orders?.items" style="border: 2px" class="table">
 		<thead>
 		  <tr>
@@ -129,6 +128,7 @@
   import { onMounted, ref, computed } from 'vue';
   import { fetchAllOrdersProducer, cancelOrder, fetchAllItemsProducer } from '../api/orders';
   import { useStore } from '@/store';
+  import { useRoute } from 'vue-router';
   const store = useStore();
   const user2 = computed(() => store.state.user);
   
@@ -148,7 +148,8 @@
 		return 'Desconhecido';
 	}
   };
-  const page = ref(1);
+  const route = useRoute();
+  let page: string = route.params.page as string;
   const pageSize = ref(24);
   const totalItems = ref(0);
   const orders = ref<BaseItems<Order>>();
@@ -173,11 +174,11 @@
   };
   
   onMounted(async () => {
-	if (user2.value && user2.value.user && user2.value.user.id) {
-	  const response = await fetchAllOrdersProducer(user2.value.user.id, page.value, pageSize.value);
+	const page = route.query.page as string ?? '1';
+    if (user2.value && user2.value.user && user2.value.user.id) {
+	  const response = await fetchAllOrdersProducer(user2.value.user.id, Number(page), pageSize.value);
 	  orders.value = response.data;
 	  totalItems.value=response.data.totalItems;
-	  page.value=response.data.page;
 	  pageSize.value=response.data.pageSize;
 	  for (const order of orders.value.items) {
 		const orderItems = await fetchAllItemsProducer(
@@ -196,16 +197,17 @@
   });
   
 
-  function onPageChanged(newPageNumber: number): void {
-  page.value = newPageNumber;
-  myFunction();
+  function onPageChanged(): void {
+  page = page+1;
+  myFunction(Number(page));
 }
-function myFunction(): void {
+function myFunction(page: number): void {
 	if (user2.value && user2.value.user && user2.value.user.id) {
-
-  const response = fetchAllOrdersProducer(user2.value.user.id, page.value, pageSize.value);
+  const response = fetchAllOrdersProducer(user2.value.user.id, page, pageSize.value);
   response.then((res) => {
     orders.value = res.data;
+	orders.value.items = res.data.items; // Atualize apenas os pedidos da página atual
+
   });
 }
 }

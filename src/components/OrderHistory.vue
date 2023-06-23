@@ -175,17 +175,17 @@
             >
           </td>
 
-          <td>
-            <input
-              id="name"
-              type="checkbox"
-              style="transform: scale(2)"
-              @change="onCheckboxChange()"
-              :value="order.id"
-              v-model="selectedOrders[idx]"
-            />
-            <span v-if="selectedOrders[idx]"></span>
-          </td>
+         <td style="text-align: center;">
+    <input
+      id="name"
+      type="checkbox"
+      style="transform: scale(2);"
+      @change="onCheckboxChange()"
+      :value="order.id"
+      v-model="selectedOrders[idx]"
+    />
+    <span v-if="selectedOrders[idx]"></span>
+</td>
 
           <td>
             <router-link :to="'/encomenda/id' + order.id">

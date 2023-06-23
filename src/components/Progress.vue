@@ -2,16 +2,14 @@
   <div class="root">
     <div class="container">
       <ul class="progressbar">
-		<li v-if="$store.state.user?.user?.type === 'PRODUCER'"
-		props.order.generalStatus=""></li>
-		{{ props }}
+		
         <li
           :class="
-            props.order.generalStatus === 'Processing' ||
-            props.order.generalStatus === 'Delivered' ||
-            props.order.generalStatus === 'Shipped' ||
-            props.order.generalStatus === 'Paid' ||
-            props.order.generalStatus === 'Cancelled'
+            props.order.status === 'Processing' ||
+            props.order.status === 'Delivered' ||
+            props.order.status === 'Shipped' ||
+            props.order.status === 'Paid' ||
+            props.order.status === 'Cancelled'
               ? 'active step1'
               : 'step1'
           "
@@ -20,10 +18,10 @@
         </li>
         <li
           :class="
-            props.order.generalStatus === 'Shipped' ||
-            props.order.generalStatus === 'Delivered' ||
-            props.order.generalStatus === 'Processing' ||
-            props.order.generalStatus === 'Cancelled'
+            props.order.status === 'Shipped' ||
+            props.order.status === 'Delivered' ||
+            props.order.status === 'Processing' ||
+            props.order.status === 'Cancelled'
               ? 'active step2'
               : 'step2'
           "
@@ -32,9 +30,9 @@
         </li>
         <li
           :class="
-            props.order.generalStatus === 'Delivered' ||
-            props.order.generalStatus === 'Shipped' ||
-            props.order.generalStatus === 'Cancelled'
+            props.order.status === 'Delivered' ||
+            props.order.status === 'Shipped' ||
+            props.order.status === 'Cancelled'
               ? 'active step3'
               : 'step3'
           "
@@ -43,8 +41,8 @@
         </li>
         <li
           :class="
-            props.order.generalStatus === 'Delivered' ||
-            props.order.generalStatus === 'Cancelled'
+            props.order.status === 'Delivered' ||
+            props.order.status === 'Cancelled'
               ? 'active step4'
               : 'step4'
           "
