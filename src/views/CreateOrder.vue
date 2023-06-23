@@ -1,29 +1,22 @@
 <template>
-  <div class="form-address">
-    <h4 class="titulo">Selecione o endereço de envio</h4>
-    <div class="form-check form-check-inline">
-      <br />
-      <h5>Endereços guardados</h5>
-      <div class="row" v-if="addresses && addresses.items">
-        <div
-          class="col-sm-6"
-          v-for="(address, index) in addresses.items"
-          :key="index"
-        >
-          <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              :value="address.id"
-              v-model="selectedItems"
-              @change="checkButtonDisabled"
-            />
-            <label class="form-check-label" for="radio{{ index + 1 }}">
-              <div class="border p-3" id="caixa">
+  <div class="container">
+    <div class="form-address parent">
+      <h4 class="titulo dgreen-txt main-txt mb-4">Endereço de envio</h4>
+      <div class="form-check form-check-inline enderecos">
+        <br />
+        <h5 class="mb-4">Endereços guardados</h5>
+        <div v-if="addresses && addresses.items">
+          <div
+            v-for="(address, index) in addresses.items"
+            :key="index"
+            class="adresses-box"
+          >
+            <!-- Utilize classes do Bootstrap para criar uma grade de duas colunas -->
+            <div class="form-check-content">
+              <div class="morada-info">
                 <!-- Adicione a classe "border" para criar a borda e "p-3" para adicionar espaçamento interno -->
                 <p>
-                  {{ address['street'] }}, numero {{ address['number'] }}, andar
+                  {{ address['street'] }}, número {{ address['number'] }}, andar
                   {{ address['floor'] }}
                 </p>
                 <p>
@@ -32,35 +25,46 @@
                 </p>
                 <p>Distrito de {{ address['district'] }}</p>
                 <p>
+                  Coordenadas:
                   {{ address['latitude'] }},
                   {{ address['longitude'] }}
                 </p>
               </div>
-            </label>
+              <div class="form-input-square">
+                <!-- MELHORAR INPUT  -->
+                <input
+                  type="radio"
+                  :value="address.id"
+                  v-model="selectedItems"
+                  @change="checkButtonDisabled"
+                />
+                <label
+                  class="form-check-label"
+                  for="radio{{ index + 1 }}"
+                ></label>
+              </div>
+            </div>
           </div>
         </div>
+        <p v-else>Ainda não existem endereços salvos!</p>
       </div>
-      <p v-else>Ainda não existem endereços salvos!</p>
-    </div>
-    <div>
       <div>
-        <button
-          id="btnExtende"
-          class="btn btn-outline-secondary btn-sm"
-          @click="collapsed = !collapsed"
-        >
-          {{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}
-        </button>
-        <div v-if="!collapsed">
-          <!-- Your content here -->
-          <AddAddress></AddAddress>
+        <div class="div-botao">
+          <button
+            id="btnExtende"
+            class="btn rounded-pill"
+            @click="collapsed = !collapsed"
+          >
+            {{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}
+          </button>
         </div>
+        <br />
       </div>
-      <br />
     </div>
-    <div>
-      <h4 class="titulo">Resumo do carrinho</h4>
-      <div class="border p-3" id="caixa2">
+    <div class="resumo">
+      <h4 class="titulo dgreen-txt main-txt text-center">Resumo do carrinho</h4>
+
+      <div class="caixa">
         <span v-if="!cart?.items">O carrinho está vazio</span>
         <div
           v-else
@@ -69,30 +73,43 @@
           style="white-space: nowrap"
         >
           <router-link to="/carrinho">
-            <div style="display: inline-block">
-              >{{ cartItem['quantity'] }}X
-              {{ cartItem.producerProduct.productSpec!.name }};
+            <div
+              style="display: flex; justify-content: space-between"
+              class="mobile-items"
+            >
+              <span style="font-size: 1.1em; text-decoration: none !important">
+                {{ cartItem.producerProduct.productSpec!.name }}
+              </span>
+              <span style="font-size: 1.1em; text-decoration: none !important">
+                Qnt: {{ cartItem['quantity'] }}</span
+              >
             </div>
           </router-link>
         </div>
       </div>
-    </div>
-    <div id="finalizar">
-      <button
-        id="btn"
-        @click="submitOrder"
-        type="button"
-        class="btn btn-outline-secondary btn-sm"
-        style="text-align: center"
-        :disabled="isButtonDisabled"
-      >
-        Finalizar a compra
-      </button>
-      <div id="aviso" v-if="isButtonDisabled">
-        *Selecione pelo menos um endereço para finalizar a encomenda
+      <div id="finalizar">
+        <button
+          id="btn"
+          @click="submitOrder"
+          type="button"
+          class="btn finalizar-btn rounded-pill"
+          style="text-align: center"
+          :disabled="isButtonDisabled"
+        >
+          Finalizar a compra
+        </button>
+        <div id="aviso" v-if="isButtonDisabled">
+          *Selecione pelo menos um endereço para finalizar a encomenda
+        </div>
       </div>
     </div>
     <br />
+  </div>
+  <div>
+    <div v-if="!collapsed">
+      <!-- Your content here -->
+      <AddAddress></AddAddress>
+    </div>
   </div>
 </template>
 
@@ -161,14 +178,9 @@ async function submitOrder() {
   color: rgb(110, 102, 102);
 }
 
-#btnExtende {
-  margin-left: 50px;
-}
 .titulo {
-  text-align: center;
-  font-size: 35px;
-  margin-top: 20px;
-  font-family: 'DM Serif Display';
+  /* text-align: center; */
+  font-size: 2em;
 }
 .titulo2 {
   font-size: 25px;
@@ -176,26 +188,106 @@ async function submitOrder() {
   margin-left: 10px;
   font-family: 'DM Serif Display';
 }
-#caixa {
-  width: 500px !important;
-}
-#caixa2 {
-  margin-left: 40px;
-  width: 400px !important;
-}
 #adiciona {
   text-align: center;
 }
-.form-address {
-  margin-left: 100px;
-  margin-right: 100px;
-  background-color: beige;
-  border-radius: 10px;
+
+.container {
+  /* background-color: red; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.8em;
+  margin-top: 3vh;
+  border: 4px solid #f3f3f3;
 }
+.form-address {
+  padding: 2em;
+  width: 50%;
+}
+
+.enderecos {
+  /* background-color: green; */
+  border-radius: 0.8em;
+  border: 3px solid #f3f3f3;
+  width: 100%;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.adresses-box {
+  /* background-color: blue; */
+  width: 100%;
+  padding: 1em;
+}
+.form-check-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: pink; */
+  border-bottom: 1px solid #f3f3f3;
+}
+.form-input-square {
+  display: flex;
+  justify-content: center;
+  /* background-color: aqua; */
+  width: 25%;
+}
+
+.morada-info {
+  /* background-color: purple; */
+  width: 75%;
+}
+
+#btnExtende {
+  border: 2px solid #f1b24a;
+  padding: 0.8em !important;
+}
+#btnExtende:hover {
+  background-color: #fcfcfc;
+  border: 2px solid #e19e32;
+}
+.div-botao {
+  margin-top: 2vh;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.resumo {
+  /* background-color: aqua;s */
+  width: 50%;
+  padding: 2em;
+  height: 50vh;
+}
+
+.caixa {
+  /* background-color: red; */
+  margin-top: 5vh !important;
+  width: 80%;
+  display: block;
+  margin: auto;
+  height: 25vh;
+  max-height: 25vh;
+  overflow-y: auto;
+  padding: 1em;
+}
+
 #finalizar {
-  margin-top: 20px;
+  /* background-color: green; */
+  display: block;
+  margin: auto;
+  margin-top: 2vh;
+  width: 80%;
   text-align: right;
 }
+
+.finalizar-btn {
+  background-color: #4d774e !important;
+  padding: 0.6em !important;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+  color: white;
+}
+
 #voltar {
   font-size: 20px;
   font-style: bold;
@@ -210,24 +302,52 @@ input[type='radio'] {
   height: 20px;
 }
 @media (max-width: 768px) {
-  /* Substitua 768px pelo valor desejado para a largura de tela */
-  .form-address {
-    margin-left: 10px; /* Ajuste a margem esquerda para telas menores */
-    margin-right: 10px; /* Ajuste a margem direita para telas menores */
-    height: auto; /* Ajuste a altura para telas menores */
-  }
-  #caixa {
-    width: 310px !important;
-  }
-  #caixa2 {
-    margin-left: 10px;
-    width: 310px !important;
+  .container {
+    display: flex;
+    flex-direction: column-reverse;
+    border: none;
   }
   .form-address {
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: beige;
-    border-radius: 10px;
+    width: 100%;
+    /* background-color: blue; */
+  }
+
+  .resumo {
+    /* background-color: red; */
+    width: 100%;
+    margin-bottom: 4vh;
+  }
+
+  .morada-info p {
+    font-size: 0.8em;
+  }
+
+  .caixa {
+    /* background-color: green; */
+    width: 100% !important;
+  }
+
+  .mobile-items {
+    /* background-color: purple; */
+    font-size: 0.75em;
+  }
+  #finalizar {
+    scale: 0.8;
+    width: 100%;
+    /* background-color: red; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .finalizar-btn {
+    max-width: 70%;
+  }
+
+  #aviso {
+    /* background-color: green; */
+    margin-top: 1vh;
   }
 }
 </style>

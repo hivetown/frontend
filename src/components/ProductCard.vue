@@ -27,11 +27,11 @@
           v-if="productCategory && productCategory.name"
           class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
         >
-          {{ productCategory.name }}
+          <span>{{ productCategory.name }}</span>
         </div>
 
-        <h5>{{ productSpec.name }}</h5>
-        <p class="grey-txt mt-3">{{ productSpec.description }}</p>
+        <h5 class="name-prod">{{ productSpec.name }}</h5>
+        <p class="grey-txt mt-3 description">{{ productSpec.description }}</p>
         <div class="d-flex gap-2">
           <h4 class="mb-3">
             {{ productPricing }}
@@ -80,10 +80,6 @@
 </template>
 
 <style>
-.product {
-  max-width: 18%;
-}
-
 .prod-card {
   background-color: #f3f3f3 !important;
   border-radius: 1.3em !important;
@@ -124,7 +120,27 @@
   cursor: pointer;
 }
 </style>
+<style scoped>
+.product {
+  min-height: 40vh;
+}
 
+.description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.name-prod {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
 <script setup lang="ts">
 import { fetchProductCategories } from '@/api';
 import { Category, ProductSpec, Image } from '@/types';

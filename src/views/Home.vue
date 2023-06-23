@@ -115,7 +115,7 @@
 import Banner from '@/components/Banner.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
 import ProductCard from '@/components/ProductCard.vue';
-import { ProductSpec } from '@types';
+import { ProductSpec } from '@/types';
 import { fetchProduct } from '@/api';
 </script>
 

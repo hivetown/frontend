@@ -1,20 +1,30 @@
 import {
-    ProductSpec,
     Category,
     BaseItems,
     ProducerProduct,
+    ProductSpec,
     ProductSpecField,
+    ProductSpecs,
 } from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllProducts = (
-    page?: number,
-    pageSize?: number,
-    search?: string,
-    categoryId?: number
-) =>
-    api.get<BaseItems<ProductSpec>>('/products', {
-        params: { page, pageSize, search, categoryId },
+export const fetchAllProducts = ({
+    page,
+    pageSize,
+    search,
+    categoryId,
+    maxPrice,
+    minPrice,
+}: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    categoryId?: number;
+    maxPrice?: number;
+    minPrice?: number;
+}) =>
+    api.get<ProductSpecs>('/products', {
+        params: { page, pageSize, search, categoryId, maxPrice, minPrice },
     });
 
 export const fetchProduct = (specId: number) =>
@@ -30,6 +40,7 @@ export const fetchProductCategoriesFields = (specId: number, catId: number) =>
     api.get<BaseItems<ProductSpecField>>(
         `/products/${specId}/categories/${catId}/fields`
     );
+
 export const fetchLocalProducts = (
     specId: number,
     addressId: number,

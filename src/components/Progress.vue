@@ -53,7 +53,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Order } from '@types';
+import { Order } from '@/types';
 import { PropType } from 'vue';
 
 const props = defineProps({
@@ -65,6 +65,28 @@ const props = defineProps({
 </script>
 
 <style scoped>
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: red; */
+}
+
+.container {
+  z-index: 1;
+  display: block;
+  margin: auto;
+  /* background-color: green; */
+}
+.progressbar {
+  counter-reset: step;
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-color: blue; */
+}
+
 .progressbar li.step1:before {
   content: '';
   width: 35px;
@@ -136,15 +158,12 @@ li {
   list-style-type: none;
 }
 
-.progressbar {
-  counter-reset: step;
-  height: 10px; /* altura da barra de progresso */
-}
 .progressbar li {
   float: left;
-  width: 14.28%;
+  width: 30vh;
+  height: 15vh;
   position: relative;
-  text-align: center;
+  /* background-color: purple; */
 }
 
 .progressbar li:after {
@@ -204,13 +223,6 @@ li {
   background-image: url('/progress/casa.png');
   background-size: cover;
 }
-.container {
-  position: absolute;
-  z-index: 1;
-  margin-top: 20px;
-  margin-left: 310px;
-  text-align: center !important;
-}
 
 @media (max-width: 768px) {
   .table th:nth-child(2),
@@ -221,14 +233,14 @@ li {
   .table td:nth-child(5) {
     display: none;
   }
-  .container {
+  /* .container {
     width: 90%;
     margin-left: 25px;
-  }
+  } */
 
   .progressbar li {
-    width: 20%;
-    font-size: 12px;
+    /* width: 20%; */
+    font-size: 0.6em;
   }
 
   .progressbar {
@@ -241,8 +253,8 @@ li {
 }
 @media (max-width: 660px) {
   .progressbar li {
-    width: 20%;
-    font-size: 12px;
+    /* background-color: red; */
+    font-size: 0.5em;
   }
 
   .progressbar {
@@ -253,13 +265,13 @@ li {
     display: none;
   }
 
-  .container {
+  /* .container {
     width: 90%;
     position: absolute;
     z-index: 1;
     position: absolute;
     margin-top: 20px;
     left: 12%;
-  }
+  } */
 }
 </style>

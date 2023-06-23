@@ -1,83 +1,91 @@
 <template>
-  <main class="login">
-    <section class="forms">
-      <div class="p-field-radiobutton">
-        <p>É um Consumidor ou um Fornecedor?</p>
-        <input
-          type="radio"
-          id="consumer"
-          name="consumer_supplier"
-          checked
-          @click="saveValue('Consumer')"
-        />
-        <label for="consumer">Consumidor</label>
-        <input
-          type="radio"
-          id="supplier"
-          name="consumer_supplier"
-          @click="saveValue('Producer')"
-        />
-        <label for="supplier">Fornecedor</label>
-        <div v-if="userType == 'Consumer'">
-          <RegisterConsumer></RegisterConsumer>
+  <div id="full" class="grid align-items-center justify-content-center">
+    <Card>
+      <template #title> Bem vindo ao hiveTown </template>
+
+      <template #content>
+        <!-- User Type -->
+        <div class="flex flex-column gap-4">
+          <div class="flex flex-column gap-2">
+            <small>Tipo de utilizador</small>
+            <div class="flex gap-3">
+              <div>
+                <RadioButton
+                  v-model="userType"
+                  input-id="userTypeConsumer"
+                  name="userType"
+                  value="Consumer"
+                />
+                <label for="userTypeConsumer" class="ml-2"
+                  >Sou um consumidor</label
+                >
+              </div>
+
+              <div>
+                <RadioButton
+                  v-model="userType"
+                  input-id="userTypeProducer"
+                  name="userType"
+                  value="Producer"
+                />
+                <label for="userTypeProducer" class="ml-2"
+                  >Sou um produtor</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div v-if="userType === 'Consumer'">
+            <RegisterConsumer />
+          </div>
+          <div v-else>
+            <RegisterProducer />
+          </div>
         </div>
-        <div v-else-if="userType == 'Producer'">
-          <RegisterProducer></RegisterProducer>
-        </div>
-        <p id="loginLink">
-          Já tem uma conta? <router-link to="/login">Login</router-link>
-        </p>
-      </div>
-    </section>
-  </main>
+      </template>
+
+      <template #footer>
+        <small
+          >Já tenho conta!
+          <RouterLink :to="{ name: 'Login' }">Entrar</RouterLink></small
+        >
+      </template>
+    </Card>
+  </div>
 </template>
 
 <script lang="ts">
 import { ref } from 'vue';
 import RegisterConsumer from '@/components/register/RegisterConsumer.vue';
 import RegisterProducer from '@/components/register/RegisterProducer.vue';
+import Card from 'primevue/card';
+import RadioButton from 'primevue/radiobutton';
 
 export default {
   components: {
     RegisterConsumer,
     RegisterProducer,
+    Card,
+    RadioButton,
   },
   setup() {
     // create ref to save the value of the radio button
-    const userType = ref('Consumer');
-
-    // create function to save the value of the radio button
-    function saveValue(radioValue: string) {
-      userType.value = radioValue;
-    }
-
-    function getUserType() {
-      return userType.value;
-    }
+    const userType = ref('Consumer' as 'Consumer' | 'Producer');
 
     return {
       userType,
-      saveValue,
-      getUserType,
     };
   },
 };
 </script>
 
-<style>
-/* align loginLink with Register button */
-#loginLink {
-  margin-left: 17px;
-}
-.p-field-radiobutton {
-  display: flex;
-  flex-direction: column;
-  margin-top: 20px;
-}
-/* create border around the form */
-.forms {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
+<style scoped>
+#full {
+  height: 90vh;
+  width: 99vw;
+  background-image: url('/c1.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 </style>
