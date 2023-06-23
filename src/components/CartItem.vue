@@ -1,7 +1,9 @@
 <template>
   <div class="d-flex gap-4">
     <!-- Ir para a página do item -->
-    <router-link :to="'/products/' + cartItem.producerProduct!.productSpec.id">
+    <router-link
+      :to="'/products/' + (cartItem?.producerProduct?.productSpec?.id ?? '')"
+    >
       <!-- Imagem do produto -->
       <b-card class="prod-card">
         <img :src="cartItemImageURL" class="square-image" alt="Product image" />
@@ -54,28 +56,6 @@
       </div>
     </b-card-text>
   </div>
-
-  <!-- N.A.U. ZONA DE TESTE -->
-
-  <button
-    @click="itemAddNAU(cartItem)"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="N.A.U. add item botão teste"
-  >
-    <i class="bi bi-x-lg"></i>
-  </button>
-
-  <button
-    @click="excludecache"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="N.A.U. apagar cache botão teste"
-  >
-    <i class="bi bi-x-lg"></i>
-  </button>
-
-  <!-- N.A.U. FIZ ZONA TESTE-->
 </template>
 
 <script lang="ts">
@@ -117,28 +97,15 @@ export default {
   },
 
   methods: {
-    // ------------------ N.A.U. ------------------
-
-    // N.A.U. - Adicionar item ao carrinho
-    // Exemplo para CartItem.vue itemAddNAU(this.cartItem)
-    itemAddNAU(cartItem: CartItem) {
-      this.CartNAU.addItem(cartItem);
-    },
-
-    // N.A.U. - APAGAR CART - TEMPORÁRIO
-    excludecache() {
-      this.CartNAU.cleanCart();
-    },
-
-    // --------------------------------------------
-
     // Buscar detalhes do item (descrição, imagem)
     async getDetails() {
-      this.cartItemDetails = await fetchProduct(
-        this.cartItem.producerProduct!.productSpec.id
-      );
-      this.cartItemDetails = this.cartItemDetails.data;
-      this.cartItemImageURL = this.cartItemDetails.images[0].url;
+      if (this.cartItem.producerProduct!.productSpec !== undefined) {
+        this.cartItemDetails = await fetchProduct(
+          this.cartItem.producerProduct!.productSpec.id
+        );
+        this.cartItemDetails = this.cartItemDetails.data;
+        this.cartItemImageURL = this.cartItemDetails.images[0].url;
+      }
     },
 
     // Buscar quantidade do carrinho
@@ -192,6 +159,7 @@ export default {
       } catch (error) {
         if (error instanceof Error) {
           if (error.message === 'Request failed with status code 400') {
+            // Do nothing
           } else {
             console.log(error.message);
           }

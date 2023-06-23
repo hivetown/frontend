@@ -9,7 +9,6 @@ import {
     CreateAddress,
 } from '@/types';
 import { Cart } from '../types/interfaces';
-import { Address, Consumer, CreateConsumer } from '@/types';
 import { api } from './_base';
 
 // consumer is consumer or supplier

@@ -72,7 +72,7 @@ export class CartNAU {
     checkItemInCart(item: object) {
         if (this.cart.length !== 0) {
             for (let i = 0; i < this.cart.length; i++) {
-                if (item.productSpec == this.cart[i].productSpec) {
+                if (item.id == this.cart[i].id) {
                     this.incrementQuantity(i);
                     return true;
                 }

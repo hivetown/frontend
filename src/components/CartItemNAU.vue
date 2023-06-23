@@ -51,33 +51,11 @@
       </div>
     </b-card-text>
   </div>
-
-  <!-- N.A.U. ZONA DE TESTE -->
-
-  <button
-    @click="itemAddNAU(cartItem)"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="N.A.U. add item botão teste"
-  >
-    <i class="bi bi-x-lg"></i>
-  </button>
-
-  <button
-    @click="excludecache"
-    type="button"
-    class="btn btn-outline-secondary circle-btn"
-    title="N.A.U. apagar cache botão teste"
-  >
-    <i class="bi bi-x-lg"></i>
-  </button>
-
   <!-- N.A.U. FIZ ZONA TESTE-->
 </template>
 
 <script lang="ts">
 import { fetchProduct } from '@/api';
-import { CartItem, Image } from '@/types';
 import { PropType } from 'vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU.js';
@@ -130,7 +108,7 @@ export default {
 
       this.getCartNAU();
       const cartInCartNAU = this.cartNAU.getCart();
-      this.selectedValue = cartInCartNAU[this.findIndex()].quantity;
+      this.selectedValue = cartInCartNAU[this.findIndex() as number].quantity;
     },
 
     // BUSCAR COISAS A LOCALSTORAGE
@@ -190,7 +168,6 @@ export default {
     async removeCartItem(): Promise<void> {
       try {
         this.getCartNAU();
-        const i = this.findIndex();
         if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
           this.cartNAU.removeItem(this.cartItem);
           this.$emit('deleteCartItem', this.cartItem.id);
