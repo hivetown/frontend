@@ -34,12 +34,14 @@
 					  v-if="notificacao.readAt == null"
 					  @click="marcarComoLida(notificacao)"
 					>
-					  <u style="cursor: pointer">Marcar como lida</u>
+					  <u style="cursor: pointer; margin-right:160px;">Marcar como lida</u>
 					</small>
   
 					<small v-else @click="marcarComoNaoLida(notificacao)">
-					  <u style="cursor: pointer">Marcar como não lida</u>
+					  <u style="cursor: pointer; margin-right:130px;">Marcar como não lida</u>
 					</small>
+					<small @click="eliminarNotificacao(notificacao)" style="text-align:'right'; "> <u style="cursor: pointer">Eliminar notificação </u></small>
+
 					<hr />
 				  </b-list-group-item>
 				</template>
@@ -73,12 +75,13 @@
 					  v-if="notificacao.readAt == null"
 					  @click="marcarComoLida(notificacao)"
 					>
-					  <u style="cursor: pointer">Marcar como lida</u>
+					  <u style="cursor: pointer; margin-right:160px;">Marcar como lida</u>
 					</small>
   
 					<small v-else @click="marcarComoNaoLida(notificacao)">
-					  <u style="cursor: pointer">Marcar como não lida</u>
+					  <u style="cursor: pointer; margin-right:130px;">Marcar como não lida</u>
 					</small>
+					<small @click="eliminarNotificacao(notificacao)" style="text-align:'right'; "> <u style="cursor: pointer">Eliminar notificação </u></small>
 					<hr />
 				  </b-list-group-item>
 				</template>
@@ -104,11 +107,13 @@
   
 
 <script lang="ts">
+import Swal from 'sweetalert2';
 import {
   postRead,
   getAllNotifications,
   postUnread,
   getUnreadNotifications,
+  deleteNotification
 } from '../api/notifications';
 import { BaseItems, Notification } from '@/types';
 export default {
@@ -163,6 +168,30 @@ export default {
       notification.readAt = new Date().toISOString();
       this.$emit('qtdNotificacoes', this.quantidade);
     },
+	async eliminarNotificacao(notification: Notification) {
+  // Exibir SweetAlert para confirmar a eliminação
+  const resultado = await Swal.fire({
+    title: 'Eliminar notificação?',
+    text: 'Deseja eliminar a notificação? Esta ação não pode ser desfeita.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sim',
+    cancelButtonText: 'Não',
+	confirmButtonColor: '#FF0000', // Definir a cor vermelha (código hexadecimal)
+
+  });
+
+  // Se o usuário confirmar a eliminação, chamar deleteNotification
+  if (resultado.isConfirmed) {
+    await deleteNotification(notification.id);
+    Swal.fire('Notificação eliminada!', '', 'success');
+	this.showPopup = false;
+	this.quantidade = this.quantidade-1;
+	this.$emit('qtdNotificacoes', this.quantidade);
+  } else {
+    Swal.fire('Cancelado', 'A notificação não foi eliminada.', 'info');
+  }
+},
     async loadNotifications() {
       try {
         const responseItem = await getAllNotifications(
@@ -209,6 +238,14 @@ export default {
 hr {
   color: black;
 }
+.my-swal-container {
+  z-index: 9999; /* Garante que o SweetAlert esteja na parte superior */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 #popup {
   border-radius: 1%;
   position: absolute;
@@ -218,7 +255,7 @@ hr {
   background-color: #f3f3f3;
   border: 1px solid #ccc;
   padding: 10px;
-  z-index: 9999;
+  z-index: 990;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
