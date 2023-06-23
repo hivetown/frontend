@@ -28,13 +28,14 @@
                     @updateCartItem="refreshValues"
                   ></CartItem>
                 </div>
+                <!---->
                 <div v-else>
-                  <CartItem
+                  <CartItemNAU
                     v-for="cartItem in itemsCartNAU"
                     :cart-item="cartItem"
                     @deleteCartItem="removeItem"
                     @updateCartItem="refreshValues"
-                  ></CartItem>
+                  ></CartItemNAU>
                 </div>
               </div>
               <div v-else>
@@ -77,6 +78,7 @@
 <!-- não funciona de todo por isso é melhor deixar estar -->
 <script setup lang="ts">
 import CartItem from '@/components/CartItem.vue';
+import CartItemNAU from '@/components/CartItemNAU.vue';
 </script>
 <script lang="ts">
 import { fetchCartItems } from '../api/consumers';
@@ -121,18 +123,24 @@ export default {
 
     // Remover item do carrinho
     removeItem(idToRmv: number) {
-      const indexToRemove = this.itemsCart.items.findIndex(
-        (item) => item.producerProduct!.id === idToRmv
-      );
-      if (indexToRemove !== -1) {
-        this.itemsCart.items.splice(indexToRemove, 1);
+      if (this.login) {
+        const indexToRemove = this.itemsCart.items.findIndex(
+          (item) => item.producerProduct!.id === idToRmv
+        );
+        if (indexToRemove !== -1) {
+          this.itemsCart.items.splice(indexToRemove, 1);
+          //this.refreshValues();
+        }
+        location.reload();
+      } else {
         this.refreshValues();
+        location.reload();
       }
     },
 
     // Buscar número de itens
     getItems() {
-      if (this.checkLogin()) {
+      if (this.login) {
         // Se existir login, buscar o número de itens
         return this.itemsNumber;
         // Se não existir login, TODO
@@ -144,11 +152,11 @@ export default {
     // Buscar preço total
     getPrice() {
       // Se existir login, buscar o do contador
-      if (this.checkLogin()) {
+      if (this.login) {
         return this.itemsPrice;
         // Se não existir login, TODO
       } else {
-        return '0,00 €';
+        return '10,00 €';
       }
     },
 
@@ -162,7 +170,7 @@ export default {
           totalQtd += parseFloat(JSON.stringify(items[i].quantity));
         }
       } else {
-        for (let i = 0; i < this.itemsCartNAUQuantities.length; i++) {
+        for (let i = 0; i < this.cartNAU.getCart().length; i++) {
           totalQtd += this.itemsCartNAUQuantities[i];
         }
       }
@@ -172,19 +180,26 @@ export default {
     // Contador de preço total
     countPrice() {
       let totalSum = 0;
-      for (let i = 0; i < this.itemsCart['items'].length; i++) {
-        totalSum +=
-          parseFloat(
-            JSON.stringify(
-              this.itemsCart['items'][i].producerProduct?.currentPrice
-            )
-          ) * parseFloat(JSON.stringify(this.itemsCart['items'][i].quantity));
+      let toCurrency = '0,00';
+      // para AU
+      if (this.login) {
+        for (let i = 0; i < this.itemsCart['items'].length; i++) {
+          totalSum +=
+            parseFloat(
+              JSON.stringify(
+                this.itemsCart['items'][i].producerProduct?.currentPrice
+              )
+            ) * parseFloat(JSON.stringify(this.itemsCart['items'][i].quantity));
+        }
+        totalSum = parseInt(totalSum.toFixed(2));
+        toCurrency = totalSum.toLocaleString('pt-PT', {
+          style: 'currency',
+          currency: 'EUR',
+        });
+      } else {
+        toCurrency = 'yup';
       }
-      totalSum = parseInt(totalSum.toFixed(2));
-      const toCurrency = totalSum.toLocaleString('pt-PT', {
-        style: 'currency',
-        currency: 'EUR',
-      });
+
       return toCurrency;
     },
 
@@ -195,25 +210,34 @@ export default {
         const itemsCart = await fetchCartItems(this.userLoggedId);
         console.log('itemsCart:', itemsCart);
         console.log('tipo de itemsCart:', typeof itemsCart);
+
+        // Resto AU
         this.itemsCart = itemsCart.data;
         this.itemsNumber = this.countItems();
         this.itemsPrice = this.countPrice();
-        console.log('não passou');
+        console.log('itemsCart', this.itemsCart.items);
 
         // para NAU
       } else {
+        this.itemsCartNAUQuantities = [];
         let itemsCart: Array<ProductSpec> = [];
+
         const cartInCartNAU = this.cartNAU.getCart();
-        console.log('cartInCartNAU', cartInCartNAU);
+
         for (let i = 0; i < this.cartNAU.getCart().length; i++) {
+          //console.log('quantosis', i);
           const newItem = await fetchProduct(
             cartInCartNAU[i].producerProduct.productSpec.id
           );
           itemsCart.push(newItem.data);
-          this.itemsCartNAUQuantities.push(cartInCartNAU.quantity);
+          //console.log('quantidade', cartInCartNAU[i].quantity);
+          this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
+          //console.log('quantidadeCart', this.itemsCartNAUQuantities.length);
         }
 
-        // Resto
+        console.log('Quantities', this.itemsCartNAUQuantities);
+
+        // Resto NAU
         this.itemsCartNAU = itemsCart;
         console.log('itemsCart', this.itemsCartNAU);
         this.itemsNumber = this.countItems();

@@ -13,6 +13,14 @@ export class CartNAU {
         if (cartData !== null) {
             return JSON.parse(cartData);
         }
+        return null;
+    }
+
+    getLength() {
+        const cartData = localStorage.getItem('cartNAU');
+        if (cartData !== null) {
+            return JSON.parse(cartData).length;
+        }
     }
 
     //método para escrever na localstorage (a lista)
@@ -34,12 +42,17 @@ export class CartNAU {
 
     //método para remover um item (remove da lista e chama o de escrever)
     removeItem(item: CartItem) {
-        let indexRemove = this.cart.indexOf(item);
-        this.cart.splice(indexRemove, 1);
+        this.cart = this.getCart();
+        for (let i = 0; i < this.cart.length; i++) {
+            if (item.id == this.cart[i].producerProduct.productSpec?.id) {
+                this.cart.splice(i, 1);
+            }
+        }
+        this.writeLocalStorage();
     }
 
     //método para editar (edita na lista e chama-o de escrever)
-    editCart(itemBef: CartItem, itemAft: CartItem) {
+    substituteCartItem(itemBef: CartItem, itemAft: CartItem) {
         let indexToEdit = this.cart.indexOf(itemBef);
         this.cart[indexToEdit] = itemAft;
     }
@@ -74,6 +87,16 @@ export class CartNAU {
             }
         }
         return false;
+    }
+
+    changeQuantity(item: CartItem, quantity: number) {
+        this.cart = this.getCart();
+        for (let i = 0; i < this.cart.length; i++) {
+            if (item.id == this.cart[i].producerProduct.productSpec?.id) {
+                this.cart[i].quantity = quantity;
+            }
+        }
+        this.writeLocalStorage();
     }
 
     //para add +1 de quantidade
