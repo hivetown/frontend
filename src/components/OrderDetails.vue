@@ -12,7 +12,7 @@
             <th id="col" scope="col">Quantidade</th>
             <th id="col" scope="col">Eventos</th>
             <th id="col" scope="col">Estado</th>
-            <th id="col" scope="col">Total</th>
+            <th id="col" scope="col" style="width: 80px;">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -130,10 +130,12 @@
           </tr>
         </tbody>
       </table>
-	  <div class="resumo" style="background-color: ">
-      <h3 class="">Total: {{ totalSum }}€</h3>
+
     </div>
-    </div>
+	<div v-if="$store.state.user?.user?.type === 'CONSUMER'" class="resumo">
+
+	<h3 class="">Total: {{ totalSum }}€ </h3>
+		</div>
     <br />
     
 	<!--HISTORICO PRODUCER-->
@@ -260,7 +262,7 @@
         </tbody>
       </table>
 	  <div class="resumo" style="background-color: ">
-     
+		<h3 class="">Total: {{ totalSum }}€ </h3>
     </div>
     </div>
     <br />
@@ -277,7 +279,7 @@ import { useStore } from '@/store';
 import { BaseItems, Order, OrderItem, ShipmentEvent } from '@/types';
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
-const date = ref('');
+const date = ref<{ [id: number]: String }>({});
 const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
 //obtem o id do link
@@ -298,11 +300,22 @@ onBeforeMount(async () => {
 		const responseItem = await fetchAllItems(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
 		date.value = props.order.orderDate; 
-		console.log(props.order.orderDate);
+		const res = await fetchAllOrders(user2.value.user.id);
+		//date.value[Number(idO)] = res.data;
+		for (let i =0; i< res.data.items.length; i++){
+			if (res.data.items[i].id === Number(idO)){
+				console.log(res.data.items[i].orderDate);
+				date.value = res.data.items[i].orderDate.substring(0,10);
+			}
+		}
 	} else{
 		const responseItem = await fetchAllItemsProducer(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
-		date.value = props.order.orderDate.substring(0, 10);
+		//TODO por data -> nao a recebe
+		//date.value = props.order.orderDate.substring(0, 10);
+		for (const orderItem of orderItems.value.items) {
+      totalSum.value += orderItem['price'] * orderItem['quantity'];
+	}
 	
 	}
 	if (user2.value.user.type==="CONSUMER"){

@@ -9,7 +9,7 @@
             props.order.status === 'Delivered' ||
             props.order.status === 'Shipped' ||
             props.order.status === 'Paid' ||
-            props.order.status === 'Cancelled'
+            props.order.status === 'Canceled'
               ? 'active step1'
               : 'step1'
           "
@@ -21,7 +21,7 @@
             props.order.status === 'Shipped' ||
             props.order.status === 'Delivered' ||
             props.order.status === 'Processing' ||
-            props.order.status === 'Cancelled'
+            props.order.status === 'Canceled'
               ? 'active step2'
               : 'step2'
           "
@@ -32,7 +32,7 @@
           :class="
             props.order.status === 'Delivered' ||
             props.order.status === 'Shipped' ||
-            props.order.status === 'Cancelled'
+            props.order.status === 'Canceled'
               ? 'active step3'
               : 'step3'
           "
@@ -42,7 +42,7 @@
         <li
           :class="
             props.order.status === 'Delivered' ||
-            props.order.status === 'Cancelled'
+            props.order.status === 'Canceled'
               ? 'active step4'
               : 'step4'
           "
@@ -54,12 +54,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Order } from '@/types';
+import { Order, SpecificOrder } from '@/types';
 import { PropType } from 'vue';
 
 const props = defineProps({
   order: {
-    type: Object as PropType<Order>,
+    type: Object as PropType<SpecificOrder>,
     required: true,
   },
 });

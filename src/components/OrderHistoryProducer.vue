@@ -126,7 +126,7 @@
   import Pagination from '../components/Pagination.vue';
   import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
   import { onMounted, ref, computed } from 'vue';
-  import { fetchAllOrdersProducer, cancelOrder, fetchAllItemsProducer } from '../api/orders';
+  import { fetchAllOrdersProducer, fetchAllItemsProducer } from '../api/orders';
   import { useStore } from '@/store';
   import { useRoute } from 'vue-router';
   const store = useStore();
@@ -192,7 +192,9 @@
 		ordersUP.value[order.id] = orderItems?.data?.items[0]?.producerProduct?.productionUnit?.name ?? '';
 		ordersState.value[order.id] = orderItems?.data?.items[0]?.status ?? '';
 
+
 	  }
+
 	}
   });
   

@@ -152,6 +152,12 @@ export interface OrderItem {
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
+export interface SpecificOrder {
+	shippingAddress: Address;
+	status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+
+}
+
 export interface CreateProducerProduct {
     currentPrice: number;
     productionDate: Date;

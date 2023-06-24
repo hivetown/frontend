@@ -1,4 +1,4 @@
-import { BaseItems, Order, OrderItem, Shipment } from '../types/interfaces';
+import { BaseItems, Order, OrderItem, Shipment, SpecificOrder } from '../types/interfaces';
 import { api } from './_base';
 
 export const fetchAllOrders = (userId: number) =>
@@ -32,10 +32,10 @@ export const fetchAllItemsProducer = (
         }
     );
 export const fetchOrder = (userId: number, orderId: string) =>
-    api.get<Order>(`/consumers/${userId}/orders/${orderId}`);
+    api.get<SpecificOrder>(`/consumers/${userId}/orders/${orderId}`);
 
 export const fetchOrderProducer = (userId: number, orderId: string) =>
-    api.get<Order>(`/producers/${userId}/orders/${orderId}`);
+    api.get<SpecificOrder>(`/producers/${userId}/orders/${orderId}`);
 
 export const getShipment = (
     consumerId: number,
