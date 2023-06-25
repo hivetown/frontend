@@ -9,13 +9,16 @@
           :src="user.user.image.url"
           :alt="user.user.image.alt"
         />
+        <div class="img-add">
+          <div class="img-add-sign">+</div>
+        </div>
       </div>
       <div class="consumer-main-info">
         <h1 class="dgreen-txt main-txt">{{ usernameValue }}</h1>
       </div>
-      <div class="edit-consumer">
+      <!-- <div class="edit-consumer">
         <b-button class="buy-btn rounded-pill">Editar</b-button>
-      </div>
+      </div> -->
     </div>
     <div class="form-box parent">
       <!-- Conta -->
@@ -27,6 +30,7 @@
             <InputText
               id="username"
               v-model="usernameValue"
+              :readonly="!isEditing"
               aria-describedby="username-help"
             />
           </div>
@@ -34,10 +38,11 @@
         <!-- Email -->
         <div class="card flex justify-content-center">
           <div class="flex flex-column gap-2">
-            <label for="username">Email</label>
+            <label for="email">Email</label>
             <InputText
               id="username"
               v-model="emailValue"
+              :readonly="true"
               aria-describedby="username-help"
             />
           </div>
@@ -45,9 +50,9 @@
         <!-- Password -->
         <div class="card flex justify-content-center">
           <div class="flex flex-column gap-2">
-            <label for="username">Password</label>
+            <label for="password">Password</label>
             <div>
-              <Password v-model="passwordValue" toggle-mask />
+              <Password v-model="passwordValue" :readonly="true" toggle-mask />
             </div>
           </div>
         </div>
@@ -57,11 +62,12 @@
         <!-- Phone -->
         <div class="card flex justify-content-center">
           <div class="flex flex-column gap-2">
-            <label for="username">Telefone</label>
+            <label for="telefone">Telefone</label>
             <InputMask
               id="basic"
               v-model="phoneValue"
-              mask="999999999"
+              :readonly="!isEditing"
+              mask="999 999 999"
               placeholder="999999999"
             />
           </div>
@@ -69,10 +75,11 @@
         <!-- Vat -->
         <div class="card flex justify-content-center">
           <div class="flex flex-column gap-2">
-            <label for="username">VAT</label>
+            <label for="vat">VAT</label>
             <InputMask
               id="basic"
               v-model="vatValue"
+              :readonly="true"
               mask="999999999"
               placeholder="999999999"
             />
@@ -83,7 +90,7 @@
       <div class="form-box-block" style="max-height: 25vh; overflow-y: scroll">
         <!-- Moradas -->
         <div>
-          <h4 class="mb-2">Moradas guardadas</h4>
+          <h4 class="mb-2 morada-tit">Moradas guardadas</h4>
           <div
             v-for="morada in moradas"
             :key="morada.id"
@@ -106,7 +113,9 @@
           background-color: #f1b24a !important;
           border-color: #f1b24a !important;
         "
-        >Guardar</b-button
+        @click="toggleEdit"
+      >
+        {{ isEditing ? 'Guardar' : 'Editar' }}</b-button
       >
       <b-button
         class="edit-btn rounded-pill"
@@ -115,6 +124,8 @@
           border-color: #f1b24a !important;
           color: #5a5a5a !important;
         "
+        @click="cancelEdit"
+        :disabled="!isEditing"
         >Cancelar</b-button
       >
     </div>
@@ -141,6 +152,7 @@ export default defineComponent({
       phoneValue: '' as string,
       vatValue: '' as string,
       moradas: [] as Address[], //TODO - corrigir este tipo
+      isEditing: false,
     };
   },
   async beforeMount() {
@@ -160,6 +172,18 @@ export default defineComponent({
     this.vatValue = this.user.user.vat;
     this.moradas = this.user['addresses'];
   },
+  methods: {
+    toggleEdit() {
+      this.isEditing = !this.isEditing;
+    },
+    cancelEdit() {
+      this.isEditing = false;
+      if (this.usernameValue && this.phoneValue && this.user) {
+        this.usernameValue = this.user.user.name;
+        this.phoneValue = this.user.user.phone;
+      }
+    },
+  },
   components: { InputMask, InputText, Password },
 });
 </script>
@@ -174,6 +198,25 @@ export default defineComponent({
 .consumer-image {
   /* background-color: blue; */
   width: 20%;
+}
+.img-add {
+  /* background-color: red; */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 65%;
+  margin-top: -3vh;
+}
+.img-add-sign {
+  background-color: #5a5a5a;
+  border-radius: 50%;
+  padding: 0.3em;
+  width: 4vh;
+  height: 4vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }
 
 .consumer-main-info {
@@ -222,5 +265,13 @@ export default defineComponent({
   padding: 0.8em !important;
   height: 5vh;
   width: 16vh;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+label,
+.morada-tit {
+  color: #164a41 !important;
 }
 </style>
