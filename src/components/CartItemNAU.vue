@@ -59,7 +59,7 @@ import { fetchProduct } from '@/api';
 import { PropType } from 'vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU';
-import { CartItem, ProducerProduct } from '@/types';
+import { ProducerProduct } from '@/types';
 
 export default {
   data() {
@@ -91,13 +91,6 @@ export default {
   },
 
   methods: {
-    // ------------------ N.A.U. ------------------
-    // N.A.U. - APAGAR CART - TEMPORÁRIO
-    excludecache() {
-      this.cartNAU.cleanCart();
-    },
-    // --------------------------------------------
-
     // Buscar detalhes do item (descrição, imagem)
     async getDetails() {
       await this.checkLogin();
@@ -110,8 +103,8 @@ export default {
       this.cartItemImageURL = this.cartItemDetails.images[0].url;
 
       this.getCartNAU();
-      const cartInCartNAU = this.cartNAU.getCart();
-      this.selectedValue = cartInCartNAU[this.findIndex() as number].quantity;
+      this.cartNAU.getCart();
+      this.selectedValue = this.cartNAU.getQuantity(this.cartItem);
     },
 
     // BUSCAR COISAS A LOCALSTORAGE
@@ -120,7 +113,6 @@ export default {
 
       this.cartNAU = cartNAUInstance;
     },
-
     // Buscar quantidade do carrinho
     setupQts() {
       this.getCartNAU();
@@ -148,7 +140,6 @@ export default {
     findIndex() {
       this.getCartNAU();
       const cartInCartNAU = this.cartNAU.getCart();
-      console.log('EsteCartItem', this.cartItem);
       for (let i = 0; i < this.cartNAU.getCart().length; i++) {
         if (cartInCartNAU[i].id === this.cartItem.id) {
           return i;
@@ -162,7 +153,10 @@ export default {
       const cartInCartNAU = this.cartNAU.getCart();
       const i = this.findIndex();
       if (i !== undefined) {
-        return cartInCartNAU[i].currentPrice * cartInCartNAU[i].quantity;
+        return (
+          cartInCartNAU[i].currentPrice *
+          this.cartNAU.getQuantity(this.cartItem)
+        );
       }
       return 0;
     },
@@ -172,7 +166,7 @@ export default {
       try {
         this.getCartNAU();
         if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
-          this.cartNAU.removeItem(this.cartItem.producerProduct);
+          this.cartNAU.removeItem(this.cartItem);
           this.$emit('deleteCartItem', this.cartItem.id);
         } else {
           /* do nothing */
@@ -187,6 +181,11 @@ export default {
     // Verificar o login do user
     checkLogin() {
       return false;
+    },
+
+    async beforeMount() {
+      this.getCartNAU();
+      this.getDetails;
     },
   },
 };

@@ -28,6 +28,7 @@
                     :cart-item="cartItem"
                     @deleteCartItem="removeItem"
                     @updateCartItem="refreshValues"
+                    :key="cartItem.producerProduct.productSpec?.id"
                   ></CartItem>
                 </div>
                 <!---->
@@ -37,6 +38,7 @@
                     :cart-item="cartItem"
                     @deleteCartItem="removeItem"
                     @updateCartItem="refreshValues"
+                    :key="cartItem.id"
                   ></CartItemNAU>
                 </div>
               </div>
@@ -88,7 +90,7 @@ import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU.js';
-import { ProductSpec } from '../types/interfaces';
+import { ProducerProduct } from '../types/interfaces';
 
 export default {
   data() {
@@ -98,7 +100,7 @@ export default {
 
       // N.A.U. - Começar carrinho
       cartNAU: new CartNAU(),
-      itemsCartNAU: [] as Array<ProductSpec>,
+      itemsCartNAU: [] as Array<ProducerProduct>,
       itemsCartNAUQuantities: [] as number[],
 
       // Verificador de login para o checkLogin()
@@ -170,9 +172,10 @@ export default {
         return totalQtd;
       } else {
         const carrinho = this.cartNAU.getCart();
+        const carrinhoQuantidades = this.cartNAU.getCartQuantities();
         let totalQtd = 0;
         for (let i = 0; i < carrinho.length; i++) {
-          totalQtd += carrinho[i].quantity;
+          totalQtd += carrinhoQuantidades[i];
         }
         return totalQtd;
       }
@@ -200,10 +203,11 @@ export default {
         return toCurrency;
       } else {
         const carrinho = this.cartNAU.getCart();
+        const carrinhoQuantidades = this.cartNAU.getCartQuantities();
         let totalSum = 0;
 
         for (let i = 0; i < carrinho.length; i++) {
-          totalSum += carrinho[i].currentPrice * carrinho[i].quantity;
+          totalSum += carrinho[i].currentPrice * carrinhoQuantidades[i];
         }
         totalSum = parseInt(totalSum.toFixed(2));
         toCurrency = totalSum.toLocaleString('pt-PT', {
@@ -228,9 +232,10 @@ export default {
         // para NAU
       } else {
         this.itemsCartNAUQuantities = [];
-        let itemsCart: Array<ProductSpec> = [];
+        let itemsCart: Array<ProducerProduct> = [];
 
         const cartInCartNAU = this.cartNAU.getCart();
+        const carrinhoQuantidades = this.cartNAU.getCartQuantities();
 
         //for (let i = 0; i < this.cartNAU.getCart().length; i++) {
         //  const newItem = await fetchProduct(cartInCartNAU[i].productSpec);
@@ -239,7 +244,7 @@ export default {
         //}
         for (let i = 0; i < this.cartNAU.getCart().length; i++) {
           itemsCart.push(cartInCartNAU[i]);
-          this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
+          this.itemsCartNAUQuantities.push(carrinhoQuantidades[i]);
         }
 
         // Resto NAU

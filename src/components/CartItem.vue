@@ -15,7 +15,7 @@
       <div style="margin-top: 45px">
         <!-- Nome -->
         <div class="d-flex">
-          <h5>{{ cartItemDetails.name }}</h5>
+          <h5>{{ cartItem.producerProduct.productSpec?.name }}</h5>
         </div>
 
         <!-- Quantidade -->
@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { updateQuantityCartItem, fetchProduct, deleteCartItem } from '@/api';
+import { updateQuantityCartItem, deleteCartItem } from '@/api';
 import { CartItem, Image } from '@/types';
 import { PropType, computed } from 'vue';
 // N.A.U. - Import
@@ -70,12 +70,11 @@ export default {
     return {
       // Definir quantidade selecionada no carrinho e quantidades possíveis
       selectedValue: this.cartItem.quantity,
-      options: { value: 0, text: '0' },
+      options: this.setupQts(),
 
       // Detalhes do item
       cartItemPrice: this.priceCalc(),
-      cartItemDetails: {},
-      cartItemImageURL: 'none',
+      cartItemImageURL: 'Imagem do Produto',
 
       // Guardar informações do login
       userLoggedId: 0 as number,
@@ -100,18 +99,26 @@ export default {
     // Buscar detalhes do item (descrição, imagem)
     async getDetails() {
       if (this.cartItem.producerProduct!.productSpec !== undefined) {
-        this.cartItemDetails = await fetchProduct(
-          this.cartItem.producerProduct!.productSpec.id
-        );
-        this.cartItemDetails = this.cartItemDetails.data;
-        this.cartItemImageURL = this.cartItemDetails.images[0].url;
-
-        console.log(this.cartItemDetails);
+        //this.cartItemDetails = await fetchProduct(
+        //  this.cartItem.producerProduct!.productSpec.id
+        //);
+        this.cartItemImageURL =
+          this.cartItem.producerProduct.productSpec.images[0].url;
       }
     },
 
-    // Buscar quantidade do carrinho
     setupQts() {
+      const opts: { value: number; text: string }[] = [];
+      for (let y = 1; y <= this.cartItem.producerProduct.stock; y++) {
+        const build = { value: y, text: y.toString() };
+        opts.push(build);
+      }
+      this.options = opts;
+      return opts;
+    },
+
+    // Buscar quantidade do carrinho
+    setupQts2() {
       this.getLoginInfo();
       const opts: { value: number; text: string }[] = [];
       for (let i = 1; i <= this.cartItem.producerProduct!.stock; i++) {
@@ -183,8 +190,7 @@ export default {
     },
 
     async beforeMount() {
-      this.cartItemDetails = this.getDetails();
-      this.options = this.setupQts();
+      this.getDetails();
     },
   },
 };
