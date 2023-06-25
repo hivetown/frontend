@@ -13,7 +13,7 @@ import { api } from './_base';
 
 // consumer is consumer or supplier
 export const createConsumer = (consumer: CreateConsumer) =>
-    api.post('/consumers', consumer);
+    api.post<Consumer>('/consumers', consumer);
 
 // Cart Stuff
 export const fetchCartItems = (consumer: number) =>

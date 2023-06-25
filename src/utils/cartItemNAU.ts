@@ -44,7 +44,7 @@ export class CartNAU {
     removeItem(item: CartItem) {
         this.cart = this.getCart();
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.producerProduct.id == this.cart[i].producerProduct.id) {
+            if (item.id == this.cart[i].id) {
                 this.cart.splice(i, 1);
             }
         }
@@ -74,9 +74,7 @@ export class CartNAU {
     checkItemInCart(item: CartItem) {
         if (this.cart.length !== 0) {
             for (let i = 0; i < this.cart.length; i++) {
-                if (
-                    item.producerProduct.id == this.cart[i].producerProduct.id
-                ) {
+                if (item.id == this.cart[i].id) {
                     this.incrementQuantity(i);
                     return true;
                 }
@@ -87,10 +85,8 @@ export class CartNAU {
 
     changeQuantity(item: CartItem, quantity: number) {
         this.cart = this.getCart();
-        console.log('item', item);
-        console.log('item id', item.producerProduct.id);
         for (let i = 0; i < this.cart.length; i++) {
-            if (item.producerProduct.id == this.cart[i].producerProduct.id) {
+            if (item.id == this.cart[i].id) {
                 this.cart[i].quantity = quantity;
             }
         }

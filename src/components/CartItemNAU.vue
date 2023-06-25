@@ -31,7 +31,7 @@
             </b-col>
           </div>
           <!-- Preço do item -->
-          <p class="mt-3">TODO€/item</p>
+          <p class="mt-3">{{ cartItem.currentPrice }}€/item</p>
           <div class="d-flex ms-auto mt-3 justify-content-end">
             <h4>{{ priceCalc() }}€</h4>
           </div>
@@ -58,7 +58,7 @@
 import { fetchProduct } from '@/api';
 import { PropType } from 'vue';
 // N.A.U. - Import
-import { CartNAU } from '@/utils/cartItemNAU.js';
+import { CartNAU } from '@/utils/cartItemNAU';
 import { CartItem, ProducerProduct } from '@/types';
 
 export default {

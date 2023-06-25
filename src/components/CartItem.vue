@@ -63,18 +63,18 @@ import { updateQuantityCartItem, fetchProduct, deleteCartItem } from '@/api';
 import { CartItem, Image } from '@/types';
 import { PropType, computed } from 'vue';
 // N.A.U. - Import
-import { CartNAU } from '@/utils/cartItemNAU.js';
+import { CartNAU } from '@/utils/cartItemNAU';
 
 export default {
   data() {
     return {
       // Definir quantidade selecionada no carrinho e quantidades possíveis
       selectedValue: this.cartItem.quantity,
-      options: this.setupQts(),
+      options: { value: 0, text: '0' },
 
       // Detalhes do item
       cartItemPrice: this.priceCalc(),
-      cartItemDetails: this.getDetails(),
+      cartItemDetails: {},
       cartItemImageURL: 'none',
 
       // Guardar informações do login
@@ -180,6 +180,11 @@ export default {
           this.userLoggedNImage = userLoggedId.value['user']['image'];
         }
       }
+    },
+
+    async beforeMount() {
+      this.cartItemDetails = this.getDetails();
+      this.options = this.setupQts();
     },
   },
 };
