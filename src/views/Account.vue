@@ -274,4 +274,25 @@ label,
 .morada-tit {
   color: #164a41 !important;
 }
+
+@media (max-width: 767px) {
+  .consumer-image img {
+    display: block !important;
+  }
+  .consumer {
+    display: block;
+  }
+  .form-box {
+    display: block;
+    margin-top: 10vh;
+  }
+  .form-box-block {
+    margin-top: 4vh;
+    width: 100%;
+  }
+  .end-edit {
+    margin-top: 6vh;
+    margin-bottom: 4vh;
+  }
+}
 </style>
