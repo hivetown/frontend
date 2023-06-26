@@ -49,6 +49,17 @@
                     @product-managed="refreshWindow(1000)"
                   />
 
+                  <SelectPU
+                    :default-product-spec="product.productSpec"
+                    :default-production-unit="product.productionUnit"
+                    :default-price="product.currentPrice"
+                    :default-stock="product.stock"
+                    :default-production-date="new Date(product.productionDate)"
+                    method="update"
+                    :producer-product-id="product.id"
+                    @product-managed="refreshWindow(1000)"
+                  />
+
                   <DeleteProduct
                     :producer-product="product"
                     @delete-product="deleteProduct"
@@ -92,12 +103,14 @@ import Pagination from '../components/Pagination.vue';
 import { useStore } from '@/store';
 import ManageProduct from '@/components/producer/products/ManageProduct.vue';
 import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
+import SelectPU from '@/components/producer/products/SelectPU.vue';
 
 export default {
   components: {
     Pagination,
     ManageProduct,
     DeleteProduct,
+    SelectPU,
   },
   data() {
     return {
