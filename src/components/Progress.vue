@@ -9,7 +9,12 @@
             props.order.status === 'Delivered' ||
             props.order.status === 'Shipped' ||
             props.order.status === 'Paid' ||
-            props.order.status === 'Canceled'
+            props.order.status === 'Canceled' ||
+			props.order.generalStatus === 'Processing' ||
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Paid' ||
+            props.order.generalStatus === 'Canceled'
               ? 'active step1'
               : 'step1'
           "
@@ -21,7 +26,11 @@
             props.order.status === 'Shipped' ||
             props.order.status === 'Delivered' ||
             props.order.status === 'Processing' ||
-            props.order.status === 'Canceled'
+            props.order.status === 'Canceled' ||
+			props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Processing' ||
+            props.order.generalStatus === 'Canceled'
               ? 'active step2'
               : 'step2'
           "
@@ -32,7 +41,10 @@
           :class="
             props.order.status === 'Delivered' ||
             props.order.status === 'Shipped' ||
-            props.order.status === 'Canceled'
+            props.order.status === 'Canceled' ||
+			props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Canceled'
               ? 'active step3'
               : 'step3'
           "
@@ -42,7 +54,9 @@
         <li
           :class="
             props.order.status === 'Delivered' ||
-            props.order.status === 'Canceled'
+            props.order.status === 'Canceled' ||
+			props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Canceled'
               ? 'active step4'
               : 'step4'
           "

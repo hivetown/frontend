@@ -1,5 +1,5 @@
 <template>
-  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 0">
+  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 1">
     <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
     encomendas.
   </h3>
@@ -90,7 +90,7 @@
                   <i
                     v-if="
                       orderStatusTranslation(order.generalStatus) ===
-                      'Em andamento'
+                      'Em transporte'
                     "
                     class="bi bi-truck mr-2"
                     >></i
@@ -228,7 +228,7 @@ const orderStatusTranslation = (status: string) => {
     case 'Processing':
       return 'Em processamento';
     case 'Shipped':
-      return 'Em andamento';
+      return 'Em transporte';
     case 'Canceled':
       return 'Cancelada';
     default:
@@ -307,7 +307,7 @@ function cancelarEncomenda(order: Order) {
               Swal.fire({
                 icon: 'error',
                 title: 'Não é possível cancelar esta encomenda',
-                text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+                text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
                 confirmButtonText: 'OK',
               });
             }
@@ -350,7 +350,7 @@ function cancelarEncomendaImpossivel() {
   Swal.fire({
     icon: 'error',
     title: 'Não é possível cancelar esta encomenda',
-    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+    text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
     confirmButtonText: 'OK',
   });
 }

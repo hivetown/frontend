@@ -1,9 +1,8 @@
 <template>
-	<h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 0">
+	<h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 1">
 	  <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
 	  encomendas.
 	</h3>
-  
 	<div class="table-container" style="overflow: auto">
 	  <table v-if="!!orders?.items" style="border: 2px" class="table">
 		<thead>
@@ -13,7 +12,7 @@
 			</th>
 			<th><h4>Morada de entrega</h4></th>
 			<th><h4>Estado da encomenda</h4></th>
-			<th><h4>Unidade de produção</h4></th>
+			<th><h4>Data de encomenda</h4></th>
 			<th><h4>Ver detalhes</h4></th>
 
 		  </tr>
@@ -62,26 +61,26 @@
 			<td>
 				<i
                     v-if="
-                      orderStatusTranslation(ordersState[order.id]) === 'Entregue'
+                      orderStatusTranslation(order.status) === 'Entregue'
                     "
                     class="bi bi-check-all"
                   ></i>
                   <i
                     v-if="
-                      orderStatusTranslation(ordersState[order.id]) ===
+                      orderStatusTranslation(order.status) ===
                       'Em processamento'
                     "
                     class="bi bi-arrow-repeat mr-2"
                   ></i>
                   <i
                     v-if="
-                      orderStatusTranslation(ordersState[order.id]) === 'Pago'
+                      orderStatusTranslation(order.status) === 'Pago'
                     "
                     class="bi bi-currency-euro"
                   ></i>
                   <i
                     v-if="
-                      orderStatusTranslation(ordersState[order.id]) ===
+                      orderStatusTranslation(order.status) ===
                       'Cancelada'
                     "
                     class="bi bi-x"
@@ -89,17 +88,18 @@
                   ></i>
                   <i
                     v-if="
-                      orderStatusTranslation(ordersState[order.id]) ===
-                      'Em andamento'
+                      orderStatusTranslation(order.status) ===
+                      'Em transporte'
                     "
                     class="bi bi-truck mr-2"
                     ></i
                   >
 
-				{{ orderStatusTranslation(ordersState[order.id]) }}
+				{{ orderStatusTranslation(order.status) }}
 			</td>
 			<td>
-				{{ ordersUP[order.id] }}
+				{{ (order.orderDate).substring(0,10) }}				{{ (order.orderDate).substring(11,19) }}
+
 			</td>
 			<td>
 			  <router-link :to="'/encomenda/id' + order.id">
@@ -124,9 +124,9 @@
   
   <script setup lang="ts">
   import Pagination from '../components/Pagination.vue';
-  import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
+  import { BaseItems, Image, OrderProducer, OrderItem } from '../types/interfaces';
   import { onMounted, ref, computed } from 'vue';
-  import { fetchAllOrdersProducer, fetchAllItemsProducer } from '../api/orders';
+  import { fetchAllOrdersProducer } from '../api/orders';
   import { useStore } from '@/store';
   import { useRoute } from 'vue-router';
   const store = useStore();
@@ -141,7 +141,7 @@
 	  case 'Processing':
 		return 'Em processamento';
 	  case 'Shipped':
-		return 'Em andamento';
+		return 'Em transporte';
 	  case 'Canceled':
 		return 'Cancelada';
 	  default:
@@ -152,26 +152,8 @@
   let page: string = route.params.page as string;
   const pageSize = ref(24);
   const totalItems = ref(0);
-  const orders = ref<BaseItems<Order>>();
-  /**
-   * {
-   * 	id: Image
-   * }
-   */
-  const ordersImage = ref<{ [id: number]: Image }>({});
-  const ordersUP = ref<{ [id: number]: string }>({});
-  const ordersState = ref<{ [id: number]: string }>({});
+  const orders = ref<BaseItems<OrderProducer>>();
 
-  const selectedOrders = ref([]);
-  
- 
-  
-  const findFirstImage = (order: OrderItem[]) => {
-	const image = order.find(
-	  (item) => item.producerProduct.productSpec?.images.length
-	);
-	return image ? image.producerProduct.productSpec?.images[0] : undefined;
-  };
   
   onMounted(async () => {
 	const page = route.query.page as string ?? '1';
@@ -180,21 +162,6 @@
 	  orders.value = response.data;
 	  totalItems.value=response.data.totalItems;
 	  pageSize.value=response.data.pageSize;
-	  for (const order of orders.value.items) {
-		const orderItems = await fetchAllItemsProducer(
-		  user2.value.user.id,
-		  order.id.toString()
-		);
-		const image = findFirstImage(orderItems.data.items);
-		if (image) {
-		  ordersImage.value[order.id] = image;
-		}
-		ordersUP.value[order.id] = orderItems?.data?.items[0]?.producerProduct?.productionUnit?.name ?? '';
-		ordersState.value[order.id] = orderItems?.data?.items[0]?.status ?? '';
-
-
-	  }
-
 	}
   });
   

@@ -117,7 +117,7 @@
                 style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-truck mr-2"></i>
-                <p class="texto">Em andamento</p>
+                <p class="texto">Em transporte</p>
               </div>
             </td>
 
@@ -140,8 +140,8 @@
     
 	<!--HISTORICO PRODUCER-->
 	<div class="table-container" style="overflow: auto" v-if="$store.state.user?.user?.type === 'PRODUCER'">
-		<div style="text-align: right;"><h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5></div>
-      <table class="table table-striped" v-if="orderItems">
+		<div style="text-align: right;"><h5 class="" id="data">Encomenda efetuada em: {{  (orderItems?.items[0].orderDate)?.substring(0,10)  }}</h5></div>
+		<table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
             <th id="col" scope="col">Artigo</th>
@@ -225,7 +225,7 @@
                 style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-truck mr-2"></i>
-                <p class="texto">Em andamento</p>
+                <p class="texto">Em transporte</p>
               </div>
             </td>
             <td>
@@ -254,8 +254,7 @@
 			</td>
             <td>
               <p class="texto">
-                {{ orderItem['quantity'] * orderItem['price'] }}
-                €
+                {{ orderItem['quantity'] * orderItem['price'] }}€
               </p>
             </td>
           </tr>
@@ -268,10 +267,11 @@
     <br />
    
   </div>
+
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { fetchAllItems, fetchAllItemsProducer, fetchAllOrders } from '../api/orders';
 import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
@@ -282,16 +282,8 @@ const totalSum = ref(0);
 const date = ref<{ [id: number]: String }>({});
 const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
-//obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
-
-const props = defineProps({
-  order: {
-    type: Object as PropType<Order>,
-    required: true,
-  },
-});
 
 onBeforeMount(async () => {
   const idO: string = route.params.id as string;
@@ -299,9 +291,8 @@ onBeforeMount(async () => {
 	if (user2.value.user.type==="CONSUMER"){
 		const responseItem = await fetchAllItems(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
-		date.value = props.order.orderDate; 
+		//date.value = props.order.orderDate; 
 		const res = await fetchAllOrders(user2.value.user.id);
-		//date.value[Number(idO)] = res.data;
 		for (let i =0; i< res.data.items.length; i++){
 			if (res.data.items[i].id === Number(idO)){
 				console.log(res.data.items[i].orderDate);
@@ -311,12 +302,9 @@ onBeforeMount(async () => {
 	} else{
 		const responseItem = await fetchAllItemsProducer(user2.value.user.id, idO);
 		orderItems.value = responseItem.data;
-		//TODO por data -> nao a recebe
-		//date.value = props.order.orderDate.substring(0, 10);
 		for (const orderItem of orderItems.value.items) {
-      totalSum.value += orderItem['price'] * orderItem['quantity'];
-	}
-	
+      		totalSum.value += orderItem['price'] * orderItem['quantity'];
+		}
 	}
 	if (user2.value.user.type==="CONSUMER"){
     for (const orderItem of orderItems.value.items) {
