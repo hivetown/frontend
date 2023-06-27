@@ -75,6 +75,7 @@ export default {
       // Detalhes do item
       cartItemPrice: this.priceCalc(),
       cartItemImageURL: 'Imagem do Produto',
+	  cartItemImageALT: 'Descrição do Produto',
 
       // Guardar informações do login
       userLoggedId: 0 as number,
@@ -104,6 +105,7 @@ export default {
         //);
         this.cartItemImageURL =
           this.cartItem.producerProduct.productSpec.images[0].url;
+		this.cartItemImageALT = this.cartItem.producerProduct.productSpec.images[0].alt;
       }
     },
 
