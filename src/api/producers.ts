@@ -9,6 +9,7 @@ import {
     ProducerProduct,
 } from '@/types';
 import { api } from './_base';
+import { applyActionCode } from 'firebase/auth';
 
 export const createProducer = async (producer: CreateProducer) =>
     api.post('/producers', producer);
@@ -100,3 +101,12 @@ export const getProducerId = (producerId: number, search?: string) =>
     api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
+
+export const updateProductProductionUnit = (
+    producerId: number,
+    producerProductId: number,
+    productionUnitId: number
+) =>
+    api.put(
+        `/producers/${producerId}/products/${producerProductId}, ${productionUnitId}`
+    );

@@ -447,6 +447,7 @@ export default {
       // Submit
       try {
         let product = null as ProducerProduct | null;
+        console.log('PU:', values.productionUnit);
         switch (props.method) {
           case 'create':
             product = (
@@ -471,7 +472,7 @@ export default {
             break;
         }
 
-        emit('productManaged', product);
+        //emit('productManaged', product);
 
         const methodNameSummary =
           props.method === 'create' ? 'criado' : 'atualizado';

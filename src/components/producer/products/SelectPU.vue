@@ -29,11 +29,13 @@
           <div class="flex flex-column gap-2">
             <label for="price">Mudança de Unidade de Produção:</label>
             <Dropdown
-              v-model="selectedPU"
+              v-model="productionUnit.searchQuery.value"
               :options="optsPUs"
+              input-id="productionUnit"
               filter
               option-label="name"
               placeholder="Altere a Unidade de Produção"
+			  @item-select="productionUnit.changed"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex align-items-center">
@@ -86,6 +88,7 @@ import {
   fetchProducerProductionUnits,
   createProducerProduct,
   updateProducerProduct,
+  updateProductProductionUnit,
 } from '@/api';
 import { ComputedRef, PropType, computed, onBeforeMount, ref, Ref } from 'vue';
 import {
@@ -144,7 +147,7 @@ export default {
     method: {
       type: String as PropType<'create' | 'update'>,
       required: true,
-      default: 'create',
+      default: 'update',
     },
     producerProductId: {
       type: Number as PropType<number>,
@@ -219,12 +222,11 @@ export default {
     // Search the products
     const searchProductionUnits = async () => {
       productionUnit.items.value = (
-        await fetchProducerProductionUnits(producerId)
+        await fetchProducerProductionUnits(producerId, )
       ).data;
 
       const lengthWanted = productionUnit.items.value.items.length;
       for (let i = 0; i < lengthWanted; i++) {
-        console.log('correu');
         optsPUs.value.push({
           name: productionUnit.items.value.items[i].name.split('-')[1].trim(),
           code: productionUnit.items.value.items[i].id.toString(),
@@ -268,32 +270,32 @@ export default {
 
       // Submit
       try {
+        console.log('values:', values.productionUnit);
         let product = null as ProducerProduct | null;
         switch (props.method) {
           case 'create':
             product = (
-              await createProducerProduct(producerId, {
-                currentPrice: values.price!,
-                productionDate: values.productionDate!,
+              await updateProducerProduct(producerId, props.producerProductId, {
+                currentPrice: props.defaultPrice,
+                productionDate: props.defaultProductionDate,
+                stock: props.defaultStock,
                 productionUnitId: values.productionUnit.id,
-                productSpecId: values.productSpec.id,
-                stock: values.stock!,
               })
             ).data;
             break;
           case 'update':
             product = (
               await updateProducerProduct(producerId, props.producerProductId, {
-                currentPrice: values.price!,
-                productionDate: values.productionDate!,
-                stock: values.stock!,
+                currentPrice: props.defaultPrice,
+                productionDate: props.defaultProductionDate,
+                stock: props.defaultStock,
                 productionUnitId: values.productionUnit.id,
               })
             ).data;
             break;
         }
 
-        emit('productManaged', product);
+        //emit('productManaged', product);
 
         const methodNameSummary =
           props.method === 'create' ? 'criado' : 'atualizado';
