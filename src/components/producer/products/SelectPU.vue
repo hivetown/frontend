@@ -29,13 +29,14 @@
           <div class="flex flex-column gap-2">
             <label for="price">Mudança de Unidade de Produção:</label>
             <Dropdown
-              v-model="productionUnit.searchQuery.value"
+              filter
+              v-model="selectedPU"
               :options="optsPUs"
               input-id="productionUnit"
-              filter
+              data-key="id"
               option-label="name"
+              force-selection
               placeholder="Altere a Unidade de Produção"
-			  @item-select="productionUnit.changed"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex align-items-center">
@@ -84,12 +85,7 @@
 </template>
 
 <script lang="ts">
-import {
-  fetchProducerProductionUnits,
-  createProducerProduct,
-  updateProducerProduct,
-  updateProductProductionUnit,
-} from '@/api';
+import { fetchProducerProductionUnits, updateProducerProduct } from '@/api';
 import { ComputedRef, PropType, computed, onBeforeMount, ref, Ref } from 'vue';
 import {
   BaseItems,
@@ -145,7 +141,7 @@ export default {
       default: 0,
     },
     method: {
-      type: String as PropType<'create' | 'update'>,
+      type: String as PropType<'update'>,
       required: true,
       default: 'update',
     },
@@ -164,17 +160,13 @@ export default {
     const producerId = store.state.user!.user.id;
 
     if (
-      props.method === 'update' &&
-      (!props.producerProductId ||
-        !props.defaultProductSpec.id ||
-        !props.defaultProductionUnit.id)
+      !props.producerProductId ||
+      !props.defaultProductSpec.id ||
+      !props.defaultProductionUnit.id
     ) {
-      throw new Error(
-        'Quando o método é "update", producerProductId, defaultProductSpec, e defaultProductionUnit devem ser fornecidos'
-      );
+      throw new Error('Neste caso, defaultProductionUnit deve ser fornecido');
     }
-    const methodName =
-      props.method === 'create' ? 'Criar' : 'Associar a Uni. de Produção';
+    const methodName = 'Associar a Uni. de Produção';
 
     // Overlay
     const manageProductOverlay = ref();
@@ -205,10 +197,7 @@ export default {
 
     // Apply default values
     onBeforeMount(() => {
-      //if (props.defaultProductionUnit) {
-      //  productionUnit.searchQuery.value = props.defaultProductionUnit.name;
-      //}
-      searchProductionUnits();
+      setFilterOpts();
     });
 
     let selectedPU: Ref<any> = ref(null);
@@ -222,9 +211,15 @@ export default {
     // Search the products
     const searchProductionUnits = async () => {
       productionUnit.items.value = (
-        await fetchProducerProductionUnits(producerId, )
+        await fetchProducerProductionUnits(producerId, selectedPU.value.code)
       ).data;
+    };
 
+    // Set Filter Opts
+    const setFilterOpts = async () => {
+      productionUnit.items.value = (
+        await fetchProducerProductionUnits(producerId)
+      ).data;
       const lengthWanted = productionUnit.items.value.items.length;
       for (let i = 0; i < lengthWanted; i++) {
         optsPUs.value.push({
@@ -264,45 +259,27 @@ export default {
 
     const toast = useToast();
     const submitting = ref(false);
-    const manageProduct = handleSubmit(async (values) => {
+    const manageProduct = handleSubmit(async () => {
       // Disable submitting
       submitting.value = true;
 
       // Submit
       try {
-        console.log('values:', values.productionUnit);
         let product = null as ProducerProduct | null;
-        switch (props.method) {
-          case 'create':
-            product = (
-              await updateProducerProduct(producerId, props.producerProductId, {
-                currentPrice: props.defaultPrice,
-                productionDate: props.defaultProductionDate,
-                stock: props.defaultStock,
-                productionUnitId: values.productionUnit.id,
-              })
-            ).data;
-            break;
-          case 'update':
-            product = (
-              await updateProducerProduct(producerId, props.producerProductId, {
-                currentPrice: props.defaultPrice,
-                productionDate: props.defaultProductionDate,
-                stock: props.defaultStock,
-                productionUnitId: values.productionUnit.id,
-              })
-            ).data;
-            break;
-        }
+        product = (
+          await updateProducerProduct(producerId, props.producerProductId, {
+            currentPrice: props.defaultPrice,
+            productionDate: props.defaultProductionDate,
+            stock: props.defaultStock,
+            productionUnitId: parseInt(selectedPU.value.code),
+          })
+        ).data;
+        emit('productManaged', product);
 
-        //emit('productManaged', product);
-
-        const methodNameSummary =
-          props.method === 'create' ? 'criado' : 'atualizado';
         toast.add({
           severity: 'success',
-          summary: `Produto ${methodNameSummary} com sucesso`,
-          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${producerId}/products/${product.id}">aqui</a> para ver o produto."`,
+          summary: 'Produto atualizado com sucesso',
+          detail: `O produto foi atualizado com sucesso, clique <a href="/producer/${producerId}/products/${product.id}">aqui</a> para ver o produto."`,
           life: 10000,
         });
 
@@ -314,7 +291,7 @@ export default {
         toast.add({
           severity: 'error',
           summary: 'Erro',
-          detail: `Ocorreu um erro ao criar o produto, por favor tente novamente.<br/>${
+          detail: `Ocorreu um erro ao atualizar o produto, selecionou corretamente uma unidade de produção?<br/>${
             (error as Error).message
           }`,
           life: 10000,

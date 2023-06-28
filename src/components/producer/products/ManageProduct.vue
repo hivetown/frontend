@@ -472,7 +472,7 @@ export default {
             break;
         }
 
-        //emit('productManaged', product);
+        emit('productManaged', product);
 
         const methodNameSummary =
           props.method === 'create' ? 'criado' : 'atualizado';
