@@ -6,7 +6,11 @@
     >
       <!-- Imagem do produto -->
       <b-card class="prod-card">
-        <img :src="cartItemImageURL" class="square-image" alt="Product image" />
+        <img
+          :src="cartItemImageURL"
+          class="square-image"
+          :alt="cartItemImageALT"
+        />
       </b-card>
     </router-link>
 
@@ -41,17 +45,30 @@
           </div>
 
           <!-- Remover item do carrinho -->
-          <div class="d-flex ms-auto justify-content-end">
-            <button
-              @click="removeCartItem"
-              variant="danger"
-              type="button"
-              class="btn btn-outline-secondary circle-btn"
-              title="Remover do carrinho"
-            >
-              <i class="bi bi-x-lg"></i>
-            </button>
-          </div>
+          <button
+            @click="showConfirmation"
+            variant="danger"
+            type="button"
+            class="btn btn-outline-secondary circle-btn"
+            title="Remover do carrinho"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <b-modal
+            v-model="confirmationModal"
+            title="Confirmação de Remoção"
+            hide-footer
+          >
+            <p>Tem a certeza que pretende remover o item do carrinho?</p>
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary mr-2" @click="cancelDeletion">
+                Cancelar
+              </button>
+              <button class="btn btn-danger" @click="confirmDeletion">
+                Remover
+              </button>
+            </div>
+          </b-modal>
         </div>
       </div>
     </b-card-text>
@@ -75,7 +92,7 @@ export default {
       // Detalhes do item
       cartItemPrice: this.priceCalc(),
       cartItemImageURL: 'Imagem do Produto',
-	  cartItemImageALT: 'Descrição do Produto',
+      cartItemImageALT: 'Descrição do Produto',
 
       // Guardar informações do login
       userLoggedId: 0 as number,
@@ -85,6 +102,9 @@ export default {
 
       // N.A.U. - Começar carrinho
       CartNAU: new CartNAU(),
+
+      // Botão de confirmação
+      confirmationModal: false,
     };
   },
 
@@ -97,18 +117,29 @@ export default {
   },
 
   methods: {
+    // Botão de confirmação
+    showConfirmation() {
+      this.confirmationModal = true;
+    },
+    cancelDeletion() {
+      this.confirmationModal = false;
+    },
+    confirmDeletion() {
+      this.removeCartItem();
+      this.confirmationModal = false;
+    },
+
     // Buscar detalhes do item (descrição, imagem)
     async getDetails() {
       if (this.cartItem.producerProduct!.productSpec !== undefined) {
-        //this.cartItemDetails = await fetchProduct(
-        //  this.cartItem.producerProduct!.productSpec.id
-        //);
         this.cartItemImageURL =
           this.cartItem.producerProduct.productSpec.images[0].url;
-		this.cartItemImageALT = this.cartItem.producerProduct.productSpec.images[0].alt;
+        this.cartItemImageALT =
+          this.cartItem.producerProduct.productSpec.images[0].alt;
       }
     },
 
+    // Buscar quantidade do carrinho
     setupQts() {
       const opts: { value: number; text: string }[] = [];
       for (let y = 1; y <= this.cartItem.producerProduct.stock; y++) {
@@ -116,17 +147,6 @@ export default {
         opts.push(build);
       }
       this.options = opts;
-      return opts;
-    },
-
-    // Buscar quantidade do carrinho
-    setupQts2() {
-      this.getLoginInfo();
-      const opts: { value: number; text: string }[] = [];
-      for (let i = 1; i <= this.cartItem.producerProduct!.stock; i++) {
-        const build = { value: i, text: i.toString() };
-        opts.push(build);
-      }
       return opts;
     },
 
@@ -140,16 +160,12 @@ export default {
     // Remover item do carrinho
     async removeCartItem(): Promise<void> {
       try {
-        this.getLoginInfo();
-        if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
-          await deleteCartItem(
-            this.userLoggedId,
-            this.cartItem.producerProduct!.id
-          );
-          this.$emit('deleteCartItem', this.cartItem.producerProduct!.id);
-        } else {
-          /* do nothing */
-        }
+        await deleteCartItem(
+          this.userLoggedId,
+          this.cartItem.producerProduct!.id
+        );
+        this.updateQnt();
+        this.$emit('deleteCartItem', this.cartItem.producerProduct!.id);
       } catch (error) {
         if (error instanceof Error) {
           console.log(error.message);
@@ -159,23 +175,12 @@ export default {
 
     // Atualizar quantidade do item
     async updateQnt(): Promise<void> {
-      try {
-        this.getLoginInfo();
-        await updateQuantityCartItem(
-          this.userLoggedId,
-          this.cartItem.producerProduct!.id,
-          this.selectedValue
-        );
-        this.$emit('updateCartItem');
-      } catch (error) {
-        if (error instanceof Error) {
-          if (error.message === 'Request failed with status code 400') {
-            // Do nothing
-          } else {
-            console.log(error.message);
-          }
-        }
-      }
+      await updateQuantityCartItem(
+        this.userLoggedId,
+        this.cartItem.producerProduct!.id,
+        this.selectedValue
+      );
+      this.$emit('updateCartItem');
     },
 
     // Buscar Info do Carrinho
@@ -190,10 +195,10 @@ export default {
         }
       }
     },
-
-    async beforeMount() {
-      this.getDetails();
-    },
+  },
+  async beforeMount() {
+    this.getLoginInfo();
+    this.getDetails();
   },
 };
 </script>

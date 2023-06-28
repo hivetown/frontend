@@ -4,7 +4,11 @@
     <router-link :to="'/products/' + cartItem.productSpec">
       <!-- Imagem do produto -->
       <b-card class="prod-card">
-        <img :src="cartItemImageURL" class="square-image" alt="Product image" />
+        <img
+          :src="cartItemImageURL"
+          class="square-image"
+          :alt="cartItemImageALT"
+        />
       </b-card>
     </router-link>
     <!-- Detalhes do item -->
@@ -38,7 +42,7 @@
           <!-- Remover item do carrinho -->
           <div class="d-flex ms-auto justify-content-end">
             <button
-              @click="removeCartItem"
+              @click="showConfirmation"
               variant="danger"
               type="button"
               class="btn btn-outline-secondary circle-btn"
@@ -46,6 +50,21 @@
             >
               <i class="bi bi-x-lg"></i>
             </button>
+            <b-modal
+              v-model="confirmationModal"
+              title="Confirmação de Remoção"
+              hide-footer
+            >
+              <p>Tem a certeza que pretende remover o item do carrinho?</p>
+              <div class="d-flex justify-content-end">
+                <button class="btn btn-secondary mr-2" @click="cancelDeletion">
+                  Cancelar
+                </button>
+                <button class="btn btn-danger" @click="confirmDeletion">
+                  Remover
+                </button>
+              </div>
+            </b-modal>
           </div>
         </div>
       </div>
@@ -74,11 +93,15 @@ export default {
       // Detalhes do item
       cartItemPrice: this.priceCalc(),
       cartItemDetails: this.getDetails(),
-      cartItemImageURL: 'none',
+      cartItemImageURL: 'Imagem do Produto',
+      cartItemImageALT: 'Descrição do Produto',
       cartItemStock: 1,
 
       // N.A.U. - Começar carrinho
       cartNAU: new CartNAU(),
+
+      // Botão de confirmação
+      confirmationModal: false,
     };
   },
 
@@ -91,6 +114,18 @@ export default {
   },
 
   methods: {
+    // Botão de confirmação
+    showConfirmation() {
+      this.confirmationModal = true;
+    },
+    cancelDeletion() {
+      this.confirmationModal = false;
+    },
+    confirmDeletion() {
+      this.removeCartItem();
+      this.confirmationModal = false;
+    },
+
     // Buscar detalhes do item (descrição, imagem)
     async getDetails() {
       await this.checkLogin();
@@ -101,6 +136,7 @@ export default {
       );
       this.cartItemDetails = this.cartItemDetails.data;
       this.cartItemImageURL = this.cartItemDetails.images[0].url;
+      this.cartItemImageALT = this.cartItemDetails.images[0].alt;
 
       this.getCartNAU();
       this.cartNAU.getCart();
@@ -165,12 +201,8 @@ export default {
     async removeCartItem(): Promise<void> {
       try {
         this.getCartNAU();
-        if (confirm('Tem a certeza que quer remover o item do seu carrinho?')) {
-          this.cartNAU.removeItem(this.cartItem);
-          this.$emit('deleteCartItem', this.cartItem.id);
-        } else {
-          /* do nothing */
-        }
+        this.cartNAU.removeItem(this.cartItem);
+        this.$emit('deleteCartItem', this.cartItem.id);
       } catch (error) {
         if (error instanceof Error) {
           console.log(error.message);

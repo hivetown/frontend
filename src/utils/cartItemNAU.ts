@@ -80,12 +80,6 @@ export class CartNAU {
         this.writeLocalStorage();
     }
 
-    //método para editar (edita na lista e chama-o de escrever)
-    substituteCartItem(itemBef: ProducerProduct, itemAft: ProducerProduct) {
-        const indexIwant = this.findIndex(itemBef);
-        this.cart[indexIwant] = itemAft;
-    }
-
     //método para limpar (define lista a vazio e chama-o de escrever)
     cleanCart() {
         this.cart = [];

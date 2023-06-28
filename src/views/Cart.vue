@@ -66,7 +66,7 @@
                     class="btn btn-outline-secondary btn-sm"
                     style="text-align: center"
                   >
-                    Prosseguir para Pagamento & Envio
+                    Prosseguir para Pagamento &amp; Envio
                   </button>
                 </a>
               </div>
@@ -78,21 +78,20 @@
   </div>
 </template>
 
-<!-- Sim, existem dois scripts mas se não estiver assim  -->
-<!-- não funciona de todo por isso é melhor deixar estar -->
-<script setup lang="ts">
-import CartItem from '@/components/CartItem.vue';
-import CartItemNAU from '@/components/CartItemNAU.vue';
-</script>
 <script lang="ts">
 import { fetchCartItems, deleteCart } from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 // N.A.U. - Import
-import { CartNAU } from '@/utils/cartItemNAU.js';
+import { CartNAU } from '@/utils/cartItemNAU';
 import { ProducerProduct } from '../types/interfaces';
 
+import CartItem from '@/components/CartItem.vue';
+import CartItemNAU from '@/components/CartItemNAU.vue';
+
 export default {
+  components: { CartItem, CartItemNAU },
+
   data() {
     return {
       // Informações dos itens do carrinho do user
@@ -124,9 +123,9 @@ export default {
       window.history.back();
     },
 
-    cleanCart() {
+    async cleanCart() {
       if (this.login) {
-        deleteCart(this.userLoggedId);
+        await deleteCart(this.userLoggedId);
       } else {
         this.cartNAU.cleanCart();
       }
@@ -141,12 +140,9 @@ export default {
         );
         if (indexToRemove !== -1) {
           this.itemsCart.items.splice(indexToRemove, 1);
-          //this.refreshValues();
         }
-        location.reload();
       } else {
         this.refreshValues();
-        location.reload();
       }
     },
 
@@ -237,11 +233,6 @@ export default {
         const cartInCartNAU = this.cartNAU.getCart();
         const carrinhoQuantidades = this.cartNAU.getCartQuantities();
 
-        //for (let i = 0; i < this.cartNAU.getCart().length; i++) {
-        //  const newItem = await fetchProduct(cartInCartNAU[i].productSpec);
-        //  itemsCart.push(newItem.data);
-        //  this.itemsCartNAUQuantities.push(cartInCartNAU[i].quantity);
-        //}
         for (let i = 0; i < this.cartNAU.getCart().length; i++) {
           itemsCart.push(cartInCartNAU[i]);
           this.itemsCartNAUQuantities.push(carrinhoQuantidades[i]);
