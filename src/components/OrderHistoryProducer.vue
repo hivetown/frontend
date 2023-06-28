@@ -124,7 +124,7 @@
   
   <script setup lang="ts">
   import Pagination from '../components/Pagination.vue';
-  import { BaseItems, Image, OrderProducer, OrderItem } from '../types/interfaces';
+  import { BaseItems, OrderProducer } from '../types/interfaces';
   import { onMounted, ref, computed } from 'vue';
   import { fetchAllOrdersProducer } from '../api/orders';
   import { useStore } from '@/store';
@@ -160,8 +160,10 @@
     if (user2.value && user2.value.user && user2.value.user.id) {
 	  const response = await fetchAllOrdersProducer(user2.value.user.id, Number(page), pageSize.value);
 	  orders.value = response.data;
-	  totalItems.value=response.data.totalItems;
 	  pageSize.value=response.data.pageSize;
+	  for(let i =1; i <= response.data.totalPages; i++){
+		totalItems.value+= ((await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)).data.items.length);
+	  }
 	}
   });
   
