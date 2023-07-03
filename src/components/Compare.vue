@@ -8,7 +8,7 @@
       </p>
     </div>
     <!-- Produtos a comparar -->
-    <div class="d-flex mt-5 px-3 justify-content-around">
+    <div class="compare-prods">
       <ProductCard
         v-for="product in products"
         :key="product.id"
@@ -29,6 +29,21 @@
 .spec-category-text {
   height: 5vh;
   background-color: #f3f3f3;
+}
+</style>
+
+<style scoped>
+.compare-prods {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 5vh;
+}
+
+@media (max-width: 768px) {
+  .product {
+    background-color: red;
+    max-width: 45%;
+  }
 }
 </style>
 

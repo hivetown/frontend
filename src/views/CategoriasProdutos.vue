@@ -126,7 +126,23 @@
       :items="allProducts.totalItems"
       :amount="allProducts.pageSize"
     />
+    <div v-if="allProducts?.totalItems === 0" class="parent">
+      <p>Não foram encontrados produtos para a categoria especificada</p>
+    </div>
+
+    <div v-else id="page-products">
+      <div class="parent mt-3 mobile-product-card">
+        <template v-for="product in allProducts.items" :key="product.id">
+          <ProductCard
+            :product-spec="product"
+            :can-compare="canCompareMoreProducts"
+            @compare="addProductToCompare"
+          />
+        </template>
+      </div>
+    </div>
   </div>
+  <!-- </div> -->
 
   <div class="pagination-mobile-on">
     <div class="parent" style="display: flex; justify-content: center">
@@ -309,6 +325,15 @@ export default defineComponent({
 
   .pagination-mobile-on {
     display: block;
+  }
+
+  .mobile-product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .product {
+    max-width: 90% !important;
   }
 }
 </style>
