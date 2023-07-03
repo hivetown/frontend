@@ -85,8 +85,8 @@
 }
 
 .views-btn .btn {
-  background-color: #fff !important;
-  border: 2px solid #dfdfdf;
+  /* background-color: #fff !important;
+  border: 2px solid #dfdfdf; */
 }
 
 .views-btn .btn.show,
@@ -95,7 +95,8 @@
 }
 
 .views-btn .dropdown-toggle::after {
-  color: #164a41;
+  /* color: #164a41; */
+  color: white;
 }
 
 .prods-found {
@@ -129,6 +130,7 @@
   }
 }
 </style>
+<style scoped></style>
 
 <script lang="ts">
 export default {
@@ -141,6 +143,10 @@ export default {
       type: Number,
       required: true,
     },
+    preventRedirect: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -148,9 +154,16 @@ export default {
       currentPageSize: this.amount,
     };
   },
+  emits: {
+    // eslint-disable-next-line no-unused-vars
+    'update:pageSize': (size: number) => true,
+  },
   methods: {
     setCurrentPageSize(size: number) {
       this.currentPageSize = size;
+      this.$emit('update:pageSize', size);
+
+      if (this.preventRedirect) return;
       const currentUrl = new URL(window.location.href);
       currentUrl.searchParams.set('pageSize', size.toString());
       window.location.replace(currentUrl.toString());

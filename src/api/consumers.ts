@@ -23,6 +23,32 @@ export const getConsumerAddresses = (id: number) =>
 export const postConsumer = (consumer: CreateConsumer) =>
     api.post('/consumers', consumer);
 
+export const getConsumersValues = (search?: string) =>
+    api.get<any>('/consumers', { params: { search } });
+
+export const getConsumers = (
+    page?: number,
+    pageSize?: number,
+    search?: string
+) =>
+    api.get('/consumers?includeAll=true', {
+        params: { page, pageSize, search },
+    });
+
+export const getConsumerId = (consumerId: number) =>
+    api.get<Consumer>(`/consumers/${consumerId}?includeAll=true`);
+
+export const desativarConsumer = (consumerId: number, search?: string) =>
+    api.delete(`/consumers/${consumerId}`, { params: { search } });
+
+export const ativarConsumer = (consumerId: number) =>
+    api.post(`/consumers/${consumerId}/reativate`);
+
+export const updateConsumer = (
+    consumerId: number,
+    formData: any,
+    search?: string
+) => api.put(`/consumers/${consumerId}`, formData, { params: { search } });
 export const postNewAdress = (consumerId: number, address: CreateAddress) =>
     api.post(`/consumers/${consumerId}/addresses`, address);
 

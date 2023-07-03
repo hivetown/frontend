@@ -1,7 +1,7 @@
 <template>
   <div class="form">
     <div class="form-group">
-      <p class="titulo">Adicionar novo endereço de envio</p>
+      <p class="titulo dgreen-txt main-txt">Adicionar novo endereço de envio</p>
       <br />
       <label for="name">Nome:</label>
       <input
@@ -162,7 +162,7 @@
     <!-- Campos de formulário aqui -->
     <button
       type="submit"
-      class="btn btn-outline-secondary btn-sm"
+      class="btn guardar-btn rounded-pill"
       @click="handleSubmit"
     >
       Guardar endereço
@@ -413,10 +413,11 @@ a {
   font-family: 'DM Serif Display';
 }
 .form {
-  margin-left: 50px;
-  margin-right: 50px;
-  background-color: beige;
-  border-radius: 10px;
+  width: 65%;
+  display: block;
+  margin: auto;
+  /* background-color: red; */
+  margin-top: 5vh;
 }
 a {
   font-size: 30px;
@@ -425,12 +426,23 @@ a {
 button {
   margin-top: 20px;
 }
+
+.guardar-btn {
+  border: 2px solid #f1b24a;
+  padding: 0.8em !important;
+}
+.guardar-btn:hover {
+  background-color: #fcfcfc;
+  border: 2px solid #e19e32;
+}
 /* Estilos específicos para dispositivos móveis */
 @media (max-width: 768px) {
   /* Substitua 768px pelo valor desejado para a largura de tela */
   .form {
-    margin-left: 10px; /* Ajuste a margem esquerda para telas menores */
-    margin-right: 10px; /* Ajuste a margem direita para telas menores */
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
     height: auto; /* Ajuste a altura para telas menores */
   }
   #andar,
@@ -446,7 +458,7 @@ button {
   #latitude,
   #name,
   #freguesia {
-    max-width: 300px;
+    max-width: 95%;
   }
   input {
     width: 90%; /* Ajuste a largura do input para preencher a largura do elemento pai */

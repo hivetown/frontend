@@ -1,5 +1,92 @@
 # Changelog
 
+## [2.2.0](https://github.com/hivetown/frontend/compare/v2.1.0...v2.2.0) (2023-06-22)
+
+
+### Features
+
+* change primevue theme ([08a15d0](https://github.com/hivetown/frontend/commit/08a15d01b92cf40be61a3953d2060eec2ab491b7))
+
+
+### Bug Fixes
+
+* focus ring color ([d92ac21](https://github.com/hivetown/frontend/commit/d92ac216fb1d688b41a71f8a9c04d1bd8d223141))
+
+## [2.1.0](https://github.com/hivetown/frontend/compare/v2.0.4...v2.1.0) (2023-06-19)
+
+
+### Features
+
+* show products loading on page start ([5da3276](https://github.com/hivetown/frontend/commit/5da3276796a388c0ec310ef9500b82182e7a8147))
+
+## [2.0.4](https://github.com/hivetown/frontend/compare/v2.0.3...v2.0.4) (2023-06-18)
+
+
+### Bug Fixes
+
+* display ([1516930](https://github.com/hivetown/frontend/commit/15169300cc8ee2c7a48abcffcf7bb6dfbaad2285))
+* units ([f2635df](https://github.com/hivetown/frontend/commit/f2635dfa85889cf09c894db5b2b73271e06cea41))
+
+## [2.0.3](https://github.com/hivetown/frontend/compare/v2.0.2...v2.0.3) (2023-06-18)
+
+
+### Bug Fixes
+
+* design improvement insupplier pages ([b9600b7](https://github.com/hivetown/frontend/commit/b9600b7d06fb9f133332a167f952c63c0c141f58))
+* design improvements ([b618870](https://github.com/hivetown/frontend/commit/b61887081a2996112e455fa1b1d752ffa8b040e7))
+* main page design ([6f5ad75](https://github.com/hivetown/frontend/commit/6f5ad75a8624b5e014179e4c00db7057b786e439))
+* order ([7597b66](https://github.com/hivetown/frontend/commit/7597b66e41bd8d5eb47e7aa3d9c4841e4a687133))
+
+## [2.0.2](https://github.com/hivetown/frontend/compare/v2.0.1...v2.0.2) (2023-06-18)
+
+
+### Bug Fixes
+
+* navigation ([1c5da26](https://github.com/hivetown/frontend/commit/1c5da267f71ca87b7678ebd2bfe7036cd74bc8a6))
+
+## [2.0.1](https://github.com/hivetown/frontend/compare/v2.0.0...v2.0.1) (2023-06-18)
+
+
+### Bug Fixes
+
+* changes after review ([8e3babe](https://github.com/hivetown/frontend/commit/8e3babec102c43077fb7754adf13881c61a38e75))
+* merge conflicts ([d9d7ed5](https://github.com/hivetown/frontend/commit/d9d7ed575973edd9dc5a4468908a702584744a88))
+
+## [2.0.0](https://github.com/hivetown/frontend/compare/v1.3.0...v2.0.0) (2023-06-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* use docker provided .env file in prod
+* use config file instead of env variables
+
+### Features
+
+* use config file instead of env variables ([09d1981](https://github.com/hivetown/frontend/commit/09d19810e8d8a159edd4cbac6c48dc7e5a77ed58))
+* use docker provided .env file in prod ([55c3886](https://github.com/hivetown/frontend/commit/55c3886ea49d9ec7ae31a353c06212ec9950b20e))
+
+## [1.3.0](https://github.com/hivetown/frontend/compare/v1.2.4...v1.3.0) (2023-06-18)
+
+
+### Features
+
+* create, edit, and remove producer products ([c19b18a](https://github.com/hivetown/frontend/commit/c19b18a9e2a751521daf5413032206b2f5137523))
+* create, edit, and remove producer products on production units ([09465f3](https://github.com/hivetown/frontend/commit/09465f3ae7adf4152286322e0aad03c4d86708c3))
+
+## [1.2.4](https://github.com/hivetown/frontend/compare/v1.2.3...v1.2.4) (2023-06-17)
+
+
+### Bug Fixes
+
+* stuff ([0abadbc](https://github.com/hivetown/frontend/commit/0abadbcbb17d95e6545771fa23bfe4969488bddd))
+
+## [1.2.3](https://github.com/hivetown/frontend/compare/v1.2.2...v1.2.3) (2023-06-17)
+
+
+### Bug Fixes
+
+* changes after review ([70322a3](https://github.com/hivetown/frontend/commit/70322a3cb7f27796203c0ff09cd0ce470dab94f0))
+
 ## [1.2.2](https://github.com/hivetown/frontend/compare/v1.2.1...v1.2.2) (2023-06-16)
 
 

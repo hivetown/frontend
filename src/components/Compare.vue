@@ -10,6 +10,7 @@
     <!-- Produtos a comparar -->
     <div class="compare-prods">
       <ProductCard
+        style="width: 30%"
         v-for="product in products"
         :key="product.id"
         :product-spec="product"
@@ -41,8 +42,8 @@
 
 @media (max-width: 768px) {
   .product {
-    background-color: red;
-    max-width: 45%;
+    width: 45% !important;
+    font-size: 0.7em !important;
   }
 }
 </style>
