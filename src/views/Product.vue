@@ -445,7 +445,7 @@
                 </div>
                 <div style="margin-left: 30%; position: absolute">
                   <div class="d-flex gap-5 align-items-center">
-                    <span>
+                    <span class="price-span">
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
                     <div>
@@ -661,7 +661,7 @@
                 </div>
                 <div style="position: absolute">
                   <div class="mt-3">
-                    <span>
+                    <span class="price-span">
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
                     <div style="margin-left: -3vh">
@@ -742,7 +742,7 @@
 }
 
 .quantity-div {
-  width: 14vh;
+  min-width: 20%;
   background-color: #f7f7f7 !important;
   padding: 0.5em;
   box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px,
@@ -841,6 +841,10 @@
 .product-info-mobile,
 .more-info-mobile {
   display: none;
+}
+
+.price-span {
+  min-width: 7vh;
 }
 
 @media (max-width: 767px) {
