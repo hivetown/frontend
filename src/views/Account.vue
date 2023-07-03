@@ -16,9 +16,9 @@
       <div class="consumer-main-info">
         <h1 class="dgreen-txt main-txt">{{ usernameValue }}</h1>
       </div>
-      <!-- <div class="edit-consumer">
-        <b-button class="buy-btn rounded-pill">Editar</b-button>
-      </div> -->
+      <div class="edit-consumer">
+        <b-button class="buy-btn rounded-pill">Apagar conta</b-button>
+      </div>
     </div>
     <div class="form-box parent">
       <!-- Conta -->
@@ -228,7 +228,7 @@ export default defineComponent({
 
 .edit-consumer {
   /* background-color: yellow; */
-  width: 15%;
+  width: 25%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -276,6 +276,10 @@ label,
 }
 
 @media (max-width: 767px) {
+  .consumer-main-info {
+    margin-left: 2vh;
+    margin-bottom: 1vh;
+  }
   .consumer-image img {
     display: block !important;
   }
@@ -284,7 +288,7 @@ label,
   }
   .form-box {
     display: block;
-    margin-top: 10vh;
+    margin-top: 14vh;
   }
   .form-box-block {
     margin-top: 4vh;
@@ -293,6 +297,11 @@ label,
   .end-edit {
     margin-top: 6vh;
     margin-bottom: 4vh;
+  }
+  .edit-consumer {
+    width: 100% !important;
+    margin-bottom: 3vh !important;
+    scale: 0.9;
   }
 }
 </style>
