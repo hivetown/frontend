@@ -2,7 +2,6 @@
   <div class="root">
     <div class="container">
       <ul class="progressbar">
-		
         <li
           :class="
             props.order.status === 'Processing' ||
@@ -10,7 +9,7 @@
             props.order.status === 'Shipped' ||
             props.order.status === 'Paid' ||
             props.order.status === 'Canceled' ||
-			props.order.generalStatus === 'Processing' ||
+            props.order.generalStatus === 'Processing' ||
             props.order.generalStatus === 'Delivered' ||
             props.order.generalStatus === 'Shipped' ||
             props.order.generalStatus === 'Paid' ||
@@ -27,7 +26,7 @@
             props.order.status === 'Delivered' ||
             props.order.status === 'Processing' ||
             props.order.status === 'Canceled' ||
-			props.order.generalStatus === 'Shipped' ||
+            props.order.generalStatus === 'Shipped' ||
             props.order.generalStatus === 'Delivered' ||
             props.order.generalStatus === 'Processing' ||
             props.order.generalStatus === 'Canceled'
@@ -42,7 +41,7 @@
             props.order.status === 'Delivered' ||
             props.order.status === 'Shipped' ||
             props.order.status === 'Canceled' ||
-			props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Delivered' ||
             props.order.generalStatus === 'Shipped' ||
             props.order.generalStatus === 'Canceled'
               ? 'active step3'
@@ -55,7 +54,7 @@
           :class="
             props.order.status === 'Delivered' ||
             props.order.status === 'Canceled' ||
-			props.order.generalStatus === 'Delivered' ||
+            props.order.generalStatus === 'Delivered' ||
             props.order.generalStatus === 'Canceled'
               ? 'active step4'
               : 'step4'
@@ -68,7 +67,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Order, SpecificOrder } from '@/types';
+import { SpecificOrder } from '@/types';
 import { PropType } from 'vue';
 
 const props = defineProps({

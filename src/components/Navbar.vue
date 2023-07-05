@@ -173,11 +173,9 @@
                 <b-dropdown-item to="/produtosprodutor"
                   >Produtos</b-dropdown-item
                 >
-				<b-dropdown-item
-                to="/encomendas"
-                class="linkcolor"
-                >Encomendas</b-dropdown-item
-              >
+                <b-dropdown-item to="/encomendas" class="linkcolor"
+                  >Encomendas</b-dropdown-item
+                >
                 <b-dropdown-item to="/unidadesproducao"
                   >Unidades de Produção</b-dropdown-item
                 >

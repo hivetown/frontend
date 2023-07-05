@@ -9,14 +9,21 @@
         <Progress
           :order="order"
           :length="4"
-		  
-          v-if="order.status !== 'Canceled' && order.generalStatus !== 'Canceled'"
+          v-if="
+            order.status !== 'Canceled' && order.generalStatus !== 'Canceled'
+          "
         ></Progress>
-		<!--
+        <!--
 			tive de trocar de generalStatus p status pq por alguma razao nao tem generalstatus e sim status - nao percebo se o tipo e q
 			esta errado
 		-->
-        <i v-if="order.status === 'Canceled' || order.generalStatus==='Canceled'" class="bi bi-x-circle">Encomenda cancelada</i>
+        <i
+          v-if="
+            order.status === 'Canceled' || order.generalStatus === 'Canceled'
+          "
+          class="bi bi-x-circle"
+          >Encomenda cancelada</i
+        >
       </div>
       <div
         class="tabela"
@@ -24,7 +31,7 @@
           marginTop: order.status === 'Canceled' ? '20px' : '',
         }"
       >
-        <OrderDetails  />
+        <OrderDetails />
       </div>
     </div>
   </div>
@@ -47,13 +54,14 @@ onBeforeMount(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
     if (typeof route.params.id === 'string') {
       const id = route.params.id;
-	  if (user2.value.user.type==="CONSUMER"){
-		const responseItem = await fetchOrder(user2.value.user.id, id);
-		order.value = responseItem.data;
-	  } if (user2.value.user.type==="PRODUCER"){
-		const responseItem = await fetchOrderProducer(user2.value.user.id, id);
-		order.value = responseItem.data;
-	  }
+      if (user2.value.user.type === 'CONSUMER') {
+        const responseItem = await fetchOrder(user2.value.user.id, id);
+        order.value = responseItem.data;
+      }
+      if (user2.value.user.type === 'PRODUCER') {
+        const responseItem = await fetchOrderProducer(user2.value.user.id, id);
+        order.value = responseItem.data;
+      }
     }
   }
 });

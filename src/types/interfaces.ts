@@ -156,15 +156,19 @@ export interface OrderItem {
     producerProduct: ProducerProduct;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
-	orderDate?: string;
+    orderDate?: string;
 }
 
 export interface SpecificOrder {
-	id?: number;
-	shippingAddress: Address;
-	generalStatus?: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
-	status?: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
-
+    id?: number;
+    shippingAddress: Address;
+    generalStatus?:
+        | 'Paid'
+        | 'Processing'
+        | 'Shipped'
+        | 'Delivered'
+        | 'Canceled';
+    status?: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface CreateProducerProduct {
