@@ -3,15 +3,15 @@
     <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
       <h5>Notificações</h5>
       <div class="content">
-        <b-tabs>
-          <b-tab title="Notificações não lidas">
+        <b-tabs v-model="activeTab">
+          <b-tab title="Notificações não lidas" @click="activateFirstTab">
             <!-- Conteúdo da aba de notificacoes nao lidas -->
             <p v-if="notificacoesNovas.totalItems == 0">
               <br />
               Não existem notificações não lidas.
               <br />
             </p>
-            <b-list-group v-else>
+			<b-list-group v-else :key="notificacoesNovas.items && notificacoesNovas.items.length ? notificacoesNovas.items.length : 0">
               <template v-if="notificacoes">
                 <b-list-group-item
                   v-for="notificacao in notificacoesNovas.items"
@@ -34,7 +34,7 @@
                     v-if="notificacao.readAt == null"
                     @click="marcarComoLida(notificacao)"
                   >
-                    <u style="cursor: pointer; margin-right: 160px"
+                    <u style="cursor: pointer; margin-right: 156px"
                       >Marcar como lida</u
                     >
                   </small>
@@ -57,11 +57,11 @@
               <hr />
             </b-list-group>
           </b-tab>
-          <b-tab title="Todas as notificações">
+          <b-tab title="Todas as notificações" @click="activateSecondTab">
             <p v-if="notificacoes?.totalItems == 0">
-              Não existem notificações novas.
+              Não existem notificações.
             </p>
-            <b-list-group v-else>
+			<b-list-group v-else :key="notificacoes.items && notificacoes.items.length ? notificacoes.items.length : 0">
               <template v-if="notificacoes">
                 <b-list-group-item
                   v-for="notificacao in notificacoes.items"
@@ -84,7 +84,7 @@
                     v-if="notificacao.readAt == null"
                     @click="marcarComoLida(notificacao)"
                   >
-                    <u style="cursor: pointer; margin-right: 160px"
+                    <u style="cursor: pointer; margin-right: 157px"
                       >Marcar como lida</u
                     >
                   </small>
@@ -140,6 +140,7 @@ export default {
   },
   data() {
     return {
+		activeTab: 0, // Índice da aba ativa
       notificacoes: { page: 1, pageSize: 24 } as BaseItems<Notification>,
       showPopup: true,
       quantidade: 0 as number,
@@ -157,6 +158,14 @@ export default {
     this.quantidade = this.notificacoesNovas.totalItems;
   },
   methods: {
+	activateFirstTab() {
+      this.activeTab = 0;
+      localStorage.setItem('lastActiveTab', this.activeTab.toString());
+    },
+    activateSecondTab() {
+      this.activeTab = 1;
+      localStorage.setItem('lastActiveTab', this.activeTab.toString());
+    },
     async carregaMais() {
       if (this.notificacoes.page === this.notificacoes.totalPages) return;
 
@@ -200,9 +209,27 @@ export default {
       if (resultado.isConfirmed) {
         await deleteNotification(notification.id);
         Swal.fire('Notificação eliminada!', '', 'success');
-        this.showPopup = false;
+        this.showPopup = true;
         this.quantidade = this.quantidade - 1;
         this.$emit('qtdNotificacoes', this.quantidade);
+		// Atualizar a lista de notificações após eliminar a notificação
+		//para apagar a notificaco apos o popup
+        if (this.activeTab===0) { //apaga das nao lidas
+			const index = this.notificacoesNovas.items.findIndex(
+			(item) => item.id === notification.id
+			);
+			if (index !== -1) {
+				this.notificacoesNovas.items.splice(index, 1);
+			}
+		}else{ //apaga so de todas
+			const index = this.notificacoes.items.findIndex(
+			(item) => item.id === notification.id
+			);
+			if (index !== -1) {
+				this.notificacoes.items.splice(index, 1);
+			}
+		}
+		
       } else {
         Swal.fire('Cancelado', 'A notificação não foi eliminada.', 'info');
       }
