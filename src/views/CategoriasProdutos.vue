@@ -290,6 +290,7 @@
       </div>
     </div>
   </div>
+  <!-- </div> -->
 
   <div v-if="productSpecs" class="pagination-mobile-on">
     <div
@@ -699,6 +700,15 @@ const priceFilter = ref<[number, number]>([routeMinPrice, routeMaxPrice]);
 
   .pagination-mobile-on {
     display: block;
+  }
+
+  .mobile-product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .product {
+    max-width: 90% !important;
   }
   .price-slider {
     margin-left: 1vh;
