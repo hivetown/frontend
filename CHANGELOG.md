@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.0](https://github.com/hivetown/frontend/compare/v2.2.0...v2.3.0) (2023-07-05)
+
+
+### Features
+
+* categoriasProdutos comparação mobile ([6ec80e9](https://github.com/hivetown/frontend/commit/6ec80e9f724f728655a15a3170ab15983d743592))
+
+
+### Bug Fixes
+
+* compare on mobile ([3b57563](https://github.com/hivetown/frontend/commit/3b57563a362e24492f1bf7a60c9c0e72f347637e))
+
 ## [2.2.0](https://github.com/hivetown/frontend/compare/v2.1.0...v2.2.0) (2023-06-22)
 
 
