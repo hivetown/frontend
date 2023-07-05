@@ -1,110 +1,127 @@
 <template>
-	<div id="notificacoes">
-	  <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
-		<h5>Notificações</h5>
-		<div class="content">
-		  <b-tabs>
-			<b-tab title="Notificacoes não lidas">
-			  <!-- Conteúdo da aba de notificacoes nao lidas -->
-			  <p v-if="notificacoesNovas.totalItems==0">
-				<br>
-				Não existem notificações não lidas.
-				<br>
-			  </p>
-			  <b-list-group v-else>
-				<template v-if="notificacoes">
-				  <b-list-group-item
-					v-for="notificacao in notificacoesNovas.items"
-					:key="notificacao.id"
-					:active="notificacao?.readAt == null"
-					class="flex-column align-items-start"
-				  >
-					<div
-					  class="d-flex w-100 justify-content-between"
-					  @click="marcarComoLida(notificacao)"
-					>
-					  <h5 class="mb-1">{{ notificacao.title }}</h5>
-					  <small
-						>{{ notificacao.createdAt.substring(0, 10) }}
-						{{ notificacao.createdAt.substring(11, 19) }}</small
-					  >
-					</div>
-					<p class="mb-1">{{ notificacao.message }}</p>
-					<small
-					  v-if="notificacao.readAt == null"
-					  @click="marcarComoLida(notificacao)"
-					>
-					  <u style="cursor: pointer; margin-right:160px;">Marcar como lida</u>
-					</small>
-  
-					<small v-else @click="marcarComoNaoLida(notificacao)">
-					  <u style="cursor: pointer; margin-right:130px;">Marcar como não lida</u>
-					</small>
-					<small @click="eliminarNotificacao(notificacao)" style="text-align:'right'; "> <u style="cursor: pointer">Eliminar notificação </u></small>
+  <div id="notificacoes">
+    <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
+      <h5>Notificações</h5>
+      <div class="content">
+        <b-tabs>
+          <b-tab title="Notificações não lidas">
+            <!-- Conteúdo da aba de notificacoes nao lidas -->
+            <p v-if="notificacoesNovas.totalItems == 0">
+              <br />
+              Não existem notificações não lidas.
+              <br />
+            </p>
+            <b-list-group v-else>
+              <template v-if="notificacoes">
+                <b-list-group-item
+                  v-for="notificacao in notificacoesNovas.items"
+                  :key="notificacao.id"
+                  :active="notificacao?.readAt == null"
+                  class="flex-column align-items-start"
+                >
+                  <div
+                    class="d-flex w-100 justify-content-between"
+                    @click="marcarComoLida(notificacao)"
+                  >
+                    <h5 class="mb-1">{{ notificacao.title }}</h5>
+                    <small
+                      >{{ notificacao.createdAt.substring(0, 10) }}
+                      {{ notificacao.createdAt.substring(11, 19) }}</small
+                    >
+                  </div>
+                  <p class="mb-1">{{ notificacao.message }}</p>
+                  <small
+                    v-if="notificacao.readAt == null"
+                    @click="marcarComoLida(notificacao)"
+                  >
+                    <u style="cursor: pointer; margin-right: 160px"
+                      >Marcar como lida</u
+                    >
+                  </small>
 
-					<hr />
-				  </b-list-group-item>
-				</template>
-				<hr />
-			  </b-list-group>
-			</b-tab>
-			<b-tab title="Todas as notificações">
-			  <p v-if="notificacoes?.totalItems == 0">
-				Não existem notificações novas.
-			  </p>
-			  <b-list-group v-else>
-				<template v-if="notificacoes">
-				  <b-list-group-item
-					v-for="notificacao in notificacoes.items"
-					:key="notificacao.id"
-					:active="notificacao?.readAt == null"
-					class="flex-column align-items-start"
-				  >
-					<div
-					  class="d-flex w-100 justify-content-between"
-					  @click="marcarComoLida(notificacao)"
-					>
-					  <h5 class="mb-1">{{ notificacao.title }}</h5>
-					  <small
-						>{{ notificacao.createdAt.substring(0, 10) }}
-						{{ notificacao.createdAt.substring(11, 19) }}</small
-					  >
-					</div>
-					<p class="mb-1">{{ notificacao.message }}</p>
-					<small
-					  v-if="notificacao.readAt == null"
-					  @click="marcarComoLida(notificacao)"
-					>
-					  <u style="cursor: pointer; margin-right:160px;">Marcar como lida</u>
-					</small>
-  
-					<small v-else @click="marcarComoNaoLida(notificacao)">
-					  <u style="cursor: pointer; margin-right:130px;">Marcar como não lida</u>
-					</small>
-					<small @click="eliminarNotificacao(notificacao)" style="text-align:'right'; "> <u style="cursor: pointer">Eliminar notificação </u></small>
-					<hr />
-				  </b-list-group-item>
-				</template>
-				<hr />
-			  </b-list-group>
-  
-			  <button
-				class="btn btn-primary"
-				v-if="
-				  notificacoes.totalItems > 24 &&
-				  notificacoes.page != notificacoes.totalPages
-				"
-				@click="carregaMais"
-			  >
-				Carregar mais
-			  </button>
-			</b-tab>
-		  </b-tabs>
-		</div>
-	  </div>
-	</div>
-  </template>
-  
+                  <small v-else @click="marcarComoNaoLida(notificacao)">
+                    <u style="cursor: pointer; margin-right: 130px"
+                      >Marcar como não lida</u
+                    >
+                  </small>
+                  <small
+                    @click="eliminarNotificacao(notificacao)"
+                    style="text-align: 'right'"
+                  >
+                    <u style="cursor: pointer">Eliminar notificação </u></small
+                  >
+
+                  <hr />
+                </b-list-group-item>
+              </template>
+              <hr />
+            </b-list-group>
+          </b-tab>
+          <b-tab title="Todas as notificações">
+            <p v-if="notificacoes?.totalItems == 0">
+              Não existem notificações novas.
+            </p>
+            <b-list-group v-else>
+              <template v-if="notificacoes">
+                <b-list-group-item
+                  v-for="notificacao in notificacoes.items"
+                  :key="notificacao.id"
+                  :active="notificacao?.readAt == null"
+                  class="flex-column align-items-start"
+                >
+                  <div
+                    class="d-flex w-100 justify-content-between"
+                    @click="marcarComoLida(notificacao)"
+                  >
+                    <h5 class="mb-1">{{ notificacao.title }}</h5>
+                    <small
+                      >{{ notificacao.createdAt.substring(0, 10) }}
+                      {{ notificacao.createdAt.substring(11, 19) }}</small
+                    >
+                  </div>
+                  <p class="mb-1">{{ notificacao.message }}</p>
+                  <small
+                    v-if="notificacao.readAt == null"
+                    @click="marcarComoLida(notificacao)"
+                  >
+                    <u style="cursor: pointer; margin-right: 160px"
+                      >Marcar como lida</u
+                    >
+                  </small>
+
+                  <small v-else @click="marcarComoNaoLida(notificacao)">
+                    <u style="cursor: pointer; margin-right: 130px"
+                      >Marcar como não lida</u
+                    >
+                  </small>
+                  <small
+                    @click="eliminarNotificacao(notificacao)"
+                    style="text-align: 'right'"
+                  >
+                    <u style="cursor: pointer">Eliminar notificação </u></small
+                  >
+                  <hr />
+                </b-list-group-item>
+              </template>
+              <hr />
+            </b-list-group>
+
+            <button
+              class="btn btn-primary"
+              v-if="
+                notificacoes.totalItems > 24 &&
+                notificacoes.page != notificacoes.totalPages
+              "
+              @click="carregaMais"
+            >
+              Carregar mais
+            </button>
+          </b-tab>
+        </b-tabs>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script lang="ts">
 import Swal from 'sweetalert2';
@@ -113,7 +130,7 @@ import {
   getAllNotifications,
   postUnread,
   getUnreadNotifications,
-  deleteNotification
+  deleteNotification,
 } from '../api/notifications';
 import { BaseItems, Notification } from '@/types';
 export default {
@@ -126,8 +143,7 @@ export default {
       notificacoes: { page: 1, pageSize: 24 } as BaseItems<Notification>,
       showPopup: true,
       quantidade: 0 as number,
-	  notificacoesNovas: { page: 1, pageSize: 24 } as BaseItems<Notification>,
-
+      notificacoesNovas: { page: 1, pageSize: 24 } as BaseItems<Notification>,
     };
   },
   async beforeMount() {
@@ -137,8 +153,8 @@ export default {
         this.notificacoes.pageSize
       )
     ).data;
-    this.notificacoesNovas = ((await getUnreadNotifications()).data); //para ter p depois enviar no emit
-	this.quantidade = this.notificacoesNovas.totalItems;
+    this.notificacoesNovas = (await getUnreadNotifications()).data; //para ter p depois enviar no emit
+    this.quantidade = this.notificacoesNovas.totalItems;
   },
   methods: {
     async carregaMais() {
@@ -168,30 +184,29 @@ export default {
       notification.readAt = new Date().toISOString();
       this.$emit('qtdNotificacoes', this.quantidade);
     },
-	async eliminarNotificacao(notification: Notification) {
-  // Exibir SweetAlert para confirmar a eliminação
-  const resultado = await Swal.fire({
-    title: 'Eliminar notificação?',
-    text: 'Deseja eliminar a notificação? Esta ação não pode ser desfeita.',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Sim',
-    cancelButtonText: 'Não',
-	confirmButtonColor: '#FF0000', // Definir a cor vermelha (código hexadecimal)
+    async eliminarNotificacao(notification: Notification) {
+      // Exibir SweetAlert para confirmar a eliminação
+      const resultado = await Swal.fire({
+        title: 'Eliminar notificação?',
+        text: 'Deseja eliminar a notificação? Esta ação não pode ser desfeita.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não',
+        confirmButtonColor: '#FF0000', // Definir a cor vermelha (código hexadecimal)
+      });
 
-  });
-
-  // Se o usuário confirmar a eliminação, chamar deleteNotification
-  if (resultado.isConfirmed) {
-    await deleteNotification(notification.id);
-    Swal.fire('Notificação eliminada!', '', 'success');
-	this.showPopup = false;
-	this.quantidade = this.quantidade-1;
-	this.$emit('qtdNotificacoes', this.quantidade);
-  } else {
-    Swal.fire('Cancelado', 'A notificação não foi eliminada.', 'info');
-  }
-},
+      // Se o usuário confirmar a eliminação, chamar deleteNotification
+      if (resultado.isConfirmed) {
+        await deleteNotification(notification.id);
+        Swal.fire('Notificação eliminada!', '', 'success');
+        this.showPopup = false;
+        this.quantidade = this.quantidade - 1;
+        this.$emit('qtdNotificacoes', this.quantidade);
+      } else {
+        Swal.fire('Cancelado', 'A notificação não foi eliminada.', 'info');
+      }
+    },
     async loadNotifications() {
       try {
         const responseItem = await getAllNotifications(
@@ -203,7 +218,7 @@ export default {
         console.error(error);
       }
     },
-	async getUnreadNotifications() {
+    async getUnreadNotifications() {
       try {
         const responseItem = await getUnreadNotifications();
         this.notificacoesNovas = responseItem.data;
@@ -211,7 +226,7 @@ export default {
         console.error(error);
       }
     },
-	
+
     async marcarComoNaoLida(notification: Notification) {
       await postUnread(notification.id);
       this.quantidade = this.quantidade + 1;

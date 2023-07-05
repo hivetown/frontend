@@ -11,5 +11,5 @@ export const postRead = async (id: number) =>
     api.post<Notification>(`/notifications/${id}/read`);
 export const postUnread = async (id: number) =>
     api.post<Notification>(`/notifications/${id}/unread`);
-export const deleteNotification=async (id: number) =>
-	api.delete<Notification>(`/notifications/${id}`);
+export const deleteNotification = async (id: number) =>
+    api.delete<Notification>(`/notifications/${id}`);
