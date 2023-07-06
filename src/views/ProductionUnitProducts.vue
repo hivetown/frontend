@@ -29,13 +29,17 @@
           <b-card-text class="">
             <div>
               <h5>{{ product.productSpec!.name }}</h5>
-              <p>UP: {{ product.productionUnit!.name }}</p>
+
+              <p>Stock: {{ product.stock }}</p>
+
               <p class="grey-txt mt-3">
                 {{ product.productSpec!.description }}
               </p>
+
               <div class="d-flex gap-2">
                 <h4 class="mb-3">{{ product.currentPrice }}€</h4>
               </div>
+
               <div class="d-flex gap-2">
                 <ManageProduct
                   :default-product-spec="product.productSpec"

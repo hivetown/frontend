@@ -1,9 +1,14 @@
 <template>
   <div class="container">
     <h2 class="mb-5 dgreen-txt main-txt">Unidades de Produção</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
-      <template v-if="allUnitsData?.items">
-        <div v-for="unit in allUnitsData.items" :key="unit.id">
+
+    <Loader v-if="isLoading" />
+    <div
+      v-else
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4"
+    >
+      <template v-if="productionUnits && productionUnits.items.length">
+        <div v-for="unit in productionUnits.items" :key="unit.id">
           <router-link
             :to="{
               name: 'ProductionUnitProducts',
@@ -66,47 +71,87 @@
       </div>
     </div>
   </div>
-  <div
-    class=""
-    style="display: flex; flex-direction: row-reverse; justify-content: center"
+
+  <Pagination
+    v-if="productionUnits"
+    :items="productionUnits"
+    :page="currentFilters.page"
+    :page-size="currentFilters.pageSize"
+    @page-change="onPageChange"
   >
-    <!-- <Pagination
-      class="mobile-pagination-prods mt-4"
-      v-if="allUnitsData"
-      :total-rows="allUnitsData.totalItems"
-      :per-page="allUnitsData.pageSize"
-    >
-      ></Pagination
-    > -->
-  </div>
+    ></Pagination
+  >
 </template>
 
 <script lang="ts">
 import { BaseItems, ProductionUnit } from '@/types';
 import { fetchAllUnits } from '@/api/units';
-import Pagination from '../components/Pagination.vue';
-import { useStore } from '@/store';
-import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
+import Pagination from '@/components/Pagination.vue';
+import Loader from '@/components/Loader.vue';
+import { PageState } from 'primevue/paginator';
 export default {
   components: {
     Pagination,
+    Loader,
   },
   data() {
     return {
-      allUnitsData: {} as BaseItems<ProductionUnit>,
+      productionUnits: {} as BaseItems<ProductionUnit>,
+      currentFilters: {
+        page: 1,
+        pageSize: 24,
+      },
+      isLoading: true,
     };
   },
-  async mounted() {
+  watch: {
+    currentFilters: {
+      handler(newFilters) {
+        this.$router.push({
+          query: {
+            ...newFilters,
+          },
+        });
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    async loadProductionUnits() {
+      this.isLoading = true;
+      try {
+        const userId = this.$store.state.user!.user.id;
+        const allUnitsData = await fetchAllUnits(
+          userId,
+          this.currentFilters.page,
+          this.currentFilters.pageSize
+        );
+
+        this.productionUnits = allUnitsData.data;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async onPageChange(page: Partial<PageState>) {
+      if (page.page) {
+        this.currentFilters.page = page.page + 1;
+      }
+
+      if (page.rows) {
+        this.currentFilters.pageSize = page.rows;
+      }
+
+      await this.loadProductionUnits();
+    },
+  },
+  async beforeMount() {
     try {
-      const store = useStore();
-      const id = store.state.user!.user.id;
+      this.currentFilters.page =
+        parseInt(this.$route.query.page as string) || 1;
+      this.currentFilters.pageSize =
+        parseInt(this.$route.query.pageSize as string) || 24;
 
-      const route = useRoute() as RouteLocationNormalizedLoaded;
-      const page = parseInt(route.query.page as string) || 1;
-      const pageSize = parseInt(route.query.pageSize as string) || 24;
-
-      const allUnitsData = await fetchAllUnits(id, page, pageSize);
-      this.allUnitsData = allUnitsData.data;
+      await this.loadProductionUnits();
     } catch (error) {
       console.error(error);
     }
@@ -159,11 +204,6 @@ export default {
 @media (max-width: 768px) {
   h2 {
     text-align: center;
-  }
-
-  .mobile-pagination-prods {
-    scale: 0.8 !important;
-    margin-left: -14vh;
   }
 }
 </style>
