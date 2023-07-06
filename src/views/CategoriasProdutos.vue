@@ -109,9 +109,9 @@
       </h3>
       <!-- Diferentes vistas da página -->
       <CustomViews
-        v-if="productSpecs && productSpecs.pageSize"
+        v-if="productSpecs && currentFilters.pageSize"
         :items="productSpecs.totalItems"
-        :amount="productSpecs.pageSize"
+        :amount="currentFilters.pageSize"
         :prevent-redirect="true"
         @update:page-size="
           (pageSize) => productSpecPageChange({ rows: pageSize })
@@ -145,33 +145,13 @@
             </template>
           </div>
         </div>
-        <div
+        <Pagination
           v-if="productSpecs"
-          style="
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-          "
-        >
-          <Paginator
-            :template="{
-              '640px': 'PrevPageLink CurrentPageReport NextPageLink',
-              '960px':
-                'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
-              '1300px':
-                'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
-              default:
-                'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown JumpToPageInput',
-            }"
-            :rows="productSpecs.pageSize"
-            :total-records="productSpecs.totalItems"
-            @page="productSpecPageChange"
-          >
-          </Paginator>
-
-          <p>Total de páginas: {{ productSpecs.totalPages }}</p>
-        </div>
+          :items="productSpecs"
+          :page="currentFilters.page"
+          :page-size="currentFilters.pageSize"
+          @page-change="productSpecPageChange"
+        ></Pagination>
       </div>
     </div>
   </div>
@@ -293,30 +273,14 @@
   <!-- </div> -->
 
   <div v-if="productSpecs" class="pagination-mobile-on">
-    <div
+    <Pagination
+      v-if="productSpecs"
       class="parent"
-      style="display: flex; flex-direction: column; justify-content: center"
-    >
-      <Paginator
-        :template="{
-          '640px': 'PrevPageLink CurrentPageReport NextPageLink',
-          '960px':
-            'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
-          '1300px':
-            'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
-          default:
-            'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown JumpToPageInput',
-        }"
-        :rows="productSpecs.pageSize"
-        :total-records="productSpecs.totalItems"
-        @page="productSpecPageChange"
-      >
-      </Paginator>
-
-      <p style="display: block; margin: auto">
-        Total de páginas: {{ productSpecs.totalPages }}
-      </p>
-    </div>
+      :items="productSpecs"
+      :page="currentFilters.page"
+      :page-size="currentFilters.pageSize"
+      @page-change="productSpecPageChange"
+    ></Pagination>
   </div>
 
   <!-- Banner da comparação que aparece quando se clica em comparar um produto -->
@@ -339,13 +303,14 @@ import { debounce } from 'lodash';
 import ProductCard from '@/components/ProductCard.vue';
 import InputText from 'primevue/inputtext';
 import ProgressSpinner from 'primevue/progressspinner';
-import Paginator, { PageState } from 'primevue/paginator';
 import PathComponent from '@/components/PathComponent.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import CompareBanner from '@/components/CompareBanner.vue';
 import SupplierFilter from '@/components/SupplierFilter.vue';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
+import Pagination from '@/components/Pagination.vue';
+import { PageState } from 'primevue/paginator';
 
 const route = useRoute();
 const router = useRouter();
