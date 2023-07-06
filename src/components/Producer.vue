@@ -1,14 +1,14 @@
 <template>
   <h3>Produtores</h3>
   <div class="loading-spinner" v-if="isLoading">
-      <ProgressSpinner
-        style="width: 50px; height: 50px"
-        strokeWidth="8"
-        fill="var(--surface-ground)"
-        animationDuration=".5s"
-        aria-label="Loading Product specifications"
-      />
-    </div>
+    <ProgressSpinner
+      style="width: 50px; height: 50px"
+      stroke-width="8"
+      fill="var(--surface-ground)"
+      animation-duration=".5s"
+      aria-label="Loading Product specifications"
+    />
+  </div>
   <div class="card-container" v-if="users">
     <div v-for="idx in qtd" :key="idx">
       <b-card
@@ -68,7 +68,7 @@ onMounted(async () => {
   try {
     const responseItems = await getProducersValues();
     page.value = responseItems.data.page;
-	isLoading.value = false; // Defina isLoading como falso para esconder o indicador de carregamento
+    isLoading.value = false; // Defina isLoading como falso para esconder o indicador de carregamento
     const urlSearchParams = new URLSearchParams(window.location.search);
     const pageParam = urlSearchParams.get('page');
     if (pageParam) {
@@ -84,11 +84,10 @@ onMounted(async () => {
     users.value = response.data;
     qtd.value = Number(users.value?.items.length);
   } catch (error) {
-	isLoading.value = false; // Certifique-se de definir isLoading como falso mesmo em caso de erro
+    isLoading.value = false; // Certifique-se de definir isLoading como falso mesmo em caso de erro
     console.error(error);
   }
 });
-
 </script>
 <style scoped>
 .card-container {
