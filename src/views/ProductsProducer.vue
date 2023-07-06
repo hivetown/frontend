@@ -6,7 +6,7 @@
         <ManageProduct
           class="ml-2"
           method="create"
-          @product-managed="refreshWindow(1000)"
+          @product-managed="loadProducts"
         />
       </h2>
 
@@ -51,7 +51,7 @@
                     :default-production-date="new Date(product.productionDate)"
                     method="update"
                     :producer-product-id="product.id"
-                    @product-managed="refreshWindow(1000)"
+                    @product-managed="loadProducts"
                   />
 
                   <DeleteProduct
@@ -120,9 +120,6 @@ export default {
     },
   },
   methods: {
-    refreshWindow(timeout: number = 0) {
-      setTimeout(() => window.location.reload(), timeout);
-    },
     deleteProduct(data: ProducerProduct) {
       const productIdx = this.products.items.findIndex((p) => p.id === data.id);
       if (productIdx === -1) return;
