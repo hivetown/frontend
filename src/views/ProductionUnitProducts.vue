@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <h2 class="mb-5">
-      Produtos da Unidade: {{ unitName }}
+    <h2 class="mb-5" v-if="productionUnit">
+      Produtos da Unidade: {{ productionUnit.name }}
       <ManageProduct
         class="ml-2"
         method="create"
@@ -9,9 +9,16 @@
         @product-managed="refreshWindow(1000)"
       />
     </h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
-      <template v-if="allUnitProducts?.items?.length">
-        <div v-for="product in allUnitProducts.items" :key="product.id">
+
+    <div v-if="isLoading">
+      <Loader />
+    </div>
+    <div
+      v-else
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4"
+    >
+      <template v-if="!isLoading && products && products.items.length">
+        <div v-for="product in products.items" :key="product.id">
           <b-card class="prod-card position-relative">
             <img
               :src="product.productSpec!.images[0].url"
@@ -49,91 +56,126 @@
             </div>
           </b-card-text>
         </div>
-        <div
-          class=""
-          style="
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-          "
-        >
-          <Pagination
-            class="mobile-pagination-prods"
-            v-if="allUnitProducts"
-            :total-rows="allUnitProducts.totalItems"
-            :per-page="allUnitProducts.pageSize"
-          >
-            ></Pagination
-          >
-        </div>
       </template>
       <div v-else>
         <p>Esta Unidade de Produção ainda não tem produtos associados.</p>
       </div>
     </div>
+
+    <Pagination
+      v-if="products"
+      :items="products"
+      :page="currentFilters.page"
+      :page-size="currentFilters.pageSize"
+      @page-change="onPageChange"
+    >
+      ></Pagination
+    >
   </div>
 </template>
 
 <script lang="ts">
+import Loader from '@/components/Loader.vue';
 import { fetchAllUnitProducts } from '@/api/unitProducts';
-import Pagination from '../components/Pagination.vue';
-import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
+import Pagination from '@/components/Pagination.vue';
 import { BaseItems, ProducerProduct, ProductionUnit } from '@/types';
 import { fetchUnit } from '@/api/unitData';
 import ManageProduct from '@/components/producer/products/ManageProduct.vue';
 import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
+import { PageState } from 'primevue/paginator';
 
 export default {
-  computed: {
-    unitName(): string {
-      return this.$route.params.unitName as string;
-    },
-  },
   components: {
     Pagination,
     ManageProduct,
     DeleteProduct,
+    Loader,
   },
   data() {
     return {
-      allUnitProducts: {} as BaseItems<ProducerProduct>,
+      products: {} as BaseItems<ProducerProduct>,
       productionUnit: {} as ProductionUnit,
+      currentFilters: {
+        page: 1,
+        pageSize: 24,
+      },
+      producerId: 0,
+      unitId: 0,
+      isLoading: true,
     };
+  },
+  watch: {
+    currentFilters: {
+      handler(newFilters) {
+        this.$router.push({
+          query: {
+            ...newFilters,
+          },
+        });
+      },
+      deep: true,
+    },
   },
   methods: {
     refreshWindow(timeout: number = 0) {
       setTimeout(() => window.location.reload(), timeout);
     },
     deleteProduct(data: ProducerProduct) {
-      const productIdx = this.allUnitProducts.items.findIndex(
-        (p) => p.id === data.id
-      );
+      const productIdx = this.products.items.findIndex((p) => p.id === data.id);
       if (productIdx === -1) return;
 
-      this.allUnitProducts.items.splice(productIdx, 1);
-      this.allUnitProducts.totalItems--;
+      this.products.items.splice(productIdx, 1);
+      this.products.totalItems--;
+    },
+    async loadUnitProducts() {
+      try {
+        this.isLoading = true;
+
+        const producerId = parseInt(this.$route.params.producerId as string);
+        const unitId = parseInt(this.$route.params.unitId as string);
+
+        const allUnitProducts = await fetchAllUnitProducts(
+          producerId,
+          unitId,
+          this.currentFilters.page,
+          this.currentFilters.pageSize
+        );
+
+        this.products = allUnitProducts.data;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async onPageChange(page: Partial<PageState>) {
+      if (page.page) {
+        this.currentFilters.page = page.page + 1;
+      }
+
+      if (page.rows) {
+        this.currentFilters.pageSize = page.rows;
+      }
+
+      await this.loadUnitProducts();
     },
   },
-  async mounted() {
+  async beforeMount() {
     try {
-      const route = useRoute() as RouteLocationNormalizedLoaded;
-      const producerId = parseInt(route.params.producerId as string);
-      const unitId = parseInt(route.params.unitId as string);
-      const page = parseInt(route.query.page as string) || 1;
-      const pageSize = parseInt(route.query.pageSize as string) || 24;
+      this.producerId = parseInt(this.$route.params.producerId as string);
+      this.unitId = parseInt(this.$route.params.unitId as string);
+      this.currentFilters.page =
+        parseInt(this.$route.query.page as string) || 1;
+      this.currentFilters.pageSize =
+        parseInt(this.$route.query.pageSize as string) || 24;
 
-      this.productionUnit = (await fetchUnit(producerId, unitId)).data;
+      // In this phase it is still loading (default is true)
+      this.productionUnit = (
+        await fetchUnit(this.producerId, this.unitId)
+      ).data;
 
-      const allUnitProducts = await fetchAllUnitProducts(
-        producerId,
-        unitId,
-        page,
-        pageSize
-      );
-
-      this.allUnitProducts = allUnitProducts.data;
-    } catch (error) {
-      console.error(error);
+      // And will only be set to false after the products are loaded
+      await this.loadUnitProducts();
+    } finally {
+      this.isLoading = false;
     }
   },
 };
@@ -143,11 +185,6 @@ export default {
 @media (max-width: 768px) {
   h2 {
     text-align: center;
-  }
-
-  .mobile-pagination-prods {
-    scale: 0.8 !important;
-    margin-left: -14vh;
   }
 }
 </style>
