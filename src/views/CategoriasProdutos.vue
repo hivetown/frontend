@@ -125,14 +125,7 @@
 
         <div v-else id="page-products">
           <div class="grid m-3">
-            <ProgressSpinner
-              v-if="loadingProductSpecs || !productSpecs"
-              style="width: 50px; height: 50px"
-              stroke-width="8"
-              fill="var(--surface-ground)"
-              animation-duration=".5s"
-              aria-label="Loading Product specifications"
-            />
+            <Loader v-if="loadingProductSpecs || !productSpecs" />
             <template v-else>
               <ProductCard
                 v-for="product in productSpecs.items"
@@ -248,14 +241,7 @@
 
       <div v-else id="page-products">
         <div class="grid m-3">
-          <ProgressSpinner
-            v-if="loadingProductSpecs || !productSpecs"
-            style="width: 50px; height: 50px"
-            stroke-width="8"
-            fill="var(--surface-ground)"
-            animation-duration=".5s"
-            aria-label="Loading Product specifications"
-          />
+          <Loader v-if="loadingProductSpecs || !productSpecs" />
           <template v-else>
             <ProductCard
               v-for="product in productSpecs.items"
@@ -302,7 +288,7 @@ import Slider from 'primevue/slider';
 import { debounce } from 'lodash';
 import ProductCard from '@/components/ProductCard.vue';
 import InputText from 'primevue/inputtext';
-import ProgressSpinner from 'primevue/progressspinner';
+import Loader from '@/components/Loader.vue';
 import PathComponent from '@/components/PathComponent.vue';
 import CustomViews from '@/components/CustomViews.vue';
 import CompareBanner from '@/components/CompareBanner.vue';

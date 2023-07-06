@@ -1,13 +1,7 @@
 <template>
   <h3>Produtores</h3>
-  <div class="loading-spinner" v-if="isLoading">
-    <ProgressSpinner
-      style="width: 50px; height: 50px"
-      stroke-width="8"
-      fill="var(--surface-ground)"
-      animation-duration=".5s"
-      aria-label="Loading Product specifications"
-    />
+  <div v-if="isLoading">
+    <Loader />
   </div>
   <div class="card-container" v-if="!isLoading && producers">
     <div v-for="(producer, idx) in producers.items" :key="idx">
@@ -50,7 +44,7 @@
   </Pagination>
 </template>
 <script setup lang="ts">
-import ProgressSpinner from 'primevue/progressspinner';
+import Loader from '@/components/Loader.vue';
 import Pagination from '@/components/Pagination.vue';
 import { onBeforeMount, ref, watch } from 'vue';
 import { BaseItems, Producer } from '@/types';

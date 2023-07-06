@@ -10,7 +10,6 @@
               params: {
                 producerId: unit.producer as number,
                 unitId: unit.id,
-                unitName: unit.name,
               },
             }"
           >
@@ -71,14 +70,14 @@
     class=""
     style="display: flex; flex-direction: row-reverse; justify-content: center"
   >
-    <Pagination
+    <!-- <Pagination
       class="mobile-pagination-prods mt-4"
       v-if="allUnitsData"
       :total-rows="allUnitsData.totalItems"
       :per-page="allUnitsData.pageSize"
     >
       ></Pagination
-    >
+    > -->
   </div>
 </template>
 
