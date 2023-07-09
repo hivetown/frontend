@@ -735,7 +735,7 @@ export default defineComponent({
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
-      quantity: 0, // Quantidade de produtos a comprar
+      quantity: 1, // Quantidade de produtos a comprar
       detailsTabIndex: DetailsView.DETAILS, // Tab selecionada
       lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
       // Dados da BD
@@ -746,7 +746,6 @@ export default defineComponent({
       productDetails: {} as ProductSpec,
       lowestPrice: 0,
       highestPrice: 0,
-      stock: 0,
       producers: 1 as Number,
 
       productCategories: {} as BaseItems<Category>,
@@ -777,10 +776,10 @@ export default defineComponent({
     },
     // Aumentar e diminuir a quantidade de produtos
     increment() {
-      this.quantity++;
+      if (this.quantity < this.defaultProduct.stock) this.quantity++;
     },
     decrement() {
-      if (this.quantity > 0) {
+      if (this.quantity > 1) {
         this.quantity--;
       }
     },
