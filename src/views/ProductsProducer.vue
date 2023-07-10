@@ -6,11 +6,16 @@
         <ManageProduct
           class="ml-2"
           method="create"
-          @product-managed="refreshWindow(1000)"
+          @product-managed="loadProducts"
         />
       </h2>
 
-      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
+      <Loader v-if="isLoading" />
+
+      <div
+        v-else
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4"
+      >
         <template
           v-if="products && products.items && products.items.length > 0"
         >
@@ -46,7 +51,7 @@
                     :default-production-date="new Date(product.productionDate)"
                     method="update"
                     :producer-product-id="product.id"
-                    @product-managed="refreshWindow(1000)"
+                    @product-managed="loadProducts"
                   />
 
                   <DeleteProduct
@@ -57,29 +62,21 @@
               </div>
             </b-card-text>
           </div>
-          <div
-            class="parent"
-            style="display: flex !important; justify-content: center !important"
-          >
-            <Pagination
-              class="mobile-pagination-prods"
-              style="
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-              "
-              v-if="products"
-              :total-rows="products.totalItems"
-              :per-page="products.pageSize"
-            >
-              ></Pagination
-            >
-          </div>
         </template>
         <div v-else>
           <p>Ainda não tem produtos registados.</p>
         </div>
       </div>
+
+      <Pagination
+        v-if="products"
+        :items="products"
+        :page="currentFilters.page"
+        :page-size="currentFilters.pageSize"
+        @page-change="onPageChange"
+      >
+        ></Pagination
+      >
     </div>
   </div>
 </template>
@@ -87,27 +84,42 @@
 <script lang="ts">
 import { BaseItems, ProducerProduct } from '@/types';
 import { fetchAllProducts } from '@/api/producerProducts';
-import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router';
 import Pagination from '../components/Pagination.vue';
-import { useStore } from '@/store';
+import Loader from '@/components/Loader.vue';
 import ManageProduct from '@/components/producer/products/ManageProduct.vue';
 import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
+import { PageState } from 'primevue/paginator';
 
 export default {
   components: {
     Pagination,
+    Loader,
     ManageProduct,
     DeleteProduct,
   },
   data() {
     return {
       products: {} as BaseItems<ProducerProduct>,
+      currentFilters: {
+        page: 1,
+        pageSize: 24,
+      },
+      isLoading: true,
     };
   },
-  methods: {
-    refreshWindow(timeout: number = 0) {
-      setTimeout(() => window.location.reload(), timeout);
+  watch: {
+    currentFilters: {
+      handler(newFilters) {
+        this.$router.push({
+          query: {
+            ...newFilters,
+          },
+        });
+      },
+      deep: true,
     },
+  },
+  methods: {
     deleteProduct(data: ProducerProduct) {
       const productIdx = this.products.items.findIndex((p) => p.id === data.id);
       if (productIdx === -1) return;
@@ -115,17 +127,43 @@ export default {
       this.products.items.splice(productIdx, 1);
       this.products.totalItems--;
     },
+    async loadProducts() {
+      try {
+        this.isLoading = true;
+
+        const producerId = this.$store.state.user!.user.id;
+
+        const allUnitProducts = await fetchAllProducts(
+          producerId,
+          this.currentFilters.page,
+          this.currentFilters.pageSize
+        );
+
+        this.products = allUnitProducts.data;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async onPageChange(page: Partial<PageState>) {
+      if (page.page) {
+        this.currentFilters.page = page.page + 1;
+      }
+
+      if (page.rows) {
+        this.currentFilters.pageSize = page.rows;
+      }
+
+      await this.loadProducts();
+    },
   },
   async mounted() {
     try {
-      const store = useStore();
-      const id = store.state.user!.user.id;
-      const route = useRoute() as RouteLocationNormalizedLoaded;
-      const page = parseInt(route.query.page as string) || 1;
-      const pageSize = parseInt(route.query.pageSize as string) || 24;
-      const allProductsData = await fetchAllProducts(id, page, pageSize);
-      const productsArray = allProductsData.data;
-      this.products = productsArray;
+      this.currentFilters.page =
+        parseInt(this.$route.query.page as string) || 1;
+      this.currentFilters.pageSize =
+        parseInt(this.$route.query.pageSize as string) || 24;
+
+      await this.loadProducts();
     } catch (error) {
       console.error(error);
     }
@@ -194,11 +232,6 @@ h2 {
 @media (max-width: 768px) {
   h2 {
     text-align: center;
-  }
-
-  .mobile-pagination-prods {
-    scale: 0.8 !important;
-    margin-left: -12vh;
   }
 }
 </style>

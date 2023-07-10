@@ -35,14 +35,11 @@
             :text="'Mostrar: ' + currentPageSize + ' items'"
             class="m-md-2"
           >
-            <b-dropdown-item @click="setCurrentPageSize(12)"
-              >12 items</b-dropdown-item
-            >
-            <b-dropdown-item @click="setCurrentPageSize(24)"
-              >24 items</b-dropdown-item
-            >
-            <b-dropdown-item @click="setCurrentPageSize(48)"
-              >48 items</b-dropdown-item
+            <b-dropdown-item
+              @click="setCurrentPageSize(size)"
+              v-for="size in pageSizes"
+              :key="size"
+              >{{ size }} items</b-dropdown-item
             >
           </b-dropdown>
         </div>
@@ -152,6 +149,7 @@ export default {
     return {
       order: 'Avaliação',
       currentPageSize: this.amount,
+      pageSizes: [12, 24, 48, 72, 96],
     };
   },
   emits: {

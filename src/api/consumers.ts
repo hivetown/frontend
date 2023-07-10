@@ -7,6 +7,7 @@ import {
     ReportEvolution,
     ReportBarChartProduct,
     CreateAddress,
+    BaseItems,
 } from '@/types';
 import { Cart } from '../types/interfaces';
 import { api } from './_base';
@@ -48,16 +49,14 @@ export const getConsumerAddresses = (id: number) =>
 export const postConsumer = (consumer: CreateConsumer) =>
     api.post('/consumers', consumer);
 
-export const getConsumersValues = (search?: string) =>
-    api.get<any>('/consumers', { params: { search } });
-
-export const getConsumers = (
-    page?: number,
-    pageSize?: number,
-    search?: string
-) =>
-    api.get('/consumers?includeAll=true', {
-        params: { page, pageSize, search },
+export const fetchAllConsumers = (params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    includeAll?: boolean;
+}) =>
+    api.get<BaseItems<Consumer>>('/consumers', {
+        params,
     });
 
 export const getConsumerId = (consumerId: number) =>
