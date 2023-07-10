@@ -11,7 +11,14 @@
               Não existem notificações não lidas.
               <br />
             </p>
-			<b-list-group v-else :key="notificacoesNovas.items && notificacoesNovas.items.length ? notificacoesNovas.items.length : 0">
+            <b-list-group
+              v-else
+              :key="
+                notificacoesNovas.items && notificacoesNovas.items.length
+                  ? notificacoesNovas.items.length
+                  : 0
+              "
+            >
               <template v-if="notificacoes">
                 <b-list-group-item
                   v-for="notificacao in notificacoesNovas.items"
@@ -61,7 +68,14 @@
             <p v-if="notificacoes?.totalItems == 0">
               Não existem notificações.
             </p>
-			<b-list-group v-else :key="notificacoes.items && notificacoes.items.length ? notificacoes.items.length : 0">
+            <b-list-group
+              v-else
+              :key="
+                notificacoes.items && notificacoes.items.length
+                  ? notificacoes.items.length
+                  : 0
+              "
+            >
               <template v-if="notificacoes">
                 <b-list-group-item
                   v-for="notificacao in notificacoes.items"
@@ -140,7 +154,7 @@ export default {
   },
   data() {
     return {
-		activeTab: 0, // Índice da aba ativa
+      activeTab: 0, // Índice da aba ativa
       notificacoes: { page: 1, pageSize: 24 } as BaseItems<Notification>,
       showPopup: true,
       quantidade: 0 as number,
@@ -158,7 +172,7 @@ export default {
     this.quantidade = this.notificacoesNovas.totalItems;
   },
   methods: {
-	activateFirstTab() {
+    activateFirstTab() {
       this.activeTab = 0;
       localStorage.setItem('lastActiveTab', this.activeTab.toString());
     },
@@ -212,24 +226,25 @@ export default {
         this.showPopup = true;
         this.quantidade = this.quantidade - 1;
         this.$emit('qtdNotificacoes', this.quantidade);
-		// Atualizar a lista de notificações após eliminar a notificação
-		//para apagar a notificaco apos o popup
-        if (this.activeTab===0) { //apaga das nao lidas
-			const index = this.notificacoesNovas.items.findIndex(
-			(item) => item.id === notification.id
-			);
-			if (index !== -1) {
-				this.notificacoesNovas.items.splice(index, 1);
-			}
-		}else{ //apaga so de todas
-			const index = this.notificacoes.items.findIndex(
-			(item) => item.id === notification.id
-			);
-			if (index !== -1) {
-				this.notificacoes.items.splice(index, 1);
-			}
-		}
-		
+        // Atualizar a lista de notificações após eliminar a notificação
+        //para apagar a notificaco apos o popup
+        if (this.activeTab === 0) {
+          //apaga das nao lidas
+          const index = this.notificacoesNovas.items.findIndex(
+            (item) => item.id === notification.id
+          );
+          if (index !== -1) {
+            this.notificacoesNovas.items.splice(index, 1);
+          }
+        } else {
+          //apaga so de todas
+          const index = this.notificacoes.items.findIndex(
+            (item) => item.id === notification.id
+          );
+          if (index !== -1) {
+            this.notificacoes.items.splice(index, 1);
+          }
+        }
       } else {
         Swal.fire('Cancelado', 'A notificação não foi eliminada.', 'info');
       }
