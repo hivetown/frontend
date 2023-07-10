@@ -674,8 +674,10 @@
 
 <script lang="ts">
 export enum DetailsView {
+  /* eslint-disable no-unused-vars */
   DETAILS = 0,
   PRODUCERS = 1,
+  /* eslint-enable no-unused-vars */
 }
 
 // Componentes
