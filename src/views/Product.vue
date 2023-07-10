@@ -112,7 +112,10 @@
         <!-- Quantidade -->
         <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
           <!-- Botão da quantidade -->
-          <div class="quantity-div d-flex justify-content-between rounded-pill">
+          <div
+            class="quantity-div d-flex justify-content-between rounded-pill"
+            v-if="$store.state.user?.user.type != 'PRODUCER'"
+          >
             <b-button class="mr-3 rounded-pill" @click="decrement"
               ><i class="bi bi-dash-lg"></i
             ></b-button>
@@ -129,33 +132,35 @@
 
         <!-- Botões compra -->
         <div class="d-flex gap-4 align-items-center" style="margin-top: 5vh">
-          <b-button
-            class="buy-btn rounded-pill"
-            @click="addItemToCart(defaultProduct.id)"
-          >
-            <router-link :to="'/carrinho'">
-              <a href="#" class="white-txt">Comprar agora</a>
-            </router-link></b-button
-          >
-
-          <div class="aux-btns d-flex align-items-center gap-1">
-            <button
+          <div v-if="$store.state.user?.user.type != 'PRODUCER'">
+            <b-button
+              class="buy-btn rounded-pill"
               @click="addItemToCart(defaultProduct.id)"
-              type="button"
-              class="btn btn-outline-secondary circle-btn"
-              v-b-tooltip.hover
-              title="Adicionar ao carrinho"
             >
-              <i class="bi bi-cart"></i>
-            </button>
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+              <router-link :to="'/carrinho'">
+                <a href="#" style="color: white">Comprar agora</a>
+              </router-link></b-button
+            >
+
+            <div class="aux-btns d-flex align-items-center gap-1">
+              <button
+                @click="addItemToCart(defaultProduct.id)"
+                type="button"
+                class="btn btn-outline-secondary circle-btn"
+                v-b-tooltip.hover
+                title="Adicionar ao carrinho"
+              >
+                <i class="bi bi-cart"></i>
+              </button>
+              <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Ver produto" >
                           <i class="bi bi-eye"></i>
                   </button> -->
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+              <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Comparar produto">
                           <i class="bi bi-arrow-left-right"></i>
                   </button> -->
+            </div>
           </div>
         </div>
       </div>
@@ -266,7 +271,10 @@
       <!-- Quantidade -->
       <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
         <!-- Botão da quantidade -->
-        <div class="quantity-div d-flex justify-content-between rounded-pill">
+        <div
+          class="quantity-div d-flex justify-content-between rounded-pill"
+          v-if="$store.state.user?.user.type != 'PRODUCER'"
+        >
           <b-button class="mr-3 rounded-pill" @click="decrement"
             ><i class="bi bi-dash-lg"></i
           ></b-button>
@@ -291,11 +299,14 @@
           @click="addItemToCart(defaultProduct.id)"
         >
           <router-link :to="'/carrinho'">
-            <a href="#" class="white-txt">Comprar agora</a>
+            <a href="#" style="color: white">Comprar agora </a>
           </router-link></b-button
         >
 
-        <div class="aux-btns d-flex align-items-center gap-1">
+        <div
+          class="aux-btns d-flex align-items-center gap-1"
+          v-if="$store.state.user?.user.type != 'PRODUCER'"
+        >
           <button
             @click="addItemToCart(defaultProduct.id)"
             type="button"
@@ -474,15 +485,17 @@
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
                     <div>
-                      <b-button
-                        class="buy-btn rounded-pill"
-                        style="scale: 0.85"
-                        @click="addItemToCart(defaultProduct.id)"
-                      >
-                        <router-link :to="'/carrinho'">
-                          <a href="#" class="white-txt">Comprar agora</a>
-                        </router-link></b-button
-                      >
+                      <div v-if="$store.state.user?.user.type != 'PRODUCER'">
+                        <b-button
+                          class="buy-btn rounded-pill"
+                          style="scale: 0.85"
+                          @click="addItemToCart(defaultProduct.id)"
+                        >
+                          <router-link :to="'/carrinho'">
+                            <a href="#" style="color: white">Comprar agora</a>
+                          </router-link></b-button
+                        >
+                      </div>
                       <b-button
                         v-if="
                           selectedUnit &&
@@ -507,16 +520,18 @@
                             : 'Mapa'
                         }}
                       </b-button>
-                      <button
-                        @click="addItemToCart(producerProduct.id)"
-                        type="button"
-                        style="scale: 1.1"
-                        class="btn btn-outline-secondary circle-btn"
-                        v-b-tooltip.hover
-                        title="Adicionar ao carrinho"
-                      >
-                        <i class="bi bi-cart"></i>
-                      </button>
+                      <div v-if="$store.state.user?.user.type != 'PRODUCER'">
+                        <button
+                          @click="addItemToCart(producerProduct.id)"
+                          type="button"
+                          style="scale: 1.1"
+                          class="btn btn-outline-secondary circle-btn"
+                          v-b-tooltip.hover
+                          title="Adicionar ao carrinho"
+                        >
+                          <i class="bi bi-cart"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -703,7 +718,7 @@
                         @click="addItemToCart(defaultProduct.id)"
                       >
                         <router-link :to="'/carrinho'">
-                          <a href="#" class="white-txt">Comprar agora</a>
+                          <a href="#" style="color: white">Comprar agora</a>
                         </router-link></b-button
                       >
                       <b-button

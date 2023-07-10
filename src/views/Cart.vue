@@ -20,7 +20,7 @@
         title="Confirmação de Remoção"
         hide-footer
       >
-        <p>Tem a certeza que pretende TODOS os itens do carrinho?</p>
+        <p>Tem a certeza que pretende remover TODOS os itens do carrinho?</p>
         <div class="d-flex justify-content-end">
           <button class="btn btn-secondary mr-2" @click="cancelDeletion">
             Cancelar
