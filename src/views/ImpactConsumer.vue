@@ -65,7 +65,34 @@
           <!-- Escolher categoria -->
           <div>
             <p class="mt-4">Escolha a categoria a visualizar:</p>
-            <CategoryFilter :categories="allCategories"></CategoryFilter>
+            <div v-if="!categoriesTreeNodes.length">
+              Sem categorias disponíveis
+            </div>
+            <div v-else>
+              <Tree
+                class="cats-container"
+                scroll-height="600px"
+                :value="categoriesTreeNodes"
+                @node-expand="expandCategory"
+                :loading="loadingCategories"
+                selection-mode="single"
+                @node-select="nodeSelect"
+              >
+                <template #default="slotProps">
+                  <div class="d-flex">
+                    <b-form-checkbox
+                      :checked="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                      :disabled="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                    />
+                    {{ slotProps.node.label }}
+                  </div>
+                </template>
+              </Tree>
+            </div>
           </div>
           <div class="mt-4">
             <!-- Botão -->
@@ -153,7 +180,36 @@
                 <!-- TODO - tornar funcional -->
                 <div>
                   <p class="mt-4">Escolha a categoria a visualizar:</p>
-                  <CategoryFilter :categories="allCategories"></CategoryFilter>
+                  <div v-if="!categoriesTreeNodes.length">
+                    Sem categorias disponíveis
+                  </div>
+                  <div v-else>
+                    <Tree
+                      class="cats-container"
+                      scroll-height="600px"
+                      :value="categoriesTreeNodes"
+                      @node-expand="expandCategory"
+                      :loading="loadingCategories"
+                      selection-mode="single"
+                      @node-select="nodeSelect"
+                    >
+                      <template #default="slotProps">
+                        <div class="d-flex">
+                          <b-form-checkbox
+                            :checked="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                            :disabled="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                          />
+                          {{ slotProps.node.label }}
+                        </div>
+                      </template>
+                    </Tree>
+                  </div>
                 </div>
                 <div class="mt-4 btn-report-mobile">
                   <!-- Botão gerar gráficos -->
@@ -445,10 +501,10 @@ import InlineMessage from 'primevue/inlinemessage';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
-import CategoryFilter from '@/components/CategoryFilter.vue';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
 import Skeleton from 'primevue/skeleton';
+import Tree, { TreeNode } from 'primevue/tree';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -468,6 +524,20 @@ import {
   fetchAdminReportClients,
 } from '@/api';
 
+interface CategoryTreeNode extends TreeNode {
+  parent?: CategoryTreeNode;
+}
+
+const mapCategoryToTreeNode = (
+  category: Category,
+  parent?: CategoryTreeNode
+): CategoryTreeNode => ({
+  key: category.id.toString(),
+  label: category.name,
+  leaf: false,
+  parent,
+});
+
 export default defineComponent({
   data() {
     return {
@@ -483,7 +553,9 @@ export default defineComponent({
       userLoggedNImage: {} as Image,
 
       // Categorias
-      allCategories: [] as Category[],
+      loadingCategories: true,
+      selectedCategoryTreeNode: null as CategoryTreeNode | null,
+      categoriesTreeNodes: [] as CategoryTreeNode[],
 
       // Datas
       startDate: 'Indefinido' as string,
@@ -494,7 +566,6 @@ export default defineComponent({
       reportMap: {} as ReportMap[],
       reportEvolution: {} as Record<string, ReportEvolution>, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
-      selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
 
       // Gráfico de linhas
@@ -572,18 +643,14 @@ export default defineComponent({
       }
     }
 
-    // TODO - alterar a forma como as categorias são buscadas
-    // Ir buscar as categorias (só traz as 24 de uma página)
-    const allCategoriesData = await fetchAllCategories();
-    const allCategories = allCategoriesData.data.items;
-    this.allCategories = allCategories;
+    await this.loadCategories();
   },
   methods: {
     generateGraphs() {
       this.graficosGerados = true;
       // Ir buscar os dados dos gráficos
-      // TODO - alerar o id
-      if (this.selectedCategory != 0) {
+      if (this.selectedCategoryTreeNode) {
+        console.log(this.selectedCategoryTreeNode);
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
       } else {
@@ -615,30 +682,18 @@ export default defineComponent({
       raio: number,
       view: string
     ) {
-      // Ir buscar os dados dos cards
-      const reportCards = await fetchAdminReportCards(
-        dataInicio,
-        dataFim,
-        raio
-      );
+      const [reportCards, reportMap, reportEvolution] = await Promise.all([
+        // Ir buscar os dados dos cards
+        fetchAdminReportCards(dataInicio, dataFim, raio),
+        // Ir buscar os dados do mapa
+        fetchAdminReportMap(dataInicio, dataFim, raio),
+        // Ir buscar os dados da evolução (gráfico de linhas)
+        fetchAdminReportEvolution(dataInicio, dataFim, raio, view),
+      ]);
       this.reportCards = reportCards.data;
-      //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
-
-      // Ir buscar os dados do mapa
-      const reportMap = await fetchAdminReportMap(dataInicio, dataFim, raio);
       this.reportMap = reportMap.data;
-      //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
-
-      // Ir buscar os dados da evolução (gráfico de linhas)
-      const reportEvolution = await fetchAdminReportEvolution(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
       this.reportEvolution = reportEvolution.data;
       this.updateGraphData(view, 'line');
-      console.log(this.reportEvolution);
 
       // Ir buscar os dados do gráfico de barras
       // Produtos
@@ -771,6 +826,117 @@ export default defineComponent({
         };
       }
     },
+    async fetchCategories({
+      parentId,
+      loadings,
+    }: {
+      parentId?: number;
+      loadings?: boolean;
+    } = {}) {
+      if (loadings === undefined) loadings = true;
+      if (loadings) this.loadingCategories = true;
+
+      const categories = (
+        await fetchAllCategories({
+          pageSize: 100,
+          parentId: parentId,
+        })
+      ).data;
+
+      if (loadings) this.loadingCategories = false;
+      return categories;
+    },
+    async loadCategories() {
+      const categoriesPromise = this.fetchCategories();
+
+      const tempCategoriesTree: CategoryTreeNode[] = [];
+      if (this.selectedCategoryTreeNode) {
+        // TODO: see comment below
+        /**
+         * This does not completely work:
+         * because we pre-set some categories, and since they will be expanded,
+         * there will be no children fetching of those categories - they will be incomplete
+         *
+         * Because of this, I decided to fetch the children of each category in the tree (that is a parent of the selected one)
+         */
+
+        // Create a queue of all the parents of the selected category
+        // [current, ...parents, rootParent]
+        let currentNodeRef: CategoryTreeNode = {
+          ...this.selectedCategoryTreeNode,
+        };
+        const queue: CategoryTreeNode[] = [];
+        while (currentNodeRef.parent) {
+          queue.push(currentNodeRef.parent);
+          currentNodeRef = currentNodeRef.parent;
+        }
+
+        // Add the parents to the tree
+        if (queue.length) {
+          // TODO perf: don't fetch if already fetched
+          const queueCategoriesData = await Promise.all(
+            queue.map((category, idx) =>
+              this.fetchCategories({
+                parentId: Number(category.key),
+                loadings: false,
+              }).then((r) =>
+                r.items.filter(
+                  (c) => idx === 0 || c.id !== Number(queue[idx - 1].key)
+                )
+              )
+            )
+          );
+
+          // Add the root parent
+          tempCategoriesTree.push(queue[queue.length - 1]);
+          let treeNodeRef = tempCategoriesTree[0];
+          // From the last (root) to the second (parent of selected)
+          for (let i = queueCategoriesData.length - 2; i >= 0; i--) {
+            const currentNode = queue[i];
+            const parentNodeData = queueCategoriesData[i + 1].map((c) =>
+              mapCategoryToTreeNode(c, treeNodeRef)
+            );
+
+            // Fetch the children of the parent except the current node, but add it from memory
+            treeNodeRef.children = [currentNode, ...parentNodeData];
+
+            treeNodeRef = currentNode;
+          }
+        }
+      }
+
+      let categories = (await categoriesPromise).items.map((c) =>
+        mapCategoryToTreeNode(c)
+      );
+      if (tempCategoriesTree.length) {
+        // != is on purpose
+        categories = categories.filter(
+          (c) => c.id != tempCategoriesTree[0].key
+        );
+      }
+
+      this.categoriesTreeNodes = [...tempCategoriesTree, ...categories];
+    },
+    async expandCategory(node: CategoryTreeNode) {
+      if (!node.children) {
+        this.loadingCategories = true;
+
+        // Fetch category
+        const categories = await this.fetchCategories({
+          parentId: Number(node.key),
+        });
+
+        // TODO pagination/lazyloading
+        node.children = categories.items.map((category) =>
+          mapCategoryToTreeNode(category, node)
+        );
+
+        this.loadingCategories = false;
+      }
+    },
+    async nodeSelect(node: CategoryTreeNode) {
+      this.selectedCategoryTreeNode = node;
+    },
   },
   components: {
     DatePicker,
@@ -781,10 +947,10 @@ export default defineComponent({
     DropdownCustom,
     InlineMessage,
     ButtonPV,
-    CategoryFilter,
     Accordion,
     AccordionTab,
     Skeleton,
+    Tree,
   },
 });
 </script>

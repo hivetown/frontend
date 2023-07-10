@@ -243,7 +243,36 @@
                 <!-- TODO - tornar funcional -->
                 <div>
                   <p class="mt-4">Escolha a categoria a visualizar:</p>
-                  <!-- <CategoryFilter :categories="allCategories"></CategoryFilter> -->
+                  <div v-if="!categoriesTreeNodes.length">
+                    Sem categorias disponíveis
+                  </div>
+                  <div v-else>
+                    <Tree
+                      class="cats-container"
+                      scroll-height="600px"
+                      :value="categoriesTreeNodes"
+                      @node-expand="expandCategory"
+                      :loading="loadingCategories"
+                      selection-mode="single"
+                      @node-select="nodeSelect"
+                    >
+                      <template #default="slotProps">
+                        <div class="d-flex">
+                          <b-form-checkbox
+                            :checked="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                            :disabled="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                          />
+                          {{ slotProps.node.label }}
+                        </div>
+                      </template>
+                    </Tree>
+                  </div>
                 </div>
                 <div class="mt-4 btn-report-mobile">
                   <!-- Botão gerar gráficos -->
@@ -766,13 +795,7 @@ export default defineComponent({
       raio: number,
       view: string
     ) {
-      const [
-        reportCards,
-        reportMap,
-        reportEvolution,
-        reportBarChart,
-        producerClients,
-      ] = await Promise.all([
+      const [reportCards, reportMap, reportEvolution] = await Promise.all([
         // Ir buscar os dados dos cards
         fetchReportCards(this.userLoggedId, dataInicio, dataFim, raio),
         // Ir buscar os dados do mapa
@@ -785,27 +808,32 @@ export default defineComponent({
           raio,
           view
         ),
-        // Ir buscar os dados do gráfico de barras
-        // Produtos
-        fetchReportProducts(this.userLoggedId, dataInicio, dataFim, raio, view),
-        // Clientes
-        fetchProducerReportClients(
-          this.userLoggedId,
-          dataInicio,
-          dataFim,
-          raio,
-          view
-        ),
       ]);
-
       this.reportCards = reportCards.data;
       this.reportMap = reportMap.data;
       this.reportEvolution = reportEvolution.data;
       this.updateGraphData(view, 'line');
 
+      // Ir buscar os dados do gráfico de barras
+      // Produtos
+      const reportBarChart = await fetchReportProducts(
+        this.userLoggedId,
+        dataInicio,
+        dataFim,
+        raio,
+        view
+      );
       this.reportBarChart = reportBarChart.data;
       this.updateGraphData(view, 'bar');
 
+      // Clientes
+      const producerClients = await fetchProducerReportClients(
+        this.userLoggedId,
+        dataInicio,
+        dataFim,
+        raio,
+        view
+      );
       this.reportProducerClients = producerClients.data;
       this.updateGraphData(view, 'bar');
     },

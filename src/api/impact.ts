@@ -33,7 +33,7 @@ export const fetchReportMap = (
     raio?: number
 ) =>
     api.get<ReportMap[]>(
-        `/reports/admin/map?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
+        `/reports/${id}/map?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
     );
 
 export const fetchAdminReportMap = (
