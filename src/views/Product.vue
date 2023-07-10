@@ -1,4 +1,13 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <div>
     <!-- Caminho -->
     <PathComponent :path-list="path"></PathComponent>
@@ -125,7 +134,7 @@
             @click="addItemToCart(defaultProduct.id)"
           >
             <router-link :to="'/carrinho'">
-              <a href="#" class="grey-txt">Comprar agora</a>
+              <a href="#" class="white-txt">Comprar agora</a>
             </router-link></b-button
           >
 
@@ -282,7 +291,7 @@
           @click="addItemToCart(defaultProduct.id)"
         >
           <router-link :to="'/carrinho'">
-            <a href="#" class="grey-txt">Comprar agora</a>
+            <a href="#" class="white-txt">Comprar agora</a>
           </router-link></b-button
         >
 
@@ -465,8 +474,14 @@
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
                     <div>
-                      <b-button class="buy-btn rounded-pill" style="scale: 0.85"
-                        >Comprar agora</b-button
+                      <b-button
+                        class="buy-btn rounded-pill"
+                        style="scale: 0.85"
+                        @click="addItemToCart(defaultProduct.id)"
+                      >
+                        <router-link :to="'/carrinho'">
+                          <a href="#" class="white-txt">Comprar agora</a>
+                        </router-link></b-button
                       >
                       <b-button
                         v-if="
@@ -682,8 +697,14 @@
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
                     <div style="margin-left: -3vh">
-                      <b-button class="buy-btn rounded-pill" style="scale: 0.85"
-                        >Comprar agora</b-button
+                      <b-button
+                        class="buy-btn rounded-pill"
+                        style="scale: 0.85"
+                        @click="addItemToCart(defaultProduct.id)"
+                      >
+                        <router-link :to="'/carrinho'">
+                          <a href="#" class="white-txt">Comprar agora</a>
+                        </router-link></b-button
                       >
                       <b-button
                         v-if="
@@ -956,6 +977,9 @@ import {
 } from '@/types';
 import { computed, defineComponent, PropType } from 'vue';
 import { CartNAU } from '@/utils/cartItemNAU';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -1010,6 +1034,9 @@ export default defineComponent({
 
       // PARA USERS NÃO AUTENTIFICADOS
       cartNAU: new CartNAU(),
+
+      //Notificação de adicionar items ao carrinho
+      toast: useToast(),
     };
   },
   methods: {
@@ -1017,24 +1044,41 @@ export default defineComponent({
 
     async addItemToCart(idToAdd: number) {
       const userLoggedId = computed(() => this.$store.state.user);
-      if (userLoggedId.value) {
-        await addCartItem(
-          userLoggedId.value['user']['id'],
-          idToAdd,
-          this.quantity
-        );
-      } else {
-        const cartNAUInstance = new CartNAU();
-        this.cartNAU = cartNAUInstance;
-        for (let i = 0; i < this.producerProducts.items.length; i++) {
-          if (this.producerProducts.items[i].id === idToAdd) {
-            await this.cartNAU.addItemByItem(this.producerProducts.items[i]);
-            await this.cartNAU.changeQuantity(
-              this.producerProducts.items[i],
-              this.quantity
-            );
+      console.log(this.defaultProduct);
+      if (this.defaultProduct.stock >= this.quantity) {
+        if (userLoggedId.value) {
+          await addCartItem(
+            userLoggedId.value['user']['id'],
+            idToAdd,
+            this.quantity
+          );
+        } else {
+          const cartNAUInstance = new CartNAU();
+          this.cartNAU = cartNAUInstance;
+          for (let i = 0; i < this.producerProducts.items.length; i++) {
+            if (this.producerProducts.items[i].id === idToAdd) {
+              await this.cartNAU.addItemByItem(this.producerProducts.items[i]);
+              await this.cartNAU.changeQuantity(
+                this.producerProducts.items[i],
+                this.quantity
+              );
+            }
           }
         }
+        this.toast.add({
+          severity: 'success',
+          summary: 'Adicionado com sucesso',
+          detail:
+            'O produto adicionado ao seu carrinho com sucesso, clique <a href="/carrinho/">aqui</a> para ver o seu carrinho.',
+          life: 10000,
+        });
+      } else {
+        this.toast.add({
+          severity: 'error',
+          summary: 'Sem stock suficente',
+          detail: `Você selecionou ${this.quantity} itens mas de momento só existem ${this.defaultProduct.stock} em stock, porfavor selecione um valor igual ou inferior e este.`,
+          life: 10000,
+        });
       }
     },
 
@@ -1141,6 +1185,6 @@ export default defineComponent({
     console.log(this.fields);
     this.productCategoriesFields = this.fields;
   },
-  components: { PathComponent, PageBack, Maps },
+  components: { PathComponent, PageBack, Maps, Toast },
 });
 </script>
