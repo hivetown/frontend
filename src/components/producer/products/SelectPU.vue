@@ -35,7 +35,7 @@
               filter
               option-label="name"
               placeholder="Altere a Unidade de Produção"
-			  @item-select="productionUnit.changed"
+              @item-select="productionUnit.changed"
             >
               <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex align-items-center">
@@ -84,12 +84,7 @@
 </template>
 
 <script lang="ts">
-import {
-  fetchProducerProductionUnits,
-  createProducerProduct,
-  updateProducerProduct,
-  updateProductProductionUnit,
-} from '@/api';
+import { fetchProducerProductionUnits, updateProducerProduct } from '@/api';
 import { ComputedRef, PropType, computed, onBeforeMount, ref, Ref } from 'vue';
 import {
   BaseItems,
@@ -222,7 +217,7 @@ export default {
     // Search the products
     const searchProductionUnits = async () => {
       productionUnit.items.value = (
-        await fetchProducerProductionUnits(producerId, )
+        await fetchProducerProductionUnits(producerId)
       ).data;
 
       const lengthWanted = productionUnit.items.value.items.length;
