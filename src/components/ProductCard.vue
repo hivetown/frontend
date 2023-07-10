@@ -144,8 +144,8 @@
 </style>
 <script setup lang="ts">
 import { fetchProductCategories } from '@/api';
-import { Category, ProductSpec, Image } from '@/types';
-import { PropType, computed } from 'vue';
+import { Category, ProductSpec } from '@/types';
+import { PropType } from 'vue';
 </script>
 
 <script lang="ts">
