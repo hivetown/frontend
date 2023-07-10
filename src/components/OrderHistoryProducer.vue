@@ -1,111 +1,113 @@
 <template>
-	<div v-if="(orders?.items?.length || 0) < 1">
-  <h3 class="semencoemndas" >
-    <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
-    encomendas.
-  </h3>
-</div>
-<div v-else >
-  <div class="table-container" style="overflow: auto">
-    <table v-if="!!orders?.items" style="border: 2px" class="table">
-      <thead>
-        <tr>
-          <th>
-            <h4>Código</h4>
-          </th>
-          <th><h4>Morada de entrega</h4></th>
-          <th><h4>Estado da encomenda</h4></th>
-          <th><h4>Data de encomenda</h4></th>
-          <th><h4>Ver detalhes</h4></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="order in orders.items" :key="order.id">
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              class="texto"
-              style="text-decoration: none; color: black"
-              >{{ order.id }}</router-link
-            >
-          </td>
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.street }}, nº{{
-                  order.shippingAddress.number
-                }}, andar {{ order.shippingAddress.floor }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.zipCode }},
-                {{ order.shippingAddress.city }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.latitude }},
-                {{ order.shippingAddress.longitude }}
-              </p></router-link
-            >
-          </td>
-          <td>
-            <i
-              v-if="orderStatusTranslation(order.status) === 'Entregue'"
-              class="bi bi-check-all"
-            ></i>
-            <i
-              v-if="orderStatusTranslation(order.status) === 'Em processamento'"
-              class="bi bi-arrow-repeat mr-2"
-            ></i>
-            <i
-              v-if="orderStatusTranslation(order.status) === 'Pago'"
-              class="bi bi-currency-euro"
-            ></i>
-            <i
-              v-if="orderStatusTranslation(order.status) === 'Cancelada'"
-              class="bi bi-x"
-              style="margin-top: -0.5vh"
-            ></i>
-            <i
-              v-if="orderStatusTranslation(order.status) === 'Em transporte'"
-              class="bi bi-truck mr-2"
-            ></i>
-
-            {{ orderStatusTranslation(order.status) }}
-          </td>
-          <td>
-            {{ order.orderDate.substring(0, 10) }}
-            {{ order.orderDate.substring(11, 19) }}
-          </td>
-          <td>
-            <router-link :to="'/encomenda/id' + order.id">
-              <BButton class="botao2" variant="outline-primary"
-                >Ver detalhes</BButton
-              >
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="(orders?.items?.length || 0) < 1">
+    <h3 class="semencoemndas">
+      <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+      encomendas.
+    </h3>
   </div>
-  <Pagination
-    :total-rows="totalItems"
-    :per-page="pageSize"
-    :current-page="page"
-    @page-changed="onPageChanged"
-  >
-  </Pagination>
-</div>
+  <div v-else>
+    <div class="table-container" style="overflow: auto">
+      <table v-if="!!orders?.items" style="border: 2px" class="table">
+        <thead>
+          <tr>
+            <th>
+              <h4>Código</h4>
+            </th>
+            <th><h4>Morada de entrega</h4></th>
+            <th><h4>Estado da encomenda</h4></th>
+            <th><h4>Data de encomenda</h4></th>
+            <th><h4>Ver detalhes</h4></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="order in orders.items" :key="order.id">
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                class="texto"
+                style="text-decoration: none; color: black"
+                >{{ order.id }}</router-link
+              >
+            </td>
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.street }}, nº{{
+                    order.shippingAddress.number
+                  }}, andar {{ order.shippingAddress.floor }}
+                </p></router-link
+              >
+
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.zipCode }},
+                  {{ order.shippingAddress.city }}
+                </p></router-link
+              >
+
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.latitude }},
+                  {{ order.shippingAddress.longitude }}
+                </p></router-link
+              >
+            </td>
+            <td>
+              <i
+                v-if="orderStatusTranslation(order.status) === 'Entregue'"
+                class="bi bi-check-all"
+              ></i>
+              <i
+                v-if="
+                  orderStatusTranslation(order.status) === 'Em processamento'
+                "
+                class="bi bi-arrow-repeat mr-2"
+              ></i>
+              <i
+                v-if="orderStatusTranslation(order.status) === 'Pago'"
+                class="bi bi-currency-euro"
+              ></i>
+              <i
+                v-if="orderStatusTranslation(order.status) === 'Cancelada'"
+                class="bi bi-x"
+                style="margin-top: -0.5vh"
+              ></i>
+              <i
+                v-if="orderStatusTranslation(order.status) === 'Em transporte'"
+                class="bi bi-truck mr-2"
+              ></i>
+
+              {{ orderStatusTranslation(order.status) }}
+            </td>
+            <td>
+              {{ order.orderDate.substring(0, 10) }}
+              {{ order.orderDate.substring(11, 19) }}
+            </td>
+            <td>
+              <router-link :to="'/encomenda/id' + order.id">
+                <BButton class="botao2" variant="outline-primary"
+                  >Ver detalhes</BButton
+                >
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <Pagination
+      :total-rows="totalItems"
+      :per-page="pageSize"
+      :current-page="page"
+      @page-changed="onPageChanged"
+    >
+    </Pagination>
+  </div>
 </template>
 
 <script setup lang="ts">
