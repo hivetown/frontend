@@ -10,3 +10,30 @@
 .nav-link.active{
 	color: var(--primary-color) !important;
 }
+
+.dropdown-menu{
+	--bs-dropdown-link-active-bg: var(--primary-color) !important;
+}
+
+.form-check-input:checked{
+	background-color: #4D774E !important;
+	border-color: #4D774E !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page{
+	color: #000 !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight{
+	color: white !important;
+}
+
+/* Setas para mudar de página */
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last{
+	color: #000 !important;
+}
+
+.p-link:disabled{
+	color: #3e3e3e !important;
+	background-color: rgb(205, 205, 205) !important;
+}

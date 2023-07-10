@@ -165,7 +165,7 @@
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item to="/account">Conta</b-dropdown-item>
               <b-dropdown-item v-if="permissions" to="/admin?page=1"
                 >Área de admin</b-dropdown-item
               >
