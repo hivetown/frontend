@@ -142,25 +142,23 @@
               </router-link></b-button
             >
 
-            <div class="aux-btns d-flex align-items-center gap-1">
-              <button
-                @click="addItemToCart(defaultProduct.id)"
-                type="button"
-                class="btn btn-outline-secondary circle-btn"
-                v-b-tooltip.hover
-                title="Adicionar ao carrinho"
-              >
-                <i class="bi bi-cart"></i>
-              </button>
-              <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+            <button
+              @click="addItemToCart(defaultProduct.id)"
+              type="button"
+              class="btn btn-outline-secondary circle-btn"
+              v-b-tooltip.hover
+              title="Adicionar ao carrinho"
+            >
+              <i class="bi bi-cart"></i>
+            </button>
+            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Ver produto" >
                           <i class="bi bi-eye"></i>
                   </button> -->
-              <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
                           v-b-tooltip.hover title="Comparar produto">
                           <i class="bi bi-arrow-left-right"></i>
                   </button> -->
-            </div>
           </div>
         </div>
       </div>
@@ -269,12 +267,13 @@
       </div>
 
       <!-- Quantidade -->
-      <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
+      <div
+        class="d-flex align-items-center gap-4"
+        style="margin-top: 4%"
+        v-if="$store.state.user?.user.type != 'PRODUCER'"
+      >
         <!-- Botão da quantidade -->
-        <div
-          class="quantity-div d-flex justify-content-between rounded-pill"
-          v-if="$store.state.user?.user.type != 'PRODUCER'"
-        >
+        <div class="quantity-div d-flex justify-content-between rounded-pill">
           <b-button class="mr-3 rounded-pill" @click="decrement"
             ><i class="bi bi-dash-lg"></i
           ></b-button>
@@ -293,6 +292,7 @@
       <div
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
+        v-if="$store.state.user?.user.type != 'PRODUCER'"
       >
         <b-button
           class="buy-btn rounded-pill"
@@ -303,10 +303,7 @@
           </router-link></b-button
         >
 
-        <div
-          class="aux-btns d-flex align-items-center gap-1"
-          v-if="$store.state.user?.user.type != 'PRODUCER'"
-        >
+        <div class="aux-btns d-flex align-items-center gap-1">
           <button
             @click="addItemToCart(defaultProduct.id)"
             type="button"
@@ -495,32 +492,32 @@
                             <a href="#" style="color: white">Comprar agora</a>
                           </router-link></b-button
                         >
-                      </div>
-                      <b-button
-                        v-if="
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit?.id
-                        "
-                        class="buy-btn rounded-pill close-map-btn"
-                        style="scale: 0.85"
-                        @click="selectedUnit = null"
-                      >
-                        Fechar Mapa
-                      </b-button>
-                      <b-button
-                        v-else
-                        class="buy-btn rounded-pill map-btn"
-                        style="scale: 0.85"
-                        @click="selectProducer(producerProduct.productionUnit)"
-                      >
-                        {{
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit
-                            ? 'Fechar Mapa'
-                            : 'Mapa'
-                        }}
-                      </b-button>
-                      <div v-if="$store.state.user?.user.type != 'PRODUCER'">
+                        <b-button
+                          v-if="
+                            selectedUnit &&
+                            selectedUnit === producerProduct.productionUnit?.id
+                          "
+                          class="buy-btn rounded-pill close-map-btn"
+                          style="scale: 0.85"
+                          @click="selectedUnit = null"
+                        >
+                          Fechar Mapa
+                        </b-button>
+                        <b-button
+                          v-else
+                          class="buy-btn rounded-pill map-btn"
+                          style="scale: 0.85"
+                          @click="
+                            selectProducer(producerProduct.productionUnit)
+                          "
+                        >
+                          {{
+                            selectedUnit &&
+                            selectedUnit === producerProduct.productionUnit
+                              ? 'Fechar Mapa'
+                              : 'Mapa'
+                          }}
+                        </b-button>
                         <button
                           @click="addItemToCart(producerProduct.id)"
                           type="button"
@@ -711,7 +708,10 @@
                     <span>
                       <h5>{{ producerProduct.currentPrice }}€</h5>
                     </span>
-                    <div style="margin-left: -3vh">
+                    <div
+                      style="margin-left: -3vh"
+                      v-if="$store.state.user?.user.type != 'PRODUCER'"
+                    >
                       <b-button
                         class="buy-btn rounded-pill"
                         style="scale: 0.85"
@@ -1060,38 +1060,49 @@ export default defineComponent({
     async addItemToCart(idToAdd: number) {
       const userLoggedId = computed(() => this.$store.state.user);
       console.log(this.defaultProduct);
-      if (this.defaultProduct.stock >= this.quantity) {
-        if (userLoggedId.value) {
-          await addCartItem(
-            userLoggedId.value['user']['id'],
-            idToAdd,
-            this.quantity
-          );
-        } else {
-          const cartNAUInstance = new CartNAU();
-          this.cartNAU = cartNAUInstance;
-          for (let i = 0; i < this.producerProducts.items.length; i++) {
-            if (this.producerProducts.items[i].id === idToAdd) {
-              await this.cartNAU.addItemByItem(this.producerProducts.items[i]);
-              await this.cartNAU.changeQuantity(
-                this.producerProducts.items[i],
-                this.quantity
-              );
+      if (this.quantity >= 1) {
+        if (this.defaultProduct.stock >= this.quantity) {
+          if (userLoggedId.value) {
+            await addCartItem(
+              userLoggedId.value['user']['id'],
+              idToAdd,
+              this.quantity
+            );
+          } else {
+            const cartNAUInstance = new CartNAU();
+            this.cartNAU = cartNAUInstance;
+            for (let i = 0; i < this.producerProducts.items.length; i++) {
+              if (this.producerProducts.items[i].id === idToAdd) {
+                await this.cartNAU.addItemByItem(
+                  this.producerProducts.items[i]
+                );
+                await this.cartNAU.changeQuantity(
+                  this.producerProducts.items[i],
+                  this.quantity
+                );
+              }
             }
           }
+          this.toast.add({
+            severity: 'success',
+            summary: 'Adicionado com sucesso',
+            detail:
+              'O produto adicionado ao seu carrinho com sucesso, clique <a href="/carrinho/">aqui</a> para ver o seu carrinho.',
+            life: 10000,
+          });
+        } else {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Sem stock suficente',
+            detail: `Você selecionou ${this.quantity} itens mas de momento só existem ${this.defaultProduct.stock} em stock, porfavor selecione um valor igual ou inferior e este.`,
+            life: 10000,
+          });
         }
-        this.toast.add({
-          severity: 'success',
-          summary: 'Adicionado com sucesso',
-          detail:
-            'O produto adicionado ao seu carrinho com sucesso, clique <a href="/carrinho/">aqui</a> para ver o seu carrinho.',
-          life: 10000,
-        });
       } else {
         this.toast.add({
           severity: 'error',
-          summary: 'Sem stock suficente',
-          detail: `Você selecionou ${this.quantity} itens mas de momento só existem ${this.defaultProduct.stock} em stock, porfavor selecione um valor igual ou inferior e este.`,
+          summary: 'Quantidade de produto inválida',
+          detail: 'Selecione uma quantidade válida (acima ou igual a 1).',
           life: 10000,
         });
       }
