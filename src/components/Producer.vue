@@ -1,9 +1,9 @@
 <template>
-  <h3>Produtores</h3>
+  <!-- <h3>Produtores</h3> -->
   <div v-if="isLoading">
     <Loader />
   </div>
-  <div class="card-container" v-if="!isLoading && producers">
+  <div class="card-container mt-5" v-if="!isLoading && producers">
     <div v-for="(producer, idx) in producers.items" :key="idx">
       <b-card
         id="b-card"
@@ -112,7 +112,9 @@ const routeTo = (path: string) => {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  margin: -10px;
+  /* margin: -10px; */
+  /* background-color: green; */
+  justify-content: center;
 }
 
 .card-container > div {
@@ -121,5 +123,9 @@ const routeTo = (path: string) => {
 #b-card {
   background-color: rgb(239, 243, 247);
   height: 400px;
+}
+
+.card-text {
+  font-size: 0.8em !important;
 }
 </style>

@@ -1,36 +1,38 @@
 <template>
-  <h3>Consumidores</h3>
-  <div class="loading-spinner" v-if="isLoading">
-    <Loader />
-  </div>
-  <div class="card-container" v-if="!isLoading && consumers">
-    <div v-for="(consumer, idx) in consumers.items" :key="idx">
-      <b-card
-        id="b-card"
-        :title="consumer.user.name"
-        :img-src="
-          consumer.user.image ? consumer.user.image.url : '/semimagem.png'
-        "
-        :img-alt="
-          consumer.user.image
-            ? consumer.user.image.alt
-            : `Imagem de ${consumer.user.name}`
-        "
-        img-top
-        tag="article"
-        style="max-width: 17rem"
-        class="mb-2"
-      >
-        <b-card-text>
-          {{ consumer.user.email }} <br />
-          <p v-if="consumer.user.type === 'CONSUMER'">Consumidor</p>
-          <p v-else>{{ consumer.user.type }}</p>
-          <p v-if="consumer.deletedAt != null">Conta desativa</p>
-        </b-card-text>
-        <PrimeButton @click="routeTo(`/admin/consumer/${consumer.user.id}`)"
-          >Ver perfil</PrimeButton
+  <div>
+    <!-- <h3 class="mt-5">Consumidores</h3> -->
+    <div class="loading-spinner" v-if="isLoading">
+      <Loader />
+    </div>
+    <div class="card-container mt-5" v-if="!isLoading && consumers">
+      <div v-for="(consumer, idx) in consumers.items" :key="idx">
+        <b-card
+          id="b-card"
+          :title="consumer.user.name"
+          :img-src="
+            consumer.user.image ? consumer.user.image.url : '/semimagem.png'
+          "
+          :img-alt="
+            consumer.user.image
+              ? consumer.user.image.alt
+              : `Imagem de ${consumer.user.name}`
+          "
+          img-top
+          tag="article"
+          style="max-width: 17rem"
+          class="mb-2"
         >
-      </b-card>
+          <b-card-text>
+            {{ consumer.user.email }} <br />
+            <p v-if="consumer.user.type === 'CONSUMER'">Consumidor</p>
+            <p v-else>{{ consumer.user.type }}</p>
+            <p v-if="consumer.deletedAt != null">Conta desativa</p>
+          </b-card-text>
+          <PrimeButton @click="routeTo(`/admin/consumer/${consumer.user.id}`)"
+            >Ver perfil</PrimeButton
+          >
+        </b-card>
+      </div>
     </div>
   </div>
 
@@ -112,7 +114,9 @@ const routeTo = (path: string) => {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  margin: -10px;
+  /* margin: -10px; */
+  /* background-color: green; */
+  justify-content: center;
 }
 
 .card-container > div {
@@ -121,5 +125,13 @@ const routeTo = (path: string) => {
 #b-card {
   background-color: rgb(239, 243, 247);
   height: 400px;
+}
+
+.card-text {
+  font-size: 0.8em !important;
+}
+
+.card-body {
+  background-color: red !important;
 }
 </style>

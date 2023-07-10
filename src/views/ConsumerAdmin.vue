@@ -1,8 +1,13 @@
 <template>
-  <router-link :to="{ path: '/admin', query: { page: 1 } }" class="back">
+  <!-- <router-link :to="{ path: '/admin', query: { page: 1 } }" class="back">
     <i class="bi bi-arrow-left-circle"></i> Voltar
-  </router-link>
+  </router-link> -->
 
+  <div class="parent" @click="goBack">
+    <page-back></page-back>
+  </div>
+
+  <!-- TODO - Adaptar para ser igual ao Account (mas preciso que vá para o main) -->
   <div id="container">
     <div id="titulo">
       <h1>Consumidor {{ $route.params.id }}</h1>
@@ -156,6 +161,7 @@ import {
 import { auth } from '@/utils/firebase';
 import { Consumer } from '@/types';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import PageBack from '@/components/PageBack.vue';
 export default {
   data() {
     return {
@@ -175,8 +181,10 @@ export default {
       console.error(error);
     }
   },
-
   methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
     saveChanges() {
       const email = this.$store.state.user?.user.email;
       // Define valores padrão para campos não preenchidos
@@ -185,7 +193,6 @@ export default {
         email: this.user!.user.email,
         phone: this.user!.user.phone,
       };
-
       // Mescla valores padrão com valores do formulário
       const data = { ...defaults, ...this.formData };
       if (Object.keys(this.formData).length === 0) {
@@ -256,7 +263,6 @@ export default {
         });
       }
     },
-
     showCancelDialog(): void {
       Swal.fire({
         title: 'Digite a sua password',
@@ -306,7 +312,6 @@ export default {
                 })
                 .catch((error) => {
                   console.error(error);
-
                   if (error.response && error.response.status === 400) {
                     Swal.fire(
                       'Erro ao desativar conta',
@@ -395,6 +400,7 @@ export default {
       });
     },
   },
+  components: { PageBack },
 };
 </script>
 <style scoped>
