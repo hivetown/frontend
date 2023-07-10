@@ -190,7 +190,7 @@ const routes = [
     },
 
     {
-        path: '/production-units/:producerId/:unitId/:unitName/products',
+        path: '/production-units/:producerId/:unitId/products',
         name: 'ProductionUnitProducts',
         component: ProductionUnitProducts,
         meta: {
