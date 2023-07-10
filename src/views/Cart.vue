@@ -14,7 +14,22 @@
         Aqui poderá consultar os itens que estão atualmente no seu carrinho:
       </h5>
 
-      <button @click="cleanCart()">Limpar Carrinho</button>
+      <button @click="showConfirmation">Limpar Carrinho</button>
+      <b-modal
+        v-model="confirmationModal"
+        title="Confirmação de Remoção"
+        hide-footer
+      >
+        <p>Tem a certeza que pretende TODOS os itens do carrinho?</p>
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-secondary mr-2" @click="cancelDeletion">
+            Cancelar
+          </button>
+          <button class="btn btn-danger" @click="confirmDeletion">
+            Remover
+          </button>
+        </div>
+      </b-modal>
 
       <table class="table table-responsive-md">
         <tr>
@@ -114,10 +129,25 @@ export default {
       userLoggedName: '' as string,
       userLoggedNImage: {} as Image,
       userLoggedType: '' as string,
+
+      //Pop-up remover itens
+      confirmationModal: false,
     };
   },
 
   methods: {
+    // Botão de confirmação
+    showConfirmation() {
+      this.confirmationModal = true;
+    },
+    cancelDeletion() {
+      this.confirmationModal = false;
+    },
+    confirmDeletion() {
+      this.cleanCart();
+      this.confirmationModal = false;
+    },
+
     // Botão de voltar para trás
     goBack() {
       window.history.back();

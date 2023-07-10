@@ -120,7 +120,14 @@
 
         <!-- Botões compra -->
         <div class="d-flex gap-4 align-items-center" style="margin-top: 5vh">
-          <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
+          <b-button
+            class="buy-btn rounded-pill"
+            @click="addItemToCart(defaultProduct.id)"
+          >
+            <router-link :to="'/carrinho'">
+              <a href="#" class="grey-txt">Comprar agora</a>
+            </router-link></b-button
+          >
 
           <div class="aux-btns d-flex align-items-center gap-1">
             <button
@@ -270,7 +277,14 @@
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
       >
-        <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
+        <b-button
+          class="buy-btn rounded-pill"
+          @click="addItemToCart(defaultProduct.id)"
+        >
+          <router-link :to="'/carrinho'">
+            <a href="#" class="grey-txt">Comprar agora</a>
+          </router-link></b-button
+        >
 
         <div class="aux-btns d-flex align-items-center gap-1">
           <button
