@@ -1,4 +1,13 @@
 <template>
+  <h5
+    class="parent"
+    style="display: flex; justify-content: flex-start"
+    id="data"
+  >
+    <p>
+      Efetuada a: <span class="fw-bold"> {{ date }}</span>
+    </p>
+  </h5>
   <div class="parent" style="background-color: ">
     <div class="table-container" style="overflow: auto">
       <table class="table table-striped" v-if="orderItems">
@@ -11,7 +20,7 @@
             <th id="col" scope="col">Quantidade</th>
             <th id="col" scope="col">Eventos</th>
             <th id="col" scope="col">Estado</th>
-            <th id="col" scope="col">Total</th>
+            <th id="col" scope="col" style="width: 10vh">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -132,7 +141,6 @@
     </div>
     <br />
     <div class="resumo" style="background-color: ">
-      <h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5>
       <h3 class="">Total: {{ totalSum }}€</h3>
     </div>
   </div>

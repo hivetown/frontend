@@ -104,11 +104,8 @@
             </div>
 
             <div v-if="order.generalStatus === 'Shipped'">
-              <BButton
-                class="botao2"
-                variant="outline-primary"
-                @click="cancelarEncomendaImpossivel()"
-                >Cancelar encomenda</BButton
+              <PrimeButton @click="cancelarEncomendaImpossivel()"
+                >Cancelar encomenda</PrimeButton
               >
             </div>
             <div
@@ -118,11 +115,13 @@
               "
             >
               <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-              <BButton
-                class="botao2"
-                variant="outline-primary"
+              <PrimeButton
+                rounded
+                outlined
+                severity="info"
+                style="color: #5a5a5a; font-size: 0.6em"
                 @click="cancelarEncomenda(order)"
-                >Cancelar encomenda</BButton
+                >Cancelar encomenda</PrimeButton
               >
             </div>
           </td>
@@ -179,7 +178,7 @@
             <input
               id="name"
               type="checkbox"
-              style="transform: scale(2)"
+              style="transform: scale(2); display: block; margin: auto"
               @change="onCheckboxChange()"
               :value="order.id"
               v-model="selectedOrders[idx]"
@@ -189,8 +188,12 @@
 
           <td>
             <router-link :to="'/encomenda/id' + order.id">
-              <BButton class="botao2" variant="outline-primary"
-                >Ver detalhes</BButton
+              <PrimeButton
+                rounded
+                outlined
+                severity="info"
+                style="color: #5a5a5a; font-size: 0.7em"
+                >Ver detalhes</PrimeButton
               >
             </router-link>
           </td>
@@ -199,23 +202,25 @@
     </table>
   </div>
   <div class="btn-div" v-if="isExportButtonVisible">
-    <BButton
+    <PrimeButton
+      severity="secondary"
+      rounded
       id="botao"
-      class="botao"
-      variant="outline-primary"
       @click="exportSelectedOrders"
-      ><span>Exportar dados</span></BButton
+      ><span>Exportar dados</span></PrimeButton
     >
   </div>
 </template>
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
+import PrimeButton from 'primevue/button';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
+
 const store = useStore();
 const user2 = computed(() => store.state.user);
 
@@ -435,10 +440,11 @@ tr:hover {
 }
 
 .btn-div {
-  width: 12%;
+  width: 95%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+  margin-top: 3vh;
 }
 .botao {
   padding: 0.7em;
@@ -483,7 +489,7 @@ tr:hover {
 @media (max-width: 768px) {
   .table-container {
     width: 100% !important;
-    max-height: 100% !important;
+    max-height: 90% !important;
   }
 
   .table h4 {
