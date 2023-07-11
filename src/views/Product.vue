@@ -719,7 +719,6 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
-import Checkbox from 'primevue/checkbox';
 
 import Maps from '../maps/maps.vue';
 import {
@@ -921,7 +920,6 @@ export default defineComponent({
     TabPanel,
     InputText,
     Card,
-    Checkbox,
   },
 });
 </script>
