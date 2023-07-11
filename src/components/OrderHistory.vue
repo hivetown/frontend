@@ -227,6 +227,7 @@
 <script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
 import Swal from 'sweetalert2';
+import { PageState } from 'primevue/paginator';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
