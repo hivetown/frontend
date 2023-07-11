@@ -538,11 +538,11 @@ hr {
 
 @media (max-width: 767px) {
   #popup {
-    border-radius: 1%;
+    border-radius: 0.3em;
     position: absolute;
-    top: 37%;
-    right: 1px;
-    width: 400px;
+    top: 33%;
+    right: -0.5vh;
+    width: 45vh;
     background-color: #f3f3f3;
     border: 1px solid #ccc;
     padding: 10px;
