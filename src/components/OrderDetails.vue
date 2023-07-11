@@ -4,9 +4,12 @@
     style="display: flex; justify-content: flex-start"
     id="data"
   >
-    <p>
+    <p v-if="$store.state.user?.user?.type === 'CONSUMER'">
       Efetuada a: <span class="fw-bold"> {{ date }}</span>
     </p>
+	<p v-else>
+		Efetuada a: <span class="fw-bold"> {{ orderItems?.items[0].orderDate?.substring(0, 10) }}</span>
+	</p>
   </h5>
   <div class="parent" style="background-color: ">
 	
@@ -18,9 +21,6 @@
 	<div class="loading-spinner" v-if="isLoading">
     <Loader />
   </div>
-      <h5 class="" id="data" style="margin-right: 0px; text-align: right">
-        Encomenda efetuada em: {{ date }}
-      </h5>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -165,12 +165,6 @@
 	<div class="loading-spinner" v-if="isLoading">
     <Loader />
     </div>
-      <div style="text-align: right">
-        <h5 class="" id="data">
-          Encomenda efetuada em:
-          {{ orderItems?.items[0].orderDate?.substring(0, 10) }}
-        </h5>
-      </div>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
