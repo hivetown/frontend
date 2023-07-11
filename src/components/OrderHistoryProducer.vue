@@ -101,11 +101,12 @@
       </table>
     </div>
     <Pagination
-      :total-rows="totalItems"
-      :per-page="pageSize"
-      :current-page="page"
+	v-if="orders"
+	  :items="orders"
+      :page-size="pageSize"
+      :page="page"
       @page-changed="onPageChanged"
-    >
+	      >
     </Pagination>
   </div>
 </template>
@@ -150,13 +151,15 @@ onMounted(async () => {
       Number(page),
       pageSize.value
     );
+	console.log(pageSize.value)
+	console.log(orders);
     orders.value = response.data;
     pageSize.value = response.data.pageSize;
-    for (let i = 1; i <= response.data.totalPages; i++) {
-      totalItems.value += (
-        await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
-      ).data.items.length;
-    }
+    //for (let i = 1; i <= response.data.totalPages; i++) {
+    //  totalItems.value += (
+       // await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
+     // ).data.items.length;
+   // }
   }
 });
 

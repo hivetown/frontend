@@ -8,8 +8,9 @@ import {
 } from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllOrders = (userId: number) =>
-    api.get<BaseItems<Order>>(`/consumers/${userId}/orders`);
+export const fetchAllOrders = (userId: number, page: number,
+    pageSize: number) =>
+    api.get<BaseItems<Order>>(`/consumers/${userId}/orders?page=${page}&pageSize=${pageSize}`);
 
 export const fetchAllItems = (
     userId: number,
