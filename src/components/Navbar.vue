@@ -35,13 +35,13 @@
               </b-avatar>
               <!--numero de notificacoes-->
               <b-badge
-                v-if="notificacoes != 0"
+                v-if="notificacoes > 0"
                 @click="showModalFunction"
                 variant="danger"
                 class="rounded-circle position-absolute"
                 style="
                   top: 30px;
-                  right: 673px;
+                  right: 810px;
                   width: 20px;
                   height: 20px;
                   border-radius: 50%;

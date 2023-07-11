@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/hivetown/frontend/compare/v2.3.0...v2.4.0) (2023-07-11)
+
+
+### Features
+
+* popular products on home ([437788e](https://github.com/hivetown/frontend/commit/437788e67da51f44df06412870034b148680389f))
+
 ## [2.3.0](https://github.com/hivetown/frontend/compare/v2.2.0...v2.3.0) (2023-07-05)
 
 

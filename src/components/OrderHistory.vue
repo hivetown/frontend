@@ -6,7 +6,10 @@
     </h3>
   </div>
   <div v-else>
-    <div class="table-container" style="overflow: auto">
+	<div class="loading-spinner" v-if="isLoading">
+    <Loader />
+  </div>
+    <div class="table-container" v-if="!isLoading" style="overflow: auto">
       <div></div>
       <table v-if="!!orders?.items" style="border: 2px" class="table">
         <thead>
@@ -96,7 +99,7 @@
                         'Em transporte'
                       "
                       class="bi bi-truck mr-2"
-                      >></i
+                      ></i
                     >
 
                     <p class="texto">
@@ -210,19 +213,51 @@
         ><span>Exportar dados</span></BButton
       >
     </div>
+	<Pagination
+	v-if="orders"
+	  :items="orders"
+	  :page-size="currentFilters.pageSizeC"
+    :page="currentFilters.pageC"
+    @page-change="onPageChange"
+	      >
+    </Pagination>
   </div>
 </template>
 
 <script setup lang="ts">
+import Pagination from '../components/Pagination.vue';
 import Swal from 'sweetalert2';
+import { PageState } from 'primevue/paginator';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
+import { onBeforeMount, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+import Loader from '@/components/Loader.vue';
+const isLoading = ref(true);
 const store = useStore();
 const user2 = computed(() => store.state.user);
+//let page = ref(1);
+//const pageSize = ref(24);
+const route = useRoute();
+const router = useRouter();
+const currentFilters = ref({
+  pageC: Number(route.query.pageC) || 1,
+  pageSizeC: Number(route.query.pageSizeC) || 24,
+  pageP: Number(route.query.pageP) || 1,
+  pageSizeP: Number(route.query.pageSizeP) || 24,
+});
 
+watch(currentFilters.value, (newFilters) => {
+  router.push({
+    query: {
+      ...newFilters,
+    },
+  });
+});
 const orderStatusTranslation = (status: string) => {
   switch (status) {
     case 'Delivered':
@@ -261,9 +296,11 @@ const findFirstImage = (order: OrderItem[]) => {
 
 onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
-    const response = await fetchAllOrders(user2.value.user.id);
+	try{
+	isLoading.value = true;
+    const response = await fetchAllOrders(user2.value.user.id, currentFilters.value.pageC, currentFilters.value.pageSizeC);
     orders.value = response.data;
-
+	console.log(orders.value)
     for (const order of orders.value.items) {
       const orderItems = await fetchAllItems(
         user2.value.user.id,
@@ -275,9 +312,43 @@ onMounted(async () => {
         ordersImage.value[order.id] = image;
       }
     }
+}finally{
+	isLoading.value = false;
+}
   }
 });
+const onPageChange = async (page: Partial<PageState>) => {
+  if (page.page) {
+    currentFilters.value.pageC = page.page + 1;
+  }
 
+  if (page.rows) {
+    currentFilters.value.pageSizeC = page.rows;
+  }
+
+  await loadOrders();
+};
+
+const routeTo = (path: string) => {
+  router.push(path);
+};
+
+const loadOrders = async () => {
+ isLoading.value = true;
+
+  try {
+	if (user2.value){
+    const response = await fetchAllOrders(
+		user2.value.user.id,currentFilters.value.pageC,
+       currentFilters.value.pageSizeC
+    );
+
+    orders.value = response.data;
+	}
+  } finally {
+    isLoading.value = false;
+  }
+};
 function cancelarEncomenda(order: Order) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({

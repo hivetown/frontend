@@ -1,10 +1,14 @@
 <template>
   <div class="parent" style="background-color: ">
+	
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'CONSUMER'"
     >
+	<div class="loading-spinner" v-if="isLoading">
+    <Loader />
+  </div>
       <h5 class="" id="data" style="margin-right: 0px; text-align: right">
         Encomenda efetuada em: {{ date }}
       </h5>
@@ -143,11 +147,15 @@
     <br />
 
     <!--HISTORICO PRODUCER-->
+	
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'PRODUCER'"
     >
+	<div class="loading-spinner" v-if="isLoading">
+    <Loader />
+    </div>
       <div style="text-align: right">
         <h5 class="" id="data">
           Encomenda efetuada em:
@@ -291,6 +299,7 @@
 </template>
 
 <script setup lang="ts">
+import Loader from '@/components/Loader.vue';
 import { ref, computed, onBeforeMount } from 'vue';
 import {
   fetchAllItems,
@@ -301,6 +310,7 @@ import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
 import { BaseItems, OrderItem, ShipmentEvent } from '@/types';
+const isLoading = ref(true);
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
 const date = ref<{ [id: number]: String }>({});
@@ -313,6 +323,8 @@ onBeforeMount(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
     if (user2.value.user.type === 'CONSUMER') {
+		try{
+	isLoading.value = true;
       const responseItem = await fetchAllItems(user2.value.user.id, idO);
       orderItems.value = responseItem.data;
       //date.value = props.order.orderDate;
@@ -323,7 +335,12 @@ onBeforeMount(async () => {
           date.value = res.data.items[i].orderDate.substring(0, 10);
         }
       }
+	}finally{
+	isLoading.value = false;
+	}
     } else {
+		try{
+	isLoading.value = true;
       const responseItem = await fetchAllItemsProducer(
         user2.value.user.id,
         idO
@@ -332,6 +349,9 @@ onBeforeMount(async () => {
       for (const orderItem of orderItems.value.items) {
         totalSum.value += orderItem['price'] * orderItem['quantity'];
       }
+	} finally{
+		isLoading.value = false;
+	}
     }
     if (user2.value.user.type === 'CONSUMER') {
       for (const orderItem of orderItems.value.items) {
@@ -348,8 +368,10 @@ onBeforeMount(async () => {
           responseShipment.events[responseShipment.events.length - 1];
       }
     }
+	
   }
 });
+console.log(eventos.value)
 </script>
 <style scoped>
 .bi-truck {
