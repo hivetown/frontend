@@ -9,17 +9,17 @@ import {
 import { api } from './_base';
 
 export const fetchAllOrders = (
-	userId: number,
-	page?: number,
-	pageSize?: number
-  ) => {
-	let url = `/consumers/${userId}/orders`;
-	if (page !== undefined && pageSize !== undefined) {
-	  url += `?page=${page}&pageSize=${pageSize}`;
-	}
-	return api.get<BaseItems<Order>>(url);
-  };
-  
+    userId: number,
+    page?: number,
+    pageSize?: number
+) => {
+    let url = `/consumers/${userId}/orders`;
+    if (page !== undefined && pageSize !== undefined) {
+        url += `?page=${page}&pageSize=${pageSize}`;
+    }
+    return api.get<BaseItems<Order>>(url);
+};
+
 export const fetchAllItems = (
     userId: number,
     orderId: string,
@@ -61,10 +61,11 @@ export const fetchOrderProducer = (userId: number, orderId: string) =>
 export const getShipment = (
     consumerId: number,
     orderId: number,
-    producerProduct: number
+    producerProduct: number,
+    consumerOrProducer: 'consumer' | 'producer' = 'consumer'
 ) =>
     api.get<Shipment>(
-        `/consumers/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`
+        `/${consumerOrProducer}s/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`
     );
 
 export const cancelOrder = (userId: number, orderId: number, search?: string) =>

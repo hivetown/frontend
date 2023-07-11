@@ -312,11 +312,11 @@ export interface Shipment {
 }
 export enum ShipmentStatus {
     /* eslint-disable no-unused-vars*/
-    Paid = 0,
-    Processing = 1,
-    Shipped = 2,
-    Delivered = 3,
-    Canceled = 4,
+    Paid = 'Paid',
+    Processing = 'Processing',
+    Shipped = 'Shipped',
+    Delivered = 'Delivered',
+    Canceled = 'Cenceled',
     /* eslint-enable no-unused-vars*/
 }
 export interface ShipmentEvent {
