@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { fetchCartItems, deleteCart } from '../api/consumers';
+import { fetchCartItems, deleteCart, addCartItem } from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 // N.A.U. - Import
@@ -248,14 +248,13 @@ export default {
     async refreshValues() {
       // para AU
       if (this.login) {
+        await this.addNAUItems();
         const itemsCart = await fetchCartItems(this.userLoggedId);
 
         // Resto AU
         this.itemsCart = itemsCart.data;
         this.itemsNumber = this.countItems();
         this.itemsPrice = this.countPrice();
-
-        // para NAU
       } else {
         this.itemsCartNAUQuantities = [];
         let itemsCart: Array<ProducerProduct> = [];
@@ -275,8 +274,29 @@ export default {
       }
     },
 
+    // Adicionar items do NAU
+    async addNAUItems() {
+      // Adicionar items do NAU
+      const carrinho = this.cartNAU.getCart();
+      const carrinhoQuantidades = this.cartNAU.getCartQuantities();
+
+      console.log('carrinhoTotal:', carrinho);
+      console.log('quantidadeTotal:', carrinhoQuantidades);
+
+      for (let i = 0; i < carrinho.length; i++) {
+        console.log('item:', carrinho[i]);
+        console.log('quantidade:', carrinhoQuantidades[i]);
+        await addCartItem(
+          this.userLoggedId,
+          carrinho[i].id,
+          carrinhoQuantidades[i]
+        );
+      }
+      this.cartNAU.cleanCart();
+    },
+
     // Verificar o login do user
-    checkLogin() {
+    async checkLogin() {
       //Guardar em Vars informação do User    const store = useStore();
       const userLoggedId = computed(() => this.$store.state.user);
 
@@ -291,7 +311,7 @@ export default {
           if (userLoggedId.value['user']['image']) {
             this.userLoggedNImage = userLoggedId.value['user']['image'];
           }
-          this.refreshValues();
+          await this.refreshValues();
           return true;
           // Caso não exista não há user
         } else {
@@ -307,7 +327,7 @@ export default {
 
   // Buscar Info do Carrinho
   async beforeMount() {
-    this.checkLogin();
+    await this.checkLogin();
   },
 };
 </script>
