@@ -1,4 +1,7 @@
 <template>
+	<div class="loading-spinner" v-if="isLoading">
+    <Loader />
+  </div>
   <div v-if="(orders?.items?.length || 0) < 1">
     <h3 class="semencoemndas">
       <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
@@ -101,25 +104,45 @@
       </table>
     </div>
     <Pagination
-      :total-rows="totalItems"
-      :per-page="pageSize"
-      :current-page="page"
-      @page-changed="onPageChanged"
-    >
+	v-if="orders"
+	  :items="orders"
+	  :page-size="currentFilters.pageSizeC"
+      :page="currentFilters.pageC"
+       @page-change="onPageChange"
+	      >
     </Pagination>
   </div>
 </template>
 
 <script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
+import { PageState } from 'primevue/paginator';
 import { BaseItems, OrderProducer } from '../types/interfaces';
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { fetchAllOrdersProducer } from '../api/orders';
 import { useStore } from '@/store';
-import { useRoute } from 'vue-router';
+import Loader from '@/components/Loader.vue';
 const store = useStore();
 const user2 = computed(() => store.state.user);
+const route = useRoute();
+const router = useRouter();
+const isLoading = ref(true);
+const currentFilters = ref({
+  pageC: Number(route.query.pageC) || 1,
+  pageSizeC: Number(route.query.pageSizeC) || 24,
+  pageP: Number(route.query.pageP) || 1,
+  pageSizeP: Number(route.query.pageSizeP) || 24,
+});
 
+watch(currentFilters.value, (newFilters) => {
+  router.push({
+    query: {
+      ...newFilters,
+    },
+  });
+});
 const orderStatusTranslation = (status: string) => {
   switch (status) {
     case 'Delivered':
@@ -136,47 +159,62 @@ const orderStatusTranslation = (status: string) => {
       return 'Desconhecido';
   }
 };
-const route = useRoute();
-let page: string = route.params.page as string;
-const pageSize = ref(24);
-const totalItems = ref(0);
+
 const orders = ref<BaseItems<OrderProducer>>();
 
 onMounted(async () => {
-  const page = (route.query.page as string) ?? '1';
   if (user2.value && user2.value.user && user2.value.user.id) {
+	try{
+	isLoading.value = true;
     const response = await fetchAllOrdersProducer(
       user2.value.user.id,
-      Number(page),
-      pageSize.value
+      currentFilters.value.pageC, currentFilters.value.pageSizeC
     );
     orders.value = response.data;
-    pageSize.value = response.data.pageSize;
-    for (let i = 1; i <= response.data.totalPages; i++) {
-      totalItems.value += (
-        await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
-      ).data.items.length;
-    }
+	}finally{
+	isLoading.value = false;
+	console.log(orders.value)
+	}
+    //for (let i = 1; i <= response.data.totalPages; i++) {
+    //  totalItems.value += (
+       // await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
+     // ).data.items.length;
+   // }
   }
 });
 
-function onPageChanged(): void {
-  page = page + 1;
-  myFunction(Number(page));
-}
-function myFunction(page: number): void {
-  if (user2.value && user2.value.user && user2.value.user.id) {
-    const response = fetchAllOrdersProducer(
-      user2.value.user.id,
-      page,
-      pageSize.value
-    );
-    response.then((res) => {
-      orders.value = res.data;
-      orders.value.items = res.data.items; // Atualize apenas os pedidos da página atual
-    });
+const onPageChange = async (page: Partial<PageState>) => {
+  if (page.page) {
+    currentFilters.value.pageC = page.page + 1;
   }
-}
+
+  if (page.rows) {
+    currentFilters.value.pageSizeC = page.rows;
+  }
+
+  await loadOrders();
+};
+
+const routeTo = (path: string) => {
+  router.push(path);
+};
+
+const loadOrders = async () => {
+ isLoading.value = true;
+
+  try {
+	if (user2.value){
+    const response = await fetchAllOrdersProducer(
+		user2.value.user.id,currentFilters.value.pageC,
+       currentFilters.value.pageSizeC
+    );
+
+    orders.value = response.data;
+	}
+  } finally {
+    isLoading.value = false;
+  }
+};
 </script>
 
 <style scoped>
