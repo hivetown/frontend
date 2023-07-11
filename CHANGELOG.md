@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.4.0](https://github.com/hivetown/frontend/compare/v2.3.0...v2.4.0) (2023-07-11)
+
+
+### Features
+
+* popular products on home ([437788e](https://github.com/hivetown/frontend/commit/437788e67da51f44df06412870034b148680389f))
+
+## [2.3.0](https://github.com/hivetown/frontend/compare/v2.2.0...v2.3.0) (2023-07-05)
+
+
+### Features
+
+* categoriasProdutos comparação mobile ([6ec80e9](https://github.com/hivetown/frontend/commit/6ec80e9f724f728655a15a3170ab15983d743592))
+
+
+### Bug Fixes
+
+* compare on mobile ([3b57563](https://github.com/hivetown/frontend/commit/3b57563a362e24492f1bf7a60c9c0e72f347637e))
+
+## [2.2.0](https://github.com/hivetown/frontend/compare/v2.1.0...v2.2.0) (2023-06-22)
+
+
+### Features
+
+* change primevue theme ([08a15d0](https://github.com/hivetown/frontend/commit/08a15d01b92cf40be61a3953d2060eec2ab491b7))
+
+
+### Bug Fixes
+
+* focus ring color ([d92ac21](https://github.com/hivetown/frontend/commit/d92ac216fb1d688b41a71f8a9c04d1bd8d223141))
+
 ## [2.1.0](https://github.com/hivetown/frontend/compare/v2.0.4...v2.1.0) (2023-06-19)
 
 

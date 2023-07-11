@@ -1,96 +1,57 @@
 <template>
-  <div class="mobile-pagination">
-    <b-pagination
-      class="pagination mobile-pagination"
-      v-model="currentPage"
-      :total-rows="totalRows"
-      :per-page="perPage"
-    ></b-pagination>
+  <div
+    style="
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    "
+  >
+    <Paginator
+      :template="{
+        '640px':
+          'PrevPageLink CurrentPageReport NextPageLink JumpToPageDropdown',
+        default:
+          'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageDropdown RowsPerPageDropdown',
+      }"
+      current-page-report-template="{currentPage} de {totalRecords}"
+      :rows="props.pageSize ?? 24"
+      :total-records="props.items.totalItems ?? 0"
+      :first="(props.items.page - 1) * props.pageSize"
+      @page="onPageChange"
+      :rows-per-page-options="[12, 24, 48, 72, 96]"
+    >
+    </Paginator>
+
+    <p>Total de páginas: {{ props.items.totalPages }}</p>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  props: {
-    totalRows: {
-      type: Number,
-      required: true,
-    },
-    perPage: {
-      type: Number,
-      required: true,
-    },
+<script setup lang="ts">
+import { BaseItems } from '@/types';
+import Paginator, { PageState } from 'primevue/paginator';
+import { PropType } from 'vue';
+
+const props = defineProps({
+  items: {
+    type: Object as PropType<BaseItems<unknown>>,
+    required: true,
   },
-  data() {
-    return {
-      currentPage: parseInt(String(this.$route.query.page)) || 1,
-    };
+  pageSize: {
+    type: Number,
+    default: 24,
+    validator: (value: number) => [12, 24, 48, 72, 96].includes(value),
   },
-  watch: {
-    currentPage(newVal, oldVal) {
-      const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set('page', newVal.toString());
-      window.location.replace(currentUrl.toString());
-      console.log('currentPage changed from ' + oldVal + ' to ' + newVal);
-    },
-  },
+});
+
+const emit = defineEmits({
+  // eslint-disable-next-line no-unused-vars
+  pageChange: (newState: Partial<PageState>) => true,
+});
+
+// We need another ref to avoid mutating the prop directly
+const onPageChange = async (newState: Partial<PageState>) => {
+  // Emit to the parent
+  await emit('pageChange', newState);
 };
 </script>
-
-<style>
-.pagination .page-link {
-  color: #232323 !important;
-}
-
-.pagination .disabled span {
-  color: #a4a4a4 !important;
-}
-
-.pagination .page-link:focus {
-  box-shadow: 0 0 0 0.2rem rgba(207, 207, 207, 0.25) !important;
-}
-
-.pagination .page-item.active .page-link {
-  color: white !important;
-  border: 1px solid #ce9840;
-  background-color: #f1b24a !important;
-}
-
-.pagination li:first-child .page-link:after {
-  content: 'Primeira';
-  margin-left: 5px;
-}
-
-.pagination li:nth-child(2) .page-link:after {
-  content: 'Anterior';
-  margin-left: 5px;
-}
-
-.pagination li:nth-child(2) .page-link:after {
-  content: 'Anterior';
-  margin-left: 5px;
-}
-
-.pagination li:nth-last-child(2) .page-link:before {
-  content: 'Seguinte';
-  margin-right: 5px;
-}
-
-.pagination li:last-child .page-link:before {
-  content: 'Última';
-  margin-right: 5px;
-}
-
-@media (max-width: 768px) {
-  .mobile-pagination {
-    width: 95%;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  .pagination {
-    scale: 0.75;
-  }
-}
-</style>

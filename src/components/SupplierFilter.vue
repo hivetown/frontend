@@ -59,7 +59,7 @@ export default {
 
   async beforeMount() {
     // Carrega apenas a primeira página de produtores
-    const allProducers = await fetchAllProducers(1);
+    const allProducers = await fetchAllProducers();
     this.allProducers = allProducers.data.items;
     this.producerAmount = allProducers.data.totalItems;
   },

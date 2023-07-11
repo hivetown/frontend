@@ -8,23 +8,23 @@ import {
 } from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllProducts = ({
-    page,
-    pageSize,
-    search,
-    categoryId,
-    maxPrice,
-    minPrice,
-}: {
+export const fetchAllProducts = (params?: {
     page?: number;
     pageSize?: number;
     search?: string;
     categoryId?: number;
     maxPrice?: number;
     minPrice?: number;
+    orderBy?:
+        | 'AZ'
+        | 'ZA'
+        | 'priceAsc'
+        | 'priceDesc'
+        | 'popularityAsc'
+        | 'popularityDesc';
 }) =>
     api.get<ProductSpecs>('/products', {
-        params: { page, pageSize, search, categoryId, maxPrice, minPrice },
+        params,
     });
 
 export const fetchProduct = (specId: number) =>

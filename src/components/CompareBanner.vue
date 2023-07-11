@@ -2,8 +2,8 @@
   <!-- Main div do comparador -->
   <div v-if="!showModal" class="compare-banner d-flex align-items-center">
     <!-- Conteúdo da div do comparador -->
-    <div class="parent d-flex justify-content-center align-items-center gap-4">
-      <div class="d-flex flex-column">
+    <div class="parent d-flex compare-banner-info">
+      <div class="d-flex flex-column banner-text">
         <h5 class="dgreen-txt">
           Comparador
           <span
@@ -21,7 +21,7 @@
         <p v-else>Selecionou o máximo de produtos</p>
       </div>
 
-      <div class="d-flex gap-4">
+      <div class="d-flex gap-4 banner-products">
         <!-- Mostrar os Produtos -->
         <div v-for="product in products" :key="product.id">
           <div
@@ -51,7 +51,7 @@
         <!-- Botão de comparar -->
         <button
           type="button"
-          class="btn btn-secondary rounded-pill"
+          class="btn btn-secondary rounded-pill compare-btn"
           v-b-tooltip.hover
           title="Comparar produto"
           :disabled="!canCompare"
@@ -91,6 +91,11 @@
   z-index: 10000;
 }
 
+.compare-banner-info {
+  justify-content: center;
+  align-items: center;
+  gap: 4vh;
+}
 .prod-container {
   background-color: #c0c0c0;
   height: 10vh;
@@ -113,6 +118,52 @@
   text-decoration: underline;
   color: blue;
   background-color: none;
+}
+
+@media (max-width: 768px) {
+  .compare-banner-info {
+    gap: 1vh !important;
+  }
+
+  .banner-text {
+    padding: 0.6em;
+  }
+  .banner-text h5 {
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .banner-text p {
+    font-size: 0.8em;
+    text-align: center;
+  }
+  .prod-container {
+    height: 7vh;
+    width: 7vh;
+  }
+  .banner-products {
+    gap: 1vh !important;
+  }
+  .compare-btn {
+    scale: 0.7 !important;
+    width: 15vh !important;
+  }
+
+  #limpar {
+    font-size: 0.8em;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 3.5vh;
+    min-height: 3vh;
+    border-radius: 0.5em !important;
+    scale: 0.9;
+  }
 }
 </style>
 

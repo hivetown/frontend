@@ -56,23 +56,14 @@ export const fetchProducerReportClients = (
 export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
 
-//nao da com o includeall
-export const getProducers = (
-    page?: number,
-    pageSize?: number,
-    search?: string
-) =>
-    api.get('/producers?includeAll=true', {
-        params: { page, pageSize, search },
-    });
-
-export const fetchAllProducers = (
-    page?: number,
-    pageSize?: number,
-    search?: string
-) =>
+export const fetchAllProducers = (params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    includeAll?: boolean;
+}) =>
     api.get<BaseItems<Producer>>('/producers', {
-        params: { page, pageSize, search },
+        params,
     });
 
 // TODO - descobrir se isto é usado em algum lado

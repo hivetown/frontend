@@ -1,10 +1,14 @@
 <template>
-  <!-- TODO - arranjar pagination -->
   <div class="container">
     <h2 class="mb-5 dgreen-txt main-txt">Veículos de Transporte</h2>
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4">
-      <template v-if="allTransportsData?.items?.length">
-        <div v-for="transport in allTransportsData.items" :key="transport.id">
+
+    <Loader v-if="isLoading" />
+    <div
+      v-else
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-4 row-cols-lg-6 g-4"
+    >
+      <template v-if="carriers && carriers.items.length">
+        <div v-for="transport in carriers.items" :key="transport.id">
           <b-card class="prod-card position-relative">
             <img
               :src="transport.image.url"
@@ -59,21 +63,21 @@
             </div>
           </b-card-text>
         </div>
-        <div class="parent" style="display: flex; justify-content: center">
-          <Pagination
-            class="mobile-pagination-prods"
-            v-if="allTransportsData"
-            :total-rows="allTransportsData.totalItems"
-            :per-page="allTransportsData.pageSize"
-          >
-            ></Pagination
-          >
-        </div>
       </template>
       <div v-else>
         <p>Ainda não tem veículos registados.</p>
       </div>
     </div>
+
+    <Pagination
+      v-if="carriers"
+      :items="carriers"
+      :page="currentFilters.page"
+      :page-size="currentFilters.pageSize"
+      @page-change="onPageChange"
+    >
+      ></Pagination
+    >
   </div>
 </template>
 
@@ -81,29 +85,76 @@
 import { BaseItems, Transport } from '@/types';
 import { fetchAllTransports } from '@/api/transports';
 import Pagination from '../components/Pagination.vue';
+import Loader from '../components/Loader.vue';
+import { PageState } from 'primevue/paginator';
 export default {
   components: {
     Pagination,
+    Loader,
   },
   data() {
     return {
-      allTransportsData: {} as BaseItems<Transport>,
+      carriers: {} as BaseItems<Transport>,
+      currentFilters: {
+        page: 1,
+        pageSize: 24,
+      },
+      isLoading: true,
     };
   },
-  async mounted() {
+  watch: {
+    currentFilters: {
+      handler(newFilters) {
+        this.$router.push({
+          query: {
+            ...newFilters,
+          },
+        });
+      },
+      deep: true,
+    },
+  },
+  async beforeMount() {
     try {
-      const id = this.$store.state.user!.user.id;
+      this.currentFilters.page =
+        parseInt(this.$route.query.page as string) || 1;
+      this.currentFilters.pageSize =
+        parseInt(this.$route.query.pageSize as string) || 24;
 
-      const page = parseInt(this.$route.query.page as string) || 1;
-      const pageSize = parseInt(this.$route.query.pageSize as string) || 24;
-
-      const allTransportsData = await fetchAllTransports(id, page, pageSize);
-      this.allTransportsData = allTransportsData.data;
+      await this.loadCarriers();
     } catch (error) {
       console.error(error);
     }
   },
   methods: {
+    async loadCarriers() {
+      try {
+        this.isLoading = true;
+
+        const producerId = this.$store.state.user!.user.id;
+
+        const res = await fetchAllTransports(
+          producerId,
+          this.currentFilters.page,
+          this.currentFilters.pageSize
+        );
+
+        this.carriers = res.data;
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async onPageChange(page: Partial<PageState>) {
+      if (page.page) {
+        this.currentFilters.page = page.page + 1;
+      }
+
+      if (page.rows) {
+        this.currentFilters.pageSize = page.rows;
+      }
+
+      await this.loadCarriers();
+    },
     getStatusText(transport: Transport) {
       if (transport.status === 'AVAILABLE') {
         return 'Disponível';
