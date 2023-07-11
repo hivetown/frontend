@@ -1,14 +1,13 @@
 <template>
   <div class="parent" style="background-color: ">
-	
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'CONSUMER'"
     >
-	<div class="loading-spinner" v-if="isLoading">
-    <Loader />
-  </div>
+      <div class="loading-spinner" v-if="isLoading">
+        <Loader />
+      </div>
       <h5 class="" id="data" style="margin-right: 0px; text-align: right">
         Encomenda efetuada em: {{ date }}
       </h5>
@@ -147,15 +146,15 @@
     <br />
 
     <!--HISTORICO PRODUCER-->
-	
+
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'PRODUCER'"
     >
-	<div class="loading-spinner" v-if="isLoading">
-    <Loader />
-    </div>
+      <div class="loading-spinner" v-if="isLoading">
+        <Loader />
+      </div>
       <div style="text-align: right">
         <h5 class="" id="data">
           Encomenda efetuada em:
@@ -174,6 +173,15 @@
             <th id="col" scope="col">Unidade de produção</th>
             <th id="col" scope="col">Data de produção</th>
             <th id="col" scope="col">Total</th>
+            <th
+              id="col"
+              scope="col"
+              v-if="
+                store.state.user?.user.type === 'PRODUCER' && shouldShowVehicle
+              "
+            >
+              Veículo
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -287,6 +295,19 @@
                 {{ orderItem['quantity'] * orderItem['price'] }}€
               </p>
             </td>
+            <td
+              v-if="
+                store.state.user?.user.type === 'PRODUCER' &&
+                orderItem.status === 'Paid'
+              "
+            >
+              <ManageOrderItemCarrier
+                v-if="orderItem.producerProduct && orderId"
+                :order-item="orderItem"
+                :order-id="Number(orderId)"
+                @order-item-carrier-assigned="onOrderItemAssigned(orderItem)"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -300,7 +321,8 @@
 
 <script setup lang="ts">
 import Loader from '@/components/Loader.vue';
-import { ref, computed, onBeforeMount } from 'vue';
+import ManageOrderItemCarrier from './producer/orders/ManageOrderItemCarrier.vue';
+import { ref, onBeforeMount, computed } from 'vue';
 import {
   fetchAllItems,
   fetchAllItemsProducer,
@@ -317,61 +339,83 @@ const date = ref<{ [id: number]: String }>({});
 const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
 const store = useStore();
-const user2 = computed(() => store.state.user);
+const orderId = ref(route.params.id as string);
 
-onBeforeMount(async () => {
-  const idO: string = route.params.id as string;
-  if (user2.value && user2.value.user && user2.value.user.id) {
-    if (user2.value.user.type === 'CONSUMER') {
-		try{
-	isLoading.value = true;
-      const responseItem = await fetchAllItems(user2.value.user.id, idO);
+const shouldShowVehicle = computed(() => {
+  return (
+    store.state.user?.user.type === 'PRODUCER' &&
+    orderItems.value?.items.some((item) =>
+      // TODO add Processing and Shipped when implementing carrier exiting/incoming
+      (['Paid'] as OrderItem['status'][]).includes(item.status)
+    )
+  );
+});
+
+const loadItems = async () => {
+  if (!store.state.user || !store.state.user.user?.id) return;
+
+  if (store.state.user.user.type === 'CONSUMER') {
+    try {
+      isLoading.value = true;
+      const responseItem = await fetchAllItems(
+        store.state.user.user.id,
+        orderId.value
+      );
       orderItems.value = responseItem.data;
       //date.value = props.order.orderDate;
-      const res = await fetchAllOrders(user2.value.user.id);
+      const res = await fetchAllOrders(store.state.user.user.id);
       for (let i = 0; i < res.data.items.length; i++) {
-        if (res.data.items[i].id === Number(idO)) {
+        if (res.data.items[i].id === Number(orderId.value)) {
           console.log(res.data.items[i].orderDate);
           date.value = res.data.items[i].orderDate.substring(0, 10);
         }
       }
-	}finally{
-	isLoading.value = false;
-	}
-    } else {
-		try{
-	isLoading.value = true;
+    } finally {
+      isLoading.value = false;
+    }
+  } else {
+    try {
+      isLoading.value = true;
       const responseItem = await fetchAllItemsProducer(
-        user2.value.user.id,
-        idO
+        store.state.user.user.id,
+        orderId.value
       );
       orderItems.value = responseItem.data;
       for (const orderItem of orderItems.value.items) {
         totalSum.value += orderItem['price'] * orderItem['quantity'];
       }
-	} finally{
-		isLoading.value = false;
-	}
+    } finally {
+      isLoading.value = false;
     }
-    if (user2.value.user.type === 'CONSUMER') {
-      for (const orderItem of orderItems.value.items) {
-        totalSum.value += orderItem['price'] * orderItem['quantity'];
-
-        const responseShipment = (
-          await getShipment(
-            user2.value.user.id,
-            parseInt(idO),
-            orderItem.producerProduct.id
-          )
-        ).data;
-        eventos.value[orderItem.producerProduct.id] =
-          responseShipment.events[responseShipment.events.length - 1];
-      }
-    }
-	
   }
+
+  if (store.state.user.user.type === 'CONSUMER') {
+    for (const orderItem of orderItems.value.items) {
+      totalSum.value += orderItem['price'] * orderItem['quantity'];
+
+      const responseShipment = (
+        await getShipment(
+          store.state.user.user.id,
+          parseInt(orderId.value),
+          orderItem.producerProduct.id
+        )
+      ).data;
+      eventos.value[orderItem.producerProduct.id] =
+        responseShipment.events[responseShipment.events.length - 1];
+    }
+  }
+};
+
+onBeforeMount(loadItems);
+
+const emit = defineEmits({
+  // eslint-disable-next-line no-unused-vars
+  orderItemCarrierAssigned: (orderItem: OrderItem) => true,
 });
-console.log(eventos.value)
+const onOrderItemAssigned = (orderItem: OrderItem) => {
+  emit('orderItemCarrierAssigned', orderItem);
+  loadItems();
+};
 </script>
 <style scoped>
 .bi-truck {

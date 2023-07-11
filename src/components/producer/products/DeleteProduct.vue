@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <ConfirmPopup group="deleteProducerProduct">
     <template #message="slotProps">
       <div class="flex p-4">
@@ -29,7 +20,6 @@
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
-import Toast from 'primevue/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { PropType } from 'vue';
@@ -39,7 +29,6 @@ import { ProducerProduct } from '@/types';
 export default {
   components: {
     PrimeButton,
-    Toast,
     ConfirmPopup,
   },
   props: {

@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <OverlayPanel ref="manageProductOverlay">
     <div v-if="isOverlayOpen" class="p-3">
       <h4>{{ methodName }} produto</h4>
@@ -209,7 +200,6 @@ import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
 import Calendar from 'primevue/calendar';
 import InputNumber from 'primevue/inputnumber';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useStore } from '@/store';
 
@@ -221,7 +211,7 @@ export default {
     VeeForm,
     Calendar,
     InputNumber,
-    Toast,
+
     OverlayPanel,
   },
   props: {

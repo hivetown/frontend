@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <OverlayPanel ref="manageOrderItemCarrierOverlay">
     <div class="p-3">
       <h4>Colocar produto encomendado num transporte</h4>
@@ -71,17 +62,15 @@
           </div>
 
           <!-- Submit -->
-          <PrimeButton
-            type="submit"
-            :label="`Alocar encomenda`"
-            :loading="submitting"
-          />
+          <PrimeButton type="submit" label="Associar" :loading="submitting" />
         </VeeForm>
       </div>
     </div>
   </OverlayPanel>
 
-  <PrimeButton :icon="`pi pi-truck`" outlined @click="toggleOverlay" />
+  <BButton class="botao2" variant="outline-primary" @click="toggleOverlay"
+    >Associar veículo</BButton
+  >
 </template>
 
 <script lang="ts">
@@ -96,7 +85,6 @@ import OverlayPanel from 'primevue/overlaypanel';
 import AutoComplete from 'primevue/autocomplete';
 import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import Loader from '@/components/Loader.vue';
 import { AxiosError } from 'axios';
@@ -107,16 +95,10 @@ export default {
     AutoComplete,
     PrimeButton,
     VeeForm,
-    Toast,
     OverlayPanel,
     Loader,
   },
   props: {
-    method: {
-      type: String as PropType<'create' | 'update'>,
-      required: true,
-      default: 'create',
-    },
     orderId: {
       type: Number,
       required: true,
@@ -128,7 +110,7 @@ export default {
   },
   emits: {
     // eslint-disable-next-line no-unused-vars
-    orderItemAssigned: (shipment: Shipment) => true,
+    orderItemCarrierAssigned: (shipment: Shipment) => true,
   },
   setup(props, { emit }) {
     // Overlay
@@ -239,14 +221,15 @@ export default {
           )
         ).data;
 
-        emit('orderItemAssigned', shipment);
+        // Timeout so we can finalize the component before it being destroyed... 300 should be fine :)
+        setTimeout(() => emit('orderItemCarrierAssigned', shipment), 300);
 
         toast.add({
           severity: 'success',
           summary: 'Produto encomendado associado a um veículo com sucesso',
           detail: `O produto <b>${
             props.orderItem.producerProduct.productSpec!.name
-          }</b>encomendado foi associado ao veículo <b>${
+          }</b> encomendado foi associado ao veículo <b>${
             values.carrier.licensePlate
           }</b> com sucesso.`,
           life: 10000,
@@ -305,3 +288,21 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.botao2 {
+  padding: 0.6em;
+  border-radius: 0.8em;
+  border: 2px solid #f3f3f3;
+}
+.botao2:hover {
+  background-color: #f3f3f3 !important;
+  border: 2px solid #f3f3f3 !important;
+}
+
+@media (max-width: 768px) {
+  .botao2 {
+    font-size: 0.7em;
+  }
+}
+</style>
