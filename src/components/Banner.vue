@@ -1,51 +1,76 @@
 <template>
   <div>
     <b-card class="mx-auto rounded-xl banner" flat overlay img-src="c1.svg">
-      <!--TODO decidir se é preciso uma lupa ou se assim está bom -->
       <template #img>
         <img src="/c1.svg" alt="Banner" class="img-fluid d-none d-md-block" />
         <img src="/bra.svg" alt="Mobile Banner" class="img-fluid d-md-none" />
       </template>
       <div class="d-flex justify-content-center align-items-center h-100 teste">
-        <!-- <div class="col-md-6 col-lg-4"> -->
         <div class="col-sm-10 col-md-8 col-lg-4 max-height-130">
           <div class="d-flex flex-column">
             <h1 class="main-title text-center">
               Descubra o melhor da sua colmeia!
             </h1>
-            <p class="text-center grey-txt">
+            <p class="text-center grey-txt other-text-banner">
               Encontre os melhores produtos da sua comunidade local
             </p>
-            <b-form-input
-              class="rounded-pill search"
-              type="search"
-              placeholder="Pesquisar"
-            />
-
-            <!-- <b-input-group class="mt-3">
-							<b-form-input class="rounded-pill position-relative" type="search" placeholder="Pesquisar" />
-							<b-input-group-text class="rounded-pill position-absolute end-0" style="background-color: #F1B24A; border-color: #F1B24A;"><i class="bi bi-search"></i></b-input-group-text>
-						</b-input-group> -->
+            <form @submit="submitSearch">
+              <b-form-input
+                @input="checkSearchErrors"
+                :state="!searchError"
+                class="rounded-pill search search-mobile"
+                type="search"
+                placeholder=" Pesquisar"
+                v-model="search"
+              />
+              <b-form-invalid-feedback>
+                {{ searchError }}
+              </b-form-invalid-feedback>
+            </form>
           </div>
         </div>
       </div>
-
-      <!-- <div class="d-flex justify-content-center align-items-center h-100">
-				<div class="col-sm-10 col-md-8 col-lg-6">
-				<div class="d-flex flex-column">
-					<h1 class="main-title text-center">Descubra o melhor da sua colmeia!</h1>
-					<p class="text-center" style="color: #5A5A5A;">Encontre os melhores produtos da sua comunidade local</p>
-					<b-form-input class="rounded-pill search" type="search" placeholder="Pesquisar" />
-				</div>
-				</div>
-			</div> -->
     </b-card>
   </div>
 </template>
 
-<style>
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const search = ref('');
+const searchError = ref<string | null>(null);
+const checkSearchErrors = () => {
+  searchError.value = null;
+  if (search.value === '') {
+    return;
+  }
+
+  if (search.value.length < 3) {
+    searchError.value = 'A pesquisa deve ter no mínimo 3 caracteres';
+    return;
+  }
+};
+
+const submitSearch = async ($e: Event) => {
+  $e.preventDefault();
+
+  if (searchError.value || search.value === '') return;
+
+  await router.push({ path: '/products', query: { search: search.value } });
+};
+</script>
+
+<style scoped>
+form {
+  padding: 0 !important;
+}
 .search {
   border: solid 2px #f1b24a !important;
+  display: block;
+  margin: auto;
 }
 
 .main-title {
@@ -54,9 +79,26 @@
   font-family: 'DM Serif Display', serif;
 }
 
-/* Resolve mais ou menos o problema do conteúdo 
-	   do banner no modo mobile */
 .max-height-130 {
   max-height: 130%;
+}
+
+@media (max-width: 767px) {
+  .main-title {
+    font-size: 2rem;
+    max-width: 75%;
+    display: block;
+    margin: auto;
+    margin-top: 4%;
+  }
+
+  .other-text-banner {
+    display: none;
+  }
+
+  .search-mobile {
+    margin-top: 2vh;
+    max-width: 80%;
+  }
 }
 </style>

@@ -1,4 +1,3 @@
-import router from '@/router';
 import { store } from '@/store';
 import { ApiRequest } from '@/types';
 import { createPopup } from '@/utils/popup';
@@ -16,7 +15,9 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
     api.interceptors.request.use((config) => {
         // Inject token into request headers
         const { token } = store.state;
-        if (token) {
+        //ATENCAO
+        if (token && config && config.headers) {
+            //&& config && config.headers) { tive de por isso pq dava erro sem isso no yarn build!!!!
             config.headers.Authorization = `Bearer ${token}`;
         }
 
@@ -27,15 +28,7 @@ function makeApi(baseURL: string, options: ApiRequest = {}) {
         (response) => response,
 
         (error: AxiosError) => {
-            if (
-                error.response?.status === 401 &&
-                router.currentRoute.value.meta.requiresAuth
-            ) {
-                createPopup(
-                    `Erro ${error.response.status}: É necessário autenticar-se para realizar esta operação`,
-                    'error'
-                );
-            } else if (error.response?.status === 403) {
+            if (error.response?.status === 403) {
                 createPopup(
                     `Erro ${error.response.status}: Não tem permissões para esta operação`,
                     'error'

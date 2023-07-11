@@ -1,45 +1,55 @@
 <template>
-  <!-- MUDAR O NOME DA CLASSE DO SCROLL-TOP -->
+  <!-- Botão de pesquisa -->
   <div>
-    <!-- <b-button @click="scrollToTop" class="scroll-top-btn" variant="primary"> -->
-    <!-- <b-button @click="showSearch = !showSearch" class="scroll-top-btn"> -->
-    <b-button @click="showModal" class="scroll-top-btn d-none d-lg-block">
-      <i class="bi bi-search"></i>
+    <b-button
+      v-if="showSearchBtn"
+      @click="openDialog"
+      class="show-search-btn d-none d-lg-block"
+    >
+      <i class="bi bi-search s-icon"></i>
     </b-button>
-    <!-- Restante do seu conteúdo aqui -->
-    <b-collapse v-model="showSearch">
-      <form class="d-flex">
-        <input
-          class="form-control me-2"
-          type="search"
-          placeholder="Pesquisar"
-          aria-label="Pesquisar"
-        />
-        <button class="btn btn-outline-success" type="submit">Pesquisar</button>
-      </form>
-    </b-collapse>
   </div>
 
+  <!-- Conteúdo do modal -->
   <div>
-    <!-- <b-button variant="primary" @click="showModal">Launch demo modal</b-button> -->
-    <b-modal v-model="show" centered>
-      <div class="d-block">
+    <PDialog v-model:visible="dialogVisible" modal header="Pesquisar">
+      <form @submit="submitSearch" class="flex flex-column">
         <p>O que procura?</p>
-        <input
-          class="form-control me-2 rounded-pill"
-          type="search"
-          placeholder="Pesquisar"
-          aria-label="Pesquisar"
-        />
-        <!-- <button class="btn btn-outline-success" type="submit">Pesquisar</button> -->
-        <!-- <b-button variant="primary" class="mt-3" @click="closeModal">Pesquisar</b-button> -->
-      </div>
-    </b-modal>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search" />
+          <InputText
+            id="searchDialogInput"
+            v-model="searchQuery"
+            placeholder="Pesquisa"
+            :class="{ 'p-invalid': searchQueryError }"
+          />
+        </span>
+        <small class="p-error" v-if="searchQueryError">{{
+          searchQueryError
+        }}</small>
+
+        <PButton
+          class="mt-3 w-full"
+          type="submit"
+          :loading="submitting"
+          icon="pi pi-check"
+          >Pesquisar</PButton
+        >
+      </form>
+    </PDialog>
   </div>
 </template>
 
-<style>
-.scroll-top-btn {
+<style scoped>
+form {
+  padding: 0;
+}
+.search-modal-input {
+  /* background-color: red !important; */
+  width: 100%;
+}
+
+.show-search-btn {
   position: fixed !important;
   background-color: #5a5a5a !important;
   bottom: 1rem;
@@ -51,80 +61,128 @@
   height: 3rem;
   border-radius: 100% !important;
   border: none !important;
-  /* box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px; */
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
   transition: opacity 0.3s ease-in-out;
-  opacity: 0;
   z-index: 9999;
   color: #f1f1f1 !important;
-}
-
-.show-scroll-top-btn .scroll-top-btn {
-  opacity: 1;
 }
 
 .modal .btn-secondary {
   background-color: #dc6942 !important;
   border: solid 1px #dc6942 !important;
+  border-radius: 1.3em;
+  width: 9vh;
 }
 
 .modal .btn-primary {
   background-color: #4d774e !important;
   border: solid 1px #4d774e !important;
+  border-radius: 1.3em;
+  width: 9vh;
+}
+
+.modal .btn-secondary .btn-content,
+.modal .btn-primary .btn-content {
+  color: white !important;
+}
+
+.modal-header {
+  border-bottom: none !important;
+}
+
+.modal-footer {
+  border-top: none !important;
+}
+
+input[type='search']:focus {
+  border: none !important;
+  box-shadow: 0 0 0 0.2rem rgba(241, 178, 74, 0.25) !important;
+}
+
+.s-icon {
+  color: white;
 }
 </style>
 
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, ref, watch } from 'vue';
+import { defineComponent, onUnmounted, ref } from 'vue';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'ShowSearch',
+  components: {
+    InputText,
+    PDialog: Dialog,
+    PButton: Button,
+  },
   setup() {
-    const showScrollTopBtn = ref(false);
+    const router = useRouter();
+    const showSearchBtn = ref(false);
 
-    const checkScrollPosition = () => {
-      showScrollTopBtn.value = window.pageYOffset > 0;
-    };
-
-    const showSearch = ref(false);
-
-    watch(showScrollTopBtn, (newValue) => {
-      if (newValue) {
-        document.body.classList.add('show-scroll-top-btn');
-      } else {
-        document.body.classList.remove('show-scroll-top-btn');
-      }
-    });
-
-    // const scrollToTop = () => {
-    //   window.scrollTo({ top: 0, behavior: 'smooth' });
-    // };
-
-    const show = ref(false);
-
-    function showModal() {
-      show.value = true;
-    }
-
-    function closeModal() {
-      show.value = false;
+    // Search button
+    function checkScrollPosition() {
+      showSearchBtn.value = window.pageYOffset > 0;
     }
 
     window.addEventListener('scroll', checkScrollPosition);
 
-    onBeforeUnmount(() => {
+    onUnmounted(() => {
       window.removeEventListener('scroll', checkScrollPosition);
     });
 
-    return {
-      showScrollTopBtn,
-      //   scrollToTop,
-      showSearch,
+    // Dialog
+    const dialogVisible = ref(false);
+    function openDialog() {
+      dialogVisible.value = true;
+    }
 
-      show,
-      showModal,
-      closeModal,
+    function closeDialog() {
+      dialogVisible.value = false;
+    }
+
+    // Search
+    const searchQuery = ref('');
+    const searchQueryError = ref<string | null>(null);
+    const submitting = ref(false);
+    const submitSearch = async ($e: Event) => {
+      $e.preventDefault();
+
+      submitting.value = true;
+
+      searchQueryError.value = null;
+      if (!searchQuery.value?.length)
+        searchQueryError.value = 'Campo obrigatório';
+      if (searchQuery.value.length < 3)
+        searchQueryError.value = 'Mínimo 3 caracteres';
+
+      if (searchQueryError.value) {
+        // Stop execution if error
+        submitting.value = false;
+        return;
+      }
+
+      await router.push({
+        path: '/products',
+        query: { search: searchQuery.value },
+      });
+
+      closeDialog();
+      submitting.value = false;
+    };
+
+    return {
+      searchQueryError,
+      submitting,
+      searchQuery,
+      submitSearch,
+      showSearchBtn,
+      openDialog,
+      closeDialog,
+      dialogVisible,
     };
   },
 });

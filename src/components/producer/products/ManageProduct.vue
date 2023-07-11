@@ -1,18 +1,22 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <OverlayPanel ref="manageProductOverlay">
-    <div class="p-3">
-      <Toast>
-        <template #message="slotProps">
-          <div class="p-toast-message-text">
-            <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-            <div class="p-toast-detail" v-html="slotProps.message.detail" />
-          </div>
-        </template>
-      </Toast>
+    <div v-if="isOverlayOpen" class="p-3">
       <h4>{{ methodName }} produto</h4>
 
       <div class="flex justify-content-center mt-4">
-        <VeeForm @submit="createProduct" class="flex flex-column gap-3">
+        <VeeForm
+          @submit="($e) => createProduct($e as Event)"
+          class="flex flex-column gap-3"
+        >
           <!-- Product Spec -->
           <div class="flex flex-column gap-2">
             <label for="productSpec">Nome do produto</label>
@@ -122,7 +126,8 @@
               :max-date="new Date()"
               show-icon
               date-format="dd/mm/yy"
-            ></Calendar>
+            >
+            </Calendar>
             <small
               v-if="formErrors.productionDate"
               class="p-error"
@@ -187,22 +192,15 @@
 <script lang="ts">
 import {
   fetchAllProducts,
-  fetchAllProductionUnits,
+  fetchProducerProductionUnits,
   createProducerProduct,
   updateProducerProduct,
 } from '@/api';
-import {
-  ComputedRef,
-  PropType,
-  computed,
-  onBeforeMount,
-  onMounted,
-  ref,
-} from 'vue';
+import { ComputedRef, PropType, computed, onBeforeMount, ref } from 'vue';
 import {
   BaseItems,
-  Product,
-  ProductSpecification,
+  ProducerProduct,
+  ProductSpec,
   ProductionUnit,
 } from '@/types';
 import OverlayPanel from 'primevue/overlaypanel';
@@ -213,6 +211,7 @@ import Calendar from 'primevue/calendar';
 import InputNumber from 'primevue/inputnumber';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useStore } from '@/store';
 
 export default {
   name: 'ManageProduct',
@@ -232,7 +231,7 @@ export default {
       default: null,
     },
     defaultProductSpec: {
-      type: Object as PropType<ProductSpecification>,
+      type: Object as PropType<ProductSpec>,
       required: false,
       default: null,
     },
@@ -264,11 +263,11 @@ export default {
   },
   emits: {
     // eslint-disable-next-line no-unused-vars
-    productManaged: (product: Product) => true,
+    productManaged: (product: ProducerProduct) => true,
   },
   setup(props, { emit }) {
-    // TODO USE STORE AUTHENTICATED USER
-    const PRODUCER_ID = 1;
+    const store = useStore();
+    const producerId = store.state.user!.user.id;
 
     if (
       props.method === 'update' &&
@@ -277,21 +276,20 @@ export default {
         !props.defaultProductionUnit.id)
     ) {
       throw new Error(
-        'When method is "update", producerProductId, defaultProductSpec, and defaultProductionUnit must be provided'
+        'Quando o método é "update", producerProductId, defaultProductSpec, e defaultProductionUnit devem ser fornecidos'
       );
     }
     const methodName = props.method === 'create' ? 'Criar' : 'Atualizar';
 
     // Overlay
     const manageProductOverlay = ref();
+    const isOverlayOpen = computed(() => manageProductOverlay.value.visible);
     const toggleOverlay = (event: MouseEvent) => {
-      console.log(manageProductOverlay.value);
       manageProductOverlay.value.toggle(event);
     };
-
-    onMounted(() => {
-      console.log(manageProductOverlay.value);
-    });
+    const closeOverlay = () => {
+      manageProductOverlay.value.hide();
+    };
 
     // Form
     const {
@@ -302,7 +300,7 @@ export default {
       values: formValues,
     } = useForm({
       initialValues: {
-        productSpec: props.defaultProductSpec || ({} as ProductSpecification),
+        productSpec: props.defaultProductSpec || ({} as ProductSpec),
         productionUnit: props.defaultProductionUnit || ({} as ProductionUnit),
         productionDate: props.defaultProductionDate || null,
         stock: props.defaultStock || null,
@@ -329,23 +327,23 @@ export default {
     // Search the products
     const searchProductSpecs = async () => {
       productSpec.items.value = (
-        await fetchAllProducts(productSpec.searchQuery.value)
+        await fetchAllProducts({ search: productSpec.searchQuery.value })
       ).data;
     };
 
     // Apply the selected product to the form
-    const productSpecChanged = (event: { value: ProductSpecification }) => {
+    const productSpecChanged = (event: { value: ProductSpec }) => {
       setFieldValue('productSpec', event.value);
     };
     // Reset productspec when search query changes
     const productSpecReset = () => {
       if (formValues.productSpec)
-        setFieldValue('productSpec', {} as ProductSpecification);
+        setFieldValue('productSpec', {} as ProductSpec);
     };
 
     const productSpec = {
       searchQuery: ref(''),
-      items: ref({} as BaseItems<ProductSpecification>),
+      items: ref({} as BaseItems<ProductSpec>),
       search: searchProductSpecs,
       changed: productSpecChanged,
       reset: productSpecReset,
@@ -361,8 +359,8 @@ export default {
     // Search the products
     const searchProductionUnits = async () => {
       productionUnit.items.value = (
-        await fetchAllProductionUnits(
-          PRODUCER_ID,
+        await fetchProducerProductionUnits(
+          producerId,
           productionUnit.searchQuery.value
         )
       ).data;
@@ -388,7 +386,7 @@ export default {
       isQueryValid: isProductionUnitValid,
     };
 
-    useField('productSpec', (value: ProductSpecification) => {
+    useField('productSpec', (value: ProductSpec) => {
       if (!value || !value.id) {
         return 'A especificação do produto é obrigatória';
       }
@@ -448,11 +446,11 @@ export default {
 
       // Submit
       try {
-        let product = null as Product | null;
+        let product = null as ProducerProduct | null;
         switch (props.method) {
           case 'create':
             product = (
-              await createProducerProduct(PRODUCER_ID, {
+              await createProducerProduct(producerId, {
                 currentPrice: values.price!,
                 productionDate: values.productionDate!,
                 productionUnitId: values.productionUnit.id,
@@ -463,16 +461,12 @@ export default {
             break;
           case 'update':
             product = (
-              await updateProducerProduct(
-                PRODUCER_ID,
-                props.producerProductId,
-                {
-                  currentPrice: values.price!,
-                  productionDate: values.productionDate!,
-                  stock: values.stock!,
-                  productionUnitId: values.productionUnit.id,
-                }
-              )
+              await updateProducerProduct(producerId, props.producerProductId, {
+                currentPrice: values.price!,
+                productionDate: values.productionDate!,
+                stock: values.stock!,
+                productionUnitId: values.productionUnit.id,
+              })
             ).data;
             break;
         }
@@ -484,12 +478,13 @@ export default {
         toast.add({
           severity: 'success',
           summary: `Produto ${methodNameSummary} com sucesso`,
-          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${PRODUCER_ID}/products/${product.id}">aqui</a> para ver o produto."`,
+          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${producerId}/products/${product.id}">aqui</a> para ver o produto."`,
           life: 10000,
         });
 
         // Reset form
         resetForm();
+        console.log(JSON.parse(JSON.stringify(formValues.productSpec)));
         productSpec.searchQuery.value = '';
         productionUnit.searchQuery.value = '';
       } catch (error) {
@@ -505,6 +500,9 @@ export default {
 
       // Enable submitting
       submitting.value = false;
+
+      // Close overlay
+      setTimeout(closeOverlay, 100);
     });
 
     return {
@@ -513,6 +511,7 @@ export default {
       //   Overlay
       toggleOverlay,
       manageProductOverlay,
+      isOverlayOpen,
       // Form
       formErrors,
       createProduct: manageProduct,
@@ -526,3 +525,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.p-button-outlined {
+  color: #f1b24a !important;
+  border-radius: 50%;
+}
+
+.card-text .p-button-outlined {
+  color: #5a5a5a !important;
+}
+</style>

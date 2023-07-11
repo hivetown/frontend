@@ -1,5 +1,13 @@
 <template>
-  <Toast />
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <ConfirmPopup group="deleteProducerProduct">
     <template #message="slotProps">
       <div class="flex p-4">
@@ -18,7 +26,6 @@
 </template>
 
 <script lang="ts">
-import { Product } from '@/types';
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -27,6 +34,8 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { PropType } from 'vue';
 import { AxiosError } from 'axios';
+import { ProducerProduct } from '@/types';
+
 export default {
   components: {
     PrimeButton,
@@ -35,12 +44,13 @@ export default {
   },
   props: {
     producerProduct: {
-      type: Object as PropType<Product>,
+      type: Object as PropType<ProducerProduct>,
       required: true,
     },
   },
   emits: {
-    deleteProduct: (producerProduct: Product) => true,
+    // eslint-disable-next-line no-unused-vars
+    deleteProduct: (producerProduct: ProducerProduct) => true,
   },
   setup(props, { emit }) {
     const confirm = useConfirm();
@@ -107,3 +117,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.p-button-danger {
+  color: #5a5a5a !important;
+  border: 1px solid #5a5a5a !important;
+  border-radius: 50% !important;
+  background-color: white !important;
+}
+</style>
