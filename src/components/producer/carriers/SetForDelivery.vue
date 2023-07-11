@@ -8,11 +8,12 @@
     </template>
   </ConfirmPopup>
 
-  <PrimeButton
-    aria-label="Registar saída de veículo"
+  <BButton
+    class="botao2"
+    variant="outline-primary"
     @click="confirmSetForDelivery"
     :loading="loading"
-    >Registar saída</PrimeButton
+    >Registar saída</BButton
   >
 </template>
 
@@ -125,5 +126,21 @@ export default {
   border: 1px solid #5a5a5a !important;
   border-radius: 50% !important;
   background-color: white !important;
+}
+
+.botao2 {
+  padding: 0.6em;
+  border-radius: 0.8em;
+  border: 2px solid #f3f3f3;
+}
+.botao2:hover {
+  background-color: #f3f3f3 !important;
+  border: 2px solid #f3f3f3 !important;
+}
+
+@media (max-width: 768px) {
+  .botao2 {
+    font-size: 0.7em;
+  }
 }
 </style>
