@@ -13,6 +13,7 @@
     severity="danger"
     aria-label="Eliminar produto"
     @click="confirmDeleteProduct"
+    :loading="loading"
   />
 </template>
 
@@ -22,7 +23,7 @@ import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import { PropType } from 'vue';
+import { PropType, ref } from 'vue';
 import { AxiosError } from 'axios';
 import { ProducerProduct } from '@/types';
 
@@ -44,9 +45,9 @@ export default {
   setup(props, { emit }) {
     const confirm = useConfirm();
     const toast = useToast();
+    const loading = ref(false);
 
     const confirmDeleteProduct = (event: any) => {
-      console.log(event.currentTarget);
       confirm.require({
         target: event.currentTarget,
         group: 'deleteProducerProduct',
@@ -58,6 +59,7 @@ export default {
         acceptLabel: 'Sim, eliminar',
         rejectLabel: 'Não',
         accept: async () => {
+          loading.value = true;
           try {
             // TODO typings are a bit weird
             const producerId = props.producerProduct
@@ -95,6 +97,8 @@ export default {
               detail: 'Ocorreu um erro ao eliminar o produto',
               life: 3000,
             });
+          } finally {
+            loading.value = false;
           }
         },
       });
@@ -102,6 +106,7 @@ export default {
 
     return {
       confirmDeleteProduct,
+      loading,
     };
   },
 };
