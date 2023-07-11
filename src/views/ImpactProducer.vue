@@ -618,7 +618,6 @@ import {
 import {
   fetchAllCategories,
   fetchReportCards,
-  fetchReportMap,
   fetchReportEvolution,
   fetchReportProducts,
   fetchProducerReportClients,
@@ -758,13 +757,22 @@ export default defineComponent({
         console.log(this.selectedCategoryTreeNode);
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
+        this.loadGraphs(
+          this.userLoggedId,
+          this.startDate,
+          this.endDate,
+          this.raio,
+          this.view,
+          Number(this.selectedCategoryTreeNode.key)
+        );
       } else {
         this.loadGraphs(
           this.userLoggedId,
           this.startDate,
           this.endDate,
           this.raio,
-          this.view
+          this.view,
+          undefined
         );
       }
     },
@@ -793,49 +801,111 @@ export default defineComponent({
       dataInicio: string,
       dataFim: string,
       raio: number,
-      view: string
+      view: string,
+      category?: number
     ) {
-      const [reportCards, reportMap, reportEvolution] = await Promise.all([
-        // Ir buscar os dados dos cards
-        fetchReportCards(this.userLoggedId, dataInicio, dataFim, raio),
-        // Ir buscar os dados do mapa
-        fetchReportMap(this.userLoggedId, dataInicio, dataFim, raio),
-        // Ir buscar os dados da evolução (gráfico de linhas)
-        fetchReportEvolution(
+      if (this.selectedCategoryTreeNode != null) {
+        const [reportCards, reportEvolution] = await Promise.all([
+          // Ir buscar os dados dos cards
+          fetchReportCards(
+            this.userLoggedId,
+            dataInicio,
+            dataFim,
+            raio,
+            category
+          ),
+          // Ir buscar os dados do mapa
+          // fetchReportMap(this.userLoggedId, dataInicio, dataFim, raio),
+          // Ir buscar os dados da evolução (gráfico de linhas)
+          fetchReportEvolution(
+            this.userLoggedId,
+            dataInicio,
+            dataFim,
+            raio,
+            category,
+            view
+          ),
+        ]);
+        this.reportCards = reportCards.data;
+        //   this.reportMap = reportMap.data;
+        this.reportEvolution = reportEvolution.data;
+        this.updateGraphData(view, 'line');
+      } else {
+        const [reportCards, reportEvolution] = await Promise.all([
+          // Ir buscar os dados dos cards
+          fetchReportCards(
+            this.userLoggedId,
+            dataInicio,
+            dataFim,
+            raio,
+            undefined
+          ),
+          // Ir buscar os dados do mapa
+          // fetchReportMap(this.userLoggedId, dataInicio, dataFim, raio),
+          // Ir buscar os dados da evolução (gráfico de linhas)
+          fetchReportEvolution(
+            this.userLoggedId,
+            dataInicio,
+            dataFim,
+            raio,
+            undefined,
+            view
+          ),
+        ]);
+        this.reportCards = reportCards.data;
+        //   this.reportMap = reportMap.data;
+        this.reportEvolution = reportEvolution.data;
+        this.updateGraphData(view, 'line');
+      }
+      // Ir buscar os dados do gráfico de barras
+      // Produtos
+      if (this.selectedCategoryTreeNode != null) {
+        const reportBarChart = await fetchReportProducts(
           this.userLoggedId,
           dataInicio,
           dataFim,
           raio,
+          category,
           view
-        ),
-      ]);
-      this.reportCards = reportCards.data;
-      this.reportMap = reportMap.data;
-      this.reportEvolution = reportEvolution.data;
-      this.updateGraphData(view, 'line');
+        );
+        this.reportBarChart = reportBarChart.data;
+        this.updateGraphData(view, 'bar');
 
-      // Ir buscar os dados do gráfico de barras
-      // Produtos
-      const reportBarChart = await fetchReportProducts(
-        this.userLoggedId,
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportBarChart = reportBarChart.data;
-      this.updateGraphData(view, 'bar');
+        // Clientes
+        const producerClients = await fetchProducerReportClients(
+          this.userLoggedId,
+          dataInicio,
+          dataFim,
+          raio,
+          category,
+          view
+        );
+        this.reportProducerClients = producerClients.data;
+        this.updateGraphData(view, 'bar');
+      } else {
+        const reportBarChart = await fetchReportProducts(
+          this.userLoggedId,
+          dataInicio,
+          dataFim,
+          raio,
+          undefined,
+          view
+        );
+        this.reportBarChart = reportBarChart.data;
+        this.updateGraphData(view, 'bar');
 
-      // Clientes
-      const producerClients = await fetchProducerReportClients(
-        this.userLoggedId,
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportProducerClients = producerClients.data;
-      this.updateGraphData(view, 'bar');
+        // Clientes
+        const producerClients = await fetchProducerReportClients(
+          this.userLoggedId,
+          dataInicio,
+          dataFim,
+          raio,
+          undefined,
+          view
+        );
+        this.reportProducerClients = producerClients.data;
+        this.updateGraphData(view, 'bar');
+      }
     },
 
     // Atualizar os dados dos gráficos

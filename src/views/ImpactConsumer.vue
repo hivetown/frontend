@@ -518,7 +518,6 @@ import {
 import {
   fetchAllCategories,
   fetchConsumerReportCards,
-  fetchAdminReportMap,
   fetchConsumerReportEvolution,
   fetchConsumerReportProducts,
 } from '@/api';

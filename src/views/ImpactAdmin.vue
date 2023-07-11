@@ -614,7 +614,6 @@ import {
 import {
   fetchAllCategories,
   fetchAdminReportCards,
-  fetchAdminReportMap,
   fetchAdminReportEvolution,
   fetchAdminReportProducts,
   fetchAdminReportClients,
@@ -749,8 +748,21 @@ export default defineComponent({
         console.log(this.selectedCategoryTreeNode);
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
+        this.loadGraphs(
+          this.startDate,
+          this.endDate,
+          this.raio,
+          this.view,
+          Number(this.selectedCategoryTreeNode.key)
+        );
       } else {
-        this.loadGraphs(this.startDate, this.endDate, this.raio, this.view);
+        this.loadGraphs(
+          this.startDate,
+          this.endDate,
+          this.raio,
+          this.view,
+          undefined
+        );
       }
     },
     updateBarChart() {
@@ -777,41 +789,81 @@ export default defineComponent({
       dataInicio: string,
       dataFim: string,
       raio: number,
-      view: string
+      view: string,
+      category?: number
     ) {
-      const [reportCards, reportMap, reportEvolution] = await Promise.all([
-        // Ir buscar os dados dos cards
-        fetchAdminReportCards(dataInicio, dataFim, raio),
-        // Ir buscar os dados do mapa
-        fetchAdminReportMap(dataInicio, dataFim, raio),
-        // Ir buscar os dados da evolução (gráfico de linhas)
-        fetchAdminReportEvolution(dataInicio, dataFim, raio, view),
-      ]);
-      this.reportCards = reportCards.data;
-      this.reportMap = reportMap.data;
-      this.reportEvolution = reportEvolution.data;
-      this.updateGraphData(view, 'line');
-
+      if (this.selectedCategoryTreeNode != null) {
+        const [reportCards, reportEvolution] = await Promise.all([
+          // Ir buscar os dados dos cards
+          fetchAdminReportCards(dataInicio, dataFim, raio),
+          // Ir buscar os dados do mapa
+          //   fetchAdminReportMap(dataInicio, dataFim, raio),
+          // Ir buscar os dados da evolução (gráfico de linhas)
+          fetchAdminReportEvolution(dataInicio, dataFim, raio, category, view),
+        ]);
+        this.reportCards = reportCards.data;
+        // this.reportMap = reportMap.data;
+        this.reportEvolution = reportEvolution.data;
+        this.updateGraphData(view, 'line');
+      } else {
+        const [reportCards, reportEvolution] = await Promise.all([
+          // Ir buscar os dados dos cards
+          fetchAdminReportCards(dataInicio, dataFim, raio, undefined),
+          // Ir buscar os dados do mapa
+          //   fetchAdminReportMap(dataInicio, dataFim, raio),
+          // Ir buscar os dados da evolução (gráfico de linhas)
+          fetchAdminReportEvolution(dataInicio, dataFim, raio, undefined, view),
+        ]);
+        this.reportCards = reportCards.data;
+        // this.reportMap = reportMap.data;
+        this.reportEvolution = reportEvolution.data;
+        this.updateGraphData(view, 'line');
+      }
       // Ir buscar os dados do gráfico de barras
       // Produtos
-      const reportBarChart = await fetchAdminReportProducts(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportBarChart = reportBarChart.data;
-      this.updateGraphData(view, 'bar');
+      if (this.selectedCategoryTreeNode != null) {
+        const reportBarChart = await fetchAdminReportProducts(
+          dataInicio,
+          dataFim,
+          raio,
+          category,
+          view
+        );
+        this.reportBarChart = reportBarChart.data;
+        this.updateGraphData(view, 'bar');
 
-      // Clientes
-      const producerClients = await fetchAdminReportClients(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportProducerClients = producerClients.data;
-      this.updateGraphData(view, 'bar');
+        // Clientes
+        const producerClients = await fetchAdminReportClients(
+          dataInicio,
+          dataFim,
+          raio,
+          category,
+          view
+        );
+        this.reportProducerClients = producerClients.data;
+        this.updateGraphData(view, 'bar');
+      } else {
+        const reportBarChart = await fetchAdminReportProducts(
+          dataInicio,
+          dataFim,
+          raio,
+          undefined,
+          view
+        );
+        this.reportBarChart = reportBarChart.data;
+        this.updateGraphData(view, 'bar');
+
+        // Clientes
+        const producerClients = await fetchAdminReportClients(
+          dataInicio,
+          dataFim,
+          raio,
+          undefined,
+          view
+        );
+        this.reportProducerClients = producerClients.data;
+        this.updateGraphData(view, 'bar');
+      }
     },
 
     // Atualizar os dados dos gráficos
