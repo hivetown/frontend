@@ -328,7 +328,7 @@ onBeforeMount(async () => {
       const responseItem = await fetchAllItems(user2.value.user.id, idO);
       orderItems.value = responseItem.data;
       //date.value = props.order.orderDate;
-      const res = await fetchAllOrders(user2.value.user.id,1,24);
+      const res = await fetchAllOrders(user2.value.user.id);
       for (let i = 0; i < res.data.items.length; i++) {
         if (res.data.items[i].id === Number(idO)) {
           console.log(res.data.items[i].orderDate);
