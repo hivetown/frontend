@@ -1,18 +1,21 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
+
   <OverlayPanel ref="manageOrderItemCarrierOverlay">
     <div class="p-3">
-      <Toast>
-        <template #message="slotProps">
-          <div class="p-toast-message-text">
-            <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-            <div class="p-toast-detail" v-html="slotProps.message.detail" />
-          </div>
-        </template>
-      </Toast>
       <h4>Colocar produto encomendado num transporte</h4>
 
       <div class="flex justify-content-center mt-4">
+        <Loader v-if="loadingShipment" />
         <VeeForm
+          v-else
           @submit="($e) => manageOrderItem($e as Event)"
           class="flex flex-column gap-3"
         >
@@ -24,9 +27,9 @@
               :input-class="{ 'p-invalid': formErrors.carrier }"
               input-id="carrier"
               aria-describedby="carrierError"
-              :min-length="3"
+              :min-length="1"
               data-key="id"
-              option-label="name"
+              option-label="licensePlate"
               :suggestions="carrier.items.value.items"
               @complete="carrier.search"
               @item-select="carrier.changed"
@@ -38,16 +41,15 @@
                 <div class="flex align-options-center">
                   <div class="flex align-options-center">
                     <img
-                      :src="slotProps.option.images[0].url"
-                      :alt="slotProps.option.images[0].alt"
+                      :src="slotProps.option.image.url"
+                      :alt="slotProps.option.image.alt"
                       class="mr-2"
                       style="width: 75px; height: 75px"
                     />
 
                     <div>
-                      <div class="font-bold">{{ slotProps.option.name }}</div>
-                      <div class="text-sm">
-                        {{ slotProps.option.description }}
+                      <div class="font-bold">
+                        {{ slotProps.option.licensePlate }}
                       </div>
                     </div>
                   </div>
@@ -59,7 +61,7 @@
                 }}"</template
               >
             </AutoComplete>
-            <small>Escreva pelo menos 3 letras para iniciar a pesquisa</small>
+            <small>Escreva pelo menos 1 letra para iniciar a pesquisa</small>
             <small
               v-if="formErrors.carrier"
               class="p-error"
@@ -86,8 +88,9 @@
 import {
   associateOrderItemShipment,
   fetchAllProductionUnitCarriers,
+  fetchOrderItemShipment,
 } from '@/api';
-import { ComputedRef, PropType, computed, onBeforeMount, ref } from 'vue';
+import { ComputedRef, PropType, computed, ref } from 'vue';
 import { BaseItems, Carrier, OrderItem, Shipment } from '@/types';
 import OverlayPanel from 'primevue/overlaypanel';
 import AutoComplete from 'primevue/autocomplete';
@@ -95,6 +98,8 @@ import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import Loader from '@/components/Loader.vue';
+import { AxiosError } from 'axios';
 
 export default {
   name: 'ManageOrderItemCarrier',
@@ -104,22 +109,21 @@ export default {
     VeeForm,
     Toast,
     OverlayPanel,
+    Loader,
   },
   props: {
-    defaultCarrier: {
-      type: Object as PropType<Carrier>,
-      required: false,
-      default: null,
-    },
     method: {
       type: String as PropType<'create' | 'update'>,
       required: true,
       default: 'create',
     },
+    orderId: {
+      type: Number,
+      required: true,
+    },
     orderItem: {
       type: Object as PropType<OrderItem>,
-      required: false,
-      default: null,
+      required: true,
     },
   },
   emits: {
@@ -127,22 +131,33 @@ export default {
     orderItemAssigned: (shipment: Shipment) => true,
   },
   setup(props, { emit }) {
-    // TODO USE STORE AUTHENTICATED USER
-    const PRODUCER_ID = 1;
-
-    if (props.method === 'update' && !props.defaultCarrier) {
-      throw new Error(
-        'When method is "update", producerProductId, defaultProductSpec, and defaultProductionUnit must be provided'
-      );
-    }
-
     // Overlay
     const manageOrderItemCarrierOverlay = ref();
     const isOverlayOpen = computed(
       () => manageOrderItemCarrierOverlay.value.visible
     );
-    const toggleOverlay = (event: MouseEvent) => {
-      manageOrderItemCarrierOverlay.value.toggle(event);
+    const toggleOverlay = async (event: MouseEvent) => {
+      // Set default values
+      try {
+        loadingShipment.value = true;
+        manageOrderItemCarrierOverlay.value.toggle(event);
+
+        orderItemShipment.value = (
+          await fetchOrderItemShipment(
+            props.orderItem.producerProduct.producer!.user.id,
+            props.orderId,
+            props.orderItem.producerProduct.id
+          )
+        ).data;
+
+        if (orderItemShipment.value?.carrier) {
+          carrierChanged({ value: orderItemShipment.value?.carrier });
+          carrier.searchQuery.value =
+            orderItemShipment.value?.carrier.licensePlate;
+        }
+      } finally {
+        loadingShipment.value = false;
+      }
     };
     const closeOverlay = () => {
       manageOrderItemCarrierOverlay.value.hide();
@@ -157,16 +172,12 @@ export default {
       values: formValues,
     } = useForm({
       initialValues: {
-        carrier: props.defaultCarrier || ({} as Carrier),
+        carrier: {} as Carrier,
       },
     });
 
-    // Apply default values
-    onBeforeMount(() => {
-      if (props.defaultCarrier) {
-        carrier.searchQuery.value = props.defaultCarrier.licensePlate;
-      }
-    });
+    const orderItemShipment = ref<Shipment | null>(null);
+    const loadingShipment = ref(true);
 
     // Carrier
     const isCarrierQueryValid: ComputedRef<boolean> = computed(() => {
@@ -178,8 +189,8 @@ export default {
       carrier.items.value = (
         await fetchAllProductionUnitCarriers(
           props.orderItem.producerProduct.producer!.user.id,
-          props.orderItem.producerProduct.productionUnit!.id
-          //   carrier.searchQuery.value
+          props.orderItem.producerProduct.productionUnit!.id,
+          { status: 'Available', search: carrier.searchQuery.value }
         )
       ).data;
     };
@@ -215,23 +226,18 @@ export default {
     const manageOrderItem = handleSubmit(async (values) => {
       // Disable submitting
       submitting.value = true;
+      let preventClose = false;
 
       // Submit
       try {
-        let shipment = null as Shipment | null;
-        switch (props.method) {
-          case 'create':
-          case 'update':
-            shipment = (
-              await associateOrderItemShipment(
-                PRODUCER_ID,
-                props.orderItem.producerProduct.productionUnit!.id,
-                values.carrier.id,
-                props.orderItem.shipment.id
-              )
-            ).data;
-            break;
-        }
+        const shipment = (
+          await associateOrderItemShipment(
+            props.orderItem.producerProduct.producer!.user.id,
+            props.orderItem.producerProduct.productionUnit!.id,
+            values.carrier.id,
+            orderItemShipment.value!.id
+          )
+        ).data;
 
         emit('orderItemAssigned', shipment);
 
@@ -246,24 +252,40 @@ export default {
         resetForm();
         carrier.searchQuery.value = '';
       } catch (error) {
-        toast.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: `Ocorreu um erro ao associar o produto encomendado, por favor tente novamente.<br/>${
-            (error as Error).message
-          }`,
-          life: 10000,
-        });
+        if (error instanceof AxiosError && error.response?.status === 400) {
+          toast.add({
+            severity: 'error',
+            summary: 'Veículo indisponível',
+            detail: `O veículo <b>${values.carrier.licensePlate}</b> não está disponível para transportar o produto encomendado.<br/>`,
+            life: 10000,
+          });
+
+          preventClose = true;
+        } else {
+          toast.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: `Ocorreu um erro ao associar o produto encomendado, por favor tente novamente.<br/>${
+              (error as Error).message
+            }`,
+            life: 10000,
+          });
+        }
+
+        preventClose = true;
       }
 
       // Enable submitting
       submitting.value = false;
 
       // Close overlay
+      if (preventClose) return;
       setTimeout(closeOverlay, 100);
     });
 
     return {
+      // Default shipment
+      loadingShipment,
       //   Overlay
       toggleOverlay,
       manageOrderItemCarrierOverlay,

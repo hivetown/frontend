@@ -78,7 +78,7 @@
               :input-class="{ 'p-invalid': formErrors.productionUnit }"
               input-id="productionUnit"
               aria-describedby="productionUnitError"
-              :min-length="3"
+              :min-length="1"
               data-key="id"
               option-label="name"
               :suggestions="productionUnit.items.value.items"
@@ -106,7 +106,7 @@
                 }}"</template
               >
             </AutoComplete>
-            <small>Escreva pelo menos 3 letras para iniciar a pesquisa</small>
+            <small>Escreva pelo menos 1 letra para iniciar a pesquisa</small>
             <small
               v-if="formErrors.productionUnit"
               class="p-error"

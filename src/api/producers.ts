@@ -94,6 +94,15 @@ export const getProducerId = (producerId: number, search?: string) =>
         params: { search },
     });
 
+export const fetchOrderItemShipment = (
+    producerId: number,
+    orderId: number,
+    producerProductId: number
+) =>
+    api.get<Shipment>(
+        `/producers/${producerId}/orders/${orderId}/items/${producerProductId}/shipment`
+    );
+
 export const associateOrderItemShipment = (
     producerId: number,
     unitId: number,
@@ -114,6 +123,7 @@ export const fetchAllProductionUnitCarriers = (
         page?: number;
         pageSize?: number;
         status?: 'Available' | 'Unavailable';
+        search?: string;
     }
 ) =>
     api.get<BaseItems<Carrier>>(

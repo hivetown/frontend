@@ -154,7 +154,6 @@ export interface OrderProducer {
 export interface OrderItem {
     price: number;
     producerProduct: ProducerProduct;
-    shipment: Shipment;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
     orderDate?: string;
