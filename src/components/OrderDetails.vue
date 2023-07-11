@@ -1,6 +1,13 @@
 <template>
   <div class="parent" style="background-color: ">
-    <div class="table-container" style="overflow: auto">
+    <div
+      class="table-container"
+      style="overflow: auto"
+      v-if="$store.state.user?.user?.type === 'CONSUMER'"
+    >
+      <h5 class="" id="data" style="margin-right: 0px; text-align: right">
+        Encomenda efetuada em: {{ date }}
+      </h5>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -11,7 +18,7 @@
             <th id="col" scope="col">Quantidade</th>
             <th id="col" scope="col">Eventos</th>
             <th id="col" scope="col">Estado</th>
-            <th id="col" scope="col">Total</th>
+            <th id="col" scope="col" style="width: 80px">Total</th>
           </tr>
         </thead>
         <tbody>
@@ -116,7 +123,7 @@
                 style="display: inline-flex; gap: 0.5vh"
               >
                 <i class="bi bi-truck mr-2"></i>
-                <p class="texto">Em andamento</p>
+                <p class="texto">Em transporte</p>
               </div>
             </td>
 
@@ -130,58 +137,216 @@
         </tbody>
       </table>
     </div>
-    <br />
-    <div class="resumo" style="background-color: ">
-      <h5 class="" id="data">Encomenda efetuada em: {{ date }}</h5>
+    <div v-if="$store.state.user?.user?.type === 'CONSUMER'" class="resumo">
       <h3 class="">Total: {{ totalSum }}€</h3>
     </div>
+    <br />
+
+    <!--HISTORICO PRODUCER-->
+    <div
+      class="table-container"
+      style="overflow: auto"
+      v-if="$store.state.user?.user?.type === 'PRODUCER'"
+    >
+      <div style="text-align: right">
+        <h5 class="" id="data">
+          Encomenda efetuada em:
+          {{ orderItems?.items[0].orderDate?.substring(0, 10) }}
+        </h5>
+      </div>
+      <table class="table table-striped" v-if="orderItems">
+        <thead>
+          <tr>
+            <th id="col" scope="col">Artigo</th>
+            <th id="col" scope="col"></th>
+            <th id="col" scope="col">Estado</th>
+            <th id="col" scope="col">Stock</th>
+            <th id="col" scope="col">Preço</th>
+            <th id="col" scope="col">Quantidade</th>
+            <th id="col" scope="col">Unidade de produção</th>
+            <th id="col" scope="col">Data de produção</th>
+            <th id="col" scope="col">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="orderItem in orderItems.items"
+            :key="orderItem.producerProduct.id"
+          >
+            <!-- Typescript (it has productSpec but typings) -->
+            <td>
+              <!-- TOOD URL do producerproduct -->
+              <router-link
+                :to="
+                '/products/' +
+                orderItem.producerProduct.productSpec!.id +
+                '/products/' +
+                orderItem.producerProduct.id
+              "
+                ><img
+                  v-if="orderItem.producerProduct.productSpec!.images"
+                  :src="orderItem.producerProduct.productSpec!.images[0].url"
+                  :alt="orderItem.producerProduct.productSpec!.images[0].alt"
+                  style="height: 50px"
+                />
+                <p class="texto" v-else>
+                  Imagem <br />indisponível
+                </p></router-link
+              >
+            </td>
+            <td>
+              <router-link
+                class="texto"
+                :to="'/products/' + orderItem.producerProduct.productSpec!.id"
+                ><span style="color: black !important">{{
+                  orderItem.producerProduct.productSpec!.name
+                }}</span></router-link
+              >
+            </td>
+            <td>
+              <div
+                class="status-info"
+                v-if="orderItem['status'] === 'Delivered'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-check-all"></i>
+                <p class="texto">Entregue</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Processing'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-arrow-repeat mr-2"></i>
+                <p class="texto">Em processamento</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Paid'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-currency-euro"></i>
+                <p class="texto">Pago</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Canceled'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-x-lg"></i>
+                <p class="texto">Cancelado</p>
+              </div>
+              <div
+                v-if="orderItem['status'] === 'Shipped'"
+                style="display: inline-flex; gap: 0.5vh"
+              >
+                <i class="bi bi-truck mr-2"></i>
+                <p class="texto">Em transporte</p>
+              </div>
+            </td>
+            <td>
+              <router-link
+                class="texto"
+                :to="'/producer/'+orderItem.producerProduct.producer!.user.id"
+                ><span style="color: black !important">
+                  {{ orderItem.producerProduct.stock }}
+                </span></router-link
+              >
+            </td>
+            <td>
+              <p class="texto">{{ orderItem['price'] }} €</p>
+            </td>
+            <td class="text-center">
+              <p class="texto">{{ orderItem['quantity'] }}</p>
+            </td>
+
+            <td>
+              {{ orderItem.producerProduct.productionUnit?.name }}
+            </td>
+            <td>
+              {{
+                String(orderItem.producerProduct.productionDate).substring(
+                  0,
+                  10
+                )
+              }}
+              {{
+                String(orderItem.producerProduct.productionDate).substring(
+                  11,
+                  19
+                )
+              }}
+            </td>
+            <td>
+              <p class="texto">
+                {{ orderItem['quantity'] * orderItem['price'] }}€
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="resumo" style="background-color: ">
+        <h3 class="">Total: {{ totalSum }}€</h3>
+      </div>
+    </div>
+    <br />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, PropType, onBeforeMount } from 'vue';
-import { fetchAllItems } from '../api/orders';
+import { ref, computed, onBeforeMount } from 'vue';
+import {
+  fetchAllItems,
+  fetchAllItemsProducer,
+  fetchAllOrders,
+} from '../api/orders';
 import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
-import { BaseItems, Order, OrderItem, ShipmentEvent } from '@/types';
+import { BaseItems, OrderItem, ShipmentEvent } from '@/types';
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
-const date = ref('');
+const date = ref<{ [id: number]: String }>({});
 const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
-//obtem o id do link
 const store = useStore();
 const user2 = computed(() => store.state.user);
-
-const props = defineProps({
-  order: {
-    type: Object as PropType<Order>,
-    required: true,
-  },
-});
 
 onBeforeMount(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
-    const responseItem = await fetchAllItems(user2.value.user.id, idO);
-    orderItems.value = responseItem.data;
+    if (user2.value.user.type === 'CONSUMER') {
+      const responseItem = await fetchAllItems(user2.value.user.id, idO);
+      orderItems.value = responseItem.data;
+      //date.value = props.order.orderDate;
+      const res = await fetchAllOrders(user2.value.user.id);
+      for (let i = 0; i < res.data.items.length; i++) {
+        if (res.data.items[i].id === Number(idO)) {
+          console.log(res.data.items[i].orderDate);
+          date.value = res.data.items[i].orderDate.substring(0, 10);
+        }
+      }
+    } else {
+      const responseItem = await fetchAllItemsProducer(
+        user2.value.user.id,
+        idO
+      );
+      orderItems.value = responseItem.data;
+      for (const orderItem of orderItems.value.items) {
+        totalSum.value += orderItem['price'] * orderItem['quantity'];
+      }
+    }
+    if (user2.value.user.type === 'CONSUMER') {
+      for (const orderItem of orderItems.value.items) {
+        totalSum.value += orderItem['price'] * orderItem['quantity'];
 
-    date.value = props.order.orderDate.substring(0, 10);
-
-    for (const orderItem of orderItems.value.items) {
-      totalSum.value += orderItem['price'] * orderItem['quantity'];
-
-      const responseShipment = (
-        await getShipment(
-          user2.value.user.id,
-          parseInt(idO),
-          orderItem.producerProduct.id
-        )
-      ).data;
-
-      eventos.value[orderItem.producerProduct.id] =
-        responseShipment.events[responseShipment.events.length - 1];
+        const responseShipment = (
+          await getShipment(
+            user2.value.user.id,
+            parseInt(idO),
+            orderItem.producerProduct.id
+          )
+        ).data;
+        eventos.value[orderItem.producerProduct.id] =
+          responseShipment.events[responseShipment.events.length - 1];
+      }
     }
   }
 });

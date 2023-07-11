@@ -144,6 +144,12 @@ export interface Order {
     generalStatus: string;
     totalPrice: number;
 }
+export interface OrderProducer {
+    id: number;
+    shippingAddress: Address;
+    orderDate: string;
+    status: string;
+}
 
 export interface OrderItem {
     price: number;
@@ -151,6 +157,19 @@ export interface OrderItem {
     shipment: Shipment;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+    orderDate?: string;
+}
+
+export interface SpecificOrder {
+    id?: number;
+    shippingAddress: Address;
+    generalStatus?:
+        | 'Paid'
+        | 'Processing'
+        | 'Shipped'
+        | 'Delivered'
+        | 'Canceled';
+    status?: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface CreateProducerProduct {

@@ -1,211 +1,215 @@
 <template>
-  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 0">
-    <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
-    encomendas.
-  </h3>
+  <div v-if="(orders?.items?.length || 0) < 1">
+    <h3 class="semencoemndas">
+      <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+      encomendas.
+    </h3>
+  </div>
+  <div v-else>
+    <div class="table-container" style="overflow: auto">
+      <div></div>
+      <table v-if="!!orders?.items" style="border: 2px" class="table">
+        <thead>
+          <tr>
+            <th>
+              <h4>Código</h4>
+            </th>
+            <th><h4>Artigos</h4></th>
 
-  <div class="table-container" style="overflow: auto">
-    <div></div>
-    <table v-if="!!orders?.items" style="border: 2px" class="table">
-      <thead>
-        <tr>
-          <th>
-            <h4>Código</h4>
-          </th>
-          <th><h4>Artigos</h4></th>
+            <th><h4>Estado</h4></th>
+            <th><h4>Morada de entrega</h4></th>
 
-          <th><h4>Estado</h4></th>
-          <th><h4>Morada de entrega</h4></th>
+            <th id="coluna-data">
+              <div class="data">
+                <h4>Data</h4>
+              </div>
+            </th>
+            <th><h4>Total</h4></th>
+            <th><h4>Exportar dados</h4></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(order, idx) in orders.items" :key="order.id">
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                class="texto"
+                style="text-decoration: none; color: black"
+                >{{ order.id }}</router-link
+              >
+            </td>
 
-          <th id="coluna-data">
-            <div class="data">
-              <h4>Data</h4>
-            </div>
-          </th>
-          <th><h4>Total</h4></th>
-          <th><h4>Exportar dados</h4></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(order, idx) in orders.items" :key="order.id">
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              class="texto"
-              style="text-decoration: none; color: black"
-              >{{ order.id }}</router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-            >
-              <img
-                style="width: 75px"
-                :src="ordersImage[order.id].url"
-                :alt="ordersImage[order.id].alt"
-                v-if="!!ordersImage[order.id]"
-              />
-              <p class="texto" v-else>Produtos sem <br />imagem</p>
-            </router-link>
-          </td>
-
-          <td>
-            <div style="display: inline-flex; gap: 0.5vh">
+            <td>
               <router-link
                 :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
-                <div class="status-info">
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) === 'Entregue'
-                    "
-                    class="bi bi-check-all"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Em processamento'
-                    "
-                    class="bi bi-arrow-repeat mr-2"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) === 'Pago'
-                    "
-                    class="bi bi-currency-euro"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Cancelada'
-                    "
-                    class="bi bi-x"
-                    style="margin-top: -0.5vh"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Em andamento'
-                    "
-                    class="bi bi-truck mr-2"
-                    >></i
-                  >
+                <img
+                  style="width: 75px"
+                  :src="ordersImage[order.id].url"
+                  :alt="ordersImage[order.id].alt"
+                  v-if="!!ordersImage[order.id]"
+                />
+                <p class="texto" v-else>Produtos sem <br />imagem</p>
+              </router-link>
+            </td>
 
-                  <p class="texto">
-                    {{ orderStatusTranslation(order.generalStatus) }}
-                  </p>
-                </div></router-link
+            <td>
+              <div style="display: inline-flex; gap: 0.5vh">
+                <router-link
+                  :to="'/encomenda/id' + order.id"
+                  style="text-decoration: none; color: black"
+                >
+                  <div class="status-info">
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Entregue'
+                      "
+                      class="bi bi-check-all"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Em processamento'
+                      "
+                      class="bi bi-arrow-repeat mr-2"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) === 'Pago'
+                      "
+                      class="bi bi-currency-euro"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Cancelada'
+                      "
+                      class="bi bi-x"
+                      style="margin-top: -0.5vh"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Em transporte'
+                      "
+                      class="bi bi-truck mr-2"
+                      >></i
+                    >
+
+                    <p class="texto">
+                      {{ orderStatusTranslation(order.generalStatus) }}
+                    </p>
+                  </div></router-link
+                >
+              </div>
+
+              <div v-if="order.generalStatus === 'Shipped'">
+                <BButton
+                  class="botao2"
+                  variant="outline-primary"
+                  @click="cancelarEncomendaImpossivel()"
+                  >Cancelar encomenda</BButton
+                >
+              </div>
+              <div
+                v-if="
+                  order.generalStatus === 'Paid' ||
+                  order.generalStatus === 'Processing'
+                "
               >
-            </div>
+                <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
+                <BButton
+                  class="botao2"
+                  variant="outline-primary"
+                  @click="cancelarEncomenda(order)"
+                  >Cancelar encomenda</BButton
+                >
+              </div>
+            </td>
 
-            <div v-if="order.generalStatus === 'Shipped'">
-              <BButton
-                class="botao2"
-                variant="outline-primary"
-                @click="cancelarEncomendaImpossivel()"
-                >Cancelar encomenda</BButton
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.street }}, nº{{
+                    order.shippingAddress.number
+                  }}, andar {{ order.shippingAddress.floor }}
+                </p></router-link
               >
-            </div>
-            <div
-              v-if="
-                order.generalStatus === 'Paid' ||
-                order.generalStatus === 'Processing'
-              "
-            >
-              <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-              <BButton
-                class="botao2"
-                variant="outline-primary"
-                @click="cancelarEncomenda(order)"
-                >Cancelar encomenda</BButton
+
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.zipCode }},
+                  {{ order.shippingAddress.city }}
+                </p></router-link
               >
-            </div>
-          </td>
 
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.street }}, nº{{
-                  order.shippingAddress.number
-                }}, andar {{ order.shippingAddress.floor }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.zipCode }},
-                {{ order.shippingAddress.city }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.latitude }},
-                {{ order.shippingAddress.longitude }}
-              </p></router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><span class="texto">{{
-                order.orderDate.substring(0, 10)
-              }}</span></router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><span class="texto">{{ order.totalPrice }}€</span></router-link
-            >
-          </td>
-
-          <td>
-            <input
-              id="name"
-              type="checkbox"
-              style="transform: scale(2)"
-              @change="onCheckboxChange()"
-              :value="order.id"
-              v-model="selectedOrders[idx]"
-            />
-            <span v-if="selectedOrders[idx]"></span>
-          </td>
-
-          <td>
-            <router-link :to="'/encomenda/id' + order.id">
-              <BButton class="botao2" variant="outline-primary"
-                >Ver detalhes</BButton
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.latitude }},
+                  {{ order.shippingAddress.longitude }}
+                </p></router-link
               >
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="btn-div" v-if="isExportButtonVisible">
-    <BButton
-      id="botao"
-      class="botao"
-      variant="outline-primary"
-      @click="exportSelectedOrders"
-      ><span>Exportar dados</span></BButton
-    >
+            </td>
+
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><span class="texto">{{
+                  order.orderDate.substring(0, 10)
+                }}</span></router-link
+              >
+            </td>
+
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><span class="texto">{{ order.totalPrice }}€</span></router-link
+              >
+            </td>
+
+            <td style="text-align: center">
+              <input
+                id="name"
+                type="checkbox"
+                style="transform: scale(2)"
+                @change="onCheckboxChange()"
+                :value="order.id"
+                v-model="selectedOrders[idx]"
+              />
+              <span v-if="selectedOrders[idx]"></span>
+            </td>
+
+            <td>
+              <router-link :to="'/encomenda/id' + order.id">
+                <BButton class="botao2" variant="outline-primary"
+                  >Ver detalhes</BButton
+                >
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-div" v-if="isExportButtonVisible">
+      <BButton
+        id="botao"
+        class="botao"
+        variant="outline-primary"
+        @click="exportSelectedOrders"
+        ><span>Exportar dados</span></BButton
+      >
+    </div>
   </div>
 </template>
 
@@ -228,7 +232,7 @@ const orderStatusTranslation = (status: string) => {
     case 'Processing':
       return 'Em processamento';
     case 'Shipped':
-      return 'Em andamento';
+      return 'Em transporte';
     case 'Canceled':
       return 'Cancelada';
     default:
@@ -307,7 +311,7 @@ function cancelarEncomenda(order: Order) {
               Swal.fire({
                 icon: 'error',
                 title: 'Não é possível cancelar esta encomenda',
-                text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+                text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
                 confirmButtonText: 'OK',
               });
             }
@@ -350,7 +354,7 @@ function cancelarEncomendaImpossivel() {
   Swal.fire({
     icon: 'error',
     title: 'Não é possível cancelar esta encomenda',
-    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+    text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
     confirmButtonText: 'OK',
   });
 }

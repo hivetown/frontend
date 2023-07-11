@@ -2,18 +2,29 @@
   <div>
     <h1 class="dgreen-txt main-txt mt-4">Histórico de encomendas</h1>
     <br />
-    <div class="parent table-container-main">
+    <div
+      class="parent table-container-main"
+      v-if="$store.state.user?.user?.type === 'CONSUMER'"
+    >
       <OrderHistory />
+    </div>
+    <div
+      class="parent table-container-main"
+      v-if="$store.state.user?.user?.type === 'PRODUCER'"
+    >
+      <OrderHistoryProducer />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import OrderHistory from '../components/OrderHistory.vue';
+import OrderHistoryProducer from '../components/OrderHistoryProducer.vue';
 
 export default {
   components: {
     OrderHistory,
+    OrderHistoryProducer,
   },
 };
 </script>
