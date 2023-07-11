@@ -99,7 +99,7 @@
                         'Em transporte'
                       "
                       class="bi bi-truck mr-2"
-                      >></i
+                      ></i
                     >
 
                     <p class="texto">
