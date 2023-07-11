@@ -5,9 +5,11 @@
   </div>
   <div class="parent">
     <!-- TODO Arranjar para voltar para onde o user estiver antes realmente -->
-    <RouterLink to="/products" style="text-decoration: none">
-      <PageBack style="margin-top: -2vh"></PageBack
-    ></RouterLink>
+    <!-- <RouterLink to="/products" style="text-decoration: none"> -->
+    <div class="parent" @click="goBack">
+      <PageBack style="margin-top: -2vh"></PageBack>
+    </div>
+    <!--</RouterLink> -->
   </div>
 
   <!-- detalhes do produto -->
@@ -796,6 +798,9 @@ export default defineComponent({
     },
   },
   methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
     changeDetailsView(index: DetailsView) {
       this.detailsTabIndex = index;
 
