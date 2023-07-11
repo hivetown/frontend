@@ -244,7 +244,11 @@ export default {
         toast.add({
           severity: 'success',
           summary: 'Produto encomendado associado a um veículo com sucesso',
-          detail: `O produto encomendado foi associado ao veículo <b>${values.carrier.licensePlate}</b> com sucesso.`,
+          detail: `O produto <b>${
+            props.orderItem.producerProduct.productSpec!.name
+          }</b>encomendado foi associado ao veículo <b>${
+            values.carrier.licensePlate
+          }</b> com sucesso.`,
           life: 10000,
         });
 
