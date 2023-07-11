@@ -1,4 +1,13 @@
 <template>
+  <h5
+    class="parent"
+    style="display: flex; justify-content: flex-start"
+    id="data"
+  >
+    <p>
+      Efetuada a: <span class="fw-bold"> {{ date }}</span>
+    </p>
+  </h5>
   <div class="parent" style="background-color: ">
 	
     <div
