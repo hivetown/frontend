@@ -569,10 +569,5 @@ hr {
   .content {
     margin-top: 20px; /* Ajuste para a altura da barra sticky */
   }
-
-  .active {
-    background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
-    border-color: #d3e3e6 !important;
-  }
 }
 </style>
