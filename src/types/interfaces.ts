@@ -148,6 +148,7 @@ export interface Order {
 export interface OrderItem {
     price: number;
     producerProduct: ProducerProduct;
+    shipment: Shipment;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
@@ -287,7 +288,8 @@ export interface CartItem {
     quantity: number;
 }
 export interface Shipment {
-    carrier: Carrier;
+    id: number;
+    carrier?: Carrier;
     events: ShipmentEvent[];
 }
 export enum ShipmentStatus {

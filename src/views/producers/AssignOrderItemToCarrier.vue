@@ -3,26 +3,18 @@
   <h1>DUMMY PAGE!</h1>
 
   <div class="p-3">
-    <ManageProduct
-      :default-product-spec="DEMOdefaultProductSpec"
-      :default-production-unit="DEMOdefaultProductionUnit"
-      :default-price="400"
-      :default-stock="100"
-      :default-production-date="new Date()"
-      method="create"
-      :producer-product-id="54721"
-    />
+    <ManageOrderItemCarrier method="create" :order-item="orderItem" />
   </div>
 </template>
 
 <script lang="ts">
-import ManageProduct from '@/components/producer/products/ManageProduct.vue';
-import { ProductSpecification, ProductionUnit } from '@/types';
-import { fetchAllProductionUnits, fetchAllProducts } from '@/api';
+import ManageOrderItemCarrier from '@/components/producer/orders/ManageOrderItemCarrier.vue';
+import { OrderItem, ProductSpec, ProductionUnit } from '@/types';
+import { fetchProducerProductionUnits, fetchAllProducts } from '@/api';
 import { onMounted, ref } from 'vue';
 export default {
   components: {
-    ManageProduct,
+    ManageOrderItemCarrier,
   },
   setup() {
     onMounted(() => {
@@ -33,12 +25,11 @@ export default {
       //   }, 1000);
     });
 
-    // TODO: DEMO OF USING DEFAULT PRODUCTION UNIT
-    const DEMOdefaultProductionUnit = ref({} as ProductionUnit);
-    const DEMOdefaultProductSpec = ref({} as ProductSpecification);
+    // TODO: DEMO OF USING DEFAULT ORDER ITEM
+    const DEMOdefaultOrderItem = ref({} as OrderItem);
 
-    fetchAllProductionUnits(1).then((res) => {
-      DEMOdefaultProductionUnit.value = res.data.items[0];
+    fetchAllOrdersProducer(1).then((res) => {
+      DEMOdefaultOrderItem.value = res.data.items[0];
     });
 
     fetchAllProducts().then((res) => {
@@ -46,7 +37,7 @@ export default {
     });
 
     return {
-      DEMOdefaultProductionUnit,
+      DEMOdefaultProductionUnit: DEMOdefaultOrderItem,
       DEMOdefaultProductSpec,
     };
   },

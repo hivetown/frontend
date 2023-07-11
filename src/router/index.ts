@@ -26,6 +26,7 @@ import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
+import DEMOAssignOrderItemToCarrier from '@/views/producers/AssignOrderItemToCarrier.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -221,6 +222,10 @@ const routes = [
         path: '/producer/:id',
         name: 'Producer',
         component: SupplierInfo,
+    },
+    {
+        path: '/demo',
+        component: DEMOAssignOrderItemToCarrier,
     },
 ];
 

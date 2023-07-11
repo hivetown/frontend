@@ -7,6 +7,8 @@ import {
     ProductionUnit,
     reportProducerClients,
     ProducerProduct,
+    Shipment,
+    Carrier,
 } from '@/types';
 import { api } from './_base';
 
@@ -91,3 +93,30 @@ export const getProducerId = (producerId: number, search?: string) =>
     api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
+
+export const associateOrderItemShipment = (
+    producerId: number,
+    unitId: number,
+    carrierId: number,
+    shipmentId: number
+) =>
+    api.post<Shipment>(
+        `/producers/${producerId}/units/${unitId}/carriers/${carrierId}/shipments`,
+        {
+            shipmentId,
+        }
+    );
+
+export const fetchAllProductionUnitCarriers = (
+    producerId: number,
+    unitId: number,
+    params?: {
+        page?: number;
+        pageSize?: number;
+        status?: 'Available' | 'Unavailable';
+    }
+) =>
+    api.get<BaseItems<Carrier>>(
+        `/producers/${producerId}/units/${unitId}/carriers`,
+        { params }
+    );
