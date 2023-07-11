@@ -282,7 +282,6 @@
             >Para visualizar os dados tem de escolher valores para os
             filtros</InlineMessage
           >
-
           <!-- Período temporal -->
           <p v-if="graficosGerados">
             A mostrar dados entre: "
@@ -323,9 +322,10 @@
                 Histórico de gastos
               </h4>
               <!-- Gráfico de linhas -->
-              <div class="graph-container">
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingLineChart" />
                 <LineChart
-                  v-if="graficosGerados"
+                  v-else
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
@@ -337,9 +337,10 @@
                   Produtos encomendados
                 </h4>
                 <!-- Gráfico de barras -->
-                <div class="graph-container">
+                <div v-if="graficosGerados" class="graph-container">
+                  <Loader v-if="loadingBarChart" />
                   <BarChart
-                    v-if="graficosGerados"
+                    v-if="!loadingBarChart"
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
@@ -405,7 +406,7 @@
       </div>
       <!-- TODO - Isto mas para quando os gráficos estiverem efetivamente a carregar
 		   Depois da pessoa ter escolhido os filtros -->
-      <div v-if="!graficosGerados" class="mt-5">
+      <!-- <div v-if="!graficosGerados" class="mt-5">
         <Skeleton
           class="d-block mx-auto"
           style="width: 95%; height: 20vh"
@@ -414,7 +415,7 @@
           class="d-block mx-auto mt-4"
           style="width: 95%; height: 20vh"
         ></Skeleton>
-      </div>
+      </div> -->
 
       <div class="evolution-line-graph">
         <div class="parent">
@@ -446,10 +447,11 @@
               Histórico de faturação
             </h4>
             <!-- Gráfico de linhas -->
-            <div class="graph-container">
+            <div v-if="graficosGerados" class="graph-container">
+              <Loader v-if="loadingLineChart" />
               <LineChart
                 style="max-height: 400px !important"
-                v-if="graficosGerados"
+                v-else
                 :chart-data="lineChartData"
                 :chart-options="lineChartOptions"
               />
@@ -476,9 +478,10 @@
                 Produtos encomendados por consumidor
               </h4>
               <!-- Gráfico de barras -->
-              <div class="graph-container">
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingBarChart" />
                 <BarChart
-                  v-if="graficosGerados"
+                  v-if="!loadingBarChart"
                   :chart-data="barChartData"
                   :chart-options="barChartOptions"
                 ></BarChart>
@@ -503,8 +506,8 @@ import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
-import Skeleton from 'primevue/skeleton';
 import Tree, { TreeNode } from 'primevue/tree';
+import Loader from '@/components/Loader.vue';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -567,6 +570,11 @@ export default defineComponent({
       reportProducerClients: [] as reportProducerClients[],
 
       // Gráfico de linhas
+      loadingLineChart: true,
+      loadingBarChart: true,
+      noValuesLine: false,
+      noValuesBar: false,
+
       lineGraphLabels: [] as string[],
       lineGraphData: [] as number[],
       lineChartData: {
@@ -670,6 +678,7 @@ export default defineComponent({
         );
       }
     },
+
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
         this.startDate = selectedDate[0];
@@ -691,77 +700,96 @@ export default defineComponent({
       category?: number
     ) {
       if (this.selectedCategoryTreeNode != null) {
-        const [reportCards, reportEvolution] = await Promise.all([
-          // Ir buscar os dados dos cards
-          fetchConsumerReportCards(id, dataInicio, dataFim, raio, category),
-          // Ir buscar os dados do mapa
-          //   fetchAdminReportMap(dataInicio, dataFim, raio),
-          // Ir buscar os dados da evolução (gráfico de linhas)
-          fetchConsumerReportEvolution(
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchConsumerReportCards(id, dataInicio, dataFim, raio, category),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+            fetchConsumerReportEvolution(
+              id,
+              dataInicio,
+              dataFim,
+              raio,
+              category,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          console.log(reportEvolution.data);
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingLineChart = false;
+        }
+      } else {
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchConsumerReportCards(id, dataInicio, dataFim, raio),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+            fetchConsumerReportEvolution(
+              id,
+              dataInicio,
+              dataFim,
+              raio,
+              undefined,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingLineChart = false;
+        }
+      }
+      // Ir buscar os dados do gráfico de barras
+      // Produtos
+      if (this.selectedCategoryTreeNode != null) {
+        try {
+          const reportBarChart = await fetchConsumerReportProducts(
             id,
             dataInicio,
             dataFim,
             raio,
             category,
             view
-          ),
-        ]);
-        this.reportCards = reportCards.data;
-        // this.reportMap = reportMap.data;
-        this.reportEvolution = reportEvolution.data;
-        console.log(reportEvolution.data);
-        this.updateGraphData(view, 'line');
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
       } else {
-        const [reportCards, reportEvolution] = await Promise.all([
-          // Ir buscar os dados dos cards
-          fetchConsumerReportCards(id, dataInicio, dataFim, raio),
-          // Ir buscar os dados do mapa
-          //   fetchAdminReportMap(dataInicio, dataFim, raio),
-          // Ir buscar os dados da evolução (gráfico de linhas)
-          fetchConsumerReportEvolution(
+        try {
+          const reportBarChart = await fetchConsumerReportProducts(
             id,
             dataInicio,
             dataFim,
             raio,
             undefined,
             view
-          ),
-        ]);
-        this.reportCards = reportCards.data;
-        // this.reportMap = reportMap.data;
-        this.reportEvolution = reportEvolution.data;
-        this.updateGraphData(view, 'line');
-      }
-      // Ir buscar os dados do gráfico de barras
-      // Produtos
-      if (this.selectedCategoryTreeNode != null) {
-        const reportBarChart = await fetchConsumerReportProducts(
-          id,
-          dataInicio,
-          dataFim,
-          raio,
-          category,
-          view
-        );
-        this.reportBarChart = reportBarChart.data;
-        this.updateGraphData(view, 'bar');
-      } else {
-        const reportBarChart = await fetchConsumerReportProducts(
-          id,
-          dataInicio,
-          dataFim,
-          raio,
-          undefined,
-          view
-        );
-        this.reportBarChart = reportBarChart.data;
-        this.updateGraphData(view, 'bar');
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
       }
     },
 
     // Atualizar os dados do gráfico de linhas
     // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
+      if (Object.keys(this.reportEvolution).length === 0) {
+        this.noValuesLine = true;
+      }
       // Limpar os arrays de dados
       if (grapthType == 'line') {
         this.lineGraphLabels = [];
@@ -991,8 +1019,8 @@ export default defineComponent({
     ButtonPV,
     Accordion,
     AccordionTab,
-    Skeleton,
     Tree,
+    Loader,
   },
 });
 </script>

@@ -382,10 +382,11 @@
                 Histórico de faturação
               </h4>
               <!-- Gráfico de linhas -->
-              <div class="graph-container">
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingLineChart" />
                 <LineChart
+                  v-else
                   style="max-height: 400px !important"
-                  v-if="graficosGerados"
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
@@ -409,11 +410,12 @@
                   Produtos encomendados por consumidor
                 </h4>
                 <!-- Gráfico de barras -->
-                <div class="graph-container">
+                <div v-if="graficosGerados" class="graph-container">
+                  <Loader v-if="loadingBarChart" />
                   <div v-if="barChartView == 'products'">
                     <BarChart
                       style="max-height: 400px !important"
-                      v-if="graficosGerados"
+                      v-if="!loadingBarChart"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
                     ></BarChart>
@@ -421,7 +423,7 @@
                   <div v-if="barChartView == 'clients'">
                     <BarChart
                       style="max-height: 400px !important"
-                      v-if="graficosGerados"
+                      v-if="!loadingBarChart"
                       :chart-data="barChartData"
                       :chart-options="barChartOptions"
                     ></BarChart>
@@ -489,16 +491,6 @@
       </div>
       <!-- TODO - Isto mas para quando os gráficos estiverem efetivamente a carregar
 		   Depois da pessoa ter escolhido os filtros -->
-      <div v-if="!graficosGerados" class="mt-5">
-        <Skeleton
-          class="d-block mx-auto"
-          style="width: 95%; height: 20vh"
-        ></Skeleton>
-        <Skeleton
-          class="d-block mx-auto mt-4"
-          style="width: 95%; height: 20vh"
-        ></Skeleton>
-      </div>
 
       <div class="evolution-line-graph">
         <div class="parent">
@@ -530,10 +522,11 @@
               Histórico de faturação
             </h4>
             <!-- Gráfico de linhas -->
-            <div class="graph-container">
+            <div v-if="graficosGerados" class="graph-container">
+              <Loader v-if="loadingLineChart" />
               <LineChart
                 style="max-height: 400px !important"
-                v-if="graficosGerados"
+                v-else
                 :chart-data="lineChartData"
                 :chart-options="lineChartOptions"
               />
@@ -560,11 +553,12 @@
                 Produtos encomendados por consumidor
               </h4>
               <!-- Gráfico de barras -->
-              <div class="graph-container">
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingBarChart" />
                 <div v-if="barChartView == 'products'">
                   <BarChart
                     style="max-height: 400px !important"
-                    v-if="graficosGerados"
+                    v-if="!loadingBarChart"
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
@@ -572,7 +566,7 @@
                 <div v-if="barChartView == 'clients'">
                   <BarChart
                     style="max-height: 400px !important"
-                    v-if="graficosGerados"
+                    v-if="!loadingBarChart"
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
@@ -599,8 +593,8 @@ import ButtonPV from 'primevue/button';
 import RadioButton from 'primevue/radiobutton';
 import Accordion from 'primevue/accordion';
 import AccordionTab from 'primevue/accordiontab';
-import Skeleton from 'primevue/skeleton';
 import Tree, { TreeNode } from 'primevue/tree';
+import Loader from '@/components/Loader.vue';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -666,6 +660,10 @@ export default defineComponent({
       reportProducerClients: [] as reportProducerClients[],
 
       // Gráfico de linhas
+      loadingLineChart: true,
+      loadingBarChart: true,
+      loadingCards: true,
+
       lineGraphLabels: [] as string[],
       lineGraphData: [] as number[],
       lineChartData: {
@@ -748,6 +746,7 @@ export default defineComponent({
         console.log(this.selectedCategoryTreeNode);
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
+
         this.loadGraphs(
           this.startDate,
           this.endDate,
@@ -793,76 +792,112 @@ export default defineComponent({
       category?: number
     ) {
       if (this.selectedCategoryTreeNode != null) {
-        const [reportCards, reportEvolution] = await Promise.all([
-          // Ir buscar os dados dos cards
-          fetchAdminReportCards(dataInicio, dataFim, raio),
-          // Ir buscar os dados do mapa
-          //   fetchAdminReportMap(dataInicio, dataFim, raio),
-          // Ir buscar os dados da evolução (gráfico de linhas)
-          fetchAdminReportEvolution(dataInicio, dataFim, raio, category, view),
-        ]);
-        this.reportCards = reportCards.data;
-        // this.reportMap = reportMap.data;
-        this.reportEvolution = reportEvolution.data;
-        this.updateGraphData(view, 'line');
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchAdminReportCards(dataInicio, dataFim, raio),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+
+            fetchAdminReportEvolution(
+              dataInicio,
+              dataFim,
+              raio,
+              category,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingLineChart = false;
+        }
       } else {
-        const [reportCards, reportEvolution] = await Promise.all([
-          // Ir buscar os dados dos cards
-          fetchAdminReportCards(dataInicio, dataFim, raio, undefined),
-          // Ir buscar os dados do mapa
-          //   fetchAdminReportMap(dataInicio, dataFim, raio),
-          // Ir buscar os dados da evolução (gráfico de linhas)
-          fetchAdminReportEvolution(dataInicio, dataFim, raio, undefined, view),
-        ]);
-        this.reportCards = reportCards.data;
-        // this.reportMap = reportMap.data;
-        this.reportEvolution = reportEvolution.data;
-        this.updateGraphData(view, 'line');
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchAdminReportCards(dataInicio, dataFim, raio, undefined),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+            fetchAdminReportEvolution(
+              dataInicio,
+              dataFim,
+              raio,
+              undefined,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingCards = false;
+          this.loadingLineChart = false;
+        }
       }
       // Ir buscar os dados do gráfico de barras
       // Produtos
       if (this.selectedCategoryTreeNode != null) {
-        const reportBarChart = await fetchAdminReportProducts(
-          dataInicio,
-          dataFim,
-          raio,
-          category,
-          view
-        );
-        this.reportBarChart = reportBarChart.data;
-        this.updateGraphData(view, 'bar');
-
-        // Clientes
-        const producerClients = await fetchAdminReportClients(
-          dataInicio,
-          dataFim,
-          raio,
-          category,
-          view
-        );
-        this.reportProducerClients = producerClients.data;
-        this.updateGraphData(view, 'bar');
+        try {
+          const reportBarChart = await fetchAdminReportProducts(
+            dataInicio,
+            dataFim,
+            raio,
+            category,
+            view
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
+        try {
+          // Clientes
+          const producerClients = await fetchAdminReportClients(
+            dataInicio,
+            dataFim,
+            raio,
+            category,
+            view
+          );
+          this.reportProducerClients = producerClients.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
       } else {
-        const reportBarChart = await fetchAdminReportProducts(
-          dataInicio,
-          dataFim,
-          raio,
-          undefined,
-          view
-        );
-        this.reportBarChart = reportBarChart.data;
-        this.updateGraphData(view, 'bar');
-
-        // Clientes
-        const producerClients = await fetchAdminReportClients(
-          dataInicio,
-          dataFim,
-          raio,
-          undefined,
-          view
-        );
-        this.reportProducerClients = producerClients.data;
-        this.updateGraphData(view, 'bar');
+        try {
+          const reportBarChart = await fetchAdminReportProducts(
+            dataInicio,
+            dataFim,
+            raio,
+            undefined,
+            view
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
+        try {
+          // Clientes
+          const producerClients = await fetchAdminReportClients(
+            dataInicio,
+            dataFim,
+            raio,
+            undefined,
+            view
+          );
+          this.reportProducerClients = producerClients.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
       }
     },
 
@@ -1088,8 +1123,8 @@ export default defineComponent({
     RadioButton,
     Accordion,
     AccordionTab,
-    Skeleton,
     Tree,
+    Loader,
   },
 });
 </script>
