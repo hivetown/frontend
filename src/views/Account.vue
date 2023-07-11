@@ -17,7 +17,9 @@
         <h1 class="dgreen-txt main-txt">{{ usernameValue }}</h1>
       </div>
       <div class="edit-consumer">
-        <b-button class="buy-btn rounded-pill">Apagar conta</b-button>
+        <PrimeButton rounded severity="secondary" class="buy-btn"
+          >Apagar conta</PrimeButton
+        >
       </div>
     </div>
     <div class="form-box parent">
@@ -28,6 +30,7 @@
           <div class="flex flex-column gap-2">
             <label for="username">Username</label>
             <InputText
+              :class="{ 'custom-cursor': !isEditing }"
               id="username"
               v-model="usernameValue"
               :readonly="!isEditing"
@@ -40,22 +43,29 @@
           <div class="flex flex-column gap-2">
             <label for="email">Email</label>
             <InputText
+              :class="{ 'custom-cursor': !isEditing }"
               id="username"
               v-model="emailValue"
               :readonly="true"
               aria-describedby="username-help"
             />
+            <label
+              v-if="isEditing"
+              for="email"
+              style="color: red !important; font-size: 0.75em"
+              >Não pode alterar o Email</label
+            >
           </div>
         </div>
         <!-- Password -->
-        <div class="card flex justify-content-center">
+        <!-- <div class="card flex justify-content-center">
           <div class="flex flex-column gap-2">
             <label for="password">Password</label>
             <div>
               <Password v-model="passwordValue" :readonly="true" toggle-mask />
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
       <!-- Dados -->
       <div class="form-box-block">
@@ -64,6 +74,7 @@
           <div class="flex flex-column gap-2">
             <label for="telefone">Telefone</label>
             <InputMask
+              :class="{ 'custom-cursor': !isEditing }"
               id="basic"
               v-model="phoneValue"
               :readonly="!isEditing"
@@ -77,12 +88,19 @@
           <div class="flex flex-column gap-2">
             <label for="vat">VAT</label>
             <InputMask
+              :class="{ 'custom-cursor': !isEditing }"
               id="basic"
               v-model="vatValue"
               :readonly="true"
               mask="999999999"
               placeholder="999999999"
             />
+            <label
+              v-if="isEditing"
+              for="vat"
+              style="color: red !important; font-size: 0.75em"
+              >Não pode alterar o VAT</label
+            >
           </div>
         </div>
       </div>
@@ -98,10 +116,10 @@
             style="border-bottom: 2px solid #f3f3f3; padding: 0.3vh"
           >
             <p class="mt-2">{{ morada.getFullAddress }}</p>
-            <i
-              class="bi bi-pencil"
+            <!-- <i
+              class="bi bi-pencil icon-edit"
               style="font-size: 1.4em; margin-top: -1.2vh"
-            ></i>
+            ></i> -->
           </div>
         </div>
         <div v-else>
@@ -117,36 +135,26 @@
 
             <div class="d-flex align-items-center gap-3">
               {{ up.address.getFullAddress }}
-              <i
-                class="bi bi-pencil"
+              <!-- <i
+                class="bi bi-pencil icon-edit"
                 style="font-size: 1.4em; margin-top: -1.2vh"
-              ></i>
+              ></i> -->
             </div>
           </div>
         </div>
       </div>
     </div>
     <div class="end-edit parent">
-      <b-button
-        class="edit-btn rounded-pill"
-        style="
-          background-color: #f1b24a !important;
-          border-color: #f1b24a !important;
-        "
-        @click="toggleEdit"
+      <PrimeButton rounded class="edit-btn" @click="toggleEdit">
+        {{ isEditing ? 'Guardar' : 'Editar' }}</PrimeButton
       >
-        {{ isEditing ? 'Guardar' : 'Editar' }}</b-button
-      >
-      <b-button
-        class="edit-btn rounded-pill"
-        style="
-          background-color: white !important;
-          border-color: #f1b24a !important;
-          color: #5a5a5a !important;
-        "
+      <PrimeButton
+        rounded
+        outlined
+        class="edit-btn"
         @click="cancelEdit"
         :disabled="!isEditing"
-        >Cancelar</b-button
+        >Cancelar</PrimeButton
       >
     </div>
     <!-- {{ user?.user }} -->
@@ -166,6 +174,7 @@ import { getConsumerId, getProducerIdSimple, getAddressPU } from '@/api';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import Password from 'primevue/password';
+import PrimeButton from 'primevue/button';
 
 export default defineComponent({
   data() {
@@ -229,7 +238,7 @@ export default defineComponent({
       }
     },
   },
-  components: { InputMask, InputText, Password },
+  components: { InputMask, InputText, Password, PrimeButton },
 });
 </script>
 
@@ -279,9 +288,9 @@ export default defineComponent({
   justify-content: flex-start;
 }
 
-.buy-btn {
+/* .buy-btn {
   width: 60% !important;
-}
+} */
 
 .form-box {
   /* background-color: red; */
@@ -318,6 +327,12 @@ export default defineComponent({
 label,
 .morada-tit {
   color: #164a41 !important;
+}
+.custom-cursor {
+  cursor: default;
+}
+.icon-edit:hover {
+  cursor: pointer !important;
 }
 
 @media (max-width: 767px) {
