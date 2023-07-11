@@ -3,7 +3,6 @@ import {
     Consumer,
     CreateConsumer,
     ReportCard,
-    ReportMap,
     ReportEvolution,
     ReportBarChartProduct,
     CreateAddress,
@@ -116,7 +115,7 @@ export const fetchConsumerReportEvolution = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 
@@ -134,6 +133,6 @@ export const fetchConsumerReportProducts = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });

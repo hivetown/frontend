@@ -62,7 +62,7 @@ export const fetchProducerReportClients = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 

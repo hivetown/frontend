@@ -75,7 +75,7 @@ export const fetchReportEvolution = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 
@@ -95,7 +95,7 @@ export const fetchAdminReportEvolution = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 
@@ -113,7 +113,7 @@ export const fetchReportProducts = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 
@@ -133,7 +133,7 @@ export const fetchAdminReportProducts = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
 
@@ -154,6 +154,6 @@ export const fetchAdminReportClients = (
             dataFim,
             raio,
             categoryId,
-            [view]: true,
+            [view!]: true,
         },
     });
