@@ -1,138 +1,5 @@
 <template>
   <div id="notificacoes">
-    <!-- <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
-      <h5>Notificações</h5>
-      <div class="content">
-        <b-tabs v-model="activeTab">
-          <b-tab title="Notificações não lidas" @click="activateFirstTab">
-            <p v-if="notificacoesNovas.totalItems == 0">
-              <br />
-              Não existem notificações não lidas.
-              <br />
-            </p>
-            <b-list-group
-              v-else
-              :key="
-                notificacoesNovas.items && notificacoesNovas.items.length
-                  ? notificacoesNovas.items.length
-                  : 0
-              "
-            >
-              <template v-if="notificacoes">
-                <b-list-group-item
-                  v-for="notificacao in notificacoesNovas.items"
-                  :key="notificacao.id"
-                  :active="notificacao?.readAt == null"
-                  class="flex-column align-items-start"
-                >
-                  <div
-                    class="d-flex w-100 justify-content-between"
-                    @click="marcarComoLida(notificacao)"
-                  >
-                    <h5 class="mb-1">{{ notificacao.title }}</h5>
-                    <small
-                      >{{ notificacao.createdAt.substring(0, 10) }}
-                      {{ notificacao.createdAt.substring(11, 19) }}</small
-                    >
-                  </div>
-                  <p class="mb-1">{{ notificacao.message }}</p>
-                  <small
-                    v-if="notificacao.readAt == null"
-                    @click="marcarComoLida(notificacao)"
-                  >
-                    <u style="cursor: pointer; margin-right: 156px"
-                      >Marcar como lida</u
-                    >
-                  </small>
-
-                  <small v-else @click="marcarComoNaoLida(notificacao)">
-                    <u style="cursor: pointer; margin-right: 130px"
-                      >Marcar como não lida</u
-                    >
-                  </small>
-                  <small
-                    @click="eliminarNotificacao(notificacao)"
-                    style="text-align: 'right'"
-                  >
-                    <u style="cursor: pointer">Eliminar notificação </u></small
-                  >
-
-                  <hr />
-                </b-list-group-item>
-              </template>
-              <hr />
-            </b-list-group>
-          </b-tab>
-          <b-tab title="Todas as notificações" @click="activateSecondTab">
-            <p v-if="notificacoes?.totalItems == 0">
-              Não existem notificações.
-            </p>
-            <b-list-group
-              v-else
-              :key="
-                notificacoes.items && notificacoes.items.length
-                  ? notificacoes.items.length
-                  : 0
-              "
-            >
-              <template v-if="notificacoes">
-                <b-list-group-item
-                  v-for="notificacao in notificacoes.items"
-                  :key="notificacao.id"
-                  :active="notificacao?.readAt == null"
-                  class="flex-column align-items-start"
-                >
-                  <div
-                    class="d-flex w-100 justify-content-between"
-                    @click="marcarComoLida(notificacao)"
-                  >
-                    <h5 class="mb-1">{{ notificacao.title }}</h5>
-                    <small
-                      >{{ notificacao.createdAt.substring(0, 10) }}
-                      {{ notificacao.createdAt.substring(11, 19) }}</small
-                    >
-                  </div>
-                  <p class="mb-1">{{ notificacao.message }}</p>
-                  <small
-                    v-if="notificacao.readAt == null"
-                    @click="marcarComoLida(notificacao)"
-                  >
-                    <u style="cursor: pointer; margin-right: 157px"
-                      >Marcar como lida</u
-                    >
-                  </small>
-
-                  <small v-else @click="marcarComoNaoLida(notificacao)">
-                    <u style="cursor: pointer; margin-right: 130px"
-                      >Marcar como não lida</u
-                    >
-                  </small>
-                  <small
-                    @click="eliminarNotificacao(notificacao)"
-                    style="text-align: 'right'"
-                  >
-                    <u style="cursor: pointer">Eliminar notificação </u></small
-                  >
-                  <hr />
-                </b-list-group-item>
-              </template>
-              <hr />
-            </b-list-group>
-
-            <button
-              class="btn btn-primary"
-              v-if="
-                notificacoes.totalItems > 24 &&
-                notificacoes.page != notificacoes.totalPages
-              "
-              @click="carregaMais"
-            >
-              Carregar mais
-            </button>
-          </b-tab>
-        </b-tabs>
-      </div>
-    </div> -->
     <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
       <TabView class="tabview-custom">
         <TabPanel>
@@ -182,7 +49,7 @@
                     margin-top: 2vh;
                   "
                 >
-                  <Button
+                  <PrimeButton
                     style="font-size: 0.8em"
                     rounded
                     severity="secondary"
@@ -190,9 +57,9 @@
                     @click="marcarComoLida(notificacao)"
                   >
                     Marcar como lida
-                  </Button>
+                  </PrimeButton>
 
-                  <Button
+                  <PrimeButton
                     style="font-size: 0.8em"
                     v-else
                     @click="marcarComoNaoLida(notificacao)"
@@ -201,15 +68,15 @@
                     severity="secondary"
                   >
                     Marcar como não lida
-                  </Button>
-                  <Button
+                  </PrimeButton>
+                  <PrimeButton
                     style="font-size: 0.8em"
                     @click="eliminarNotificacao(notificacao)"
                     rounded
                     severity="danger"
                   >
                     Eliminar
-                  </Button>
+                  </PrimeButton>
                 </div>
 
                 <hr />
@@ -259,7 +126,7 @@
                     margin-top: 2vh;
                   "
                 >
-                  <Button
+                  <PrimeButton
                     style="font-size: 0.8em"
                     rounded
                     severity="secondary"
@@ -267,9 +134,9 @@
                     @click="marcarComoLida(notificacao)"
                   >
                     Marcar como lida
-                  </Button>
+                  </PrimeButton>
 
-                  <Button
+                  <PrimeButton
                     style="font-size: 0.8em"
                     rounded
                     outlined
@@ -278,15 +145,15 @@
                     @click="marcarComoNaoLida(notificacao)"
                   >
                     Marcar como não lida
-                  </Button>
-                  <Button
+                  </PrimeButton>
+                  <PrimeButton
                     style="font-size: 0.8em"
                     rounded
                     @click="eliminarNotificacao(notificacao)"
                     severity="danger"
                   >
                     Eliminar
-                  </Button>
+                  </PrimeButton>
                 </div>
                 <hr />
               </b-list-group-item>
@@ -294,7 +161,7 @@
             <hr />
           </b-list-group>
 
-          <Button
+          <PrimeButton
             outlined
             class="btn btn-primary"
             severity="help"
@@ -305,7 +172,7 @@
             @click="carregaMais"
           >
             Carregar mais
-          </Button>
+          </PrimeButton>
         </TabPanel>
       </TabView>
     </div>
@@ -315,7 +182,7 @@
 <script lang="ts">
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
-import Button from 'primevue/button';
+import PrimeButton from 'primevue/button';
 import Swal from 'sweetalert2';
 import {
   postRead,
@@ -470,7 +337,7 @@ export default {
   components: {
     TabView,
     TabPanel,
-    Button,
+    PrimeButton,
   },
 };
 </script>
