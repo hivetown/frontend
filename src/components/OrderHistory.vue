@@ -104,8 +104,8 @@
             </div>
 
             <div v-if="order.generalStatus === 'Shipped'">
-              <Button @click="cancelarEncomendaImpossivel()"
-                >Cancelar encomenda</Button
+              <PrimeButton @click="cancelarEncomendaImpossivel()"
+                >Cancelar encomenda</PrimeButton
               >
             </div>
             <div
@@ -115,13 +115,13 @@
               "
             >
               <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-              <Button
+              <PrimeButton
                 rounded
                 outlined
                 severity="info"
                 style="color: #5a5a5a; font-size: 0.6em"
                 @click="cancelarEncomenda(order)"
-                >Cancelar encomenda</Button
+                >Cancelar encomenda</PrimeButton
               >
             </div>
           </td>
@@ -188,12 +188,12 @@
 
           <td>
             <router-link :to="'/encomenda/id' + order.id">
-              <Button
+              <PrimeButton
                 rounded
                 outlined
                 severity="info"
                 style="color: #5a5a5a; font-size: 0.7em"
-                >Ver detalhes</Button
+                >Ver detalhes</PrimeButton
               >
             </router-link>
           </td>
@@ -202,19 +202,19 @@
     </table>
   </div>
   <div class="btn-div" v-if="isExportButtonVisible">
-    <Button
+    <PrimeButton
       severity="secondary"
       rounded
       id="botao"
       @click="exportSelectedOrders"
-      ><span>Exportar dados</span></Button
+      ><span>Exportar dados</span></PrimeButton
     >
   </div>
 </template>
 
 <script setup lang="ts">
 import Swal from 'sweetalert2';
-import Button from 'primevue/button';
+import PrimeButton from 'primevue/button';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
@@ -359,14 +359,6 @@ function cancelarEncomendaImpossivel() {
     confirmButtonText: 'OK',
   });
 }
-</script>
-
-<script lang="ts">
-export default {
-  components: {
-    Button,
-  },
-};
 </script>
 
 <style scoped>
