@@ -18,13 +18,25 @@
             >
               <!--todo por se user logado-->
 
-              <Badge
-                severity="danger"
-                :value="notificacoes"
-                v-if="notificacoes > 0"
-                @click="showModalFunction"
-              ></Badge>
               <b-avatar
+                v-if="!!notificacoes"
+                @click="showModalFunction"
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  margin-top: 5%;
+                "
+                v-badge.danger="notificacoes"
+              >
+                <i
+                  class="bi bi-bell"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <b-avatar
+                v-else
                 @click="showModalFunction"
                 class="nav-item"
                 style="
@@ -39,22 +51,7 @@
                   font-scale="1.5"
                 ></i>
               </b-avatar>
-              <!--numero de notificacoes-->
 
-              <!-- <b-badge
-                v-if="notificacoes > 0"
-                @click="showModalFunction"
-                variant="danger"
-                class="rounded-circle position-absolute"
-                style="
-                  top: 30px;
-                  right: 810px;
-                  width: 20px;
-                  height: 20px;
-                  border-radius: 50%;
-                "
-                >{{ notificacoes }}</b-badge
-              > -->
               <Modal
                 v-if="showModal"
                 @qtd-notificacoes="atualizaNotificacoes"
@@ -265,7 +262,6 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { getUnreadNotifications } from '@/api/notifications';
 import { hasPermission } from '@/utils/permissions';
 import { Permission } from '@/types';
-import Badge from 'primevue/badge';
 
 const store = useStore();
 watch(
