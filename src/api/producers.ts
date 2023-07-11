@@ -9,7 +9,6 @@ import {
     ProducerProduct,
     Shipment,
     Carrier,
-    ShipmentStatus,
 } from '@/types';
 import { api } from './_base';
 
@@ -130,19 +129,4 @@ export const fetchAllProductionUnitCarriers = (
     api.get<BaseItems<Carrier>>(
         `/producers/${producerId}/units/${unitId}/carriers`,
         { params }
-    );
-
-export const createOrderItemShipment = (
-    producerId: number,
-    orderId: number,
-    producerProductId: number,
-    status: ShipmentStatus,
-    addressId: number
-) =>
-    api.post<Shipment>(
-        `/producers/${producerId}/orders/${orderId}/items/${producerProductId}/shipment/events`,
-        {
-            status,
-            addressId,
-        }
     );

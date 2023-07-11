@@ -74,17 +74,21 @@
             <td class="text-center">
               <p class="texto">{{ orderItem['quantity'] }}</p>
             </td>
-            <td v-if="getLastShipmentEvent(orderItem)">
+            <td v-if="eventos[orderItem.producerProduct.id]">
               <p class="texto">
                 Última verificação:
-                {{ getLastShipmentEvent(orderItem)!.date.substring(0, 10) }}
-                {{ getLastShipmentEvent(orderItem)!.date.substring(11, 19) }}
+                {{
+                  eventos[orderItem.producerProduct.id].date.substring(0, 10)
+                }}
+                {{
+                  eventos[orderItem.producerProduct.id].date.substring(11, 19)
+                }}
               </p>
               <p class="texto">
                 Encontra-se em:
-                {{ getLastShipmentEvent(orderItem)!.address.street }},
-                {{ getLastShipmentEvent(orderItem)!.address.parish }},
-                {{ getLastShipmentEvent(orderItem)!.address.city }}
+                {{ eventos[orderItem.producerProduct.id].address.street }},
+                {{ eventos[orderItem.producerProduct.id].address.parish }},
+                {{ eventos[orderItem.producerProduct.id].address.city }}
               </p>
             </td>
             <td>
@@ -291,29 +295,19 @@
                 {{ orderItem['quantity'] * orderItem['price'] }}€
               </p>
             </td>
-            <template v-if="store.state.user?.user.type === 'PRODUCER'">
-              <td v-if="orderItem.status === 'Paid'">
-                <ManageOrderItemCarrier
-                  v-if="orderItem.producerProduct && orderId"
-                  :order-item="orderItem"
-                  :order-id="Number(orderId)"
-                  @order-item-carrier-assigned="onOrderItemAssigned(orderItem)"
-                />
-              </td>
-              <td
-                v-else-if="
-                  orderItem.status === 'Processing' &&
-                  shipments[orderItem.producerProduct.id]
-                "
-              >
-                <SetForDelivery
-                  :carrier="shipments[orderItem.producerProduct.id].carrier!"
-                  :order-id="Number(orderId)"
-                  :order-item="orderItem"
-                  @carrier-in-delivery="onOrderItemAssigned(orderItem)"
-                />
-              </td>
-            </template>
+            <td
+              v-if="
+                store.state.user?.user.type === 'PRODUCER' &&
+                orderItem.status === 'Paid'
+              "
+            >
+              <ManageOrderItemCarrier
+                v-if="orderItem.producerProduct && orderId"
+                :order-item="orderItem"
+                :order-id="Number(orderId)"
+                @order-item-carrier-assigned="onOrderItemAssigned(orderItem)"
+              />
+            </td>
           </tr>
         </tbody>
       </table>
@@ -328,7 +322,6 @@
 <script setup lang="ts">
 import Loader from '@/components/Loader.vue';
 import ManageOrderItemCarrier from './producer/orders/ManageOrderItemCarrier.vue';
-import SetForDelivery from './producer/carriers/SetForDelivery.vue';
 import { ref, onBeforeMount, computed } from 'vue';
 import {
   fetchAllItems,
@@ -338,12 +331,12 @@ import {
 import { getShipment } from '../api/orders';
 import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
-import { BaseItems, OrderItem, Shipment } from '@/types';
+import { BaseItems, OrderItem, ShipmentEvent } from '@/types';
 const isLoading = ref(true);
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
 const date = ref<{ [id: number]: String }>({});
-const shipments = ref<{ [id: number]: Shipment }>({});
+const eventos = ref<{ [id: number]: ShipmentEvent }>({});
 const route = useRoute();
 const store = useStore();
 const orderId = ref(route.params.id as string);
@@ -353,16 +346,10 @@ const shouldShowVehicle = computed(() => {
     store.state.user?.user.type === 'PRODUCER' &&
     orderItems.value?.items.some((item) =>
       // TODO add Processing and Shipped when implementing carrier exiting/incoming
-      (['Paid', 'Processing'] as OrderItem['status'][]).includes(item.status)
+      (['Paid'] as OrderItem['status'][]).includes(item.status)
     )
   );
 });
-
-const getLastShipmentEvent = (orderItem: OrderItem) => {
-  const shipment = shipments.value[orderItem.producerProduct.id];
-  if (!shipment) return null;
-  return shipment.events[shipment.events.length - 1];
-};
 
 const loadItems = async () => {
   if (!store.state.user || !store.state.user.user?.id) return;
@@ -402,18 +389,20 @@ const loadItems = async () => {
     }
   }
 
-  for (const orderItem of orderItems.value.items) {
-    totalSum.value += orderItem['price'] * orderItem['quantity'];
+  if (store.state.user.user.type === 'CONSUMER') {
+    for (const orderItem of orderItems.value.items) {
+      totalSum.value += orderItem['price'] * orderItem['quantity'];
 
-    const responseShipment = (
-      await getShipment(
-        store.state.user.user.id,
-        parseInt(orderId.value),
-        orderItem.producerProduct.id,
-        store.state.user!.user.type.toLowerCase() as 'producer' | 'consumer'
-      )
-    ).data;
-    shipments.value[orderItem.producerProduct.id] = responseShipment;
+      const responseShipment = (
+        await getShipment(
+          store.state.user.user.id,
+          parseInt(orderId.value),
+          orderItem.producerProduct.id
+        )
+      ).data;
+      eventos.value[orderItem.producerProduct.id] =
+        responseShipment.events[responseShipment.events.length - 1];
+    }
   }
 };
 
