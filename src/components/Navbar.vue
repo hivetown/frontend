@@ -215,59 +215,64 @@
 
   <!-- Nav inferior no modo telemovel -->
   <div>
-    <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
+    <b-nav
+      is-nav
+      class="d-lg-none fixed-bottom bg-white mb-nav"
+      style="display: flex; justify-content: space-evenly"
+    >
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i
-            class="bi bi-heart mx-auto dgreen-txt"
-            style="font-size: large"
-          ></i>
-        </button>
+        <router-link to="/favoritos" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Favoritos"
+          >
+            <i
+              class="bi bi-heart mx-auto dgreen-txt"
+              style="font-size: large"
+            ></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-cart mx-auto dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/carrinho" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Adicionar ao carrinho"
+          >
+            <i
+              class="bi bi-cart mx-auto dgreen-txt"
+              style="font-size: large"
+            ></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Casa"
+          >
+            <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-search dgreen-txt" style="font-size: large"></i>
-        </button>
-      </b-nav-item>
-      <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/account" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Conta"
+          >
+            <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
+          </button>
+        </router-link>
       </b-nav-item>
     </b-nav>
   </div>
