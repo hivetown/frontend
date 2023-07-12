@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/hivetown/frontend/compare/v2.6.0...v2.6.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* last changes ([4f6ef36](https://github.com/hivetown/frontend/commit/4f6ef369cecdea645cffa867ea84cc3808d90ba0))
+
 ## [2.6.0](https://github.com/hivetown/frontend/compare/v2.5.2...v2.6.0) (2023-07-12)
 
 
