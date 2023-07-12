@@ -32,7 +32,7 @@
               />
             </b-card>
             <b-card-text class="">
-              <div>
+              <div class="mt-3">
                 <h5 class="name-limited">{{ product.productSpec!.name }}</h5>
                 <p class="name-limited">
                   <span class="fw-bold">Unidade: </span

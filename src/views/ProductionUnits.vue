@@ -25,45 +25,61 @@
                 :alt="unit.images![0].alt"
               />
             </b-card>
-            <b-card-text class="">
-              <div>
-                <div
-                  class="rounded-pill text-center mt-3 mb-3 w-25 prod-category"
-                >
-                  {{ unit.id }}
-                </div>
-                <h5>{{ unit.address.district }}</h5>
-                <p>{{ unit.address.city }}</p>
-                <p>{{ unit.address.county }}</p>
-                <p class="grey-txt mt-3">
-                  {{ unit.address.floor }}, {{ unit.address.door }}
-                </p>
-                <div class="d-flex gap-2">
-                  <h4 class="mb-3">{{ unit.address.floor }}º Andar</h4>
-                </div>
-                <div class="d-flex gap-2">
-                  <router-link :to="'/product/edit/' + unit.id">
-                    <button
-                      type="button"
-                      class="btn btn-outline-secondary circle-btn"
-                      v-b-tooltip.hover
-                      title="Editar produto"
-                    >
-                      <i class="bi bi-pencil"></i>
-                    </button>
-                  </router-link>
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary circle-btn"
-                    v-b-tooltip.hover
-                    title="Remover produto"
-                  >
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </b-card-text>
           </router-link>
+          <b-card-text class="">
+            <div>
+              <div
+                class="rounded-pill text-center mt-3 mb-3 w-25 prod-category"
+              >
+                <!-- {{ unit.id }} -->
+              </div>
+              <router-link
+                :to="{
+	            	name: 'ProductionUnitProducts',
+	            	params: {
+	            		producerId: unit.producer as number,
+	            		unitId: unit.id,
+	            	},
+	            }"
+              >
+                <h5>{{ unit.address.district }}</h5>
+                <h6><span class="fw-bold">Id:</span> {{ unit.id }}</h6>
+                <p style="height: 5vh; display: flex; align-items: center">
+                  {{ unit.address.city }}
+                </p>
+                <p class="grey-txt">
+                  {{ unit.address.floor }}, {{ unit.address.door }}
+                  {{ unit.address.zipCode }}
+                </p>
+                <span>Morada completa:</span>
+                <p style="font-size: 0.7em; height: 7vh">
+                  {{ unit.address.getFullAddress }}
+                </p>
+              </router-link>
+              <div class="d-flex gap-2">
+                <router-link :to="'/product/edit/' + unit.id">
+                  <PrimeButton
+                    rounded
+                    outlined
+                    v-b-tooltip.hover
+                    title="Editar produto"
+                    :icon="'pi pi-pencil'"
+                    style="color: #5a5a5a !important"
+                  >
+                  </PrimeButton>
+                </router-link>
+                <PrimeButton
+                  rounded
+                  outlined
+                  v-b-tooltip.hover
+                  title="Remover produto"
+                  :icon="'pi pi-trash'"
+                  severity="danger"
+                >
+                </PrimeButton>
+              </div>
+            </div>
+          </b-card-text>
         </div>
       </template>
       <div v-else>
@@ -73,6 +89,7 @@
   </div>
 
   <Pagination
+    class="mt-5"
     v-if="productionUnits"
     :items="productionUnits"
     :page="currentFilters.page"
@@ -89,10 +106,13 @@ import { fetchAllUnits } from '@/api/units';
 import Pagination from '@/components/Pagination.vue';
 import Loader from '@/components/Loader.vue';
 import { PageState } from 'primevue/paginator';
+import PrimeButton from 'primevue/button';
+
 export default {
   components: {
     Pagination,
     Loader,
+    PrimeButton,
   },
   data() {
     return {
