@@ -104,3 +104,8 @@ export const getProducerId = (producerId: number, search?: string) =>
     api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
+
+export const getProducerIdSimple = (producerId: number, search?: string) =>
+    api.get<Producer>(`/producers/${producerId}`, {
+        params: { search },
+    });

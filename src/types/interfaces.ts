@@ -130,6 +130,7 @@ export interface Address {
     latitude: number;
     longitude: number;
     consumer?: number;
+    getFullAddress?: string;
 }
 
 export type CreateAddress = Omit<Address, 'id'>;
