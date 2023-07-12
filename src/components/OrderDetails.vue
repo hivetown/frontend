@@ -1,4 +1,19 @@
 <template>
+  <h5
+    class="parent"
+    style="display: flex; justify-content: flex-start"
+    id="data"
+  >
+    <p v-if="$store.state.user?.user?.type === 'CONSUMER'">
+      Efetuada a: <span class="fw-bold"> {{ date }}</span>
+    </p>
+    <p v-else>
+      Efetuada a:
+      <span class="fw-bold">
+        {{ orderItems?.items[0].orderDate?.substring(0, 10) }}</span
+      >
+    </p>
+  </h5>
   <div class="parent" style="background-color: ">
     <div
       class="table-container"
@@ -8,9 +23,6 @@
       <div class="loading-spinner" v-if="isLoading">
         <Loader />
       </div>
-      <h5 class="" id="data" style="margin-right: 0px; text-align: right">
-        Encomenda efetuada em: {{ date }}
-      </h5>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -154,12 +166,6 @@
     >
       <div class="loading-spinner" v-if="isLoading">
         <Loader />
-      </div>
-      <div style="text-align: right">
-        <h5 class="" id="data">
-          Encomenda efetuada em:
-          {{ orderItems?.items[0].orderDate?.substring(0, 10) }}
-        </h5>
       </div>
       <table class="table table-striped" v-if="orderItems">
         <thead>
@@ -362,16 +368,29 @@ const loadItems = async () => {
         orderId.value
       );
       orderItems.value = responseItem.data;
-      //date.value = props.order.orderDate;
+
       const res = await fetchAllOrders(store.state.user.user.id);
       for (let i = 0; i < res.data.items.length; i++) {
         if (res.data.items[i].id === Number(orderId.value)) {
-          console.log(res.data.items[i].orderDate);
           date.value = res.data.items[i].orderDate.substring(0, 10);
         }
       }
     } finally {
       isLoading.value = false;
+    }
+
+    for (const orderItem of orderItems.value.items) {
+      totalSum.value += orderItem['price'] * orderItem['quantity'];
+
+      const responseShipment = (
+        await getShipment(
+          store.state.user.user.id,
+          parseInt(orderId.value),
+          orderItem.producerProduct.id
+        )
+      ).data;
+      eventos.value[orderItem.producerProduct.id] =
+        responseShipment.events[responseShipment.events.length - 1];
     }
   } else {
     try {
@@ -386,22 +405,6 @@ const loadItems = async () => {
       }
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  if (store.state.user.user.type === 'CONSUMER') {
-    for (const orderItem of orderItems.value.items) {
-      totalSum.value += orderItem['price'] * orderItem['quantity'];
-
-      const responseShipment = (
-        await getShipment(
-          store.state.user.user.id,
-          parseInt(orderId.value),
-          orderItem.producerProduct.id
-        )
-      ).data;
-      eventos.value[orderItem.producerProduct.id] =
-        responseShipment.events[responseShipment.events.length - 1];
     }
   }
 };

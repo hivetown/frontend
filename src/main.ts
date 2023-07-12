@@ -10,6 +10,7 @@ import PrimeVue from 'primevue/config';
 import Calendar from 'primevue/calendar';
 import ToastService from 'primevue/toastservice';
 import ConfirmationService from 'primevue/confirmationservice';
+import BadgeDirective from 'primevue/badgedirective';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
@@ -30,6 +31,7 @@ app.use(BootstrapIconsPlugin);
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(ConfirmationService);
+app.directive('badge', BadgeDirective);
 app.use(router);
 
 // Aqui tb

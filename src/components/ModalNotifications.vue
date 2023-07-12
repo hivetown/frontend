@@ -1,143 +1,188 @@
 <template>
   <div id="notificacoes">
     <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
-      <h5>Notificações</h5>
-      <div class="content">
-        <b-tabs v-model="activeTab">
-          <b-tab title="Notificações não lidas" @click="activateFirstTab">
-            <!-- Conteúdo da aba de notificacoes nao lidas -->
-            <p v-if="notificacoesNovas.totalItems == 0">
-              <br />
-              Não existem notificações não lidas.
-              <br />
-            </p>
-            <b-list-group
-              v-else
-              :key="
-                notificacoesNovas.items && notificacoesNovas.items.length
-                  ? notificacoesNovas.items.length
-                  : 0
-              "
-            >
-              <template v-if="notificacoes">
-                <b-list-group-item
-                  v-for="notificacao in notificacoesNovas.items"
-                  :key="notificacao.id"
-                  :active="notificacao?.readAt == null"
-                  class="flex-column align-items-start"
+      <TabView class="tabview-custom">
+        <TabPanel>
+          <template #header>
+            <div class="d-flex gap-2 align-items-center">
+              <i class="bi bi-envelope-exclamation-fill yellow-txt"></i>
+              <span>Por ler</span>
+            </div>
+          </template>
+          <p v-if="notificacoesNovas.totalItems == 0">
+            <br />
+            Não existem notificações não lidas.
+            <br />
+          </p>
+          <b-list-group
+            v-else
+            :key="
+              notificacoesNovas.items && notificacoesNovas.items.length
+                ? notificacoesNovas.items.length
+                : 0
+            "
+          >
+            <template v-if="notificacoes">
+              <b-list-group-item
+                v-for="notificacao in notificacoesNovas.items"
+                :key="notificacao.id"
+                :active="notificacao?.readAt == null"
+                class="notification-body read-notification"
+              >
+                <div
+                  @click="marcarComoLida(notificacao)"
+                  style="display: flex; flex-direction: column; gap: 0.7em"
                 >
-                  <div
-                    class="d-flex w-100 justify-content-between"
-                    @click="marcarComoLida(notificacao)"
+                  <small style="color: #5a5a5a; font-size: 0.75em"
+                    >{{ notificacao.createdAt.substring(0, 10) }}
+                    {{ notificacao.createdAt.substring(11, 19) }}</small
                   >
-                    <h5 class="mb-1">{{ notificacao.title }}</h5>
-                    <small
-                      >{{ notificacao.createdAt.substring(0, 10) }}
-                      {{ notificacao.createdAt.substring(11, 19) }}</small
-                    >
-                  </div>
-                  <p class="mb-1">{{ notificacao.message }}</p>
-                  <small
+                  <h5 class="mb-1">{{ notificacao.title }}</h5>
+                </div>
+                <p class="mb-1" style="font-size: 0.9em">
+                  {{ notificacao.message }}
+                </p>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 2vh;
+                  "
+                >
+                  <PrimeButton
+                    style="font-size: 0.8em"
+                    rounded
+                    severity="secondary"
                     v-if="notificacao.readAt == null"
                     @click="marcarComoLida(notificacao)"
                   >
-                    <u style="cursor: pointer; margin-right: 156px"
-                      >Marcar como lida</u
-                    >
-                  </small>
+                    Marcar como lida
+                  </PrimeButton>
 
-                  <small v-else @click="marcarComoNaoLida(notificacao)">
-                    <u style="cursor: pointer; margin-right: 130px"
-                      >Marcar como não lida</u
-                    >
-                  </small>
-                  <small
+                  <PrimeButton
+                    style="font-size: 0.8em"
+                    v-else
+                    @click="marcarComoNaoLida(notificacao)"
+                    rounded
+                    outlined
+                    severity="secondary"
+                  >
+                    Marcar como não lida
+                  </PrimeButton>
+                  <PrimeButton
+                    style="font-size: 0.8em"
                     @click="eliminarNotificacao(notificacao)"
-                    style="text-align: 'right'"
+                    rounded
+                    severity="danger"
                   >
-                    <u style="cursor: pointer">Eliminar notificação </u></small
-                  >
+                    Eliminar
+                  </PrimeButton>
+                </div>
 
-                  <hr />
-                </b-list-group-item>
-              </template>
-              <hr />
-            </b-list-group>
-          </b-tab>
-          <b-tab title="Todas as notificações" @click="activateSecondTab">
-            <p v-if="notificacoes?.totalItems == 0">
-              Não existem notificações.
-            </p>
-            <b-list-group
-              v-else
-              :key="
-                notificacoes.items && notificacoes.items.length
-                  ? notificacoes.items.length
-                  : 0
-              "
-            >
-              <template v-if="notificacoes">
-                <b-list-group-item
-                  v-for="notificacao in notificacoes.items"
-                  :key="notificacao.id"
-                  :active="notificacao?.readAt == null"
-                  class="flex-column align-items-start"
+                <hr />
+              </b-list-group-item>
+            </template>
+            <hr />
+          </b-list-group>
+        </TabPanel>
+        <TabPanel>
+          <template #header>
+            <div class="d-flex gap-2 align-items-center">
+              <i class="bi bi-envelope-fill yellow-txt"></i>
+              <span>Todas</span>
+            </div>
+          </template>
+          <p v-if="notificacoes?.totalItems == 0">Não existem notificações.</p>
+          <b-list-group
+            v-else
+            :key="
+              notificacoes.items && notificacoes.items.length
+                ? notificacoes.items.length
+                : 0
+            "
+          >
+            <template v-if="notificacoes">
+              <b-list-group-item
+                v-for="notificacao in notificacoes.items"
+                :key="notificacao.id"
+                :active="notificacao?.readAt == null"
+                class="notification-body read-notification"
+              >
+                <div
+                  @click="marcarComoLida(notificacao)"
+                  style="display: flex; flex-direction: column; gap: 0.7em"
                 >
-                  <div
-                    class="d-flex w-100 justify-content-between"
-                    @click="marcarComoLida(notificacao)"
+                  <small style="color: #5a5a5a; font-size: 0.75em"
+                    >{{ notificacao.createdAt.substring(0, 10) }}
+                    {{ notificacao.createdAt.substring(11, 19) }}</small
                   >
-                    <h5 class="mb-1">{{ notificacao.title }}</h5>
-                    <small
-                      >{{ notificacao.createdAt.substring(0, 10) }}
-                      {{ notificacao.createdAt.substring(11, 19) }}</small
-                    >
-                  </div>
-                  <p class="mb-1">{{ notificacao.message }}</p>
-                  <small
+                  <h5 class="mb-1">{{ notificacao.title }}</h5>
+                </div>
+                <p class="mb-1">{{ notificacao.message }}</p>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 2vh;
+                  "
+                >
+                  <PrimeButton
+                    style="font-size: 0.8em"
+                    rounded
+                    severity="secondary"
                     v-if="notificacao.readAt == null"
                     @click="marcarComoLida(notificacao)"
                   >
-                    <u style="cursor: pointer; margin-right: 157px"
-                      >Marcar como lida</u
-                    >
-                  </small>
+                    Marcar como lida
+                  </PrimeButton>
 
-                  <small v-else @click="marcarComoNaoLida(notificacao)">
-                    <u style="cursor: pointer; margin-right: 130px"
-                      >Marcar como não lida</u
-                    >
-                  </small>
-                  <small
+                  <PrimeButton
+                    style="font-size: 0.8em"
+                    rounded
+                    outlined
+                    severity="secondary"
+                    v-else
+                    @click="marcarComoNaoLida(notificacao)"
+                  >
+                    Marcar como não lida
+                  </PrimeButton>
+                  <PrimeButton
+                    style="font-size: 0.8em"
+                    rounded
                     @click="eliminarNotificacao(notificacao)"
-                    style="text-align: 'right'"
+                    severity="danger"
                   >
-                    <u style="cursor: pointer">Eliminar notificação </u></small
-                  >
-                  <hr />
-                </b-list-group-item>
-              </template>
-              <hr />
-            </b-list-group>
+                    Eliminar
+                  </PrimeButton>
+                </div>
+                <hr />
+              </b-list-group-item>
+            </template>
+            <hr />
+          </b-list-group>
 
-            <button
-              class="btn btn-primary"
-              v-if="
-                notificacoes.totalItems > 24 &&
-                notificacoes.page != notificacoes.totalPages
-              "
-              @click="carregaMais"
-            >
-              Carregar mais
-            </button>
-          </b-tab>
-        </b-tabs>
-      </div>
+          <PrimeButton
+            outlined
+            class="btn btn-primary"
+            severity="help"
+            v-if="
+              notificacoes.totalItems > 24 &&
+              notificacoes.page != notificacoes.totalPages
+            "
+            @click="carregaMais"
+          >
+            Carregar mais
+          </PrimeButton>
+        </TabPanel>
+      </TabView>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import PrimeButton from 'primevue/button';
 import Swal from 'sweetalert2';
 import {
   postRead,
@@ -159,6 +204,7 @@ export default {
       showPopup: true,
       quantidade: 0 as number,
       notificacoesNovas: { page: 1, pageSize: 24 } as BaseItems<Notification>,
+      visible: true,
     };
   },
   async beforeMount() {
@@ -288,6 +334,11 @@ export default {
       this.notificacoes = response.data;
     },
   },
+  components: {
+    TabView,
+    TabPanel,
+    PrimeButton,
+  },
 };
 </script>
 
@@ -304,16 +355,17 @@ hr {
 }
 
 #popup {
-  border-radius: 1%;
+  border-radius: 0.3em;
   position: absolute;
-  top: 68%;
-  right: 26%;
+  top: 70%;
+  right: 25%;
   width: 500px;
-  background-color: #f3f3f3;
-  border: 1px solid #ccc;
-  padding: 10px;
+  padding: 1.5vh;
   z-index: 990;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  background-color: white;
 }
 
 #popup h5 {
@@ -335,19 +387,29 @@ hr {
 .content {
   margin-top: 20px; /* Ajuste para a altura da barra sticky */
 }
-
-.active {
-  background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
-  border-color: #d3e3e6 !important;
-  color: #000 !important;
+.read-notification {
+  background-color: #f3f3f3 !important;
+  border-color: #ddd !important;
+  color: #878787 !important;
 }
+.active {
+  background-color: white !important;
+  border-color: #ddd !important;
+  color: black !important;
+}
+
+.notification-body {
+  /* background-color: red !important; */
+  padding: 2vh !important;
+}
+
 @media (max-width: 767px) {
   #popup {
-    border-radius: 1%;
+    border-radius: 0.3em;
     position: absolute;
-    top: 37%;
-    right: 1px;
-    width: 400px;
+    top: 33%;
+    right: -0.5vh;
+    width: 45vh;
     background-color: #f3f3f3;
     border: 1px solid #ccc;
     padding: 10px;
@@ -373,11 +435,6 @@ hr {
 
   .content {
     margin-top: 20px; /* Ajuste para a altura da barra sticky */
-  }
-
-  .active {
-    background-color: #d3e3e6 !important; /* Define a cor de fundo para as notificações não lidas */
-    border-color: #d3e3e6 !important;
   }
 }
 </style>

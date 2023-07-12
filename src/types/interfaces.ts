@@ -130,6 +130,7 @@ export interface Address {
     latitude: number;
     longitude: number;
     consumer?: number;
+    getFullAddress?: string;
 }
 
 export type CreateAddress = Omit<Address, 'id'>;
@@ -249,6 +250,7 @@ export interface ReportMap {
     shippingAddress: Address;
     productionUnitAddress: Address;
 }
+export interface Cart extends BaseItems<CartItem> {}
 
 export interface ReportEvolution {
     comprasTotais?: number;

@@ -196,10 +196,6 @@ const onPageChange = async (page: Partial<PageState>) => {
   await loadOrders();
 };
 
-const routeTo = (path: string) => {
-  router.push(path);
-};
-
 const loadOrders = async () => {
   isLoading.value = true;
 

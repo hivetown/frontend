@@ -19,6 +19,24 @@
               <!--todo por se user logado-->
 
               <b-avatar
+                v-if="!!notificacoes"
+                @click="showModalFunction"
+                class="nav-item"
+                style="
+                  background-color: #f3f3f3 !important;
+                  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                  margin-top: 5%;
+                "
+                v-badge.danger="notificacoes"
+              >
+                <i
+                  class="bi bi-bell"
+                  style="color: #164a41"
+                  font-scale="1.5"
+                ></i>
+              </b-avatar>
+              <b-avatar
+                v-else
                 @click="showModalFunction"
                 class="nav-item"
                 style="
@@ -33,21 +51,7 @@
                   font-scale="1.5"
                 ></i>
               </b-avatar>
-              <!--numero de notificacoes-->
-              <b-badge
-                v-if="notificacoes > 0"
-                @click="showModalFunction"
-                variant="danger"
-                class="rounded-circle position-absolute"
-                style="
-                  top: 30px;
-                  right: 810px;
-                  width: 20px;
-                  height: 20px;
-                  border-radius: 50%;
-                "
-                >{{ notificacoes }}</b-badge
-              >
+
               <Modal
                 v-if="showModal"
                 @qtd-notificacoes="atualizaNotificacoes"
@@ -104,7 +108,10 @@
                 Favoritos
               </router-link>
             </div>
-            <div class="d-flex">
+            <div
+              class="d-flex"
+              v-if="store.state.user?.user.type != 'PRODUCER'"
+            >
               <router-link
                 to="/carrinho"
                 class="p-2 grey-txt text-decoration-none"
@@ -165,7 +172,7 @@
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item to="/account">Conta</b-dropdown-item>
               <b-dropdown-item v-if="permissions" to="/admin?page=1"
                 >Área de admin</b-dropdown-item
               >
@@ -180,12 +187,29 @@
                   >Unidades de Produção</b-dropdown-item
                 >
                 <b-dropdown-item to="/transportes">Transportes</b-dropdown-item>
+                <b-dropdown-item v-if="permissions" to="/impactProducer"
+                  >Relatórios de impacto Produtor</b-dropdown-item
+                >
+                <b-dropdown-item v-else to="/impactProducer"
+                  >Relatórios de impacto</b-dropdown-item
+                >
               </div>
-              <b-dropdown-item
-                to="/encomendas"
-                class="linkcolor"
-                v-if="store.state.user.user.type === 'CONSUMER'"
-                >Encomendas</b-dropdown-item
+              <div v-if="store.state.user.user.type === 'CONSUMER'">
+                <b-dropdown-item to="/encomendas" class="linkcolor"
+                  >Encomendas</b-dropdown-item
+                >
+                <b-dropdown-item v-if="permissions" to="/impactConsumer"
+                  >Relatórios de impacto Consumidor</b-dropdown-item
+                >
+                <b-dropdown-item v-else to="/impactConsumer"
+                  >Relatórios de impacto
+                </b-dropdown-item>
+              </div>
+              <b-dropdown-item v-if="permissions" to="/admin?page=1"
+                >Área de admin</b-dropdown-item
+              >
+              <b-dropdown-item v-if="permissions" to="/impactAdmin"
+                >Relatórios de impacto Admin</b-dropdown-item
               >
               <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>

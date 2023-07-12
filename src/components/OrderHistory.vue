@@ -6,9 +6,9 @@
     </h3>
   </div>
   <div v-else>
-	<div class="loading-spinner" v-if="isLoading">
-    <Loader />
-  </div>
+    <div class="loading-spinner" v-if="isLoading">
+      <Loader />
+    </div>
     <div class="table-container" v-if="!isLoading" style="overflow: auto">
       <div></div>
       <table v-if="!!orders?.items" style="border: 2px" class="table">
@@ -29,7 +29,7 @@
             </th>
             <th><h4>Total</h4></th>
             <th><h4>Exportar dados</h4></th>
-            <th></th>
+            <th><h4></h4></th>
           </tr>
         </thead>
         <tbody>
@@ -99,8 +99,7 @@
                         'Em transporte'
                       "
                       class="bi bi-truck mr-2"
-                      ></i
-                    >
+                    ></i>
 
                     <p class="texto">
                       {{ orderStatusTranslation(order.generalStatus) }}
@@ -110,11 +109,8 @@
               </div>
 
               <div v-if="order.generalStatus === 'Shipped'">
-                <BButton
-                  class="botao2"
-                  variant="outline-primary"
-                  @click="cancelarEncomendaImpossivel()"
-                  >Cancelar encomenda</BButton
+                <PrimeButton @click="cancelarEncomendaImpossivel()"
+                  >Cancelar encomenda</PrimeButton
                 >
               </div>
               <div
@@ -124,11 +120,13 @@
                 "
               >
                 <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-                <BButton
-                  class="botao2"
-                  variant="outline-primary"
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.6em"
                   @click="cancelarEncomenda(order)"
-                  >Cancelar encomenda</BButton
+                  >Cancelar encomenda</PrimeButton
                 >
               </div>
             </td>
@@ -195,8 +193,12 @@
 
             <td>
               <router-link :to="'/encomenda/id' + order.id">
-                <BButton class="botao2" variant="outline-primary"
-                  >Ver detalhes</BButton
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.7em"
+                  >Ver detalhes</PrimeButton
                 >
               </router-link>
             </td>
@@ -205,21 +207,21 @@
       </table>
     </div>
     <div class="btn-div" v-if="isExportButtonVisible">
-      <BButton
+      <PrimeButton
+        severity="secondary"
+        rounded
         id="botao"
-        class="botao"
-        variant="outline-primary"
         @click="exportSelectedOrders"
-        ><span>Exportar dados</span></BButton
+        ><span>Exportar dados</span></PrimeButton
       >
     </div>
-	<Pagination
-	v-if="orders"
-	  :items="orders"
-	  :page-size="currentFilters.pageSizeC"
-    :page="currentFilters.pageC"
-    @page-change="onPageChange"
-	      >
+    <Pagination
+      v-if="orders"
+      :items="orders"
+      :page-size="currentFilters.pageSizeC"
+      :page="currentFilters.pageC"
+      @page-change="onPageChange"
+    >
     </Pagination>
   </div>
 </template>
@@ -227,17 +229,19 @@
 <script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
 import Swal from 'sweetalert2';
+import PrimeButton from 'primevue/button';
 import { PageState } from 'primevue/paginator';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
-import { onBeforeMount, watch } from 'vue';
+import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import Loader from '@/components/Loader.vue';
 const isLoading = ref(true);
+
 const store = useStore();
 const user2 = computed(() => store.state.user);
 //let page = ref(1);
@@ -296,25 +300,29 @@ const findFirstImage = (order: OrderItem[]) => {
 
 onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
-	try{
-	isLoading.value = true;
-    const response = await fetchAllOrders(user2.value.user.id, currentFilters.value.pageC, currentFilters.value.pageSizeC);
-    orders.value = response.data;
-	console.log(orders.value)
-    for (const order of orders.value.items) {
-      const orderItems = await fetchAllItems(
+    try {
+      isLoading.value = true;
+      const response = await fetchAllOrders(
         user2.value.user.id,
-        order.id.toString()
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
       );
+      orders.value = response.data;
+      console.log(orders.value);
+      for (const order of orders.value.items) {
+        const orderItems = await fetchAllItems(
+          user2.value.user.id,
+          order.id.toString()
+        );
 
-      const image = findFirstImage(orderItems.data.items);
-      if (image) {
-        ordersImage.value[order.id] = image;
+        const image = findFirstImage(orderItems.data.items);
+        if (image) {
+          ordersImage.value[order.id] = image;
+        }
       }
+    } finally {
+      isLoading.value = false;
     }
-}finally{
-	isLoading.value = false;
-}
   }
 });
 const onPageChange = async (page: Partial<PageState>) => {
@@ -329,22 +337,19 @@ const onPageChange = async (page: Partial<PageState>) => {
   await loadOrders();
 };
 
-const routeTo = (path: string) => {
-  router.push(path);
-};
-
 const loadOrders = async () => {
- isLoading.value = true;
+  isLoading.value = true;
 
   try {
-	if (user2.value){
-    const response = await fetchAllOrders(
-		user2.value.user.id,currentFilters.value.pageC,
-       currentFilters.value.pageSizeC
-    );
+    if (user2.value) {
+      const response = await fetchAllOrders(
+        user2.value.user.id,
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
+      );
 
-    orders.value = response.data;
-	}
+      orders.value = response.data;
+    }
   } finally {
     isLoading.value = false;
   }
@@ -510,10 +515,11 @@ tr:hover {
 }
 
 .btn-div {
-  width: 12%;
+  width: 95%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+  margin-top: 3vh;
 }
 .botao {
   padding: 0.7em;
@@ -558,7 +564,7 @@ tr:hover {
 @media (max-width: 768px) {
   .table-container {
     width: 100% !important;
-    max-height: 100% !important;
+    max-height: 90% !important;
   }
 
   .table h4 {
