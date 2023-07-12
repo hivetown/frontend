@@ -83,7 +83,16 @@
                     font-scale="1.5"
                   ></i>
                 </b-avatar>
-                Comprar
+                <span
+                  v-if="store.state.user?.user.type === 'PRODUCER'"
+                  style="margin-top: 5% !important; padding: 0.5rem !important"
+                  >Todos os produtos</span
+                >
+                <span
+                  v-else
+                  style="margin-top: 5% !important; padding: 0.5rem !important"
+                  >Comprar</span
+                >
               </router-link>
             </div>
             <div class="d-flex">
@@ -166,16 +175,22 @@
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ store.state.user.user.name }}</span>
+              <span
+                style="margin-top: 5% !important; padding: 0.5rem !important"
+                >{{ store.state.user.user.name }}</span
+              >
             </router-link>
             <b-nav-item-dropdown
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item to="/account">Conta</b-dropdown-item>
+              <b-dropdown-item v-if="permissions" to="/admin?page=1"
+                >Área de admin</b-dropdown-item
+              >
               <div v-if="store.state.user.user.type === 'PRODUCER'">
                 <b-dropdown-item to="/produtosprodutor"
-                  >Produtos</b-dropdown-item
+                  >Os meus produtos</b-dropdown-item
                 >
                 <b-dropdown-item to="/encomendas" class="linkcolor"
                   >Encomendas</b-dropdown-item
@@ -183,7 +198,9 @@
                 <b-dropdown-item to="/unidadesproducao"
                   >Unidades de Produção</b-dropdown-item
                 >
-                <b-dropdown-item to="/transportes">Transportes</b-dropdown-item>
+                <b-dropdown-item to="/transportes"
+                  >Gerir transportes</b-dropdown-item
+                >
                 <b-dropdown-item v-if="permissions" to="/impactProducer"
                   >Relatórios de impacto Produtor</b-dropdown-item
                 >
@@ -218,59 +235,64 @@
 
   <!-- Nav inferior no modo telemovel -->
   <div>
-    <b-nav is-nav class="d-lg-none fixed-bottom bg-white mb-nav">
+    <b-nav
+      is-nav
+      class="d-lg-none fixed-bottom bg-white mb-nav"
+      style="display: flex; justify-content: space-evenly"
+    >
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i
-            class="bi bi-heart mx-auto dgreen-txt"
-            style="font-size: large"
-          ></i>
-        </button>
+        <router-link to="/favoritos" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Favoritos"
+          >
+            <i
+              class="bi bi-heart mx-auto dgreen-txt"
+              style="font-size: large"
+            ></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-cart mx-auto dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/carrinho" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Adicionar ao carrinho"
+          >
+            <i
+              class="bi bi-cart mx-auto dgreen-txt"
+              style="font-size: large"
+            ></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Casa"
+          >
+            <i class="bi bi-house dgreen-txt" style="font-size: large"></i>
+          </button>
+        </router-link>
       </b-nav-item>
       <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-search dgreen-txt" style="font-size: large"></i>
-        </button>
-      </b-nav-item>
-      <b-nav-item class="deu">
-        <button
-          type="button"
-          class="btn circle-btn mb-nav-item"
-          v-b-tooltip.hover
-          title="Adicionar ao carrinho"
-        >
-          <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
-        </button>
+        <router-link to="/account" class="p-2 grey-txt text-decoration-none">
+          <button
+            type="button"
+            class="btn circle-btn mb-nav-item"
+            v-b-tooltip.hover
+            title="Conta"
+          >
+            <i class="bi bi-person dgreen-txt" style="font-size: large"></i>
+          </button>
+        </router-link>
       </b-nav-item>
     </b-nav>
   </div>

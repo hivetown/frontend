@@ -1,6 +1,6 @@
 <template>
   <div class="loading-spinner" v-if="isLoading">
-    <Loader />
+    <Loader style="display: block; align-items: center" />
   </div>
   <div v-if="(orders?.items?.length || 0) < 1">
     <h3 class="semencoemndas">
@@ -94,8 +94,12 @@
             </td>
             <td>
               <router-link :to="'/encomenda/id' + order.id">
-                <BButton class="botao2" variant="outline-primary"
-                  >Ver detalhes</BButton
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.7em"
+                  >Ver detalhes</PrimeButton
                 >
               </router-link>
             </td>
@@ -104,6 +108,7 @@
       </table>
     </div>
     <Pagination
+      class="mt-5"
       v-if="orders"
       :items="orders"
       :page-size="currentFilters.pageSizeC"
@@ -116,6 +121,7 @@
 
 <script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
+import PrimeButton from 'primevue/button';
 import { PageState } from 'primevue/paginator';
 import { BaseItems, OrderProducer } from '../types/interfaces';
 import { onMounted, ref, computed, watch } from 'vue';

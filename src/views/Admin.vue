@@ -1,11 +1,15 @@
 <template>
-  <h1>Utilizadores</h1>
-  <b-tabs v-model="activeTab">
+  <h1 class="dgreen-txt">Utilizadores</h1>
+  <b-tabs v-model="activeTab" class="parent mt-5">
     <b-tab title="Consumidores" @click="activateFirstTab">
-      <Consumer></Consumer>
+      <div class="parent">
+        <Consumer></Consumer>
+      </div>
     </b-tab>
     <b-tab title="Produtores" @click="activateSecondTab">
-      <Producer></Producer>
+      <div class="parent">
+        <Producer></Producer>
+      </div>
     </b-tab>
   </b-tabs>
 </template>

@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <OverlayPanel ref="manageProductOverlay">
     <div v-if="isOverlayOpen" class="p-3">
       <h4>{{ methodName }} produto</h4>
@@ -78,7 +69,7 @@
               :input-class="{ 'p-invalid': formErrors.productionUnit }"
               input-id="productionUnit"
               aria-describedby="productionUnitError"
-              :min-length="3"
+              :min-length="1"
               data-key="id"
               option-label="name"
               :suggestions="productionUnit.items.value.items"
@@ -106,7 +97,7 @@
                 }}"</template
               >
             </AutoComplete>
-            <small>Escreva pelo menos 3 letras para iniciar a pesquisa</small>
+            <small>Escreva pelo menos 1 letra para iniciar a pesquisa</small>
             <small
               v-if="formErrors.productionUnit"
               class="p-error"
@@ -183,6 +174,7 @@
   </OverlayPanel>
 
   <PrimeButton
+    rounded
     :icon="`pi pi-${methodName === 'Criar' ? 'plus' : 'pencil'}`"
     outlined
     @click="toggleOverlay"
@@ -209,7 +201,6 @@ import PrimeButton from 'primevue/button';
 import { Form as VeeForm, useField, useForm } from 'vee-validate';
 import Calendar from 'primevue/calendar';
 import InputNumber from 'primevue/inputnumber';
-import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useStore } from '@/store';
 
@@ -221,7 +212,7 @@ export default {
     VeeForm,
     Calendar,
     InputNumber,
-    Toast,
+
     OverlayPanel,
   },
   props: {
@@ -528,10 +519,10 @@ export default {
 </script>
 
 <style scoped>
-.p-button-outlined {
+/* .p-button-outlined {
   color: #f1b24a !important;
   border-radius: 50%;
-}
+}*/
 
 .card-text .p-button-outlined {
   color: #5a5a5a !important;

@@ -130,6 +130,7 @@ export interface Address {
     latitude: number;
     longitude: number;
     consumer?: number;
+    getFullAddress?: string;
 }
 
 export type CreateAddress = Omit<Address, 'id'>;
@@ -307,16 +308,17 @@ export interface CartItem {
     quantity: number;
 }
 export interface Shipment {
-    carrier: Carrier;
+    id: number;
+    carrier?: Carrier;
     events: ShipmentEvent[];
 }
 export enum ShipmentStatus {
     /* eslint-disable no-unused-vars*/
-    Paid = 0,
-    Processing = 1,
-    Shipped = 2,
-    Delivered = 3,
-    Canceled = 4,
+    Paid = 'Paid',
+    Processing = 'Processing',
+    Shipped = 'Shipped',
+    Delivered = 'Delivered',
+    Canceled = 'Cenceled',
     /* eslint-enable no-unused-vars*/
 }
 export interface ShipmentEvent {

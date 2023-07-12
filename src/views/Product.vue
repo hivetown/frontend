@@ -20,7 +20,8 @@
   </div>
 
   <!-- detalhes do produto -->
-  <div class="d-flex parent mobile-on">
+  <Loader v-if="loadingProduct" style="display: block; align-items: center" />
+  <div class="d-flex parent mobile-on" v-if="!loadingProduct">
     <!-- Imagens -->
     <div class="d-flex flex-row justify-content-center w-50">
       <div class="d-flex flex-column align-items-center w-75 h-75 rounded-3">
@@ -368,10 +369,11 @@
       <TabPanel>
         <template #header>
           <i class="pi pi-book mr-2"></i>
-          <span>Detalhes do Produto</span>
+          <span class="tab-txt">Detalhes do Produto</span>
         </template>
 
-        <div class="mt-4">
+        <Loader v-if="loadingCategories" />
+        <div class="mt-4" v-if="!loadingCategories">
           <h5 v-if="productCategories.items" class="mb-4">
             Categorias <span>({{ productCategories.items.length }})</span>
           </h5>
@@ -398,7 +400,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-4" v-if="!loadingCategories">
           <div class="mt-3 mb-3 d-flex align-items-center spec-category-text">
             <h5 class="mt-4 mb-3">Características</h5>
           </div>
@@ -439,11 +441,15 @@
       <TabPanel>
         <template #header>
           <i class="pi pi-shopping-cart mr-2"></i>
-          <span>Vendedores</span>
+          <span class="tab-txt" style="display: flex; align-items: center"
+            >Vendedores</span
+          >
         </template>
 
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
-        <div v-if="$store.state.user">
+
+        <Loader v-if="loadingProducers" />
+        <div v-if="$store.state.user && !loadingProducers">
           <div class="d-flex justify-content-start align-items-center">
             <input
               @change="onCheckboxChange()"
@@ -461,7 +467,7 @@
           </div>
         </div>
 
-        <div v-if="!checkboxValue">
+        <div v-if="!checkboxValue && !loadingProducers">
           <div class="grid" style="display: flex; justify-content: center">
             <template
               v-for="(producerProduct, index) in producerProducts.items"
@@ -510,17 +516,31 @@
                   </div>
 
                   <div class="flex flex-column mt-2 gap-1">
-                    <div class="flex flex-row align-items-center gap-1">
-                      <i
+                    <div class="flex flex-row align-items-center gap-1 mt-4">
+                      <!-- <i
                         class="pi pi-truck p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
-                      ></i>
+                      ></i> -->
+                      <div>
+                        <PrimeButton
+                          icon="pi pi-truck"
+                          rounded
+                          severity="info"
+                          disabled
+                        />
+                      </div>
                       <span>{{ producerProduct.productionUnit!.name }}</span>
                     </div>
 
                     <div class="flex flex-row align-items-center gap-1">
-                      <i
+                      <!-- <i
                         class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
-                      ></i>
+                      ></i> -->
+                      <PrimeButton
+                        icon="pi pi-euro"
+                        rounded
+                        severity="info"
+                        disabled
+                      />
                       <span>{{ producerProduct.currentPrice }}€</span>
                     </div>
                   </div>
@@ -561,7 +581,7 @@
                         selectedUnit === producerProduct.productionUnit?.id
                       "
                       severity="secondary"
-                      class="close-map-btn"
+                      class="close-map-btn mobile-txt"
                       @click="selectedUnit = null"
                     >
                       Fechar Mapa
@@ -570,7 +590,7 @@
                       outlined
                       rounded
                       v-else
-                      class="map-btn"
+                      class="map-btn mobile-txt"
                       severity="secondary"
                       @click="selectProducer(producerProduct.productionUnit)"
                     >
@@ -602,7 +622,7 @@
         </div>
 
         <div v-else>
-          <p>
+          <p v-if="!loadingProducers">
             O produto selecionado não se encontra disponível para venda num raio
             de 30km de si.
           </p>
@@ -749,6 +769,15 @@
     /* background-color: pink !important; */
     height: 22vh;
   }
+
+  .mobile-txt {
+    font-size: 0.6em !important;
+  }
+
+  .tab-txt {
+    font-size: 0.9em !important;
+    height: 5vh !important;
+  }
 }
 </style>
 
@@ -769,6 +798,7 @@ import TabPanel from 'primevue/tabpanel';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
 import { useStore } from '@/store';
+import Loader from '@/components/Loader.vue';
 
 import Maps from '../maps/maps.vue';
 import {
@@ -844,6 +874,10 @@ export default defineComponent({
       //   fields: {} as BaseItems<Category>,
       fields: [] as ProductSpecField[][],
       selectedUnit: null as object | null | undefined | Number,
+
+      loadingCategories: true,
+      loadingProducers: true,
+      loadingProduct: true,
 
       //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
       checkboxValue: false,
@@ -978,33 +1012,41 @@ export default defineComponent({
 
     // Vai buscar os dados da spec para ter acesso aos dados específicos dela
     // Pedido do tipo: /products/specId
-    const productDetails = await fetchProduct(specId);
-    this.productDetails = productDetails.data;
+    try {
+      const productDetails = await fetchProduct(specId);
+      this.productDetails = productDetails.data;
 
-    // Carregar a imagem principal do produto
-    if (this.productDetails.images) {
-      this.selectedImage = this.productDetails.images[0].url;
-      this.selectedImageAlt = this.productDetails.images[0].alt;
+      // Carregar a imagem principal do produto
+      if (this.productDetails.images) {
+        this.selectedImage = this.productDetails.images[0].url;
+        this.selectedImageAlt = this.productDetails.images[0].alt;
+      }
+    } finally {
+      this.loadingProduct = false;
     }
 
     // Carrega todos os produtos que têm a productSpec passada na route
     // Pedido /products/specId/products
-    const producerProducts = await fetchProducerProducts(specId);
-    this.producerProducts = producerProducts.data;
+    try {
+      const producerProducts = await fetchProducerProducts(specId);
+      this.producerProducts = producerProducts.data;
 
-    // Percorre a lista de produtos para encontrar qual deles é que tem o minPrice
-    if (this.producerProducts.items.length > 0) {
-      for (let i = 0; i < this.producerProducts.items.length; i++) {
-        const currentPrice = this.producerProducts.items[i].currentPrice;
-        if (currentPrice <= this.productDetails.minPrice) {
-          this.lowestPriceIndex = i;
+      // Percorre a lista de produtos para encontrar qual deles é que tem o minPrice
+      if (this.producerProducts.items.length > 0) {
+        for (let i = 0; i < this.producerProducts.items.length; i++) {
+          const currentPrice = this.producerProducts.items[i].currentPrice;
+          if (currentPrice <= this.productDetails.minPrice) {
+            this.lowestPriceIndex = i;
+          }
         }
       }
-    }
 
-    // Define o produto default que será aquele com o preço mais baixo e este
-    // será o que vai ter as infos apresentadas quando a página é carregada
-    this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
+      // Define o produto default que será aquele com o preço mais baixo e este
+      // será o que vai ter as infos apresentadas quando a página é carregada
+      this.defaultProduct = this.producerProducts.items[this.lowestPriceIndex];
+    } finally {
+      this.loadingProducers = false;
+    }
 
     // Carregar as categorias do produto
     const productCategories = await fetchProductCategories(specId);
@@ -1018,8 +1060,8 @@ export default defineComponent({
         );
         this.fields.push(response.data.items);
       }
-    } catch (error) {
-      console.log('Erro: ' + error);
+    } finally {
+      this.loadingCategories = false;
     }
   },
   created() {
@@ -1035,6 +1077,7 @@ export default defineComponent({
     InputText,
     Card,
     Toast,
+    Loader,
   },
 });
 </script>

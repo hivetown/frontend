@@ -1,14 +1,35 @@
 <template>
   <div class="container">
-    <h2 class="mb-5" v-if="productionUnit">
-      Produtos da Unidade: {{ productionUnit.name }}
+    <!-- <h2 class="mb-5" v-if="productionUnit"> -->
+    <!-- Produtos da Unidade: {{ productionUnit.name }}
+      <ManageProduct
+        class="ml-2"
+        method="create"
+        :default-production-unit="productionUnit"
+        @product-managed="loadUnitProducts"
+      /> -->
+    <h2 class="dgreen-txt main-txt" v-if="productionUnit">Produtos</h2>
+    <span style="color: black; font-size: 1.2em"
+      >Associados à unidade de produção: {{ productionUnit.name }}</span
+    >
+    <div
+      style="
+        display: flex;
+        align-items: center;
+        gap: 1vh;
+        margin-top: 2vh;
+        margin-bottom: 2vh;
+      "
+    >
+      <span style="font-size: 1.3em">Criar produto</span>
       <ManageProduct
         class="ml-2"
         method="create"
         :default-production-unit="productionUnit"
         @product-managed="loadUnitProducts"
       />
-    </h2>
+    </div>
+    <!-- </h2> -->
 
     <div v-if="isLoading">
       <Loader />
@@ -21,18 +42,19 @@
         <div v-for="product in products.items" :key="product.id">
           <b-card class="prod-card position-relative">
             <img
+              style="cursor: default"
               :src="product.productSpec!.images[0].url"
               class="square-image"
               :alt="product.productSpec!.images[0].alt"
             />
           </b-card>
-          <b-card-text class="">
+          <b-card-text class="mt-3">
             <div>
-              <h5>{{ product.productSpec!.name }}</h5>
+              <h5 style="height: 7vh">{{ product.productSpec!.name }}</h5>
 
-              <p>Stock: {{ product.stock }}</p>
+              <p><span class="fw-bold">Stock:</span> {{ product.stock }}</p>
 
-              <p class="grey-txt mt-3">
+              <p class="grey-txt mt-3 name-limited" style="height: 10vh">
                 {{ product.productSpec!.description }}
               </p>
 
@@ -76,6 +98,7 @@
     </div>
 
     <Pagination
+      class="mt-5"
       v-if="products"
       :items="products"
       :page="currentFilters.page"
@@ -194,6 +217,14 @@ export default {
 </script>
 
 <style scoped>
+.name-limited {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 768px) {
   h2 {
     text-align: center;

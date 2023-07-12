@@ -3,7 +3,7 @@
     <TabView v-model:active-index="activeIndex">
       <TabPanel>
         <template #header>
-          <i class="pi pi-user mx-2"></i>
+          <i class="pi pi-user mx-2 green-txt"></i>
           <span>Dados Pessoais</span>
         </template>
 
@@ -81,7 +81,7 @@
 
       <TabPanel>
         <template #header>
-          <i class="pi pi-map mx-2"></i>
+          <i class="pi pi-map mx-2 green-txt"></i>
           <span>Morada</span>
         </template>
 
@@ -348,7 +348,7 @@
 
       <TabPanel>
         <template #header>
-          <i class="pi pi-envelope mx-2"></i>
+          <i class="pi pi-envelope mx-2 green-txt"></i>
           <span>Autenticação</span>
         </template>
 
@@ -441,14 +441,17 @@
       }"
     >
       <PrimeButton
+        rounded
+        outlined
         v-if="activeIndex !== 0"
         label="Anterior"
         @click="prevPage"
       />
 
       <PrimeButton
+        rounded
         :label="activeIndex !== 2 ? 'Seguinte' : 'Registar'"
-        :severity="activeIndex !== 2 ? 'primary' : 'success'"
+        :severity="activeIndex !== 2 ? 'primary' : 'secondary'"
         @click="activeIndex !== 2 ? nextPage() : register()"
         :loading="loading"
       />

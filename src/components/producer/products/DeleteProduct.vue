@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <ConfirmPopup group="deleteProducerProduct">
     <template #message="slotProps">
       <div class="flex p-4">
@@ -18,10 +9,13 @@
   </ConfirmPopup>
 
   <PrimeButton
+    rounded
+    outlined
     icon="pi pi-trash"
     severity="danger"
     aria-label="Eliminar produto"
     @click="confirmDeleteProduct"
+    :loading="loading"
   />
 </template>
 
@@ -29,17 +23,15 @@
 import { deleteProducerProduct } from '@/api';
 import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
-import Toast from 'primevue/toast';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
-import { PropType } from 'vue';
+import { PropType, ref } from 'vue';
 import { AxiosError } from 'axios';
 import { ProducerProduct } from '@/types';
 
 export default {
   components: {
     PrimeButton,
-    Toast,
     ConfirmPopup,
   },
   props: {
@@ -55,9 +47,9 @@ export default {
   setup(props, { emit }) {
     const confirm = useConfirm();
     const toast = useToast();
+    const loading = ref(false);
 
     const confirmDeleteProduct = (event: any) => {
-      console.log(event.currentTarget);
       confirm.require({
         target: event.currentTarget,
         group: 'deleteProducerProduct',
@@ -69,6 +61,7 @@ export default {
         acceptLabel: 'Sim, eliminar',
         rejectLabel: 'Não',
         accept: async () => {
+          loading.value = true;
           try {
             // TODO typings are a bit weird
             const producerId = props.producerProduct
@@ -106,6 +99,8 @@ export default {
               detail: 'Ocorreu um erro ao eliminar o produto',
               life: 3000,
             });
+          } finally {
+            loading.value = false;
           }
         },
       });
@@ -113,16 +108,17 @@ export default {
 
     return {
       confirmDeleteProduct,
+      loading,
     };
   },
 };
 </script>
 
 <style scoped>
-.p-button-danger {
+/* .p-button-danger {
   color: #5a5a5a !important;
   border: 1px solid #5a5a5a !important;
   border-radius: 50% !important;
   background-color: white !important;
-}
+} */
 </style>

@@ -1,4 +1,12 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
   <Navbar></Navbar>
 
   <RouterView />
@@ -11,6 +19,7 @@
 import Navbar from '@/components/Navbar.vue';
 import Search from '@/components/Search.vue';
 import Footer from '@/components/Footer.vue';
+import Toast from 'primevue/toast';
 </script>
 
 <style>
@@ -29,6 +38,10 @@ import Footer from '@/components/Footer.vue';
 
 .dgreen-txt {
   color: #164a41;
+}
+
+.green-txt {
+  color: #9dc88d;
 }
 
 .yellow-txt {

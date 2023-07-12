@@ -7,7 +7,7 @@
   </div>
   <div v-else>
     <div class="loading-spinner" v-if="isLoading">
-      <Loader />
+      <Loader style="display: block; align-items: center" />
     </div>
     <div class="table-container" v-if="!isLoading" style="overflow: auto">
       <div></div>
@@ -109,7 +109,12 @@
               </div>
 
               <div v-if="order.generalStatus === 'Shipped'">
-                <PrimeButton @click="cancelarEncomendaImpossivel()"
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.6em"
+                  @click="cancelarEncomendaImpossivel()"
                   >Cancelar encomenda</PrimeButton
                 >
               </div>
@@ -216,6 +221,7 @@
       >
     </div>
     <Pagination
+      class="mt-5"
       v-if="orders"
       :items="orders"
       :page-size="currentFilters.pageSizeC"

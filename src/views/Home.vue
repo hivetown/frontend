@@ -115,7 +115,7 @@
       <div
         class="flex flex-none w-full sm:w-6 md:w-4 lg:w-3 xl:w-2"
         v-else
-        v-for="(product, index) in popularProducts.items"
+        v-for="(product, index) in popularProducts.items.slice(0, 10)"
         :key="index"
       >
         <ProductCard :product-spec="product" />
