@@ -145,8 +145,9 @@
 
     <div class="flex justify-content-end">
       <PrimeButton
+        rounded
         label="Registar"
-        severity="success"
+        severity="secondary"
         @click="register"
         :loading="loading"
       />

@@ -1,6 +1,15 @@
 <template>
   <div id="notificacoes">
     <div id="popup" @click.stop class="sticky-bar" v-if="showPopup">
+      <div
+        @click="closePopup"
+        style="display: flex; justify-content: flex-end; padding: 0.5vh"
+      >
+        <i
+          class="bi bi-x-lg"
+          style="color: #dc6942; cursor: pointer; font-size: 1.2em"
+        ></i>
+      </div>
       <TabView class="tabview-custom">
         <TabPanel>
           <template #header>

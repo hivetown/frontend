@@ -1,5 +1,9 @@
 <template>
-  <div class="d-flex parent p-4" style="background-color: ">
+  <div class="parent" @click="goBack">
+    <PageBack style="margin-top: -2vh"></PageBack>
+  </div>
+  <Loader v-if="loadingProducer" style="display: block; align-items: center" />
+  <div class="d-flex parent p-4" v-if="!loadingProducer">
     <div class="w-25 mt-4" style="background-color: ; height: ">
       <div class="">
         <!-- Imagem do produtor -->
@@ -52,7 +56,8 @@
     <h5 class="mb-4">
       Unidades de produção: <span>({{ unidadesProd.totalItems }})</span>
     </h5>
-    <div class="production-unit-container">
+    <Loader v-if="loadingUP" />
+    <div class="production-unit-container" v-if="!loadingUP">
       <div class="units-container" style="width: 20%; max-height: 400px">
         <div v-for="(unidade, idU) in unidadesProd.items" :key="idU" class="">
           <div
@@ -83,7 +88,8 @@
           </div>
         </div>
       </div>
-      <div class="map-container">
+      <Loader v-if="loadingMap" style="display: block; align-items: center" />
+      <div class="map-container" v-if="!loadingMap">
         <div class="map-image" v-if="mapImage !== null && unidadesProd.items">
           <Maps
             class="map"
@@ -108,6 +114,8 @@ import { BaseItems, Producer, ProductionUnit } from '@/types';
 import { fetchProducer, fetchProducerProductionUnits } from '@/api';
 import { fetchMapForUnit } from '@/maps/maps';
 import Maps from '../maps/maps.vue';
+import PageBack from '@/components/PageBack.vue';
+import Loader from '@/components/Loader.vue';
 
 export default {
   data() {
@@ -121,6 +129,10 @@ export default {
       ultimaUpId: 1 as number,
       idUpDefault: 0 as number,
       mapData: [] as { unitId: number; mapData: any }[],
+
+      loadingProducer: true,
+      loadingUP: true,
+      loadingMap: true,
     };
   },
   props: {
@@ -130,6 +142,9 @@ export default {
     // },
   },
   methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
     updateImage(number: number) {
       const idElemento = number - 1;
       const upSelecionada = this.$refs[idElemento + 1] as HTMLElement[];
@@ -151,12 +166,20 @@ export default {
   async beforeMount() {
     // Dados do produtor
     const producerId = Number(this.$route.params.id);
-    const dadosProdutor = await fetchProducer(producerId);
-    this.dadosProdutor = dadosProdutor.data;
-    // Unidades de produção do produtor
-    const unidadesProd = await fetchProducerProductionUnits(producerId);
-    this.unidadesProd = unidadesProd.data;
 
+    try {
+      const dadosProdutor = await fetchProducer(producerId);
+      this.dadosProdutor = dadosProdutor.data;
+    } finally {
+      this.loadingProducer = false;
+    }
+    // Unidades de produção do produtor
+    try {
+      const unidadesProd = await fetchProducerProductionUnits(producerId);
+      this.unidadesProd = unidadesProd.data;
+    } finally {
+      this.loadingUP = false;
+    }
     this.$nextTick(() => {
       const ultimaUpRef = this.$refs[1] as HTMLElement | HTMLElement[];
       if (ultimaUpRef instanceof HTMLElement) {
@@ -166,26 +189,29 @@ export default {
     });
 
     // Fetch maps for each production unit
-    const fetchMapPromises = this.unidadesProd.items.map(
-      async (unit: ProductionUnit) => {
-        const mapData = await fetchMapForUnit(
-          unit.address.latitude,
-          unit.address.longitude
-        );
-        return {
-          unitId: unit.id,
-          mapData,
-        };
-      }
-    );
+    try {
+      const fetchMapPromises = this.unidadesProd.items.map(
+        async (unit: ProductionUnit) => {
+          const mapData = await fetchMapForUnit(
+            unit.address.latitude,
+            unit.address.longitude
+          );
+          return {
+            unitId: unit.id,
+            mapData,
+          };
+        }
+      );
+      // Wait for all map requests to finish
+      const maps = await Promise.all(fetchMapPromises);
 
-    // Wait for all map requests to finish
-    const maps = await Promise.all(fetchMapPromises);
-
-    // Store the map data in the component's data
-    this.mapData = maps;
+      // Store the map data in the component's data
+      this.mapData = maps;
+    } finally {
+      this.loadingMap = false;
+    }
   },
-  components: { Maps },
+  components: { Maps, PageBack, Loader },
   //components: { Pagination },
 };
 </script>

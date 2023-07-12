@@ -41,9 +41,11 @@
         </div>
 
         <!-- Botões -->
+        <!-- TODO - alterar porque isto devia adicionar ao carrinho -->
         <div class="d-flex gap-2 buttons">
           <router-link :to="'/products/' + productSpec.id">
             <button
+              v-if="store.state.user?.user.type != 'PRODUCER'"
               type="button"
               class="btn btn-outline-secondary circle-btn"
               v-b-tooltip.hover
@@ -146,6 +148,9 @@
 import { fetchProductCategories } from '@/api';
 import { Category, ProductSpec } from '@/types';
 import { PropType } from 'vue';
+import { useStore } from '@/store';
+
+const store = useStore();
 </script>
 
 <script lang="ts">

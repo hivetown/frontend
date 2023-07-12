@@ -1,14 +1,13 @@
 <template>
   <div class="center-page">
     <div class="container">
-      <h2 class="mb-5 dgreen-txt main-txt">
-        Produtos
-        <ManageProduct
-          class="ml-2"
-          method="create"
-          @product-managed="loadProducts"
-        />
-      </h2>
+      <div class="mb-5">
+        <h2 class="mb-5 dgreen-txt main-txt">Produtos</h2>
+        <div style="display: flex; align-items: center; gap: 1vh">
+          <span style="font-size: 1.3em">Criar produto</span>
+          <ManageProduct method="create" @product-managed="loadProducts" />
+        </div>
+      </div>
 
       <Loader v-if="isLoading" />
 
@@ -26,15 +25,19 @@
             <i class="bi bi-heart" style="color: #dc6942; cursor: pointer"></i>
           </span> -->
               <img
+                style="cursor: default"
                 :src="product.productSpec!.images[0].url"
                 class="square-image"
                 :alt="product.productSpec!.images[0].alt"
               />
             </b-card>
             <b-card-text class="">
-              <div>
+              <div class="mt-3">
                 <h5 class="name-limited">{{ product.productSpec!.name }}</h5>
-                <p>Unidade: {{ product.productionUnit!.name }}</p>
+                <p class="name-limited">
+                  <span class="fw-bold">Unidade: </span
+                  >{{ product.productionUnit!.name }}
+                </p>
                 <p class="grey-txt mt-3 description">
                   {{ product.productSpec!.description }}
                 </p>
@@ -80,6 +83,7 @@
       </div>
 
       <Pagination
+        class="mt-5"
         v-if="products"
         :items="products"
         :page="currentFilters.page"

@@ -40,6 +40,10 @@ import Toast from 'primevue/toast';
   color: #164a41;
 }
 
+.green-txt {
+  color: #9dc88d;
+}
+
 .yellow-txt {
   color: #f1b24a;
 }
