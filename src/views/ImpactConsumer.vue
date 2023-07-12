@@ -3,7 +3,10 @@
   <div class="parent" style="height: ; background-color: ">
     <div class="d-flex">
       <!-- Barra lateral -->
-      <div style="width: 20%; border-right: 2px solid #f3f3f3; padding: 0.5vh">
+      <div
+        style="width: 20%; border-right: 2px solid #f3f3f3; padding: 0.5vh"
+        class="normal-view"
+      >
         <div class="parent">
           <!-- Views -->
           <div class="mt-4 mb-4">
@@ -62,7 +65,34 @@
           <!-- Escolher categoria -->
           <div>
             <p class="mt-4">Escolha a categoria a visualizar:</p>
-            <CategoryFilter :categories="allCategories"></CategoryFilter>
+            <div v-if="!categoriesTreeNodes.length">
+              Sem categorias disponíveis
+            </div>
+            <div v-else>
+              <Tree
+                class="cats-container"
+                scroll-height="600px"
+                :value="categoriesTreeNodes"
+                @node-expand="expandCategory"
+                :loading="loadingCategories"
+                selection-mode="single"
+                @node-select="nodeSelect"
+              >
+                <template #default="slotProps">
+                  <div class="d-flex">
+                    <b-form-checkbox
+                      :checked="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                      :disabled="
+                        selectedCategoryTreeNode?.key === slotProps.node.key
+                      "
+                    />
+                    {{ slotProps.node.label }}
+                  </div>
+                </template>
+              </Tree>
+            </div>
           </div>
           <div class="mt-4">
             <!-- Botão -->
@@ -80,7 +110,128 @@
           </div>
         </div>
       </div>
-      <div style="width: 80%; background-color: ">
+
+      <!-- Barra mobile -->
+      <div class="reportSidebar mobile-view">
+        <Accordion class="">
+          <AccordionTab header="Filtros"
+            ><div class="">
+              <div class="parent">
+                <!-- Views -->
+                <div class="mt-4 mb-4">
+                  <p>Escolha o que deseja visualizar:</p>
+                  <DropdownCustom
+                    class="required-field"
+                    @view="handleViewSelect"
+                  />
+                </div>
+                <div>
+                  <!-- Datas -->
+                  <p>Escolha as datas a visualizar:</p>
+                  <div class="d-flex gap-2 align-items-center">
+                    <DatePicker
+                      style="display: flex; justify-content: center"
+                      @date="handleDateSelect"
+                      :id="'datePicker1'"
+                    ></DatePicker>
+                    <i
+                      class="bi bi-arrow-right-short dgreen-txt"
+                      style="font-size: 1.5em"
+                    ></i>
+                    <DatePicker
+                      style="display: flex; justify-content: center"
+                      @date="handleDateSelect"
+                      :id="'datePicker2'"
+                    ></DatePicker>
+                  </div>
+                </div>
+                <!-- Slider do raio -->
+                <p class="mt-4">Indique o raio a visualizar:</p>
+                <div class="d-flex gap-3">
+                  <div
+                    style="
+                      border: 1px solid #ced4da;
+                      padding: 0.5vh;
+                      border-radius: 9%;
+                      width: 12vh;
+                      height: 4vh;
+                    "
+                    class="slider-before"
+                  >
+                    <p class="text-center" style="color: #5a5a5a">
+                      {{ raio }} km
+                    </p>
+                  </div>
+                  <Slider
+                    v-model="raio"
+                    :max="100000"
+                    :pt="{
+                      root: { style: 'width:60%;' },
+                      handle: {
+                        style:
+                          'background-color: #F1B24A; border: 1px solid #F1B24A;',
+                      },
+                      range: { style: 'background-color: #F1B24A' },
+                    }"
+                    class="slider-raio"
+                  />
+                </div>
+                <!-- Escolher categoria -->
+                <!-- TODO - tornar funcional -->
+                <div>
+                  <p class="mt-4">Escolha a categoria a visualizar:</p>
+                  <div v-if="!categoriesTreeNodes.length">
+                    Sem categorias disponíveis
+                  </div>
+                  <div v-else>
+                    <Tree
+                      class="cats-container"
+                      scroll-height="600px"
+                      :value="categoriesTreeNodes"
+                      @node-expand="expandCategory"
+                      :loading="loadingCategories"
+                      selection-mode="single"
+                      @node-select="nodeSelect"
+                    >
+                      <template #default="slotProps">
+                        <div class="d-flex">
+                          <b-form-checkbox
+                            :checked="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                            :disabled="
+                              selectedCategoryTreeNode?.key ===
+                              slotProps.node.key
+                            "
+                          />
+                          {{ slotProps.node.label }}
+                        </div>
+                      </template>
+                    </Tree>
+                  </div>
+                </div>
+                <div class="mt-4 btn-report-mobile">
+                  <!-- Botão gerar gráficos -->
+                  <ButtonPV
+                    :disabled="!allDataAvailable"
+                    @click="generateGraphs()"
+                    label="Gerar gráficos"
+                    :pt="{
+                      root: {
+                        style: 'background-color:#F1B24A; border:#F1B24A;',
+                      },
+                    }"
+                    rounded
+                  />
+                </div>
+              </div>
+            </div>
+          </AccordionTab>
+        </Accordion>
+      </div>
+
+      <div style="width: 80%; background-color: " class="hide">
         <div class="d-flex">
           <div class="user-info">
             <!-- Imagem do user -->
@@ -131,7 +282,6 @@
             >Para visualizar os dados tem de escolher valores para os
             filtros</InlineMessage
           >
-
           <!-- Período temporal -->
           <p v-if="graficosGerados">
             A mostrar dados entre: "
@@ -172,9 +322,10 @@
                 Histórico de gastos
               </h4>
               <!-- Gráfico de linhas -->
-              <div class="graph-container">
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingLineChart" />
                 <LineChart
-                  v-if="graficosGerados"
+                  v-else
                   :chart-data="lineChartData"
                   :chart-options="lineChartOptions"
                 />
@@ -186,9 +337,10 @@
                   Produtos encomendados
                 </h4>
                 <!-- Gráfico de barras -->
-                <div class="graph-container">
+                <div v-if="graficosGerados" class="graph-container">
+                  <Loader v-if="loadingBarChart" />
                   <BarChart
-                    v-if="graficosGerados"
+                    v-if="!loadingBarChart"
                     :chart-data="barChartData"
                     :chart-options="barChartOptions"
                   ></BarChart>
@@ -207,6 +359,138 @@
         </div>
       </div>
     </div>
+    <!-- lado esquerdo da barra mobile -->
+    <div class="report-info-mobile">
+      <InlineMessage v-if="!graficosGerados" severity="warn" class="mt-5"
+        >Para visualizar os dados tem de escolher valores para todos os filtros
+        obrigatórios</InlineMessage
+      >
+
+      <div class="d-flex cards-container-mobile">
+        <!-- Cards coloridos -->
+        <div class="data-cards">
+          <ImpactDataCard
+            icon="bi bi-currency-euro"
+            title="Total gasto"
+            :value="reportCards.comprasTotais"
+            color="#7CA2C3"
+            :text-cancel="'Dinheiro devolvido:'"
+            :cancel-value="reportCards.comprasTotaisCanceladas"
+          ></ImpactDataCard>
+          <ImpactDataCard
+            icon="bi bi-box-seam"
+            title="Total de encomendas"
+            :value="reportCards.numeroEncomendas"
+            color="#DC6942"
+            :text-cancel="'Enc. canceladas:'"
+            :cancel-value="reportCards.numeroEncomendasCanceladas"
+          ></ImpactDataCard>
+          <ImpactDataCard
+            icon="bi bi-bag"
+            title="Total de produtos"
+            :value="reportCards.totalProdutos"
+            color="#F1B24A"
+            :text-cancel="'Produtos devolvidos:'"
+            :cancel-value="reportCards.totalProdutosCancelados"
+          ></ImpactDataCard>
+        </div>
+      </div>
+      <!-- Período temporal -->
+      <div v-if="graficosGerados" class="time-period">
+        <p>
+          A mostrar dados entre: "
+          <span class="fw-bold">{{ startDate }}</span
+          >" e " <span class="fw-bold">{{ endDate }}</span
+          >"
+        </p>
+      </div>
+      <!-- TODO - Isto mas para quando os gráficos estiverem efetivamente a carregar
+		   Depois da pessoa ter escolhido os filtros -->
+      <!-- <div v-if="!graficosGerados" class="mt-5">
+        <Skeleton
+          class="d-block mx-auto"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
+        <Skeleton
+          class="d-block mx-auto mt-4"
+          style="width: 95%; height: 20vh"
+        ></Skeleton>
+      </div> -->
+
+      <div class="evolution-line-graph">
+        <div class="parent">
+          <div style="width: 100%">
+            <!-- Muda a cada view -->
+            <h4
+              v-if="view == 'numeroEncomendas' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Histórico de encomendas
+            </h4>
+
+            <h4
+              v-if="view == 'totalProdutos' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Quantidade de produtos encomendados
+            </h4>
+            <h4
+              v-if="view == 'numeroProdutosEncomendados' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Quantidade de produtos diferentes encomendados
+            </h4>
+            <h4
+              v-if="view == 'comprasTotais' && graficosGerados"
+              class="py-4 dgreen-txt"
+            >
+              Histórico de faturação
+            </h4>
+            <!-- Gráfico de linhas -->
+            <div v-if="graficosGerados" class="graph-container">
+              <Loader v-if="loadingLineChart" />
+              <LineChart
+                style="max-height: 400px !important"
+                v-else
+                :chart-data="lineChartData"
+                :chart-options="lineChartOptions"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bar-graph">
+        <div class="parent">
+          <div style="width: 100%">
+            <div>
+              <!-- Muda a cada tipo: produtos ou clientes -->
+              <h4
+                v-if="graficosGerados && barChartView == 'products'"
+                class="py-4 dgreen-txt"
+              >
+                Produtos encomendados
+              </h4>
+              <h4
+                v-if="graficosGerados && barChartView == 'clients'"
+                class="py-4 dgreen-txt"
+              >
+                Produtos encomendados por consumidor
+              </h4>
+              <!-- Gráfico de barras -->
+              <div v-if="graficosGerados" class="graph-container">
+                <Loader v-if="loadingBarChart" />
+                <BarChart
+                  v-if="!loadingBarChart"
+                  :chart-data="barChartData"
+                  :chart-options="barChartOptions"
+                ></BarChart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -220,7 +504,10 @@ import InlineMessage from 'primevue/inlinemessage';
 import LineChart from '@/components/LineChart.vue';
 import BarChart from '@/components/BarChart.vue';
 import ButtonPV from 'primevue/button';
-import CategoryFilter from '@/components/CategoryFilter.vue';
+import Accordion from 'primevue/accordion';
+import AccordionTab from 'primevue/accordiontab';
+import Tree, { TreeNode } from 'primevue/tree';
+import Loader from '@/components/Loader.vue';
 import { computed, defineComponent } from 'vue';
 import {
   ReportCard,
@@ -233,12 +520,24 @@ import {
 } from '@/types';
 import {
   fetchAllCategories,
-  fetchAdminReportCards,
-  fetchAdminReportMap,
-  fetchAdminReportEvolution,
-  fetchAdminReportProducts,
-  fetchAdminReportClients,
+  fetchConsumerReportCards,
+  fetchConsumerReportEvolution,
+  fetchConsumerReportProducts,
 } from '@/api';
+
+interface CategoryTreeNode extends TreeNode {
+  parent?: CategoryTreeNode;
+}
+
+const mapCategoryToTreeNode = (
+  category: Category,
+  parent?: CategoryTreeNode
+): CategoryTreeNode => ({
+  key: category.id.toString(),
+  label: category.name,
+  leaf: false,
+  parent,
+});
 
 export default defineComponent({
   data() {
@@ -255,7 +554,9 @@ export default defineComponent({
       userLoggedNImage: {} as Image,
 
       // Categorias
-      allCategories: [] as Category[],
+      loadingCategories: true,
+      selectedCategoryTreeNode: null as CategoryTreeNode | null,
+      categoriesTreeNodes: [] as CategoryTreeNode[],
 
       // Datas
       startDate: 'Indefinido' as string,
@@ -266,10 +567,14 @@ export default defineComponent({
       reportMap: {} as ReportMap[],
       reportEvolution: {} as Record<string, ReportEvolution>, // TODO - ver se é preciso alterar esta interface
       reportBarChart: {} as ReportBarChartProduct[], // TODO - ver se é preciso alterar esta interface
-      selectedCategory: 0 as number,
       reportProducerClients: [] as reportProducerClients[],
 
       // Gráfico de linhas
+      loadingLineChart: true,
+      loadingBarChart: true,
+      noValuesLine: false,
+      noValuesBar: false,
+
       lineGraphLabels: [] as string[],
       lineGraphData: [] as number[],
       lineChartData: {
@@ -344,30 +649,36 @@ export default defineComponent({
       }
     }
 
-    // TODO - alterar a forma como as categorias são buscadas
-    // Ir buscar as categorias (só traz as 24 de uma página)
-    const allCategoriesData = await fetchAllCategories();
-    const allCategories = allCategoriesData.data.items;
-    this.allCategories = allCategories;
+    await this.loadCategories();
   },
   methods: {
     generateGraphs() {
       this.graficosGerados = true;
       // Ir buscar os dados dos gráficos
-      // TODO - alerar o id
-      if (this.selectedCategory != 0) {
+      if (this.selectedCategoryTreeNode) {
+        console.log(this.selectedCategoryTreeNode);
         // nada ainda
         // TODO - meter o fetch de todos os pedidos com a opção da categoria como opcional
+        this.loadGraphs(
+          this.userLoggedId,
+          this.startDate,
+          this.endDate,
+          this.raio,
+          this.view,
+          Number(this.selectedCategoryTreeNode.key)
+        );
       } else {
         this.loadGraphs(
           this.userLoggedId,
           this.startDate,
           this.endDate,
           this.raio,
-          this.view
+          this.view,
+          undefined
         );
       }
     },
+
     handleDateSelect(selectedDate: string) {
       if (selectedDate[1] == 'datePicker1') {
         this.startDate = selectedDate[0];
@@ -385,58 +696,100 @@ export default defineComponent({
       dataInicio: string,
       dataFim: string,
       raio: number,
-      view: string
+      view: string,
+      category?: number
     ) {
-      // Ir buscar os dados dos cards
-      const reportCards = await fetchAdminReportCards(
-        dataInicio,
-        dataFim,
-        raio
-      );
-      this.reportCards = reportCards.data;
-      //   console.log('Dados dos cards: ' + JSON.stringify(this.reportCards));
-
-      // Ir buscar os dados do mapa
-      const reportMap = await fetchAdminReportMap(dataInicio, dataFim, raio);
-      this.reportMap = reportMap.data;
-      //   console.log('Dados do mapa: ' + JSON.stringify(this.reportMap));
-
-      // Ir buscar os dados da evolução (gráfico de linhas)
-      const reportEvolution = await fetchAdminReportEvolution(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportEvolution = reportEvolution.data;
-      this.updateGraphData(view, 'line');
-      console.log(this.reportEvolution);
-
+      if (this.selectedCategoryTreeNode != null) {
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchConsumerReportCards(id, dataInicio, dataFim, raio, category),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+            fetchConsumerReportEvolution(
+              id,
+              dataInicio,
+              dataFim,
+              raio,
+              category,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          console.log(reportEvolution.data);
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingLineChart = false;
+        }
+      } else {
+        try {
+          const [reportCards, reportEvolution] = await Promise.all([
+            // Ir buscar os dados dos cards
+            fetchConsumerReportCards(id, dataInicio, dataFim, raio),
+            // Ir buscar os dados do mapa
+            //   fetchAdminReportMap(dataInicio, dataFim, raio),
+            // Ir buscar os dados da evolução (gráfico de linhas)
+            fetchConsumerReportEvolution(
+              id,
+              dataInicio,
+              dataFim,
+              raio,
+              undefined,
+              view
+            ),
+          ]);
+          this.reportCards = reportCards.data;
+          // this.reportMap = reportMap.data;
+          this.reportEvolution = reportEvolution.data;
+          this.updateGraphData(view, 'line');
+        } finally {
+          this.loadingLineChart = false;
+        }
+      }
       // Ir buscar os dados do gráfico de barras
       // Produtos
-      const reportBarChart = await fetchAdminReportProducts(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportBarChart = reportBarChart.data;
-      this.updateGraphData(view, 'bar');
-
-      // Clientes
-      const producerClients = await fetchAdminReportClients(
-        dataInicio,
-        dataFim,
-        raio,
-        view
-      );
-      this.reportProducerClients = producerClients.data;
-      this.updateGraphData(view, 'bar');
+      if (this.selectedCategoryTreeNode != null) {
+        try {
+          const reportBarChart = await fetchConsumerReportProducts(
+            id,
+            dataInicio,
+            dataFim,
+            raio,
+            category,
+            view
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
+      } else {
+        try {
+          const reportBarChart = await fetchConsumerReportProducts(
+            id,
+            dataInicio,
+            dataFim,
+            raio,
+            undefined,
+            view
+          );
+          this.reportBarChart = reportBarChart.data;
+          this.updateGraphData(view, 'bar');
+        } finally {
+          this.loadingBarChart = false;
+        }
+      }
     },
 
     // Atualizar os dados do gráfico de linhas
     // TODO - adaptar a função de modo a que possa receber qualquer view para o gráfico (acrescentar argumento da view)
     updateGraphData(view: string, grapthType: string) {
+      if (Object.keys(this.reportEvolution).length === 0) {
+        this.noValuesLine = true;
+      }
       // Limpar os arrays de dados
       if (grapthType == 'line') {
         this.lineGraphLabels = [];
@@ -543,6 +896,117 @@ export default defineComponent({
         };
       }
     },
+    async fetchCategories({
+      parentId,
+      loadings,
+    }: {
+      parentId?: number;
+      loadings?: boolean;
+    } = {}) {
+      if (loadings === undefined) loadings = true;
+      if (loadings) this.loadingCategories = true;
+
+      const categories = (
+        await fetchAllCategories({
+          pageSize: 100,
+          parentId: parentId,
+        })
+      ).data;
+
+      if (loadings) this.loadingCategories = false;
+      return categories;
+    },
+    async loadCategories() {
+      const categoriesPromise = this.fetchCategories();
+
+      const tempCategoriesTree: CategoryTreeNode[] = [];
+      if (this.selectedCategoryTreeNode) {
+        // TODO: see comment below
+        /**
+         * This does not completely work:
+         * because we pre-set some categories, and since they will be expanded,
+         * there will be no children fetching of those categories - they will be incomplete
+         *
+         * Because of this, I decided to fetch the children of each category in the tree (that is a parent of the selected one)
+         */
+
+        // Create a queue of all the parents of the selected category
+        // [current, ...parents, rootParent]
+        let currentNodeRef: CategoryTreeNode = {
+          ...this.selectedCategoryTreeNode,
+        };
+        const queue: CategoryTreeNode[] = [];
+        while (currentNodeRef.parent) {
+          queue.push(currentNodeRef.parent);
+          currentNodeRef = currentNodeRef.parent;
+        }
+
+        // Add the parents to the tree
+        if (queue.length) {
+          // TODO perf: don't fetch if already fetched
+          const queueCategoriesData = await Promise.all(
+            queue.map((category, idx) =>
+              this.fetchCategories({
+                parentId: Number(category.key),
+                loadings: false,
+              }).then((r) =>
+                r.items.filter(
+                  (c) => idx === 0 || c.id !== Number(queue[idx - 1].key)
+                )
+              )
+            )
+          );
+
+          // Add the root parent
+          tempCategoriesTree.push(queue[queue.length - 1]);
+          let treeNodeRef = tempCategoriesTree[0];
+          // From the last (root) to the second (parent of selected)
+          for (let i = queueCategoriesData.length - 2; i >= 0; i--) {
+            const currentNode = queue[i];
+            const parentNodeData = queueCategoriesData[i + 1].map((c) =>
+              mapCategoryToTreeNode(c, treeNodeRef)
+            );
+
+            // Fetch the children of the parent except the current node, but add it from memory
+            treeNodeRef.children = [currentNode, ...parentNodeData];
+
+            treeNodeRef = currentNode;
+          }
+        }
+      }
+
+      let categories = (await categoriesPromise).items.map((c) =>
+        mapCategoryToTreeNode(c)
+      );
+      if (tempCategoriesTree.length) {
+        // != is on purpose
+        categories = categories.filter(
+          (c) => c.id != tempCategoriesTree[0].key
+        );
+      }
+
+      this.categoriesTreeNodes = [...tempCategoriesTree, ...categories];
+    },
+    async expandCategory(node: CategoryTreeNode) {
+      if (!node.children) {
+        this.loadingCategories = true;
+
+        // Fetch category
+        const categories = await this.fetchCategories({
+          parentId: Number(node.key),
+        });
+
+        // TODO pagination/lazyloading
+        node.children = categories.items.map((category) =>
+          mapCategoryToTreeNode(category, node)
+        );
+
+        this.loadingCategories = false;
+      }
+    },
+    async nodeSelect(node: CategoryTreeNode) {
+      this.selectedCategoryTreeNode = node;
+    },
   },
   components: {
     DatePicker,
@@ -553,7 +1017,10 @@ export default defineComponent({
     DropdownCustom,
     InlineMessage,
     ButtonPV,
-    CategoryFilter,
+    Accordion,
+    AccordionTab,
+    Tree,
+    Loader,
   },
 });
 </script>
@@ -603,5 +1070,57 @@ export default defineComponent({
   position: absolute;
   top: 0;
   left: -0.7rem;
+}
+</style>
+<style>
+.mobile-view,
+.report-info-mobile {
+  display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .normal-view,
+  .hide {
+    display: none !important;
+  }
+
+  .mobile-view,
+  .report-info-mobile {
+    display: block !important;
+  }
+
+  .cards-container-mobile {
+    align-items: center;
+    justify-content: center !important;
+  }
+
+  .data-cards {
+    margin-top: 3vh;
+    width: 100% !important;
+    /* background-color: red; */
+    gap: 1vh !important;
+    padding: 1vh !important;
+  }
+
+  .impact-data-card {
+    min-width: 30%;
+  }
+
+  .time-period {
+    /* background-color: red; */
+    margin-top: 10vh;
+    text-align: center;
+  }
+
+  .time-period p {
+    font-size: 0.8em;
+  }
+
+  .evolution-line-graph h4,
+  .bar-graph h4 {
+    font-size: 1.2em;
+    margin-bottom: -2vh;
+  }
 }
 </style>

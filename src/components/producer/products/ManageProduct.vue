@@ -437,6 +437,7 @@ export default {
       // Submit
       try {
         let product = null as ProducerProduct | null;
+        console.log('PU:', values.productionUnit);
         switch (props.method) {
           case 'create':
             product = (

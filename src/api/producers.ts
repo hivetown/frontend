@@ -50,12 +50,25 @@ export const fetchProducerReportClients = (
     dataInicio?: string,
     dataFim?: string,
     raio?: number,
+    categoryId?: number,
     view?: string
 ) =>
     // TODO - substituir o tipo any pelo tipo correto
-    api.get<reportProducerClients[]>(
-        `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
-    );
+    // api.get<reportProducerClients[]>(
+    //     `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
+    // );
+
+    // Isto funciona apesar do erro, é só resolver
+    api.get<reportProducerClients[]>(`/reports/${id}/clients`, {
+        params: {
+            dataInicio,
+            dataFim,
+            raio,
+            categoryId,
+            [view!]: true,
+        },
+    });
+
 export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
 
@@ -92,6 +105,11 @@ export const getAddressPU = (producerId: number, search?: string) =>
 //nao da com o include all
 export const getProducerId = (producerId: number, search?: string) =>
     api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
+        params: { search },
+    });
+
+export const getProducerIdSimple = (producerId: number, search?: string) =>
+    api.get<Producer>(`/producers/${producerId}`, {
         params: { search },
     });
 
