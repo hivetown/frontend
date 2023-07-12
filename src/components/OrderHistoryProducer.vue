@@ -1,5 +1,5 @@
 <template>
-	<div class="loading-spinner" v-if="isLoading">
+  <div class="loading-spinner" v-if="isLoading">
     <Loader />
   </div>
   <div v-if="(orders?.items?.length || 0) < 1">
@@ -104,12 +104,12 @@
       </table>
     </div>
     <Pagination
-	v-if="orders"
-	  :items="orders"
-	  :page-size="currentFilters.pageSizeC"
+      v-if="orders"
+      :items="orders"
+      :page-size="currentFilters.pageSizeC"
       :page="currentFilters.pageC"
-       @page-change="onPageChange"
-	      >
+      @page-change="onPageChange"
+    >
     </Pagination>
   </div>
 </template>
@@ -164,22 +164,23 @@ const orders = ref<BaseItems<OrderProducer>>();
 
 onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
-	try{
-	isLoading.value = true;
-    const response = await fetchAllOrdersProducer(
-      user2.value.user.id,
-      currentFilters.value.pageC, currentFilters.value.pageSizeC
-    );
-    orders.value = response.data;
-	}finally{
-	isLoading.value = false;
-	console.log(orders.value)
-	}
+    try {
+      isLoading.value = true;
+      const response = await fetchAllOrdersProducer(
+        user2.value.user.id,
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
+      );
+      orders.value = response.data;
+    } finally {
+      isLoading.value = false;
+      console.log(orders.value);
+    }
     //for (let i = 1; i <= response.data.totalPages; i++) {
     //  totalItems.value += (
-       // await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
-     // ).data.items.length;
-   // }
+    // await fetchAllOrdersProducer(user2.value.user.id, i, pageSize.value)
+    // ).data.items.length;
+    // }
   }
 });
 
@@ -195,22 +196,19 @@ const onPageChange = async (page: Partial<PageState>) => {
   await loadOrders();
 };
 
-const routeTo = (path: string) => {
-  router.push(path);
-};
-
 const loadOrders = async () => {
- isLoading.value = true;
+  isLoading.value = true;
 
   try {
-	if (user2.value){
-    const response = await fetchAllOrdersProducer(
-		user2.value.user.id,currentFilters.value.pageC,
-       currentFilters.value.pageSizeC
-    );
+    if (user2.value) {
+      const response = await fetchAllOrdersProducer(
+        user2.value.user.id,
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
+      );
 
-    orders.value = response.data;
-	}
+      orders.value = response.data;
+    }
   } finally {
     isLoading.value = false;
   }

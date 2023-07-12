@@ -7,20 +7,22 @@
     <p v-if="$store.state.user?.user?.type === 'CONSUMER'">
       Efetuada a: <span class="fw-bold"> {{ date }}</span>
     </p>
-	<p v-else>
-		Efetuada a: <span class="fw-bold"> {{ orderItems?.items[0].orderDate?.substring(0, 10) }}</span>
-	</p>
+    <p v-else>
+      Efetuada a:
+      <span class="fw-bold">
+        {{ orderItems?.items[0].orderDate?.substring(0, 10) }}</span
+      >
+    </p>
   </h5>
   <div class="parent" style="background-color: ">
-	
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'CONSUMER'"
     >
-	<div class="loading-spinner" v-if="isLoading">
-    <Loader />
-  </div>
+      <div class="loading-spinner" v-if="isLoading">
+        <Loader />
+      </div>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -156,15 +158,15 @@
     <br />
 
     <!--HISTORICO PRODUCER-->
-	
+
     <div
       class="table-container"
       style="overflow: auto"
       v-if="$store.state.user?.user?.type === 'PRODUCER'"
     >
-	<div class="loading-spinner" v-if="isLoading">
-    <Loader />
-    </div>
+      <div class="loading-spinner" v-if="isLoading">
+        <Loader />
+      </div>
       <table class="table table-striped" v-if="orderItems">
         <thead>
           <tr>
@@ -326,35 +328,35 @@ onBeforeMount(async () => {
   const idO: string = route.params.id as string;
   if (user2.value && user2.value.user && user2.value.user.id) {
     if (user2.value.user.type === 'CONSUMER') {
-		try{
-	isLoading.value = true;
-      const responseItem = await fetchAllItems(user2.value.user.id, idO);
-      orderItems.value = responseItem.data;
-      //date.value = props.order.orderDate;
-      const res = await fetchAllOrders(user2.value.user.id);
-      for (let i = 0; i < res.data.items.length; i++) {
-        if (res.data.items[i].id === Number(idO)) {
-          console.log(res.data.items[i].orderDate);
-          date.value = res.data.items[i].orderDate.substring(0, 10);
+      try {
+        isLoading.value = true;
+        const responseItem = await fetchAllItems(user2.value.user.id, idO);
+        orderItems.value = responseItem.data;
+        //date.value = props.order.orderDate;
+        const res = await fetchAllOrders(user2.value.user.id);
+        for (let i = 0; i < res.data.items.length; i++) {
+          if (res.data.items[i].id === Number(idO)) {
+            console.log(res.data.items[i].orderDate);
+            date.value = res.data.items[i].orderDate.substring(0, 10);
+          }
         }
+      } finally {
+        isLoading.value = false;
       }
-	}finally{
-	isLoading.value = false;
-	}
     } else {
-		try{
-	isLoading.value = true;
-      const responseItem = await fetchAllItemsProducer(
-        user2.value.user.id,
-        idO
-      );
-      orderItems.value = responseItem.data;
-      for (const orderItem of orderItems.value.items) {
-        totalSum.value += orderItem['price'] * orderItem['quantity'];
+      try {
+        isLoading.value = true;
+        const responseItem = await fetchAllItemsProducer(
+          user2.value.user.id,
+          idO
+        );
+        orderItems.value = responseItem.data;
+        for (const orderItem of orderItems.value.items) {
+          totalSum.value += orderItem['price'] * orderItem['quantity'];
+        }
+      } finally {
+        isLoading.value = false;
       }
-	} finally{
-		isLoading.value = false;
-	}
     }
     if (user2.value.user.type === 'CONSUMER') {
       for (const orderItem of orderItems.value.items) {
@@ -371,10 +373,9 @@ onBeforeMount(async () => {
           responseShipment.events[responseShipment.events.length - 1];
       }
     }
-	
   }
 });
-console.log(eventos.value)
+console.log(eventos.value);
 </script>
 <style scoped>
 .bi-truck {

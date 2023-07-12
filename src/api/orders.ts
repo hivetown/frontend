@@ -9,17 +9,17 @@ import {
 import { api } from './_base';
 
 export const fetchAllOrders = (
-	userId: number,
-	page?: number,
-	pageSize?: number
-  ) => {
-	let url = `/consumers/${userId}/orders`;
-	if (page !== undefined && pageSize !== undefined) {
-	  url += `?page=${page}&pageSize=${pageSize}`;
-	}
-	return api.get<BaseItems<Order>>(url);
-  };
-  
+    userId: number,
+    page?: number,
+    pageSize?: number
+) => {
+    let url = `/consumers/${userId}/orders`;
+    if (page !== undefined && pageSize !== undefined) {
+        url += `?page=${page}&pageSize=${pageSize}`;
+    }
+    return api.get<BaseItems<Order>>(url);
+};
+
 export const fetchAllItems = (
     userId: number,
     orderId: string,
