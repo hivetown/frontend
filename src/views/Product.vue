@@ -111,19 +111,6 @@
         <!-- Quantidade -->
         <div class="mt-4">
           <!-- Botão da quantidade -->
-<<<<<<< HEAD
-          <div
-            class="quantity-div d-flex justify-content-between rounded-pill"
-            v-if="$store.state.user?.user.type != 'PRODUCER'"
-          >
-            <b-button class="mr-3 rounded-pill" @click="decrement"
-              ><i class="bi bi-dash-lg"></i
-            ></b-button>
-            <b-button>{{ quantity }}</b-button>
-            <b-button class="ml-3 rounded-pill" @click="increment"
-              ><i class="bi bi-plus-lg"></i
-            ></b-button>
-=======
           <div class="p-inputgroup" style="max-width: 10em">
             <PrimeButton
               outlined
@@ -138,7 +125,6 @@
               icon="pi pi-plus"
               @click="increment"
             ></PrimeButton>
->>>>>>> main
           </div>
 
           <p class="mt-3 grey-txt">
@@ -147,29 +133,6 @@
         </div>
 
         <!-- Botões compra -->
-<<<<<<< HEAD
-        <div class="d-flex gap-4 align-items-center" style="margin-top: 5vh">
-          <div v-if="$store.state.user?.user.type != 'PRODUCER'">
-            <b-button
-              class="buy-btn rounded-pill"
-              @click="addItemToCart(defaultProduct.id)"
-            >
-              <router-link :to="'/carrinho'">
-                <a href="#" style="color: white">Comprar agora</a>
-              </router-link></b-button
-            >
-
-            <button
-              @click="addItemToCart(defaultProduct.id)"
-              type="button"
-              class="btn btn-outline-secondary circle-btn"
-              v-b-tooltip.hover
-              title="Adicionar ao carrinho"
-            >
-              <i class="bi bi-cart"></i>
-            </button>
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-=======
         <div
           class="d-flex gap-2 align-items-center mb-5"
           style="margin-top: 5vh"
@@ -187,7 +150,6 @@
           >
           </PrimeButton>
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
->>>>>>> main
                           v-b-tooltip.hover title="Ver produto" >
                           <i class="bi bi-eye"></i>
                   </button> -->
@@ -336,22 +298,6 @@
         style="margin-top: 5vh"
         v-if="$store.state.user?.user.type != 'PRODUCER'"
       >
-<<<<<<< HEAD
-        <b-button
-          class="buy-btn rounded-pill"
-          @click="addItemToCart(defaultProduct.id)"
-        >
-          <router-link :to="'/carrinho'">
-            <a href="#" style="color: white">Comprar agora </a>
-          </router-link></b-button
-        >
-
-        <div class="aux-btns d-flex align-items-center gap-1">
-          <button
-            @click="addItemToCart(defaultProduct.id)"
-            type="button"
-            class="btn btn-outline-secondary circle-btn"
-=======
         <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
         <div class="aux-btns d-flex align-items-center gap-1">
@@ -359,7 +305,6 @@
             rounded
             outlined
             severity="info"
->>>>>>> main
             v-b-tooltip.hover
             title="Adicionar ao carrinho"
             icon="pi pi-shopping-cart"
@@ -414,151 +359,6 @@
               gap: 1.5vh;
             "
           >
-<<<<<<< HEAD
-            <div class="mt-4" style="background-color: ">
-              <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
-              <div
-                class="mt-5 d-flex align-items-center gap-3"
-                style="background-color: ; width: 70%"
-                v-if="
-                  producerProduct.producer &&
-                  producerProduct.id != defaultProduct.id
-                "
-              >
-                <router-link
-                  v-if="producerProduct.producer"
-                  :to="'/producer/' + producerProduct.producer.user.id"
-                >
-                  <b-avatar
-                    v-if="producerProduct.producer.user.image"
-                    class="nav-item"
-                    :src="producerProduct.producer.user.image.url"
-                    :alt="producerProduct.producer.user.image.alt"
-                    style="
-                      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                      scale: 1.2;
-                    "
-                  >
-                  </b-avatar>
-                </router-link>
-                <div class="seller" v-if="producerProduct.producer">
-                  <h5>{{ producerProduct.producer.user.name }}</h5>
-                  <router-link
-                    :to="'/producer/' + producerProduct.producer.user.id"
-                  >
-                    <a href="#" class="grey-txt">Sobre o vendedor</a>
-                  </router-link>
-                </div>
-                <div style="margin-left: 30%; position: absolute">
-                  <div class="d-flex gap-5 align-items-center">
-                    <span>
-                      <h5>{{ producerProduct.currentPrice }}€</h5>
-                    </span>
-                    <div>
-                      <div v-if="$store.state.user?.user.type != 'PRODUCER'">
-                        <b-button
-                          class="buy-btn rounded-pill"
-                          style="scale: 0.85"
-                          @click="addItemToCart(defaultProduct.id)"
-                        >
-                          <router-link :to="'/carrinho'">
-                            <a href="#" style="color: white">Comprar agora</a>
-                          </router-link></b-button
-                        >
-                        <b-button
-                          v-if="
-                            selectedUnit &&
-                            selectedUnit === producerProduct.productionUnit?.id
-                          "
-                          class="buy-btn rounded-pill close-map-btn"
-                          style="scale: 0.85"
-                          @click="selectedUnit = null"
-                        >
-                          Fechar Mapa
-                        </b-button>
-                        <b-button
-                          v-else
-                          class="buy-btn rounded-pill map-btn"
-                          style="scale: 0.85"
-                          @click="
-                            selectProducer(producerProduct.productionUnit)
-                          "
-                        >
-                          {{
-                            selectedUnit &&
-                            selectedUnit === producerProduct.productionUnit
-                              ? 'Fechar Mapa'
-                              : 'Mapa'
-                          }}
-                        </b-button>
-                        <button
-                          @click="addItemToCart(producerProduct.id)"
-                          type="button"
-                          style="scale: 1.1"
-                          class="btn btn-outline-secondary circle-btn"
-                          v-b-tooltip.hover
-                          title="Adicionar ao carrinho"
-                        >
-                          <i class="bi bi-cart"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                v-if="
-                  selectedUnit &&
-                  selectedUnit === producerProduct.productionUnit
-                "
-              >
-                <Maps
-                  :selected-unit="selectedUnit"
-                  :producer-id="producerProduct.producer?.user.id || 0"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else>
-          <p>
-            O produto selecionado não se encontra disponível para venda num raio
-            de 30km de si.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ALTERAR EM RELAÇÃO À VERSÃO MAIS RECENTE -->
-  <div class="parent px-5 more-info-mobile">
-    <div class="separator-top mt-4">
-      <b-navbar class="mt-3">
-        <b-nav v-model="currentPage">
-          <b-nav-item
-            @click="currentPage = 'detalhes'"
-            :class="{ 'active-view': currentPage === 'detalhes' }"
-          >
-            <h5 class="grey-txt">Detalhes do produto</h5>
-          </b-nav-item>
-          <b-nav-item
-            @click="currentPage = 'vendedores'"
-            :class="{ 'active-view': currentPage === 'vendedores' }"
-          >
-            <h5 class="grey-txt">Outros vendedores</h5>
-          </b-nav-item>
-        </b-nav>
-      </b-navbar>
-      <!-- Página dos detalhes -->
-      <div class="px-4" v-if="currentPage === 'detalhes'">
-        <div class="mt-4">
-          <h5 v-if="productCategories.items" class="mb-4">
-            Categorias <span>({{ productCategories.items.length }})</span>
-          </h5>
-
-          <div style="display: flex; flex-direction: column; gap: 1.5vh">
-=======
->>>>>>> main
             <div
               v-for="categoria in productCategories.items"
               :key="categoria.id"
@@ -650,54 +450,6 @@
                   producerProduct.id != defaultProduct.id
                 "
               >
-<<<<<<< HEAD
-                <router-link
-                  v-if="producerProduct.producer"
-                  :to="'/producer/' + producerProduct.producer.user.id"
-                >
-                  <b-avatar
-                    v-if="producerProduct.producer.user.image"
-                    class="nav-item"
-                    :src="producerProduct.producer.user.image.url"
-                    :alt="producerProduct.producer.user.image.alt"
-                    style="
-                      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                      scale: 1.2;
-                    "
-                  >
-                  </b-avatar>
-                </router-link>
-                <div class="seller" v-if="producerProduct.producer">
-                  <h5 class="mt-3">{{ producerProduct.producer.user.name }}</h5>
-                  <router-link
-                    :to="'/producer/' + producerProduct.producer.user.id"
-                  >
-                    <a href="#" class="grey-txt">Sobre o vendedor</a>
-                  </router-link>
-                </div>
-                <div style="position: absolute">
-                  <div class="mt-3">
-                    <span>
-                      <h5>{{ producerProduct.currentPrice }}€</h5>
-                    </span>
-                    <div
-                      style="margin-left: -3vh"
-                      v-if="$store.state.user?.user.type != 'PRODUCER'"
-                    >
-                      <b-button
-                        class="buy-btn rounded-pill"
-                        style="scale: 0.85"
-                        @click="addItemToCart(defaultProduct.id)"
-                      >
-                        <router-link :to="'/carrinho'">
-                          <a href="#" style="color: white">Comprar agora</a>
-                        </router-link></b-button
-                      >
-                      <b-button
-                        v-if="
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit?.id
-=======
                 <template #content>
                   <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
                   <div class="d-flex align-items-center gap-3">
@@ -713,36 +465,8 @@
                         style="
                           box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
                           scale: 1.2;
->>>>>>> main
                         "
                       >
-<<<<<<< HEAD
-                        Fechar Mapa
-                      </b-button>
-                      <b-button
-                        v-else
-                        class="buy-btn rounded-pill map-btn"
-                        style="scale: 0.85"
-                        @click="selectProducer(producerProduct.productionUnit)"
-                      >
-                        {{
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit
-                            ? 'Fechar Mapa'
-                            : 'Mapa'
-                        }}
-                      </b-button>
-                      <button
-                        @click="addItemToCart(producerProduct.id)"
-                        type="button"
-                        style="scale: 1.1"
-                        class="btn btn-outline-secondary circle-btn"
-                        v-b-tooltip.hover
-                        title="Adicionar ao carrinho"
-                      >
-                        <i class="bi bi-cart"></i>
-                      </button>
-=======
                       </b-avatar>
                     </router-link>
 
@@ -773,7 +497,6 @@
                         class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
                       ></i>
                       <span>{{ producerProduct.currentPrice }}€</span>
->>>>>>> main
                     </div>
                   </div>
 
@@ -1065,11 +788,7 @@ export default defineComponent({
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
       quantity: 1, // Quantidade de produtos a comprar
-<<<<<<< HEAD
-      currentPage: 'detalhes', // Página atual das tabs do produto
-=======
       detailsTabIndex: DetailsView.DETAILS, // Tab selecionada
->>>>>>> main
       lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
       // Dados da BD
       producerProducts: {} as BaseItems<ProducerProduct>,
@@ -1103,63 +822,6 @@ export default defineComponent({
     },
   },
   methods: {
-<<<<<<< HEAD
-    // /-------------------------------------Cart-------------------------------------------------------------------------------------
-
-    async addItemToCart(idToAdd: number) {
-      const userLoggedId = computed(() => this.$store.state.user);
-      console.log(this.defaultProduct);
-      if (this.quantity >= 1) {
-        if (this.defaultProduct.stock >= this.quantity) {
-          if (userLoggedId.value) {
-            await addCartItem(
-              userLoggedId.value['user']['id'],
-              idToAdd,
-              this.quantity
-            );
-          } else {
-            const cartNAUInstance = new CartNAU();
-            this.cartNAU = cartNAUInstance;
-            for (let i = 0; i < this.producerProducts.items.length; i++) {
-              if (this.producerProducts.items[i].id === idToAdd) {
-                await this.cartNAU.addItemByItem(
-                  this.producerProducts.items[i]
-                );
-                await this.cartNAU.changeQuantity(
-                  this.producerProducts.items[i],
-                  this.quantity
-                );
-              }
-            }
-          }
-          this.toast.add({
-            severity: 'success',
-            summary: 'Adicionado com sucesso',
-            detail:
-              'O produto adicionado ao seu carrinho com sucesso, clique <a href="/carrinho/">aqui</a> para ver o seu carrinho.',
-            life: 10000,
-          });
-        } else {
-          this.toast.add({
-            severity: 'error',
-            summary: 'Sem stock suficente',
-            detail: `Você selecionou ${this.quantity} itens mas de momento só existem ${this.defaultProduct.stock} em stock, porfavor selecione um valor igual ou inferior e este.`,
-            life: 10000,
-          });
-        }
-      } else {
-        this.toast.add({
-          severity: 'error',
-          summary: 'Quantidade de produto inválida',
-          detail: 'Selecione uma quantidade válida (acima ou igual a 1).',
-          life: 10000,
-        });
-      }
-    },
-
-    // /------------------------------------------------------------------------------------------------------------------------------
-
-=======
     goBack() {
       this.$router.go(-1); // Navega para a página anterior
     },
@@ -1173,7 +835,6 @@ export default defineComponent({
         });
       }, 200);
     },
->>>>>>> main
     // Aumentar e diminuir a quantidade de produtos
     increment() {
       if (this.quantity < this.defaultProduct.stock) this.quantity++;
@@ -1274,9 +935,6 @@ export default defineComponent({
   created() {
     this.productCategoriesFields = this.fields;
   },
-<<<<<<< HEAD
-  components: { PathComponent, PageBack, Maps, Toast },
-=======
   components: {
     PathComponent,
     PageBack,
@@ -1286,7 +944,7 @@ export default defineComponent({
     TabPanel,
     InputText,
     Card,
+    Toast,
   },
->>>>>>> main
 });
 </script>
