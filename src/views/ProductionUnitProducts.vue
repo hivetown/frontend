@@ -73,7 +73,16 @@
                   :producer-product-id="product.id"
                   @product-managed="loadUnitProducts"
                 />
-
+                <SelectPU
+                  :default-product-spec="product.productSpec"
+                  :default-production-unit="productionUnit"
+                  :default-price="product.currentPrice"
+                  :default-stock="product.stock"
+                  :default-production-date="new Date(product.productionDate)"
+                  method="update"
+                  :producer-product-id="product.id"
+                  @product-managed="loadUnitProducts"
+                />
                 <DeleteProduct
                   :producer-product="product"
                   @delete-product="deleteProduct"
@@ -110,6 +119,7 @@ import { fetchUnit } from '@/api/unitData';
 import ManageProduct from '@/components/producer/products/ManageProduct.vue';
 import DeleteProduct from '@/components/producer/products/DeleteProduct.vue';
 import { PageState } from 'primevue/paginator';
+import SelectPU from '@/components/producer/products/SelectPU.vue';
 
 export default {
   components: {
@@ -117,6 +127,7 @@ export default {
     ManageProduct,
     DeleteProduct,
     Loader,
+    SelectPU,
   },
   data() {
     return {

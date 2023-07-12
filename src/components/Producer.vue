@@ -1,11 +1,11 @@
 <template>
-  <h3>Produtores</h3>
+  <!-- <h3>Produtores</h3> -->
   <div v-if="isLoading">
     <Loader />
   </div>
-  <div class="card-container" v-if="!isLoading && producers">
+  <div class="card-container mt-5" v-if="!isLoading && producers">
     <div v-for="(producer, idx) in producers.items" :key="idx">
-      <b-card
+      <!-- <b-card
         id="b-card"
         :title="producer.user.name"
         :img-src="
@@ -30,7 +30,51 @@
         <PrimeButton @click="routeTo(`/admin/producer/${producer.user.id}`)"
           >Ver perfil</PrimeButton
         >
-      </b-card>
+      </b-card> -->
+      <div class="card flex align-items-center justify-content-center">
+        <Card style="width: 18em">
+          <template #header>
+            <img
+              style="
+                object-fit: cover !important;
+                object-position: top !important;
+                width: 100%;
+                border-radius: 0.375rem 0.375rem 0 0;
+              "
+              :src="
+                producer.user.image ? producer.user.image.url : '/semimagem.png'
+              "
+              :alt="
+                producer.user.image
+                  ? producer.user.image.alt
+                  : `Imagem de ${producer.user.name}`
+              "
+            />
+          </template>
+          <template #title>
+            <span style="font-size: 0.9em !important">{{
+              producer.user.name
+            }}</span>
+          </template>
+          <template #subtitle>
+            <p v-if="producer.user.type === 'PRODUCER'">Produtor</p>
+            <p v-else>{{ producer.user.type }}</p>
+            <p v-if="producer.deletedAt != null">Conta desativa</p>
+          </template>
+          <template #content>
+            <div style="height: 5vh">
+              <span style="font-size: 0.8em">{{ producer.user.email }}</span>
+            </div>
+          </template>
+          <template #footer>
+            <PrimeButton
+              rounded
+              @click="routeTo(`/admin/producer/${producer.user.id}`)"
+              >Ver perfil</PrimeButton
+            >
+          </template>
+        </Card>
+      </div>
     </div>
   </div>
 
@@ -51,6 +95,7 @@ import { BaseItems, Producer } from '@/types';
 import { PageState } from 'primevue/paginator';
 import { useRoute } from 'vue-router';
 import PrimeButton from 'primevue/button';
+import Card from 'primevue/card';
 import { fetchAllProducers } from '@/api';
 import { useRouter } from 'vue-router';
 
@@ -112,7 +157,9 @@ const routeTo = (path: string) => {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  margin: -10px;
+  /* margin: -10px; */
+  /* background-color: green; */
+  justify-content: center;
 }
 
 .card-container > div {
@@ -121,5 +168,9 @@ const routeTo = (path: string) => {
 #b-card {
   background-color: rgb(239, 243, 247);
   height: 400px;
+}
+
+.card-text {
+  font-size: 0.8em !important;
 }
 </style>

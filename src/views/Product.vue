@@ -76,11 +76,11 @@
         <!-- TODO rating automático -->
         <!-- Rating -->
         <!-- <div>
-               <div class="rating d-flex gap-1 separator-bottom">
-                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
-                  <span class="">(10)</span>
-               </div>
-            </div> -->
+				 <div class="rating d-flex gap-1 separator-bottom">
+					<i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
+					<span class="">(10)</span>
+				 </div>
+			  </div> -->
       </div>
 
       <div class="separator-bottom" style="min-height: 30vh">
@@ -142,27 +142,27 @@
           >
           </PrimeButton>
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Ver produto" >
-                          <i class="bi bi-eye"></i>
-                  </button> -->
+							v-b-tooltip.hover title="Ver produto" >
+							<i class="bi bi-eye"></i>
+					</button> -->
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Comparar produto">
-                          <i class="bi bi-arrow-left-right"></i>
-                  </button> -->
+							v-b-tooltip.hover title="Comparar produto">
+							<i class="bi bi-arrow-left-right"></i>
+					</button> -->
         </div>
       </div>
 
       <!-- Detalhes do produto -->
       <!-- <div class="" style="margin-top: -2vh;">
-            <div class="d-flex gap-3 grey-txt mt-5" >
-               <p class="fw-bold">Código do produto:</p>
-               <p>Código do produto</p>
-            </div>
-            <div class="d-flex gap-3 grey-txt" >
-               <p class="fw-bold">Categoria:</p>
-               <p>Tecnologia</p>
-            </div>
-         </div> -->
+			  <div class="d-flex gap-3 grey-txt mt-5" >
+				 <p class="fw-bold">Código do produto:</p>
+				 <p>Código do produto</p>
+			  </div>
+			  <div class="d-flex gap-3 grey-txt" >
+				 <p class="fw-bold">Categoria:</p>
+				 <p>Tecnologia</p>
+			  </div>
+		   </div> -->
 
       <!-- Vendedor -->
       <div class="mt-5 d-flex align-items-center gap-3">

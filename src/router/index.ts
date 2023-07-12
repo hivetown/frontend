@@ -26,6 +26,7 @@ import Success from '@/views/Success.vue';
 import Cancel from '@/views/Cancel.vue';
 import CreateOrder from '@/views/CreateOrder.vue';
 import SupplierInfo from '@/views/SupplierInfo.vue';
+import Account from '@/views/Account.vue';
 import { store } from '@/store';
 import { Permission } from '@/types';
 import { hasPermission } from '@/utils/permissions';
@@ -146,7 +147,14 @@ const routes = [
         name: 'Register',
         component: Register,
     },
-
+    {
+        path: '/account',
+        name: 'Account',
+        component: Account,
+        meta: {
+            requiresAuth: true,
+        },
+    },
     {
         path: '/impactAdmin',
         name: 'ImpactAdmin',

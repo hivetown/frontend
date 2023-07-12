@@ -61,10 +61,11 @@ export const fetchOrderProducer = (userId: number, orderId: string) =>
 export const getShipment = (
     consumerId: number,
     orderId: number,
-    producerProduct: number
+    producerProduct: number,
+    consumerOrProducer: 'consumer' | 'producer' = 'consumer'
 ) =>
     api.get<Shipment>(
-        `/consumers/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`
+        `/${consumerOrProducer}s/${consumerId}/orders/${orderId}/items/${producerProduct}/shipment`
     );
 
 export const cancelOrder = (userId: number, orderId: number, search?: string) =>

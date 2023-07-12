@@ -117,7 +117,10 @@
                 Favoritos
               </router-link>
             </div>
-            <div class="d-flex">
+            <div
+              class="d-flex"
+              v-if="store.state.user?.user.type != 'PRODUCER'"
+            >
               <router-link
                 to="/carrinho"
                 class="p-2 grey-txt text-decoration-none"
@@ -181,7 +184,7 @@
               right
               class="p-2 grey-txt text-decoration-none dropdown-nav-item"
             >
-              <b-dropdown-item>Definições</b-dropdown-item>
+              <b-dropdown-item to="/account">Conta</b-dropdown-item>
               <b-dropdown-item v-if="permissions" to="/admin?page=1"
                 >Área de admin</b-dropdown-item
               >
@@ -198,12 +201,29 @@
                 <b-dropdown-item to="/transportes"
                   >Gerir transportes</b-dropdown-item
                 >
+                <b-dropdown-item v-if="permissions" to="/impactProducer"
+                  >Relatórios de impacto Produtor</b-dropdown-item
+                >
+                <b-dropdown-item v-else to="/impactProducer"
+                  >Relatórios de impacto</b-dropdown-item
+                >
               </div>
-              <b-dropdown-item
-                to="/encomendas"
-                class="linkcolor"
-                v-if="store.state.user.user.type === 'CONSUMER'"
-                >Encomendas</b-dropdown-item
+              <div v-if="store.state.user.user.type === 'CONSUMER'">
+                <b-dropdown-item to="/encomendas" class="linkcolor"
+                  >Encomendas</b-dropdown-item
+                >
+                <b-dropdown-item v-if="permissions" to="/impactConsumer"
+                  >Relatórios de impacto Consumidor</b-dropdown-item
+                >
+                <b-dropdown-item v-else to="/impactConsumer"
+                  >Relatórios de impacto
+                </b-dropdown-item>
+              </div>
+              <b-dropdown-item v-if="permissions" to="/admin?page=1"
+                >Área de admin</b-dropdown-item
+              >
+              <b-dropdown-item v-if="permissions" to="/impactAdmin"
+                >Relatórios de impacto Admin</b-dropdown-item
               >
               <b-dropdown-item @click="logout">Terminar Sessão</b-dropdown-item>
             </b-nav-item-dropdown>

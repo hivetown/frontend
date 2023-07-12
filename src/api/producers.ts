@@ -7,6 +7,9 @@ import {
     ProductionUnit,
     reportProducerClients,
     ProducerProduct,
+    Shipment,
+    Carrier,
+    ShipmentStatus,
 } from '@/types';
 import { api } from './_base';
 
@@ -47,12 +50,25 @@ export const fetchProducerReportClients = (
     dataInicio?: string,
     dataFim?: string,
     raio?: number,
+    categoryId?: number,
     view?: string
 ) =>
     // TODO - substituir o tipo any pelo tipo correto
-    api.get<reportProducerClients[]>(
-        `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
-    );
+    // api.get<reportProducerClients[]>(
+    //     `/reports/${id}/clients?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
+    // );
+
+    // Isto funciona apesar do erro, é só resolver
+    api.get<reportProducerClients[]>(`/reports/${id}/clients`, {
+        params: {
+            dataInicio,
+            dataFim,
+            raio,
+            categoryId,
+            [view!]: true,
+        },
+    });
+
 export const fetchProducer = (id: number) =>
     api.get<Producer>(`/producers/${id}`);
 
@@ -91,3 +107,60 @@ export const getProducerId = (producerId: number, search?: string) =>
     api.get<Producer>(`/producers/${producerId}?includeAll=true`, {
         params: { search },
     });
+
+export const getProducerIdSimple = (producerId: number, search?: string) =>
+    api.get<Producer>(`/producers/${producerId}`, {
+        params: { search },
+    });
+
+export const fetchOrderItemShipment = (
+    producerId: number,
+    orderId: number,
+    producerProductId: number
+) =>
+    api.get<Shipment>(
+        `/producers/${producerId}/orders/${orderId}/items/${producerProductId}/shipment`
+    );
+
+export const associateOrderItemShipment = (
+    producerId: number,
+    unitId: number,
+    carrierId: number,
+    shipmentId: number
+) =>
+    api.post<Shipment>(
+        `/producers/${producerId}/units/${unitId}/carriers/${carrierId}/shipments`,
+        {
+            shipmentId,
+        }
+    );
+
+export const fetchAllProductionUnitCarriers = (
+    producerId: number,
+    unitId: number,
+    params?: {
+        page?: number;
+        pageSize?: number;
+        status?: 'Available' | 'Unavailable';
+        search?: string;
+    }
+) =>
+    api.get<BaseItems<Carrier>>(
+        `/producers/${producerId}/units/${unitId}/carriers`,
+        { params }
+    );
+
+export const createOrderItemShipment = (
+    producerId: number,
+    orderId: number,
+    producerProductId: number,
+    status: ShipmentStatus,
+    addressId: number
+) =>
+    api.post<Shipment>(
+        `/producers/${producerId}/orders/${orderId}/items/${producerProductId}/shipment/events`,
+        {
+            status,
+            addressId,
+        }
+    );

@@ -41,16 +41,19 @@
         </div>
 
         <!-- Botões -->
+        <!-- TODO - alterar porque isto devia adicionar ao carrinho -->
         <div class="d-flex gap-2 buttons">
-          <button
-            v-if="store.state.user?.user.type != 'PRODUCER'"
-            type="button"
-            class="btn btn-outline-secondary circle-btn"
-            v-b-tooltip.hover
-            title="Adicionar ao carrinho"
-          >
-            <i class="bi bi-cart"></i>
-          </button>
+          <router-link :to="'/products/' + productSpec.id">
+            <button
+              v-if="store.state.user?.user.type != 'PRODUCER'"
+              type="button"
+              class="btn btn-outline-secondary circle-btn"
+              v-b-tooltip.hover
+              title="Adicionar ao carrinho"
+            >
+              <i class="bi bi-cart"></i>
+            </button>
+          </router-link>
 
           <router-link :to="'/products/' + productSpec.id">
             <button
