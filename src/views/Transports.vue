@@ -11,6 +11,7 @@
         <div v-for="transport in carriers.items" :key="transport.id">
           <b-card class="prod-card position-relative">
             <img
+              style="cursor: default"
               :src="transport.image.url"
               class="square-image"
               :alt="transport.image.alt"
@@ -26,7 +27,8 @@
               <h5>
                 <span
                   :style="{
-                    color: transport.status === 'AVAILABLE' ? 'green' : 'red',
+                    color:
+                      transport.status === 'AVAILABLE' ? '#4d774e' : '#dc6942',
                   }"
                 >
                   {{
@@ -36,29 +38,45 @@
                   }}
                 </span>
               </h5>
-              <h6>Unidade:</h6>
-              <p>
+              <h6>Unidade associada:</h6>
+              <p style="height: 7vh">
                 {{ transport.productionUnit!.name }}
               </p>
               <div class="d-flex gap-2">
                 <router-link :to="'/product/edit/' + transport.id">
-                  <button
+                  <!-- <button
                     type="button"
                     class="btn btn-outline-secondary circle-btn"
                     v-b-tooltip.hover
                     title="Editar veículo"
                   >
                     <i class="bi bi-pencil"></i>
-                  </button>
+                  </button> -->
+                  <PrimeButton
+                    rounded
+                    outlined
+                    icon="pi pi-pencil"
+                    v-b-tooltip.hover
+                    title="Editar veículo"
+                    style="color: #5a5a5a !important"
+                  />
                 </router-link>
-                <button
+                <!-- <button
                   type="button"
                   class="btn btn-outline-secondary circle-btn"
                   v-b-tooltip.hover
                   title="Remover veículo"
                 >
                   <i class="bi bi-trash"></i>
-                </button>
+                </button> -->
+                <PrimeButton
+                  rounded
+                  outlined
+                  icon="pi pi-trash"
+                  severity="danger"
+                  v-b-tooltip.hover
+                  title="Remover veículo"
+                />
               </div>
             </div>
           </b-card-text>
@@ -70,6 +88,7 @@
     </div>
 
     <Pagination
+      class="mt-5"
       v-if="carriers"
       :items="carriers"
       :page="currentFilters.page"
@@ -87,10 +106,13 @@ import { fetchAllTransports } from '@/api/transports';
 import Pagination from '../components/Pagination.vue';
 import Loader from '../components/Loader.vue';
 import { PageState } from 'primevue/paginator';
+import PrimeButton from 'primevue/button';
+
 export default {
   components: {
     Pagination,
     Loader,
+    PrimeButton,
   },
   data() {
     return {
