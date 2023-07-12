@@ -316,10 +316,7 @@ onMounted(async () => {
       orders.value = response.data;
       console.log(orders.value);
       for (const order of orders.value.items) {
-        const orderItems = await fetchAllItems(
-          user2.value.user.id,
-          order.id.toString()
-        );
+        const orderItems = await fetchAllItems(user2.value.user.id, order.id);
 
         const image = findFirstImage(orderItems.data.items);
         if (image) {

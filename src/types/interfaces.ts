@@ -161,7 +161,7 @@ export interface OrderItem {
 }
 
 export interface SpecificOrder {
-    id?: number;
+    id: number;
     shippingAddress: Address;
     generalStatus?:
         | 'Paid'
