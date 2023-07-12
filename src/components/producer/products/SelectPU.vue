@@ -66,6 +66,7 @@
   </OverlayPanel>
 
   <PrimeButton
+    rounded
     :icon="`pi pi-${methodName === 'Criar' ? 'plus' : 'truck'}`"
     outlined
     @click="toggleOverlay"

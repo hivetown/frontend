@@ -1181,6 +1181,7 @@ export default defineComponent({
 .report-info-mobile {
   display: none !important;
 }
+
 /* Mobile */
 @media (max-width: 767px) {
   .normal-view {

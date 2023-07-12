@@ -37,3 +37,8 @@
 	color: #3e3e3e !important;
 	background-color: rgb(205, 205, 205) !important;
 }
+
+.p-calendar{
+	background-color:var(--primary-color) !important; ;
+	border-radius:0.8vh;
+}

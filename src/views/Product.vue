@@ -312,6 +312,7 @@
       <div
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
+        v-if="$store.state.user?.user.type != 'PRODUCER'"
       >
         <!-- Ver se isto funciona assim -->
         <PrimeButton
@@ -562,6 +563,7 @@
                 <template #footer>
                   <div class="flex gap-1">
                     <PrimeButton
+                      class="mobile-txt"
                       severity="secondary"
                       rounded
                       v-if="$store.state.user?.user.type != 'PRODUCER'"
