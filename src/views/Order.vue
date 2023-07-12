@@ -31,7 +31,9 @@
           marginTop: order.status === 'Canceled' ? '20px' : '',
         }"
       >
-        <OrderDetails />
+        <OrderDetails
+          @order-item-carrier-assigned="onOrderItemCarrierAssigned"
+        />
       </div>
     </div>
   </div>
@@ -41,7 +43,7 @@
 import Progress from '../components/Progress.vue';
 import PageBack from '../components/PageBack.vue';
 import OrderDetails from '../components/OrderDetails.vue';
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { useStore } from '@/store';
 import { fetchOrder, fetchOrderProducer } from '../api/orders';
 import { useRoute } from 'vue-router';
@@ -49,22 +51,26 @@ import { SpecificOrder } from '@/types';
 const route = useRoute();
 const order = ref<SpecificOrder>({} as SpecificOrder);
 const store = useStore();
-const user2 = computed(() => store.state.user);
-onBeforeMount(async () => {
-  if (user2.value && user2.value.user && user2.value.user.id) {
-    if (typeof route.params.id === 'string') {
-      const id = route.params.id;
-      if (user2.value.user.type === 'CONSUMER') {
-        const responseItem = await fetchOrder(user2.value.user.id, id);
-        order.value = responseItem.data;
-      }
-      if (user2.value.user.type === 'PRODUCER') {
-        const responseItem = await fetchOrderProducer(user2.value.user.id, id);
-        order.value = responseItem.data;
-      }
-    }
+
+const orderId = route.params.id as string;
+const loadOrder = async () => {
+  if (!store.state.user?.user.id) return;
+
+  if (store.state.user.user.type === 'CONSUMER') {
+    const responseItem = await fetchOrder(store.state.user.user.id, orderId);
+    order.value = responseItem.data;
   }
-});
+  if (store.state.user.user.type === 'PRODUCER') {
+    const responseItem = await fetchOrderProducer(
+      store.state.user.user.id,
+      orderId
+    );
+    order.value = responseItem.data;
+  }
+};
+
+onBeforeMount(loadOrder);
+const onOrderItemCarrierAssigned = loadOrder;
 </script>
 <style scoped>
 .wrapper-mains {

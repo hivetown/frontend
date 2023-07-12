@@ -308,7 +308,8 @@ export interface CartItem {
     quantity: number;
 }
 export interface Shipment {
-    carrier: Carrier;
+    id: number;
+    carrier?: Carrier;
     events: ShipmentEvent[];
 }
 export enum ShipmentStatus {
