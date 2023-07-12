@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.6.0](https://github.com/hivetown/frontend/compare/v2.5.2...v2.6.0) (2023-07-12)
+
+
+### Features
+
+* deleting account ([be6eecf](https://github.com/hivetown/frontend/commit/be6eecf9921f1c6a5e6717eaa7bc21193c6a1f7f))
+* set orderitem as delivered ([58576ee](https://github.com/hivetown/frontend/commit/58576ee342ba53dd5a61dd0936d7ff118388ab52))
+
+
+### Bug Fixes
+
+* cart NAU design fixed ([443c957](https://github.com/hivetown/frontend/commit/443c95705bca2785d3e11d30eea48c3481a65b00))
+* use primebuttons ([e148a5c](https://github.com/hivetown/frontend/commit/e148a5c76e99973c752f12daaf98aaaea7de6ceb))
+
 ## [2.5.2](https://github.com/hivetown/frontend/compare/v2.5.1...v2.5.2) (2023-07-12)
 
 
