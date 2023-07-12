@@ -84,7 +84,13 @@ import {
   fetchOrderItemShipment,
 } from '@/api';
 import { ComputedRef, PropType, computed, ref } from 'vue';
-import { BaseItems, Carrier, OrderItem, Shipment } from '@/types';
+import {
+  BaseItems,
+  Carrier,
+  OrderItem,
+  Shipment,
+  SpecificOrder,
+} from '@/types';
 import OverlayPanel from 'primevue/overlaypanel';
 import AutoComplete from 'primevue/autocomplete';
 import PrimeButton from 'primevue/button';
@@ -103,8 +109,8 @@ export default {
     Loader,
   },
   props: {
-    orderId: {
-      type: Number,
+    order: {
+      type: Object as PropType<SpecificOrder>,
       required: true,
     },
     orderItem: {
@@ -131,7 +137,7 @@ export default {
         orderItemShipment.value = (
           await fetchOrderItemShipment(
             props.orderItem.producerProduct.producer!.user.id,
-            props.orderId,
+            props.order.id,
             props.orderItem.producerProduct.id
           )
         ).data;

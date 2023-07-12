@@ -24,15 +24,21 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { PropType, ref } from 'vue';
 import { AxiosError } from 'axios';
-import { Carrier, OrderItem, Shipment, ShipmentStatus } from '@/types';
+import {
+  Carrier,
+  OrderItem,
+  Shipment,
+  ShipmentStatus,
+  SpecificOrder,
+} from '@/types';
 
 export default {
   components: {
     ConfirmPopup,
   },
   props: {
-    orderId: {
-      type: Number,
+    order: {
+      type: Object as PropType<SpecificOrder>,
       required: true,
     },
     orderItem: {
@@ -57,7 +63,7 @@ export default {
       confirm.require({
         target: event.currentTarget,
         group: 'setCarrierForDelivery',
-        message: `Tem a certeza que quer iniciar a entrega do veículo "${props.carrier.licensePlate}"?`,
+        message: `Tem a certeza que quer iniciar a entrega no veículo "${props.carrier.licensePlate}"?`,
         icon: 'pi pi-info-circle',
         acceptClass: 'p-button-warning',
         acceptLabel: 'Sim, iniciar',
@@ -75,7 +81,7 @@ export default {
             const shipment = (
               await createOrderItemShipment(
                 producerId,
-                props.orderId,
+                props.order.id,
                 producerProductId,
                 ShipmentStatus.Shipped,
                 addressId
@@ -87,7 +93,7 @@ export default {
             toast.add({
               severity: 'success',
               summary: 'Veículo em deslocação',
-              detail: `O veículo ${props.carrier.licensePlate} foi registado como em saída para entrega`,
+              detail: `O veículo <b>${props.carrier.licensePlate}</b> foi registado como em saída para entrega`,
               life: 3000,
             });
           } catch (error) {
