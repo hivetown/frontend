@@ -3,7 +3,6 @@ import {
     Consumer,
     CreateConsumer,
     ReportCard,
-    ReportMap,
     ReportEvolution,
     ReportBarChartProduct,
     CreateAddress,
@@ -84,40 +83,80 @@ export const fetchConsumerReportCards = (
     id: number,
     dataInicio?: string,
     dataFim?: string,
-    raio?: number
+    raio?: number,
+    categoryId?: number
 ) =>
-    api.get<ReportCard>(
-        `/reports/${id}/flashcards?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
-    );
+    api.get<ReportCard>(`/reports/${id}/flashcards`, {
+        params: {
+            dataInicio,
+            dataFim,
+            raio,
+            categoryId,
+        },
+    });
 
-export const fetchConsumerReportMap = (
-    id: number,
-    dataInicio?: string,
-    dataFim?: string,
-    raio?: number
-) =>
-    api.get<ReportMap[]>(
-        `/reports/${id}/map?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
-    );
+// export const fetchConsumerReportMap = (
+//     id: number,
+//     dataInicio?: string,
+//     dataFim?: string,
+//     raio?: number
+// ) =>
+//     api.get<ReportMap[]>(
+//         `/reports/${id}/map?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}`
+//     );
+
+// export const fetchConsumerReportEvolution = (params?: {
+//     id: number;
+//     dataInicio?: string;
+//     dataFim?: string;
+//     raio?: number;
+//     categoryId?: number;
+//     view: string;
+// }) =>
+//     // api.get<Record<string, ReportEvolution>>(
+//     //     `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&categoryId=${categoryId}&${view}=true`
+//     // );
+//     api.get<Record<string, ReportEvolution>>(`/reports/${id}/evolution`, {
+//         params,
+//     });
 
 export const fetchConsumerReportEvolution = (
     id: number,
     dataInicio?: string,
     dataFim?: string,
     raio?: number,
+    categoryId?: number,
     view?: string
 ) =>
-    api.get<ReportEvolution>(
-        `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
-    );
+    // api.get<Record<string, ReportEvolution>>(
+    //     `/reports/${id}/evolution?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&categoryId=${categoryId}&${view}=true`
+    // );
+
+    // Isto funciona apesar do erro, é só resolver
+    api.get<Record<string, ReportEvolution>>(`/reports/${id}/evolution`, {
+        params: {
+            dataInicio,
+            dataFim,
+            raio,
+            categoryId,
+            [view!]: true,
+        },
+    });
 
 export const fetchConsumerReportProducts = (
     id: number,
     dataInicio?: string,
     dataFim?: string,
     raio?: number,
+    categoryId?: number,
     view?: string
 ) =>
-    api.get<ReportBarChartProduct[]>(
-        `/reports/${id}/products?dataInicio=${dataInicio}&dataFim=${dataFim}&raio=${raio}&${view}=true`
-    );
+    api.get<ReportBarChartProduct[]>(`/reports/${id}/products`, {
+        params: {
+            dataInicio,
+            dataFim,
+            raio,
+            categoryId,
+            [view!]: true,
+        },
+    });
