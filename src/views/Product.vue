@@ -546,7 +546,9 @@
                       rounded
                       v-if="$store.state.user?.user.type != 'PRODUCER'"
                       @click="addItemToCart(defaultProduct.id)"
-                      ><router-link :to="'/carrinho'"
+                      ><router-link
+                        :to="'/carrinho'"
+                        style="color: white !important"
                         >Comprar agora</router-link
                       >
                     </PrimeButton>
@@ -589,6 +591,7 @@
                       title="Adicionar ao carrinho"
                       icon="pi pi-shopping-cart"
                       style="color: #5a5a5a"
+                      @click="addItemToCart(defaultProduct.id)"
                     >
                     </PrimeButton>
                   </div>
