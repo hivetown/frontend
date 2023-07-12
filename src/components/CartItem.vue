@@ -83,6 +83,7 @@ import { PropType, computed } from 'vue';
 import { CartNAU } from '@/utils/cartItemNAU';
 
 export default {
+  emits: ['delete-cart-item', 'update-cart-item'],
   data() {
     return {
       // Definir quantidade selecionada no carrinho e quantidades possíveis
@@ -165,7 +166,7 @@ export default {
           this.cartItem.producerProduct!.id
         );
         this.updateQnt();
-        this.$emit('deleteCartItem', this.cartItem.producerProduct!.id);
+        this.$emit('delete-cart-item', this.cartItem.producerProduct!.id);
       } catch (error) {
         if (error instanceof Error) {
           console.log(error.message);
@@ -180,7 +181,7 @@ export default {
         this.cartItem.producerProduct!.id,
         this.selectedValue
       );
-      this.$emit('updateCartItem');
+      this.$emit('update-cart-item');
     },
 
     // Buscar Info do Carrinho

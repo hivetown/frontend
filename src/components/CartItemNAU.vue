@@ -81,6 +81,7 @@ import { CartNAU } from '@/utils/cartItemNAU';
 import { ProducerProduct } from '@/types';
 
 export default {
+  emits: ['delete-cart-item', 'update-cart-item'],
   data() {
     return {
       // Verificador de login para o checkLogin()
@@ -169,7 +170,7 @@ export default {
     // Atualizar quantidade do item
     updateQnt(newQnt: number) {
       this.cartNAU.changeQuantity(this.cartItem, newQnt);
-      this.$emit('updateCartItem');
+      this.$emit('update-cart-item');
     },
 
     // Encontrar indice na local storage do item
@@ -202,7 +203,7 @@ export default {
       try {
         this.getCartNAU();
         this.cartNAU.removeItem(this.cartItem);
-        this.$emit('deleteCartItem', this.cartItem.id);
+        this.$emit('delete-cart-item', this.cartItem.id);
       } catch (error) {
         if (error instanceof Error) {
           console.log(error.message);

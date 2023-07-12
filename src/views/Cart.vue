@@ -49,8 +49,8 @@
                   <CartItem
                     v-for="cartItem in itemsCart.items"
                     :cart-item="cartItem"
-                    @deleteCartItem="removeItem"
-                    @updateCartItem="refreshValues"
+                    @delete-cart-item="removeItem"
+                    @update-cart-item="refreshValues"
                     :key="cartItem.producerProduct.productSpec?.id"
                   ></CartItem>
                 </div>
@@ -59,8 +59,8 @@
                   <CartItemNAU
                     v-for="cartItem in itemsCartNAU"
                     :cart-item="cartItem"
-                    @deleteCartItem="removeItem"
-                    @updateCartItem="refreshValues"
+                    @delete-cart-item="removeItem"
+                    @update-cart-item="refreshValues"
                     :key="cartItem.id"
                   ></CartItemNAU>
                 </div>
