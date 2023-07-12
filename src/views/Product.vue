@@ -330,7 +330,7 @@
       <TabPanel>
         <template #header>
           <i class="pi pi-book mr-2"></i>
-          <span>Detalhes do Produto</span>
+          <span class="tab-txt">Detalhes do Produto</span>
         </template>
 
         <Loader v-if="loadingCategories" />
@@ -402,7 +402,9 @@
       <TabPanel>
         <template #header>
           <i class="pi pi-shopping-cart mr-2"></i>
-          <span>Vendedores</span>
+          <span class="tab-txt" style="display: flex; align-items: center"
+            >Vendedores</span
+          >
         </template>
 
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
@@ -475,17 +477,31 @@
                   </div>
 
                   <div class="flex flex-column mt-2 gap-1">
-                    <div class="flex flex-row align-items-center gap-1">
-                      <i
+                    <div class="flex flex-row align-items-center gap-1 mt-4">
+                      <!-- <i
                         class="pi pi-truck p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
-                      ></i>
+                      ></i> -->
+                      <div>
+                        <PrimeButton
+                          icon="pi pi-truck"
+                          rounded
+                          severity="info"
+                          disabled
+                        />
+                      </div>
                       <span>{{ producerProduct.productionUnit!.name }}</span>
                     </div>
 
                     <div class="flex flex-row align-items-center gap-1">
-                      <i
+                      <!-- <i
                         class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
-                      ></i>
+                      ></i> -->
+                      <PrimeButton
+                        icon="pi pi-euro"
+                        rounded
+                        severity="info"
+                        disabled
+                      />
                       <span>{{ producerProduct.currentPrice }}€</span>
                     </div>
                   </div>
@@ -506,7 +522,7 @@
 
                 <template #footer>
                   <div class="flex gap-1">
-                    <PrimeButton severity="secondary" rounded
+                    <PrimeButton severity="secondary" rounded class="mobile-txt"
                       >Comprar agora</PrimeButton
                     >
 
@@ -518,7 +534,7 @@
                         selectedUnit === producerProduct.productionUnit?.id
                       "
                       severity="secondary"
-                      class="close-map-btn"
+                      class="close-map-btn mobile-txt"
                       @click="selectedUnit = null"
                     >
                       Fechar Mapa
@@ -527,7 +543,7 @@
                       outlined
                       rounded
                       v-else
-                      class="map-btn"
+                      class="map-btn mobile-txt"
                       severity="secondary"
                       @click="selectProducer(producerProduct.productionUnit)"
                     >
@@ -703,6 +719,15 @@
   .producer-mobile-info {
     /* background-color: pink !important; */
     height: 22vh;
+  }
+
+  .mobile-txt {
+    font-size: 0.6em !important;
+  }
+
+  .tab-txt {
+    font-size: 0.9em !important;
+    height: 5vh !important;
   }
 }
 </style>
