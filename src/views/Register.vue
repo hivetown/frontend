@@ -1,7 +1,11 @@
 <template>
   <div id="full" class="grid align-items-center justify-content-center">
     <Card>
-      <template #title> Bem vindo ao hiveTown </template>
+      <template #title>
+        <span class="dgreen-txt main-txt" style="font-weight: 400 !important"
+          >Bem vindo ao hiveTown</span
+        >
+      </template>
 
       <template #content>
         <!-- User Type -->
