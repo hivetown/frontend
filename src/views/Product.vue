@@ -5,9 +5,11 @@
   </div>
   <div class="parent">
     <!-- TODO Arranjar para voltar para onde o user estiver antes realmente -->
-    <RouterLink to="/products" style="text-decoration: none">
-      <PageBack style="margin-top: -2vh"></PageBack
-    ></RouterLink>
+    <!-- <RouterLink to="/products" style="text-decoration: none"> -->
+    <div class="parent" @click="goBack">
+      <PageBack style="margin-top: -2vh"></PageBack>
+    </div>
+    <!--</RouterLink> -->
   </div>
 
   <!-- detalhes do produto -->
@@ -64,8 +66,7 @@
         v-if="
           productDetails && productDetails.name && productDetails.description
         "
-        class="w-75"
-        style="min-height: 18vh"
+        style="min-height: 15vh; width: 85%"
       >
         <!-- Informação do produto -->
         <h1 class="product-title">{{ productDetails.name }}</h1>
@@ -84,7 +85,7 @@
       <div class="separator-bottom" style="min-height: 30vh">
         <!-- Preço -->
         <div class="d-flex align-items-center gap-3">
-          <h3>{{ defaultProduct.currentPrice }}€</h3>
+          <h2>{{ defaultProduct.currentPrice }}€</h2>
           <p>{{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€</p>
           <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
         </div>
@@ -103,12 +104,14 @@
           <!-- Botão da quantidade -->
           <div class="p-inputgroup" style="max-width: 10em">
             <PrimeButton
+              outlined
               severity="info"
               icon="pi pi-minus"
               @click="decrement"
             ></PrimeButton>
-            <InputText :value="quantity" readonly />
+            <InputText class="text-center" :value="quantity" readonly />
             <PrimeButton
+              outlined
               severity="info"
               icon="pi pi-plus"
               @click="increment"
@@ -121,14 +124,20 @@
         </div>
 
         <!-- Botões compra -->
-        <div class="d-flex gap-1 align-items-center" style="margin-top: 5vh">
-          <PrimeButton severity="secondary">Comprar agora</PrimeButton>
+        <div
+          class="d-flex gap-2 align-items-center mb-5"
+          style="margin-top: 5vh"
+        >
+          <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
           <PrimeButton
+            rounded
+            outlined
             severity="info"
             v-b-tooltip.hover
             title="Adicionar ao carrinho"
             icon="pi pi-shopping-cart"
+            style="color: #5a5a5a"
           >
           </PrimeButton>
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
@@ -249,14 +258,20 @@
       <!-- Quantidade -->
       <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
         <!-- Botão da quantidade -->
-        <div class="quantity-div d-flex justify-content-between rounded-pill">
-          <b-button class="mr-3 rounded-pill" @click="decrement"
-            ><i class="bi bi-dash-lg"></i
-          ></b-button>
-          <b-button>{{ quantity }}</b-button>
-          <b-button class="ml-3 rounded-pill" @click="increment"
-            ><i class="bi bi-plus-lg"></i
-          ></b-button>
+        <div class="p-inputgroup" style="max-width: 10em">
+          <PrimeButton
+            outlined
+            severity="info"
+            icon="pi pi-minus"
+            @click="decrement"
+          ></PrimeButton>
+          <InputText class="text-center" :value="quantity" readonly />
+          <PrimeButton
+            outlined
+            severity="info"
+            icon="pi pi-plus"
+            @click="increment"
+          ></PrimeButton>
         </div>
 
         <p class="mt-3 grey-txt">
@@ -269,14 +284,17 @@
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
       >
-        <PrimeButton severity="secondary">Comprar agora</PrimeButton>
+        <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
         <div class="aux-btns d-flex align-items-center gap-1">
           <PrimeButton
+            rounded
+            outlined
             severity="info"
             v-b-tooltip.hover
             title="Adicionar ao carrinho"
             icon="pi pi-shopping-cart"
+            style="color: #5a5a5a"
           >
           </PrimeButton>
         </div>
@@ -307,7 +325,7 @@
 
   <!-- Informação adicional -->
   <div class="parent px-5" ref="detailsView">
-    <TabView v-model:active-index="detailsTabIndex" class="separator-top mt-4">
+    <TabView v-model:active-index="detailsTabIndex" class="mt-4">
       <TabPanel>
         <template #header>
           <i class="pi pi-book mr-2"></i>
@@ -392,11 +410,12 @@
               @change="onCheckboxChange()"
               type="checkbox"
               id="local-products-checkbox"
+              class="mb-5"
               style="float: left; width: auto; padding: 2px; margin: 2px"
             />
             <label
               style="margin-left: 2px"
-              class="moradaTitulo"
+              class="moradaTitulo mb-5"
               title="Com base na morada definida por si na criação do perfil"
               >Apenas vendedores locais</label
             >
@@ -404,12 +423,13 @@
         </div>
 
         <div v-if="!checkboxValue">
-          <div class="grid">
+          <div class="grid" style="display: flex; justify-content: center">
             <template
               v-for="(producerProduct, index) in producerProducts.items"
               :key="index"
             >
               <Card
+                style="box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px; !important"
                 class="col-12 md:col-5 lg:col-4"
                 v-if="
                   producerProduct.producer &&
@@ -453,14 +473,14 @@
                   <div class="flex flex-column mt-2 gap-1">
                     <div class="flex flex-row align-items-center gap-1">
                       <i
-                        class="pi pi-truck p-button p-component p-button-info p-button-icon-only cursor-auto"
+                        class="pi pi-truck p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
                       ></i>
                       <span>{{ producerProduct.productionUnit!.name }}</span>
                     </div>
 
                     <div class="flex flex-row align-items-center gap-1">
                       <i
-                        class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto"
+                        class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
                       ></i>
                       <span>{{ producerProduct.currentPrice }}€</span>
                     </div>
@@ -482,11 +502,13 @@
 
                 <template #footer>
                   <div class="flex gap-1">
-                    <PrimeButton severity="secondary"
+                    <PrimeButton severity="secondary" rounded
                       >Comprar agora</PrimeButton
                     >
 
                     <PrimeButton
+                      rounded
+                      outlined
                       v-if="
                         selectedUnit &&
                         selectedUnit === producerProduct.productionUnit?.id
@@ -498,6 +520,8 @@
                       Fechar Mapa
                     </PrimeButton>
                     <PrimeButton
+                      outlined
+                      rounded
                       v-else
                       class="map-btn"
                       severity="secondary"
@@ -512,10 +536,13 @@
                     </PrimeButton>
 
                     <PrimeButton
+                      rounded
+                      outlined
                       severity="info"
                       v-b-tooltip.hover
                       title="Adicionar ao carrinho"
                       icon="pi pi-shopping-cart"
+                      style="color: #5a5a5a"
                     >
                     </PrimeButton>
                   </div>
@@ -600,6 +627,10 @@
 .product-info-mobile,
 .more-info-mobile {
   display: none;
+}
+
+.back-component {
+  color: black;
 }
 
 @media (max-width: 767px) {
@@ -766,6 +797,9 @@ export default defineComponent({
     },
   },
   methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
     changeDetailsView(index: DetailsView) {
       this.detailsTabIndex = index;
 

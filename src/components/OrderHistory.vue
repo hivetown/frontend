@@ -29,7 +29,7 @@
             </th>
             <th><h4>Total</h4></th>
             <th><h4>Exportar dados</h4></th>
-            <th></th>
+            <th><h4></h4></th>
           </tr>
         </thead>
         <tbody>
@@ -109,29 +109,28 @@
                 >
               </div>
 
-              <div v-if="order.generalStatus === 'Shipped'">
-                <BButton
-                  class="botao2"
-                  variant="outline-primary"
-                  @click="cancelarEncomendaImpossivel()"
-                  >Cancelar encomenda</BButton
-                >
-              </div>
-              <div
-                v-if="
-                  order.generalStatus === 'Paid' ||
-                  order.generalStatus === 'Processing'
-                "
+            <div v-if="order.generalStatus === 'Shipped'">
+              <PrimeButton @click="cancelarEncomendaImpossivel()"
+                >Cancelar encomenda</PrimeButton
               >
-                <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-                <BButton
-                  class="botao2"
-                  variant="outline-primary"
-                  @click="cancelarEncomenda(order)"
-                  >Cancelar encomenda</BButton
-                >
-              </div>
-            </td>
+            </div>
+            <div
+              v-if="
+                order.generalStatus === 'Paid' ||
+                order.generalStatus === 'Processing'
+              "
+            >
+              <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
+              <PrimeButton
+                rounded
+                outlined
+                severity="info"
+                style="color: #5a5a5a; font-size: 0.6em"
+                @click="cancelarEncomenda(order)"
+                >Cancelar encomenda</PrimeButton
+              >
+            </div>
+          </td>
 
             <td>
               <router-link
@@ -181,6 +180,7 @@
               >
             </td>
 
+          
             <td style="text-align: center">
               <input
                 id="name"
@@ -192,28 +192,32 @@
               />
               <span v-if="selectedOrders[idx]"></span>
             </td>
-
-            <td>
-              <router-link :to="'/encomenda/id' + order.id">
-                <BButton class="botao2" variant="outline-primary"
-                  >Ver detalhes</BButton
-                >
-              </router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="btn-div" v-if="isExportButtonVisible">
-      <BButton
-        id="botao"
-        class="botao"
-        variant="outline-primary"
-        @click="exportSelectedOrders"
-        ><span>Exportar dados</span></BButton
-      >
-    </div>
-	<Pagination
+			
+          <td>
+            <router-link :to="'/encomenda/id' + order.id">
+              <PrimeButton
+                rounded
+                outlined
+                severity="info"
+                style="color: #5a5a5a; font-size: 0.7em"
+                >Ver detalhes</PrimeButton
+              >
+            </router-link>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="btn-div" v-if="isExportButtonVisible">
+    <PrimeButton
+      severity="secondary"
+      rounded
+      id="botao"
+      @click="exportSelectedOrders"
+      ><span>Exportar dados</span></PrimeButton
+    >
+  </div>
+  <Pagination
 	v-if="orders"
 	  :items="orders"
 	  :page-size="currentFilters.pageSizeC"
@@ -227,6 +231,7 @@
 <script setup lang="ts">
 import Pagination from '../components/Pagination.vue';
 import Swal from 'sweetalert2';
+import PrimeButton from 'primevue/button';
 import { PageState } from 'primevue/paginator';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
@@ -238,6 +243,7 @@ import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router';
 import Loader from '@/components/Loader.vue';
 const isLoading = ref(true);
+
 const store = useStore();
 const user2 = computed(() => store.state.user);
 //let page = ref(1);
@@ -510,10 +516,11 @@ tr:hover {
 }
 
 .btn-div {
-  width: 12%;
+  width: 95%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+  margin-top: 3vh;
 }
 .botao {
   padding: 0.7em;
@@ -558,7 +565,7 @@ tr:hover {
 @media (max-width: 768px) {
   .table-container {
     width: 100% !important;
-    max-height: 100% !important;
+    max-height: 90% !important;
   }
 
   .table h4 {
