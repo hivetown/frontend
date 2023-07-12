@@ -3,8 +3,16 @@
 	--focus-ring: rgba(241, 178, 74, 0.5) !important;
 }
 
+.nav-tabs .nav-link{
+	color: black !important;
+}
+
+.nav-link.active{
+	color: var(--primary-color) !important;
+}
+
 .dropdown-menu{
-	--bs-dropdown-link-active-bg: #f1b24a !important;
+	--bs-dropdown-link-active-bg: var(--primary-color) !important;
 }
 
 .form-check-input:checked{

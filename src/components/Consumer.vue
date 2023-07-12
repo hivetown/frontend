@@ -1,36 +1,84 @@
 <template>
-  <h3>Consumidores</h3>
-  <div class="loading-spinner" v-if="isLoading">
-    <Loader />
-  </div>
-  <div class="card-container" v-if="!isLoading && consumers">
-    <div v-for="(consumer, idx) in consumers.items" :key="idx">
-      <b-card
-        id="b-card"
-        :title="consumer.user.name"
-        :img-src="
-          consumer.user.image ? consumer.user.image.url : '/semimagem.png'
-        "
-        :img-alt="
-          consumer.user.image
-            ? consumer.user.image.alt
-            : `Imagem de ${consumer.user.name}`
-        "
-        img-top
-        tag="article"
-        style="max-width: 17rem"
-        class="mb-2"
-      >
-        <b-card-text>
-          {{ consumer.user.email }} <br />
-          <p v-if="consumer.user.type === 'CONSUMER'">Consumidor</p>
-          <p v-else>{{ consumer.user.type }}</p>
-          <p v-if="consumer.deletedAt != null">Conta desativa</p>
-        </b-card-text>
-        <PrimeButton @click="routeTo(`/admin/consumer/${consumer.user.id}`)"
-          >Ver perfil</PrimeButton
+  <div>
+    <!-- <h3 class="mt-5">Consumidores</h3> -->
+    <div class="loading-spinner" v-if="isLoading">
+      <Loader />
+    </div>
+    <div class="card-container mt-5" v-if="!isLoading && consumers">
+      <div v-for="(consumer, idx) in consumers.items" :key="idx">
+        <!-- <b-card
+          id="b-card"
+          :title="consumer.user.name"
+          :img-src="
+            consumer.user.image ? consumer.user.image.url : '/semimagem.png'
+          "
+          :img-alt="
+            consumer.user.image
+              ? consumer.user.image.alt
+              : `Imagem de ${consumer.user.name}`
+          "
+          img-top
+          tag="article"
+          style="max-width: 17rem"
+          class="mb-2"
         >
-      </b-card>
+          <b-card-text>
+            {{ consumer.user.email }} <br />
+            <p v-if="consumer.user.type === 'CONSUMER'">Consumidor</p>
+            <p v-else>{{ consumer.user.type }}</p>
+            <p v-if="consumer.deletedAt != null">Conta desativa</p>
+          </b-card-text>
+          <PrimeButton @click="routeTo(`/admin/consumer/${consumer.user.id}`)"
+            >Ver perfil</PrimeButton
+          >
+        </b-card> -->
+        <div class="card flex align-items-center justify-content-center">
+          <Card style="width: 18em">
+            <template #header>
+              <img
+                style="
+                  object-fit: cover !important;
+                  object-position: top !important;
+                  width: 100%;
+                  border-radius: 0.375rem 0.375rem 0 0;
+                "
+                :src="
+                  consumer.user.image
+                    ? consumer.user.image.url
+                    : '/semimagem.png'
+                "
+                :alt="
+                  consumer.user.image
+                    ? consumer.user.image.alt
+                    : `Imagem de ${consumer.user.name}`
+                "
+              />
+            </template>
+            <template #title>
+              <span style="font-size: 0.9em !important">{{
+                consumer.user.name
+              }}</span>
+            </template>
+            <template #subtitle>
+              <p v-if="consumer.user.type === 'CONSUMER'">Consumidor</p>
+              <p v-else>{{ consumer.user.type }}</p>
+              <p v-if="consumer.deletedAt != null">Conta desativa</p>
+            </template>
+            <template #content>
+              <div style="height: 5vh">
+                <span style="font-size: 0.8em">{{ consumer.user.email }}</span>
+              </div>
+            </template>
+            <template #footer>
+              <PrimeButton
+                rounded
+                @click="routeTo(`/admin/consumer/${consumer.user.id}`)"
+                >Ver perfil</PrimeButton
+              >
+            </template>
+          </Card>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -51,6 +99,7 @@ import { BaseItems, Consumer } from '@/types';
 import { PageState } from 'primevue/paginator';
 import { useRoute } from 'vue-router';
 import PrimeButton from 'primevue/button';
+import Card from 'primevue/card';
 import { fetchAllConsumers } from '@/api';
 import { useRouter } from 'vue-router';
 
@@ -112,7 +161,9 @@ const routeTo = (path: string) => {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  margin: -10px;
+  /* margin: -10px; */
+  /* background-color: green; */
+  justify-content: center;
 }
 
 .card-container > div {

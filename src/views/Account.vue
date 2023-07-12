@@ -43,8 +43,7 @@
           <div class="flex flex-column gap-2">
             <label for="email">Email</label>
             <InputText
-              :class="{ 'custom-cursor': !isEditing }"
-              id="username"
+              id="email"
               v-model="emailValue"
               :readonly="true"
               aria-describedby="username-help"
