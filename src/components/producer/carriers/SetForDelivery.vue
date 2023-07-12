@@ -19,7 +19,6 @@
 
 <script lang="ts">
 import { createOrderItemShipment } from '@/api';
-import PrimeButton from 'primevue/button';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
@@ -29,7 +28,6 @@ import { Carrier, OrderItem, Shipment, ShipmentStatus } from '@/types';
 
 export default {
   components: {
-    PrimeButton,
     ConfirmPopup,
   },
   props: {
