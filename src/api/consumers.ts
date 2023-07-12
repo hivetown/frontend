@@ -9,11 +9,36 @@ import {
     CreateAddress,
     BaseItems,
 } from '@/types';
+import { Cart } from '../types/interfaces';
 import { api } from './_base';
 
-// POST
-export const createConsumer = async (consumer: CreateConsumer) =>
+// consumer is consumer or supplier
+export const createConsumer = (consumer: CreateConsumer) =>
     api.post<Consumer>('/consumers', consumer);
+
+// Cart Stuff
+export const fetchCartItems = (consumer: number) =>
+    api.get<Cart>(`/consumers/${consumer}/cart`);
+// NOTA: Usa-se ` quando há uma var.
+// tem um <> porque é um tipo (get) que tem retorno
+
+export const addCartItem = (
+    consumer: number,
+    producerProduct: number,
+    quantity: number
+) => api.post(`/consumers/${consumer}/cart`, { producerProduct, quantity });
+
+export const deleteCartItem = (consumer: number, producerProduct: number) =>
+    api.delete(`/consumers/${consumer}/cart/${producerProduct}`);
+
+export const deleteCart = (consumer: number) =>
+    api.delete(`/consumers/${consumer}/cart`);
+
+export const updateQuantityCartItem = (
+    consumer: number,
+    producerProduct: number,
+    quantity: number
+) => api.put(`/consumers/${consumer}/cart/${producerProduct}`, { quantity });
 
 export const createConsumerAddress = (id: number, address: Address) =>
     api.post(`/consumers/${id}/addresses`, address);

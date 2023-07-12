@@ -108,7 +108,10 @@
                 Favoritos
               </router-link>
             </div>
-            <div class="d-flex">
+            <div
+              class="d-flex"
+              v-if="store.state.user?.user.type != 'PRODUCER'"
+            >
               <router-link
                 to="/carrinho"
                 class="p-2 grey-txt text-decoration-none"
