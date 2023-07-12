@@ -175,7 +175,7 @@
               >
               <div v-if="store.state.user.user.type === 'PRODUCER'">
                 <b-dropdown-item to="/produtosprodutor"
-                  >Produtos</b-dropdown-item
+                  >Os meus produtos</b-dropdown-item
                 >
                 <b-dropdown-item to="/encomendas" class="linkcolor"
                   >Encomendas</b-dropdown-item
@@ -183,7 +183,9 @@
                 <b-dropdown-item to="/unidadesproducao"
                   >Unidades de Produção</b-dropdown-item
                 >
-                <b-dropdown-item to="/transportes">Transportes</b-dropdown-item>
+                <b-dropdown-item to="/transportes"
+                  >Gerir transportes</b-dropdown-item
+                >
               </div>
               <b-dropdown-item
                 to="/encomendas"

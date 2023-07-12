@@ -183,6 +183,7 @@
   </OverlayPanel>
 
   <PrimeButton
+    rounded
     :icon="`pi pi-${methodName === 'Criar' ? 'plus' : 'pencil'}`"
     outlined
     @click="toggleOverlay"
@@ -527,10 +528,10 @@ export default {
 </script>
 
 <style scoped>
-.p-button-outlined {
+/* .p-button-outlined {
   color: #f1b24a !important;
   border-radius: 50%;
-}
+}*/
 
 .card-text .p-button-outlined {
   color: #5a5a5a !important;

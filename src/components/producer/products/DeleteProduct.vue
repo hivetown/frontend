@@ -18,6 +18,8 @@
   </ConfirmPopup>
 
   <PrimeButton
+    rounded
+    outlined
     icon="pi pi-trash"
     severity="danger"
     aria-label="Eliminar produto"
@@ -119,10 +121,10 @@ export default {
 </script>
 
 <style scoped>
-.p-button-danger {
+/* .p-button-danger {
   color: #5a5a5a !important;
   border: 1px solid #5a5a5a !important;
   border-radius: 50% !important;
   background-color: white !important;
-}
+} */
 </style>
