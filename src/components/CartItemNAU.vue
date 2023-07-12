@@ -3,70 +3,90 @@
     <!-- Ir para a página do item -->
     <router-link :to="'/products/' + cartItem.productSpec">
       <!-- Imagem do produto -->
-      <b-card class="prod-card">
+      <b-card style="display: flex; justify-content: center !important">
         <img
           :src="cartItemImageURL"
-          class="square-image"
+          style="height: 15vh; border-radius: 0.5em"
           :alt="cartItemImageALT"
         />
       </b-card>
     </router-link>
     <!-- Detalhes do item -->
-    <b-card-text class="w-100">
-      <div style="margin-top: 45px">
-        <!-- Nome -->
-        <div class="d-flex">
-          <h5>{{ cartItemDetails.name }}</h5>
-        </div>
+    <b-card-text
+      class="w-100"
+      style="background-color: ; display: flex; align-items: center"
+    >
+      <div
+        style="
+          background-color: ;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        "
+      >
+        <div>
+          <!-- Nome -->
+          <div class="d-flex">
+            <h5>{{ cartItemDetails.name }}</h5>
+          </div>
 
-        <!-- Quantidade -->
-        <div class="d-flex gap-2">
-          <p class="mt-3">Quantidade:</p>
-          <!-- Botão para selecionar quantidade do item -->
-          <div class="d-flex" style="margin-top: -10px">
-            <b-col col lg="20">
-              <b-form-select
-                v-model="selectedValue"
-                :options="options"
-                size="sm"
-                class="mt-3"
-                @input="updateQnt"
-              ></b-form-select>
-            </b-col>
+          <!-- Quantidade -->
+          <div class="d-flex gap-2">
+            <p class="mt-3">Quantidade:</p>
+            <!-- Botão para selecionar quantidade do item -->
+            <div class="d-flex" style="margin-top: -10px">
+              <b-col col lg="20">
+                <b-form-select
+                  v-model="selectedValue"
+                  :options="options"
+                  size="sm"
+                  class="mt-3"
+                  @input="updateQnt"
+                ></b-form-select>
+              </b-col>
+            </div>
           </div>
           <!-- Preço do item -->
-          <p class="mt-3">{{ cartItem.currentPrice }}€/item</p>
-          <div class="d-flex ms-auto mt-3 justify-content-end">
+          <p class="mt-3">Preço unitário: {{ cartItem.currentPrice }}€</p>
+        </div>
+        <div
+          style="
+            background-color: ;
+            display: flex;
+            align-items: center;
+            gap: 5vh;
+          "
+        >
+          <div class="d-flex ms-auto mt-3 j">
             <h4>{{ priceCalc() }}€</h4>
           </div>
           <!-- Remover item do carrinho -->
-          <div class="d-flex ms-auto justify-content-end">
-            <button
-              @click="showConfirmation"
-              variant="danger"
-              type="button"
-              class="btn btn-outline-secondary circle-btn"
-              title="Remover do carrinho"
-            >
-              <i class="bi bi-x-lg"></i>
-            </button>
-            <b-modal
-              v-model="confirmationModal"
-              title="Confirmação de Remoção"
-              hide-footer
-            >
-              <p>Tem a certeza que pretende remover o item do carrinho?</p>
-              <div class="d-flex justify-content-end">
-                <button class="btn btn-secondary mr-2" @click="cancelDeletion">
-                  Cancelar
-                </button>
-                <button class="btn btn-danger" @click="confirmDeletion">
-                  Remover
-                </button>
-              </div>
-            </b-modal>
-          </div>
+          <!-- <div class="d-flex ms-auto justify-content-end"> -->
+          <PrimeButton
+            @click="showConfirmation"
+            severity="danger"
+            outlined
+            rounded
+            title="Remover do carrinho"
+            icon="pi pi-trash"
+          >
+          </PrimeButton>
         </div>
+        <b-modal
+          v-model="confirmationModal"
+          title="Confirmação de Remoção"
+          hide-footer
+        >
+          <p>Tem a certeza que pretende remover o item do carrinho?</p>
+          <div class="d-flex justify-content-end gap-2">
+            <PrimeButton severity="info" rounded @click="cancelDeletion">
+              Cancelar
+            </PrimeButton>
+            <PrimeButton severity="danger" rounded @click="confirmDeletion">
+              Remover
+            </PrimeButton>
+          </div>
+        </b-modal>
       </div>
     </b-card-text>
   </div>
@@ -79,6 +99,7 @@ import { PropType } from 'vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU';
 import { ProducerProduct } from '@/types';
+import PrimeButton from 'primevue/button';
 
 export default {
   emits: ['delete-cart-item', 'update-cart-item'],
@@ -104,6 +125,9 @@ export default {
       // Botão de confirmação
       confirmationModal: false,
     };
+  },
+  components: {
+    PrimeButton,
   },
 
   props: {

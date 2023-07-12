@@ -87,6 +87,7 @@
                     @delete-cart-item="removeItem"
                     @update-cart-item="refreshValues"
                     :key="cartItem.id"
+                    style="border-bottom: solid 2px #f3f3f3"
                   ></CartItemNAU>
                 </div>
               </div>
