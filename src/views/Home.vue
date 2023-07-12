@@ -103,35 +103,66 @@
         <router-link to="/products">Ver todos</router-link>
       </button>
     </div>
-    <div class="d-flex products-list">
-      <div v-for="(product, index) in products" :key="index">
+    <div
+      :class="{
+        flex: true,
+        'flex-wrap': true,
+        'gap-3': true,
+        'justify-content-center': true,
+      }"
+    >
+      <Loader v-if="loadingPopularProducts || !popularProducts" />
+      <div
+        class="flex flex-none w-full sm:w-6 md:w-4 lg:w-3 xl:w-2"
+        v-else
+        v-for="(product, index) in popularProducts.items"
+        :key="index"
+      >
         <ProductCard :product-spec="product" />
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import Banner from '@/components/Banner.vue';
 import CategoryCard from '@/components/CategoryCard.vue';
 import ProductCard from '@/components/ProductCard.vue';
-import { ProductSpec } from '@/types';
-import { fetchProduct } from '@/api';
-</script>
+import Loader from '@/components/Loader.vue';
+import { BaseItems, ProductSpec } from '@/types';
+import { fetchAllProducts } from '@/api';
 
-<script lang="ts">
 export default {
+  components: {
+    Banner,
+    CategoryCard,
+    ProductCard,
+    Loader,
+  },
   data() {
     return {
-      products: [] as ProductSpec[],
+      popularProducts: {} as BaseItems<ProductSpec>,
+      loadingPopularProducts: true,
     };
   },
+  methods: {
+    async loadPopularProducts() {
+      this.loadingPopularProducts = true;
 
+      try {
+        this.popularProducts = (
+          await fetchAllProducts({
+            orderBy: 'popularityDesc',
+            pageSize: 12,
+          })
+        ).data;
+      } finally {
+        this.loadingPopularProducts = false;
+      }
+    },
+  },
   async beforeMount() {
-    for (let i = 1; i < 5; i++) {
-      const product = await fetchProduct(i);
-      this.products.push(product.data);
-    }
+    this.loadPopularProducts();
   },
 };
 </script>
