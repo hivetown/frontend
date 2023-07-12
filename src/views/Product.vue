@@ -1,13 +1,4 @@
 <template>
-  <Toast>
-    <template #message="slotProps">
-      <div class="p-toast-message-text">
-        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
-        <div class="p-toast-detail" v-html="slotProps.message.detail" />
-      </div>
-    </template>
-  </Toast>
-
   <div>
     <!-- Caminho -->
     <PathComponent :path-list="path"></PathComponent>
@@ -84,11 +75,11 @@
         <!-- TODO rating automático -->
         <!-- Rating -->
         <!-- <div>
-               <div class="rating d-flex gap-1 separator-bottom">
-                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
-                  <span class="">(10)</span>
-               </div>
-            </div> -->
+				 <div class="rating d-flex gap-1 separator-bottom">
+					<i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
+					<span class="">(10)</span>
+				 </div>
+			  </div> -->
       </div>
 
       <div class="separator-bottom" style="min-height: 30vh">
@@ -150,27 +141,27 @@
           >
           </PrimeButton>
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Ver produto" >
-                          <i class="bi bi-eye"></i>
-                  </button> -->
+							v-b-tooltip.hover title="Ver produto" >
+							<i class="bi bi-eye"></i>
+					</button> -->
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Comparar produto">
-                          <i class="bi bi-arrow-left-right"></i>
-                  </button> -->
+							v-b-tooltip.hover title="Comparar produto">
+							<i class="bi bi-arrow-left-right"></i>
+					</button> -->
         </div>
       </div>
 
       <!-- Detalhes do produto -->
       <!-- <div class="" style="margin-top: -2vh;">
-            <div class="d-flex gap-3 grey-txt mt-5" >
-               <p class="fw-bold">Código do produto:</p>
-               <p>Código do produto</p>
-            </div>
-            <div class="d-flex gap-3 grey-txt" >
-               <p class="fw-bold">Categoria:</p>
-               <p>Tecnologia</p>
-            </div>
-         </div> -->
+			  <div class="d-flex gap-3 grey-txt mt-5" >
+				 <p class="fw-bold">Código do produto:</p>
+				 <p>Código do produto</p>
+			  </div>
+			  <div class="d-flex gap-3 grey-txt" >
+				 <p class="fw-bold">Categoria:</p>
+				 <p>Tecnologia</p>
+			  </div>
+		   </div> -->
 
       <!-- Vendedor -->
       <div class="mt-5 d-flex align-items-center gap-3">
@@ -265,11 +256,7 @@
       </div>
 
       <!-- Quantidade -->
-      <div
-        class="d-flex align-items-center gap-4"
-        style="margin-top: 4%"
-        v-if="$store.state.user?.user.type != 'PRODUCER'"
-      >
+      <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
         <!-- Botão da quantidade -->
         <div class="p-inputgroup" style="max-width: 10em">
           <PrimeButton
@@ -296,7 +283,6 @@
       <div
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
-        v-if="$store.state.user?.user.type != 'PRODUCER'"
       >
         <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
@@ -742,7 +728,6 @@ import {
   fetchProductCategoriesFields,
   fetchLocalProducts,
   getConsumerAddresses,
-  addCartItem,
 } from '@/api';
 import {
   ProductSpec,
@@ -752,11 +737,7 @@ import {
   ProductSpecField,
   SelectedUnit,
 } from '@/types';
-import { computed, defineComponent, PropType } from 'vue';
-import { CartNAU } from '@/utils/cartItemNAU';
-import Toast from 'primevue/toast';
-import { useToast } from 'primevue/usetoast';
-
+import { defineComponent, PropType } from 'vue';
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -808,12 +789,6 @@ export default defineComponent({
 
       //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
       checkboxValue: false,
-
-      // PARA USERS NÃO AUTENTIFICADOS
-      cartNAU: new CartNAU(),
-
-      //Notificação de adicionar items ao carrinho
-      toast: useToast(),
     };
   },
   computed: {
@@ -881,6 +856,7 @@ export default defineComponent({
       }
     },
   },
+
   // A fazer antes de montar o componente
   async beforeMount() {
     // SpecId escolhida
@@ -944,7 +920,6 @@ export default defineComponent({
     TabPanel,
     InputText,
     Card,
-    Toast,
   },
 });
 </script>
