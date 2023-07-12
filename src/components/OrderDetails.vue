@@ -300,10 +300,10 @@
             <template v-if="store.state.user?.user.type === 'PRODUCER'">
               <td v-if="orderItem.status === 'Paid'">
                 <ManageOrderItemCarrier
-                  v-if="orderItem.producerProduct && orderId"
+                  v-if="orderItem.producerProduct"
                   :order-item="orderItem"
-                  :order-id="Number(orderId)"
-                  @order-item-carrier-assigned="onOrderItemAssigned(orderItem)"
+                  :order="order"
+                  @order-item-carrier-assigned="onOrderItemUpdated(orderItem)"
                 />
               </td>
               <td
@@ -314,9 +314,22 @@
               >
                 <SetForDelivery
                   :carrier="shipments[orderItem.producerProduct.id].carrier!"
-                  :order-id="Number(orderId)"
+                  :order="order"
                   :order-item="orderItem"
-                  @carrier-in-delivery="onOrderItemAssigned(orderItem)"
+                  @carrier-in-delivery="onOrderItemUpdated(orderItem)"
+                />
+              </td>
+              <td
+                v-else-if="
+                  orderItem.status === 'Shipped' &&
+                  shipments[orderItem.producerProduct.id]
+                "
+              >
+                <SetDelivered
+                  :carrier="shipments[orderItem.producerProduct.id].carrier!"
+                  :order="order"
+                  :order-item="orderItem"
+                  @carrier-delivered="onOrderItemUpdated(orderItem)"
                 />
               </td>
             </template>
@@ -334,32 +347,38 @@
 <script setup lang="ts">
 import Loader from '@/components/Loader.vue';
 import ManageOrderItemCarrier from './producer/orders/ManageOrderItemCarrier.vue';
-import SetForDelivery from './producer/carriers/SetForDelivery.vue';
-import { ref, onBeforeMount, computed } from 'vue';
+import SetForDelivery from './producer/orders/SetForDelivery.vue';
+import SetDelivered from './producer/orders/SetDelivered.vue';
+import { ref, onBeforeMount, computed, PropType } from 'vue';
 import {
   fetchAllItems,
   fetchAllItemsProducer,
   fetchAllOrders,
 } from '../api/orders';
 import { getShipment } from '../api/orders';
-import { useRoute } from 'vue-router';
 import { useStore } from '@/store';
-import { BaseItems, OrderItem, Shipment } from '@/types';
+import { BaseItems, OrderItem, Shipment, SpecificOrder } from '@/types';
 const isLoading = ref(true);
 const orderItems = ref<BaseItems<OrderItem>>();
 const totalSum = ref(0);
 const date = ref<{ [id: number]: String }>({});
 const shipments = ref<{ [id: number]: Shipment }>({});
-const route = useRoute();
 const store = useStore();
-const orderId = ref(route.params.id as string);
+
+const props = defineProps({
+  order: {
+    type: Object as PropType<SpecificOrder>,
+    required: true,
+  },
+});
 
 const shouldShowVehicle = computed(() => {
   return (
     store.state.user?.user.type === 'PRODUCER' &&
     orderItems.value?.items.some((item) =>
-      // TODO add Processing and Shipped when implementing carrier exiting/incoming
-      (['Paid', 'Processing'] as OrderItem['status'][]).includes(item.status)
+      (['Paid', 'Processing', 'Shipped'] as OrderItem['status'][]).includes(
+        item.status
+      )
     )
   );
 });
@@ -378,13 +397,13 @@ const loadItems = async () => {
       isLoading.value = true;
       const responseItem = await fetchAllItems(
         store.state.user.user.id,
-        orderId.value
+        props.order.id
       );
       orderItems.value = responseItem.data;
 
       const res = await fetchAllOrders(store.state.user.user.id);
       for (let i = 0; i < res.data.items.length; i++) {
-        if (res.data.items[i].id === Number(orderId.value)) {
+        if (res.data.items[i].id === props.order.id) {
           date.value = res.data.items[i].orderDate.substring(0, 10);
         }
       }
@@ -396,7 +415,7 @@ const loadItems = async () => {
       isLoading.value = true;
       const responseItem = await fetchAllItemsProducer(
         store.state.user.user.id,
-        orderId.value
+        props.order.id
       );
       orderItems.value = responseItem.data;
     } finally {
@@ -410,7 +429,7 @@ const loadItems = async () => {
     const responseShipment = (
       await getShipment(
         store.state.user.user.id,
-        parseInt(orderId.value),
+        props.order.id,
         orderItem.producerProduct.id,
         store.state.user!.user.type.toLowerCase() as 'producer' | 'consumer'
       )
@@ -423,10 +442,10 @@ onBeforeMount(loadItems);
 
 const emit = defineEmits({
   // eslint-disable-next-line no-unused-vars
-  orderItemCarrierAssigned: (orderItem: OrderItem) => true,
+  orderItemUpdated: (orderItem: OrderItem) => true,
 });
-const onOrderItemAssigned = (orderItem: OrderItem) => {
-  emit('orderItemCarrierAssigned', orderItem);
+const onOrderItemUpdated = (orderItem: OrderItem) => {
+  emit('orderItemUpdated', orderItem);
   loadItems();
 };
 </script>

@@ -32,7 +32,9 @@
         }"
       >
         <OrderDetails
-          @order-item-carrier-assigned="onOrderItemCarrierAssigned"
+          v-if="order.id"
+          :order="order"
+          @order-item-updated="onOrderItemUpdated"
         />
       </div>
     </div>
@@ -70,7 +72,7 @@ const loadOrder = async () => {
 };
 
 onBeforeMount(loadOrder);
-const onOrderItemCarrierAssigned = loadOrder;
+const onOrderItemUpdated = loadOrder;
 </script>
 <style scoped>
 .wrapper-mains {

@@ -20,16 +20,9 @@ export const fetchAllOrders = (
     return api.get<BaseItems<Order>>(url);
 };
 
-export const fetchAllItems = (
-    userId: number,
-    orderId: string,
-    search?: string
-) =>
+export const fetchAllItems = (userId: number, orderId: number) =>
     api.get<BaseItems<OrderItem>>(
-        `/consumers/${userId}/orders/${orderId}/items`,
-        {
-            params: { search },
-        }
+        `/consumers/${userId}/orders/${orderId}/items`
     );
 
 export const fetchAllOrdersProducer = (
@@ -41,16 +34,9 @@ export const fetchAllOrdersProducer = (
         `/producers/${userId}/orders?page=${page}&pageSize=${pageSize}`
     );
 
-export const fetchAllItemsProducer = (
-    userId: number,
-    orderId: string,
-    search?: string
-) =>
+export const fetchAllItemsProducer = (userId: number, orderId: number) =>
     api.get<BaseItems<OrderItem>>(
-        `/producers/${userId}/orders/${orderId}/items`,
-        {
-            params: { search },
-        }
+        `/producers/${userId}/orders/${orderId}/items`
     );
 export const fetchOrder = (userId: number, orderId: string) =>
     api.get<SpecificOrder>(`/consumers/${userId}/orders/${orderId}`);

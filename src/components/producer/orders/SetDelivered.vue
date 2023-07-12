@@ -1,5 +1,5 @@
 <template>
-  <ConfirmPopup group="setCarrierForDelivery">
+  <ConfirmPopup group="setCarrierDelivered">
     <template #message="slotProps">
       <div class="flex p-4">
         <i :class="slotProps.message.icon" style="font-size: 1.5rem"></i>
@@ -8,12 +8,14 @@
     </template>
   </ConfirmPopup>
 
-  <BButton
-    class="botao2"
-    variant="outline-primary"
-    @click="confirmSetForDelivery"
+  <PrimeButton
+    rounded
+    outlined
+    severity="info"
+    style="color: #5a5a5a; font-size: 0.7em"
+    @click="confirmSetDelivered"
     :loading="loading"
-    >Registar saída</BButton
+    >Registar entrega</PrimeButton
   >
 </template>
 
@@ -22,17 +24,25 @@ import { createOrderItemShipment } from '@/api';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
+import PrimeButton from 'primevue/button';
 import { PropType, ref } from 'vue';
 import { AxiosError } from 'axios';
-import { Carrier, OrderItem, Shipment, ShipmentStatus } from '@/types';
+import {
+  Carrier,
+  OrderItem,
+  Shipment,
+  ShipmentStatus,
+  SpecificOrder,
+} from '@/types';
 
 export default {
   components: {
     ConfirmPopup,
+    PrimeButton,
   },
   props: {
-    orderId: {
-      type: Number,
+    order: {
+      type: Object as PropType<SpecificOrder>,
       required: true,
     },
     orderItem: {
@@ -46,7 +56,7 @@ export default {
   },
   emits: {
     // eslint-disable-next-line no-unused-vars
-    carrierInDelivery: (shipment: Shipment) => true,
+    carrierDelivered: (shipment: Shipment) => true,
   },
   setup(props, { emit }) {
     const confirm = useConfirm();
@@ -56,8 +66,8 @@ export default {
     const confirmSetForDelivery = (event: any) => {
       confirm.require({
         target: event.currentTarget,
-        group: 'setCarrierForDelivery',
-        message: `Tem a certeza que quer iniciar a entrega do veículo "${props.carrier.licensePlate}"?`,
+        group: 'setCarrierDelivered',
+        message: 'Tem a certeza que quer definir o produto como entregue?',
         icon: 'pi pi-info-circle',
         acceptClass: 'p-button-warning',
         acceptLabel: 'Sim, iniciar',
@@ -69,25 +79,28 @@ export default {
               props.orderItem.producerProduct.producer!.user.id;
             const producerProductId = props.orderItem.producerProduct.id;
             // Typings am i right???!!!
-            const addressId = props.orderItem.producerProduct.productionUnit!
-              .address as unknown as number;
+            const addressId = props.order.shippingAddress.id;
 
             const shipment = (
               await createOrderItemShipment(
                 producerId,
-                props.orderId,
+                props.order.id,
                 producerProductId,
-                ShipmentStatus.Shipped,
+                ShipmentStatus.Delivered,
                 addressId
               )
             ).data;
 
-            emit('carrierInDelivery', shipment);
+            emit('carrierDelivered', shipment);
 
             toast.add({
               severity: 'success',
-              summary: 'Veículo em deslocação',
-              detail: `O veículo ${props.carrier.licensePlate} foi registado como em saída para entrega`,
+              summary: 'Produto entregue',
+              detail: `O veículo <b>${
+                props.carrier.licensePlate
+              }</b> entregou o produto <b>${
+                props.orderItem.producerProduct.productSpec!.name
+              }</b>`,
               life: 3000,
             });
           } catch (error) {
@@ -111,7 +124,7 @@ export default {
     };
 
     return {
-      confirmSetForDelivery,
+      confirmSetDelivered: confirmSetForDelivery,
       loading,
     };
   },

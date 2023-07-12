@@ -161,7 +161,7 @@ export interface OrderItem {
 }
 
 export interface SpecificOrder {
-    id?: number;
+    id: number;
     shippingAddress: Address;
     generalStatus?:
         | 'Paid'
@@ -357,4 +357,18 @@ export interface ProductSpecFieldWithCategory {
     products: {
         fieldValues: ProductSpecField[];
     }[];
+}
+
+export interface UpdateConsumer {
+    name: string;
+    email: string;
+    phone: string;
+    disableEmails?: boolean;
+}
+
+export interface UpdateProducer {
+    name: string;
+    email: string;
+    phone: string;
+    disableEmails?: boolean;
 }

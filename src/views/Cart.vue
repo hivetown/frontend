@@ -8,41 +8,65 @@
     </template>
   </Toast>
   <div class="root">
-    <button
+    <!-- <button
       @click="goBack"
       type="button"
       class="btn btn-outline-secondary btn-sm"
       style="float: "
     >
       Voltar
-    </button>
-    <div class="wrapper-mains">
-      <h1>Carrinho</h1>
-      <h5>
-        Aqui poderá consultar os itens que estão atualmente no seu carrinho:
-      </h5>
+    </button> -->
+    <div class="parent" @click="goBack">
+      <PageBack style="margin-top: -2vh"></PageBack>
+    </div>
+    <div class="wrapper-mains parent">
+      <!-- <h1>Carrinho</h1> -->
+      <div
+        class="mt-5 mb-2"
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <p>{{ getItems() }} items no carrinho</p>
 
-      <button @click="showConfirmation">Limpar Carrinho</button>
+        <PrimeButton
+          rounded
+          outlined
+          severity="info"
+          style="color: #5a5a5a !important; height: 80%"
+          @click="showConfirmation"
+          >Esvaziar Carrinho</PrimeButton
+        >
+      </div>
       <b-modal
         v-model="confirmationModal"
         title="Confirmação de Remoção"
         hide-footer
       >
         <p>Tem a certeza que pretende remover TODOS os itens do carrinho?</p>
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-secondary mr-2" @click="cancelDeletion">
+        <div class="d-flex justify-content-end gap-2">
+          <PrimeButton severity="info" rounded @click="cancelDeletion">
             Cancelar
-          </button>
-          <button class="btn btn-danger" @click="confirmDeletion">
+          </PrimeButton>
+          <PrimeButton severity="danger" rounded @click="confirmDeletion">
             Remover
-          </button>
+          </PrimeButton>
         </div>
       </b-modal>
 
-      <table class="table table-responsive-md">
+      <table class="table table-responsive-md" style="border: none">
         <tr>
-          <td class="left-column">
-            <div>
+          <td class="left-column" style="border: none">
+            <div
+              style="
+                max-height: 65vh;
+                overflow-y: auto;
+                width: 97%;
+                padding: 2vh;
+              "
+            >
               <!---->
               <div v-if="itemsNumber != 0">
                 <div v-if="login">
@@ -52,6 +76,7 @@
                     @delete-cart-item="removeItem"
                     @update-cart-item="refreshValues"
                     :key="cartItem.producerProduct.productSpec?.id"
+                    style="border-bottom: solid 2px #f3f3f3"
                   ></CartItem>
                 </div>
                 <!---->
@@ -62,36 +87,57 @@
                     @delete-cart-item="removeItem"
                     @update-cart-item="refreshValues"
                     :key="cartItem.id"
+                    style="border-bottom: solid 2px #f3f3f3"
                   ></CartItemNAU>
                 </div>
               </div>
-              <div v-else>
-                <p>Não possui itens no carrinho.</p>
+              <div v-else style="display: flex; justify-content: center">
+                <p>Ainda não possui itens no carrinho.</p>
               </div>
             </div>
           </td>
 
           <td class="right-column">
-            <div>
-              <h2>Totais</h2>
+            <div
+              style="
+                border: solid 2px #f3f3f3;
+                border-radius: 0.8em;
+                padding: 2vh;
+                height: 65vh;
+              "
+            >
+              <h2 class="dgreen-txt main-txt">Rever a compra</h2>
               <div style="height: 2vh"></div>
 
-              <p style="text-align: justify; font-size: 1.3em">
-                Total de items: <span class="checkout">{{ getItems() }}</span
-                ><br />
-                Preço Total: <span class="checkout">{{ getPrice() }}</span
-                ><br />
-              </p>
-              <div style="text-align: center">
-                <a href="/createOrder">
-                  <button
+              <div
+                style="
+                  height: 85%;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                "
+              >
+                <div>
+                  <p style="text-align: justify; font-size: 1em">
+                    Total de items:
+                    <span class="checkout">{{ getItems() }}</span>
+                  </p>
+                  <p>
+                    Preço Total: <span class="checkout">{{ getPrice() }}</span>
+                  </p>
+                </div>
+                <div style="text-align: center">
+                  <a href="/createOrder">
+                    <!-- <button
                     type="button"
                     class="btn btn-outline-secondary btn-sm"
                     style="text-align: center"
                   >
                     Prosseguir para Pagamento &amp; Envio
-                  </button>
-                </a>
+                  </button> -->
+                    <PrimeButton rounded> Prosseguir para o envio </PrimeButton>
+                  </a>
+                </div>
               </div>
             </div>
           </td>
@@ -111,6 +157,8 @@ import {
 } from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
+import PageBack from '@/components/PageBack.vue';
+import PrimeButton from 'primevue/button';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU';
 import { ProducerProduct } from '../types/interfaces';
@@ -122,7 +170,7 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 export default {
-  components: { CartItem, CartItemNAU, Toast },
+  components: { CartItem, CartItemNAU, Toast, PageBack, PrimeButton },
 
   data() {
     return {
@@ -169,7 +217,7 @@ export default {
 
     // Botão de voltar para trás
     goBack() {
-      window.history.back();
+      this.$router.go(-1); // Navega para a página anterior
     },
 
     async cleanCart() {
