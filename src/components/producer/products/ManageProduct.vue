@@ -470,7 +470,7 @@ export default {
         toast.add({
           severity: 'success',
           summary: `Produto ${methodNameSummary} com sucesso`,
-          detail: `O produto foi ${methodNameSummary} com sucesso, clique <a href="/producer/${producerId}/products/${product.id}">aqui</a> para ver o produto."`,
+          detail: `O produto foi ${methodNameSummary} com sucesso`,
           life: 10000,
         });
 
