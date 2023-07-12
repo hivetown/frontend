@@ -8,15 +8,18 @@
     </template>
   </Toast>
   <div class="root">
-    <button
+    <!-- <button
       @click="goBack"
       type="button"
       class="btn btn-outline-secondary btn-sm"
       style="float: "
     >
       Voltar
-    </button>
-    <div class="wrapper-mains">
+    </button> -->
+    <div class="parent" @click="goBack">
+      <PageBack style="margin-top: -2vh"></PageBack>
+    </div>
+    <div class="wrapper-mains parent">
       <h1>Carrinho</h1>
       <h5>
         Aqui poderá consultar os itens que estão atualmente no seu carrinho:
@@ -111,6 +114,7 @@ import {
 } from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
+import PageBack from '@/components/PageBack.vue';
 // N.A.U. - Import
 import { CartNAU } from '@/utils/cartItemNAU';
 import { ProducerProduct } from '../types/interfaces';
@@ -122,7 +126,7 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
 export default {
-  components: { CartItem, CartItemNAU, Toast },
+  components: { CartItem, CartItemNAU, Toast, PageBack },
 
   data() {
     return {
@@ -169,7 +173,7 @@ export default {
 
     // Botão de voltar para trás
     goBack() {
-      window.history.back();
+      this.$router.go(-1); // Navega para a página anterior
     },
 
     async cleanCart() {
