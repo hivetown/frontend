@@ -5,9 +5,11 @@
   </div>
   <div class="parent">
     <!-- TODO Arranjar para voltar para onde o user estiver antes realmente -->
-    <RouterLink to="/products" style="text-decoration: none">
-      <PageBack style="margin-top: -2vh"></PageBack
-    ></RouterLink>
+    <!-- <RouterLink to="/products" style="text-decoration: none"> -->
+    <div class="parent" @click="goBack">
+      <PageBack style="margin-top: -2vh"></PageBack>
+    </div>
+    <!--</RouterLink> -->
   </div>
 
   <!-- detalhes do produto -->
@@ -41,12 +43,12 @@
         <!-- Imagens alternativas -->
         <div>
           <div
-            class="d-flex justify-content-between align-items-center mt-3 gap-3"
+            class="d-flex align-items-center mt-3 gap-3"
             style="overflow: auto"
           >
             <img
               class="square-image alternative-img rounded-3"
-              style="background-color: #f3f3f3"
+              style="background-color: #f3f3f3; cursor: pointer"
               v-for="(image, index) in productDetails.images"
               :key="index"
               :src="image.url"
@@ -64,8 +66,7 @@
         v-if="
           productDetails && productDetails.name && productDetails.description
         "
-        class="w-75"
-        style="min-height: 18vh"
+        style="min-height: 15vh; width: 85%"
       >
         <!-- Informação do produto -->
         <h1 class="product-title">{{ productDetails.name }}</h1>
@@ -74,43 +75,47 @@
         <!-- TODO rating automático -->
         <!-- Rating -->
         <!-- <div>
-               <div class="rating d-flex gap-1 separator-bottom">
-                  <i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
-                  <span class="">(10)</span>
-               </div>
-            </div> -->
+				 <div class="rating d-flex gap-1 separator-bottom">
+					<i v-for="star in 5" :key="star" class="mr-1 bi bi-star-fill yellow-txt mb-3" :class="{ 'bx bxs-star': star <= value, 'bx bx-star': star > value }"></i>
+					<span class="">(10)</span>
+				 </div>
+			  </div> -->
       </div>
 
       <div class="separator-bottom" style="min-height: 30vh">
         <!-- Preço -->
         <div class="d-flex align-items-center gap-3">
-          <h3>{{ defaultProduct.currentPrice }}€</h3>
+          <h2>{{ defaultProduct.currentPrice }}€</h2>
           <p>{{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€</p>
           <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
         </div>
-        <div>
-          <a
-            href="#"
-            v-if="productDetails.producersCount > 1"
-            @click="currentPage = 'vendedores'"
+        <div v-if="productDetails.producersCount > 1">
+          <PrimeButton
+            text
+            severity="secondary"
+            @click="changeDetailsView(DetailsView.PRODUCERS)"
           >
             ver +{{ productDetails.producersCount }} vendedores
-          </a>
-          <!-- Não há mais vendedores para além do apresentado -->
-          <a href="#" v-else-if="productDetails.producersCount === 1"></a>
+          </PrimeButton>
         </div>
 
         <!-- Quantidade -->
-        <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
+        <div class="mt-4">
           <!-- Botão da quantidade -->
-          <div class="quantity-div d-flex justify-content-between rounded-pill">
-            <b-button class="mr-3 rounded-pill" @click="decrement"
-              ><i class="bi bi-dash-lg"></i
-            ></b-button>
-            <b-button>{{ quantity }}</b-button>
-            <b-button class="ml-3 rounded-pill" @click="increment"
-              ><i class="bi bi-plus-lg"></i
-            ></b-button>
+          <div class="p-inputgroup" style="max-width: 10em">
+            <PrimeButton
+              outlined
+              severity="info"
+              icon="pi pi-minus"
+              @click="decrement"
+            ></PrimeButton>
+            <InputText class="text-center" :value="quantity" readonly />
+            <PrimeButton
+              outlined
+              severity="info"
+              icon="pi pi-plus"
+              @click="increment"
+            ></PrimeButton>
           </div>
 
           <p class="mt-3 grey-txt">
@@ -119,41 +124,44 @@
         </div>
 
         <!-- Botões compra -->
-        <div class="d-flex gap-4 align-items-center" style="margin-top: 5vh">
-          <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
+        <div
+          class="d-flex gap-2 align-items-center mb-5"
+          style="margin-top: 5vh"
+        >
+          <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
-          <div class="aux-btns d-flex align-items-center gap-1">
-            <button
-              type="button"
-              class="btn btn-outline-secondary circle-btn"
-              v-b-tooltip.hover
-              title="Adicionar ao carrinho"
-            >
-              <i class="bi bi-cart"></i>
-            </button>
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Ver produto" >
-                          <i class="bi bi-eye"></i>
-                  </button> -->
-            <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
-                          v-b-tooltip.hover title="Comparar produto">
-                          <i class="bi bi-arrow-left-right"></i>
-                  </button> -->
-          </div>
+          <PrimeButton
+            rounded
+            outlined
+            severity="info"
+            v-b-tooltip.hover
+            title="Adicionar ao carrinho"
+            icon="pi pi-shopping-cart"
+            style="color: #5a5a5a"
+          >
+          </PrimeButton>
+          <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+							v-b-tooltip.hover title="Ver produto" >
+							<i class="bi bi-eye"></i>
+					</button> -->
+          <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
+							v-b-tooltip.hover title="Comparar produto">
+							<i class="bi bi-arrow-left-right"></i>
+					</button> -->
         </div>
       </div>
 
       <!-- Detalhes do produto -->
       <!-- <div class="" style="margin-top: -2vh;">
-            <div class="d-flex gap-3 grey-txt mt-5" >
-               <p class="fw-bold">Código do produto:</p>
-               <p>Código do produto</p>
-            </div>
-            <div class="d-flex gap-3 grey-txt" >
-               <p class="fw-bold">Categoria:</p>
-               <p>Tecnologia</p>
-            </div>
-         </div> -->
+			  <div class="d-flex gap-3 grey-txt mt-5" >
+				 <p class="fw-bold">Código do produto:</p>
+				 <p>Código do produto</p>
+			  </div>
+			  <div class="d-flex gap-3 grey-txt" >
+				 <p class="fw-bold">Categoria:</p>
+				 <p>Tecnologia</p>
+			  </div>
+		   </div> -->
 
       <!-- Vendedor -->
       <div class="mt-5 d-flex align-items-center gap-3">
@@ -167,8 +175,11 @@
         </b-avatar>
         <div class="seller" v-if="defaultProduct && defaultProduct.producer">
           <h5>{{ defaultProduct.producer.user.name }}</h5>
-          <router-link :to="'/producer/' + defaultProduct.producer.user.id">
-            <a href="#" class="grey-txt">Sobre o vendedor</a>
+          <router-link
+            :to="'/producer/' + defaultProduct.producer.user.id"
+            class="grey-txt"
+          >
+            Sobre o vendedor
           </router-link>
         </div>
       </div>
@@ -203,12 +214,12 @@
     <!-- Imagens alternativas -->
     <div>
       <div
-        class="d-flex justify-content-between align-items-center mt-3 gap-3 alternative-img-mobile"
+        class="d-flex align-items-center mt-3 gap-3 alternative-img-mobile"
         style="overflow: auto"
       >
         <img
           class="square-image alternative-img rounded-3"
-          style="background-color: #f3f3f3"
+          style="background-color: #f3f3f3; cursor: pointer"
           v-for="(image, index) in productDetails.images"
           :key="index"
           :src="image.url"
@@ -234,29 +245,33 @@
         <h3>{{ productDetails.minPrice }}€ - {{ productDetails.maxPrice }}€</h3>
         <!-- <h5 class="grey-txt text-decoration-line-through">999€</h5> -->
       </div>
-      <div>
-        <a
-          href="#"
-          v-if="productDetails.producersCount > 1"
-          @click="currentPage = 'vendedores'"
+      <div v-if="productDetails.producersCount > 1">
+        <PrimeButton
+          text
+          severity="secondary"
+          @click="changeDetailsView(DetailsView.PRODUCERS)"
         >
           ver +{{ productDetails.producersCount }} vendedores
-        </a>
-        <!-- Não há mais vendedores para além do apresentado -->
-        <a href="#" v-else-if="productDetails.producersCount === 1"></a>
+        </PrimeButton>
       </div>
 
       <!-- Quantidade -->
       <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
         <!-- Botão da quantidade -->
-        <div class="quantity-div d-flex justify-content-between rounded-pill">
-          <b-button class="mr-3 rounded-pill" @click="decrement"
-            ><i class="bi bi-dash-lg"></i
-          ></b-button>
-          <b-button>{{ quantity }}</b-button>
-          <b-button class="ml-3 rounded-pill" @click="increment"
-            ><i class="bi bi-plus-lg"></i
-          ></b-button>
+        <div class="p-inputgroup" style="max-width: 10em">
+          <PrimeButton
+            outlined
+            severity="info"
+            icon="pi pi-minus"
+            @click="decrement"
+          ></PrimeButton>
+          <InputText class="text-center" :value="quantity" readonly />
+          <PrimeButton
+            outlined
+            severity="info"
+            icon="pi pi-plus"
+            @click="increment"
+          ></PrimeButton>
         </div>
 
         <p class="mt-3 grey-txt">
@@ -269,17 +284,19 @@
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
       >
-        <b-button class="buy-btn rounded-pill">Comprar agora</b-button>
+        <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
 
         <div class="aux-btns d-flex align-items-center gap-1">
-          <button
-            type="button"
-            class="btn btn-outline-secondary circle-btn"
+          <PrimeButton
+            rounded
+            outlined
+            severity="info"
             v-b-tooltip.hover
             title="Adicionar ao carrinho"
+            icon="pi pi-shopping-cart"
+            style="color: #5a5a5a"
           >
-            <i class="bi bi-cart"></i>
-          </button>
+          </PrimeButton>
         </div>
       </div>
 
@@ -295,8 +312,11 @@
         </b-avatar>
         <div class="seller" v-if="defaultProduct && defaultProduct.producer">
           <h5>{{ defaultProduct.producer.user.name }}</h5>
-          <router-link :to="'/producer/' + defaultProduct.producer.user.id">
-            <a href="#" class="grey-txt">Sobre o vendedor</a>
+          <router-link
+            :to="'/producer/' + defaultProduct.producer.user.id"
+            class="grey-txt"
+          >
+            Sobre o vendedor
           </router-link>
         </div>
       </div>
@@ -304,254 +324,37 @@
   </div>
 
   <!-- Informação adicional -->
-  <div class="parent px-5 more-info-normal">
-    <div class="separator-top mt-4">
-      <b-navbar class="mt-3">
-        <b-nav v-model="currentPage">
-          <b-nav-item
-            @click="currentPage = 'detalhes'"
-            :class="{ 'active-view': currentPage === 'detalhes' }"
-          >
-            <h5 class="grey-txt">Detalhes do produto</h5>
-          </b-nav-item>
-          <b-nav-item
-            @click="currentPage = 'vendedores'"
-            :class="{ 'active-view': currentPage === 'vendedores' }"
-          >
-            <h5 class="grey-txt">Vendedores</h5>
-          </b-nav-item>
-        </b-nav>
-      </b-navbar>
-      <!-- Página dos detalhes -->
-      <div class="px-4" v-if="currentPage === 'detalhes'">
+  <div class="parent px-5" ref="detailsView">
+    <TabView v-model:active-index="detailsTabIndex" class="mt-4">
+      <TabPanel>
+        <template #header>
+          <i class="pi pi-book mr-2"></i>
+          <span>Detalhes do Produto</span>
+        </template>
+
         <div class="mt-4">
           <h5 v-if="productCategories.items" class="mb-4">
             Categorias <span>({{ productCategories.items.length }})</span>
           </h5>
 
-          <div style="background-color: ">
-            <div
-              v-for="categoria in productCategories.items"
-              :key="categoria.id"
-              class="d-inline-block mx-2 cat-select"
-            >
-              <router-link :to="'/products?categoryId=' + categoria.id">
-                <a
-                  href="#"
-                  class="rounded-pill text-center mt-3 mb-3 px-3 py-1 prod-category"
-                >
-                  {{ categoria.name }}
-                </a>
-              </router-link>
-            </div>
-          </div>
-        </div>
-        <div class="mt-4">
-          <div class="mt-3 mb-3 d-flex align-items-center spec-category-text">
-            <h5 class="mt-4 mb-3">Características</h5>
-          </div>
-          <div style="background-color: ; height: " class="px-3">
-            <div
-              v-for="(categoryFields, index) in productCategoriesFields"
-              :key="index"
-              class="mt-3"
-              :style="{
-                'border-bottom':
-                  index !== productCategoriesFields.length - 1
-                    ? '1px solid #eeeeee'
-                    : 'none',
-              }"
-            >
-              <div
-                class="d-flex gap-5"
-                v-for="field in categoryFields"
-                :key="field.field.id"
-              >
-                <div style="width: 25vh">
-                  <!-- {{ field }} -->
-                  <span style="font-weight: bold">{{ field.field.name }} </span>
-                </div>
-                <span :class="{ 'mb-3': index === categoryFields.length - 1 }">
-                  {{ field.value }} {{ field.field.unit }}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Página dos outros vendedores -->
-
-      <div class="px-4" v-if="currentPage === 'vendedores'">
-        <!-- Conteúdo que será exibido quando 'currentPage' for igual a 'vendedores' e a checkbox estiver marcada -->
-
-        <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
-        <div v-if="$store.state.user">
-          <div class="d-flex justify-content-start align-items-center">
-            <input
-              @change="onCheckboxChange()"
-              type="checkbox"
-              id="local-products-checkbox"
-              style="float: left; width: auto; padding: 2px; margin: 2px"
-            />
-            <label
-              style="margin-left: 2px"
-              class="moradaTitulo"
-              title="Com base na morada definida por si na criação do perfil"
-              >Apenas vendedores locais</label
-            >
-          </div>
-        </div>
-        <!-- TODO - ver qual é o certo -->
-        <!-- {{ producerProducts.items.length }} -->
-
-        <div v-if="!checkboxValue">
           <div
-            v-for="(producerProduct, index) in producerProducts.items"
-            :key="index"
+            style="
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
+              gap: 1.5vh;
+            "
           >
-            <div class="mt-4" style="background-color: ">
-              <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
-              <div
-                class="mt-5 d-flex align-items-center gap-3"
-                style="background-color: ; width: 70%"
-                v-if="
-                  producerProduct.producer &&
-                  producerProduct.id != defaultProduct.id
-                "
-              >
-                <router-link
-                  v-if="producerProduct.producer"
-                  :to="'/producer/' + producerProduct.producer.user.id"
-                >
-                  <b-avatar
-                    v-if="producerProduct.producer.user.image"
-                    class="nav-item"
-                    :src="producerProduct.producer.user.image.url"
-                    :alt="producerProduct.producer.user.image.alt"
-                    style="
-                      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                      scale: 1.2;
-                    "
-                  >
-                  </b-avatar>
-                </router-link>
-                <div class="seller" v-if="producerProduct.producer">
-                  <h5>{{ producerProduct.producer.user.name }}</h5>
-                  <router-link
-                    :to="'/producer/' + producerProduct.producer.user.id"
-                  >
-                    <a href="#" class="grey-txt">Sobre o vendedor</a>
-                  </router-link>
-                </div>
-                <div style="margin-left: 30%; position: absolute">
-                  <div class="d-flex gap-5 align-items-center">
-                    <span>
-                      <h5>{{ producerProduct.currentPrice }}€</h5>
-                    </span>
-                    <div>
-                      <b-button class="buy-btn rounded-pill" style="scale: 0.85"
-                        >Comprar agora</b-button
-                      >
-                      <b-button
-                        v-if="
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit?.id
-                        "
-                        class="buy-btn rounded-pill close-map-btn"
-                        style="scale: 0.85"
-                        @click="selectedUnit = null"
-                      >
-                        Fechar Mapa
-                      </b-button>
-                      <b-button
-                        v-else
-                        class="buy-btn rounded-pill map-btn"
-                        style="scale: 0.85"
-                        @click="selectProducer(producerProduct.productionUnit)"
-                      >
-                        {{
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit
-                            ? 'Fechar Mapa'
-                            : 'Mapa'
-                        }}
-                      </b-button>
-                      <button
-                        type="button"
-                        style="scale: 1.1"
-                        class="btn btn-outline-secondary circle-btn"
-                        v-b-tooltip.hover
-                        title="Adicionar ao carrinho"
-                      >
-                        <i class="bi bi-cart"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                v-if="
-                  selectedUnit &&
-                  selectedUnit === producerProduct.productionUnit
-                "
-              >
-                <Maps
-                  :selected-unit="selectedUnit"
-                  :producer-id="producerProduct.producer?.user.id || 0"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-else>
-          <p>
-            O produto selecionado não se encontra disponível para venda num raio
-            de 30km de si.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ALTERAR EM RELAÇÃO À VERSÃO MAIS RECENTE -->
-  <div class="parent px-5 more-info-mobile">
-    <div class="separator-top mt-4">
-      <b-navbar class="mt-3">
-        <b-nav v-model="currentPage">
-          <b-nav-item
-            @click="currentPage = 'detalhes'"
-            :class="{ 'active-view': currentPage === 'detalhes' }"
-          >
-            <h5 class="grey-txt">Detalhes do produto</h5>
-          </b-nav-item>
-          <b-nav-item
-            @click="currentPage = 'vendedores'"
-            :class="{ 'active-view': currentPage === 'vendedores' }"
-          >
-            <h5 class="grey-txt">Outros vendedores</h5>
-          </b-nav-item>
-        </b-nav>
-      </b-navbar>
-      <!-- Página dos detalhes -->
-      <div class="px-4" v-if="currentPage === 'detalhes'">
-        <div class="mt-4">
-          <h5 v-if="productCategories.items" class="mb-4">
-            Categorias <span>({{ productCategories.items.length }})</span>
-          </h5>
-
-          <div style="display: flex; flex-direction: column; gap: 1.5vh">
             <div
               v-for="categoria in productCategories.items"
               :key="categoria.id"
               class="cat-select"
             >
-              <router-link :to="'/products?categoryId=' + categoria.id">
-                <a
-                  href="#"
-                  class="rounded-pill text-center mt-3 mb-3 px-3 py-1 prod-category"
-                >
-                  {{ categoria.name }}
-                </a>
+              <router-link
+                :to="'/products?categoryId=' + categoria.id"
+                class="rounded-pill text-center mt-3 mb-3 px-3 py-1 prod-category"
+              >
+                {{ categoria.name }}
               </router-link>
             </div>
           </div>
@@ -560,7 +363,7 @@
           <div class="mt-3 mb-3 d-flex align-items-center spec-category-text">
             <h5 class="mt-4 mb-3">Características</h5>
           </div>
-          <div style="background-color: ; height: " class="">
+          <div>
             <div
               v-for="(categoryFields, index) in productCategoriesFields"
               :key="index"
@@ -578,7 +381,6 @@
                 :key="field.field.id"
               >
                 <div style="width: 10vh !important">
-                  <!-- {{ field }} -->
                   <span style="font-weight: bold; font-size: 0.9em"
                     >{{ field.field.name }}
                   </span>
@@ -593,11 +395,13 @@
             </div>
           </div>
         </div>
-      </div>
+      </TabPanel>
 
-      <!-- Página dos outros vendedores -->
-      <div class="px-4" v-if="currentPage === 'vendedores'">
-        <!-- Conteúdo que será exibido quando 'currentPage' for igual a 'vendedores' e a checkbox estiver marcada -->
+      <TabPanel>
+        <template #header>
+          <i class="pi pi-shopping-cart mr-2"></i>
+          <span>Vendedores</span>
+        </template>
 
         <h5 v-if="productCategories.items" class="mb-4 mt-3">Vendido por:</h5>
         <div v-if="$store.state.user">
@@ -606,174 +410,166 @@
               @change="onCheckboxChange()"
               type="checkbox"
               id="local-products-checkbox"
+              class="mb-5"
               style="float: left; width: auto; padding: 2px; margin: 2px"
             />
             <label
               style="margin-left: 2px"
-              class="moradaTitulo"
+              class="moradaTitulo mb-5"
               title="Com base na morada definida por si na criação do perfil"
               >Apenas vendedores locais</label
             >
           </div>
         </div>
-        <!-- TODO - ver qual é o certo -->
-        <!-- {{ producerProducts.items.length }} -->
 
         <div v-if="!checkboxValue">
-          <div
-            style="background-color: "
-            v-for="(producerProduct, index) in producerProducts.items"
-            :key="index"
-          >
-            <div class="mt-4 producer-mobile-info">
-              <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
-              <div
-                class="mt-5"
-                style="background-color: ; width: 70%"
+          <div class="grid" style="display: flex; justify-content: center">
+            <template
+              v-for="(producerProduct, index) in producerProducts.items"
+              :key="index"
+            >
+              <Card
+                style="box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px; !important"
+                class="col-12 md:col-5 lg:col-4"
                 v-if="
                   producerProduct.producer &&
                   producerProduct.id != defaultProduct.id
                 "
               >
-                <router-link
-                  v-if="producerProduct.producer"
-                  :to="'/producer/' + producerProduct.producer.user.id"
-                >
-                  <b-avatar
-                    v-if="producerProduct.producer.user.image"
-                    class="nav-item"
-                    :src="producerProduct.producer.user.image.url"
-                    :alt="producerProduct.producer.user.image.alt"
-                    style="
-                      box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
-                      scale: 1.2;
-                    "
-                  >
-                  </b-avatar>
-                </router-link>
-                <div class="seller" v-if="producerProduct.producer">
-                  <h5 class="mt-3">{{ producerProduct.producer.user.name }}</h5>
-                  <router-link
-                    :to="'/producer/' + producerProduct.producer.user.id"
-                  >
-                    <a href="#" class="grey-txt">Sobre o vendedor</a>
-                  </router-link>
-                </div>
-                <div style="position: absolute">
-                  <div class="mt-3">
-                    <span>
-                      <h5>{{ producerProduct.currentPrice }}€</h5>
-                    </span>
-                    <div style="margin-left: -3vh">
-                      <b-button class="buy-btn rounded-pill" style="scale: 0.85"
-                        >Comprar agora</b-button
-                      >
-                      <b-button
-                        v-if="
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit?.id
+                <template #content>
+                  <!-- Este if tira a mesma pessoa de aparecer 2 vezes, com o memso produto  -->
+                  <div class="d-flex align-items-center gap-3">
+                    <router-link
+                      v-if="producerProduct.producer"
+                      :to="'/producer/' + producerProduct.producer.user.id"
+                    >
+                      <b-avatar
+                        v-if="producerProduct.producer.user.image"
+                        class="nav-item"
+                        :src="producerProduct.producer.user.image.url"
+                        :alt="producerProduct.producer.user.image.alt"
+                        style="
+                          box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                          scale: 1.2;
                         "
-                        class="buy-btn rounded-pill close-map-btn"
-                        style="scale: 0.85"
-                        @click="selectedUnit = null"
                       >
-                        Fechar Mapa
-                      </b-button>
-                      <b-button
-                        v-else
-                        class="buy-btn rounded-pill map-btn"
-                        style="scale: 0.85"
-                        @click="selectProducer(producerProduct.productionUnit)"
-                      >
-                        {{
-                          selectedUnit &&
-                          selectedUnit === producerProduct.productionUnit
-                            ? 'Fechar Mapa'
-                            : 'Mapa'
-                        }}
-                      </b-button>
-                      <button
-                        type="button"
-                        style="scale: 1.1"
-                        class="btn btn-outline-secondary circle-btn"
-                        v-b-tooltip.hover
-                        title="Adicionar ao carrinho"
-                      >
-                        <i class="bi bi-cart"></i>
-                      </button>
+                      </b-avatar>
+                    </router-link>
+
+                    <router-link
+                      :to="'/producer/' + producerProduct.producer.user.id"
+                      class="seller text-decoration-none text-dark"
+                      v-if="producerProduct.producer"
+                    >
+                      <h5>{{ producerProduct.producer.user.name }}</h5>
+                      <router-link
+                        :to="'/producer/' + producerProduct.producer.user.id"
+                        class="grey-txt"
+                        >Sobre o vendedor
+                      </router-link>
+                    </router-link>
+                  </div>
+
+                  <div class="flex flex-column mt-2 gap-1">
+                    <div class="flex flex-row align-items-center gap-1">
+                      <i
+                        class="pi pi-truck p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
+                      ></i>
+                      <span>{{ producerProduct.productionUnit!.name }}</span>
+                    </div>
+
+                    <div class="flex flex-row align-items-center gap-1">
+                      <i
+                        class="pi pi-euro p-button p-component p-button-info p-button-icon-only cursor-auto rounded-pill"
+                      ></i>
+                      <span>{{ producerProduct.currentPrice }}€</span>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div
-                v-if="
-                  selectedUnit &&
-                  selectedUnit === producerProduct.productionUnit
-                "
-                style="margin-top: 12vh !important"
-              >
-                <Maps
-                  style="z-index: 33232 !important"
-                  :selected-unit="selectedUnit"
-                  :producer-id="producerProduct.producer?.user.id || 0"
-                />
-              </div>
-            </div>
+
+                  <div
+                    v-if="
+                      selectedUnit &&
+                      selectedUnit === producerProduct.productionUnit
+                    "
+                    class="mt-2"
+                  >
+                    <Maps
+                      :selected-unit="selectedUnit"
+                      :producer-id="producerProduct.producer?.user.id || 0"
+                    />
+                  </div>
+                </template>
+
+                <template #footer>
+                  <div class="flex gap-1">
+                    <PrimeButton severity="secondary" rounded
+                      >Comprar agora</PrimeButton
+                    >
+
+                    <PrimeButton
+                      rounded
+                      outlined
+                      v-if="
+                        selectedUnit &&
+                        selectedUnit === producerProduct.productionUnit?.id
+                      "
+                      severity="secondary"
+                      class="close-map-btn"
+                      @click="selectedUnit = null"
+                    >
+                      Fechar Mapa
+                    </PrimeButton>
+                    <PrimeButton
+                      outlined
+                      rounded
+                      v-else
+                      class="map-btn"
+                      severity="secondary"
+                      @click="selectProducer(producerProduct.productionUnit)"
+                    >
+                      {{
+                        selectedUnit &&
+                        selectedUnit === producerProduct.productionUnit
+                          ? 'Fechar Mapa'
+                          : 'Mapa'
+                      }}
+                    </PrimeButton>
+
+                    <PrimeButton
+                      rounded
+                      outlined
+                      severity="info"
+                      v-b-tooltip.hover
+                      title="Adicionar ao carrinho"
+                      icon="pi pi-shopping-cart"
+                      style="color: #5a5a5a"
+                    >
+                    </PrimeButton>
+                  </div>
+                </template>
+              </Card>
+            </template>
           </div>
         </div>
+
         <div v-else>
           <p>
             O produto selecionado não se encontra disponível para venda num raio
             de 30km de si.
           </p>
         </div>
-      </div>
-    </div>
+      </TabPanel>
+    </TabView>
   </div>
 </template>
 
-<style>
+<style scoped>
 .alternative-img {
   width: 20% !important;
 }
 
 .product-title {
   letter-spacing: -0.04em;
-}
-
-.quantity-div {
-  width: 14vh;
-  background-color: #f7f7f7 !important;
-  padding: 0.5em;
-  box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px,
-    rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
-}
-
-.quantity-div button {
-  background-color: #f7f7f7 !important;
-  border: none !important;
-}
-
-.quantity-div .btn-content {
-  color: #5a5a5a !important;
-}
-
-.buy-btn {
-  background-color: #4d774e !important;
-  padding: 0.8em !important;
-  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
-}
-
-.buy-btn .btn-content {
-  color: white !important;
-}
-
-.aux-btns {
-  scale: 1.2;
-}
-
-.aux-btns button:hover i {
-  color: white !important;
 }
 
 .seller {
@@ -788,9 +584,7 @@
 .cat-select a {
   text-decoration: none !important;
 }
-</style>
 
-<style scoped>
 .moradaTitulo {
   position: relative;
 }
@@ -829,18 +623,14 @@
   opacity: 1;
 }
 
-.active-view {
-  border-bottom: 3px solid #4d774e;
-}
-
-.active-view h5 {
-  color: #4d774e !important;
-}
-
 .mobile-content,
 .product-info-mobile,
 .more-info-mobile {
   display: none;
+}
+
+.back-component {
+  color: black;
 }
 
 @media (max-width: 767px) {
@@ -914,9 +704,21 @@
 </style>
 
 <script lang="ts">
+export enum DetailsView {
+  /* eslint-disable no-unused-vars */
+  DETAILS = 0,
+  PRODUCERS = 1,
+  /* eslint-enable no-unused-vars */
+}
+
 // Componentes
 import PathComponent from '@/components/PathComponent.vue';
 import PageBack from '@/components/PageBack.vue';
+import PrimeButton from 'primevue/button';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
+import InputText from 'primevue/inputtext';
+import Card from 'primevue/card';
 
 import Maps from '../maps/maps.vue';
 import {
@@ -957,6 +759,7 @@ export default defineComponent({
 
   data() {
     return {
+      DetailsView,
       path: [
         ['Produtos', '/products'],
         ['Produto', ''],
@@ -965,8 +768,8 @@ export default defineComponent({
       selectedImage: '', // Imagem selecionada
       selectedImageAlt: '', // Alt da imagem selecionada
       isFavorite: false, // Se o produto está nos favoritos
-      quantity: 0, // Quantidade de produtos a comprar
-      currentPage: 'detalhes', // Página atual das tabs do produto
+      quantity: 1, // Quantidade de produtos a comprar
+      detailsTabIndex: DetailsView.DETAILS, // Tab selecionada
       lowestPriceIndex: 0, // Índice do produtor com o preço mais baixo
       // Dados da BD
       producerProducts: {} as BaseItems<ProducerProduct>,
@@ -976,7 +779,6 @@ export default defineComponent({
       productDetails: {} as ProductSpec,
       lowestPrice: 0,
       highestPrice: 0,
-      stock: 0,
       producers: 1 as Number,
 
       productCategories: {} as BaseItems<Category>,
@@ -989,13 +791,31 @@ export default defineComponent({
       checkboxValue: false,
     };
   },
+  computed: {
+    isMobile() {
+      return window.innerWidth < 768;
+    },
+  },
   methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
+    changeDetailsView(index: DetailsView) {
+      this.detailsTabIndex = index;
+
+      // If we don't put a timeout, scroll will not work. We have to wait for the tab to be changed
+      setTimeout(() => {
+        (this.$refs.detailsView as HTMLDivElement).scrollIntoView({
+          behavior: 'smooth',
+        });
+      }, 200);
+    },
     // Aumentar e diminuir a quantidade de produtos
     increment() {
-      this.quantity++;
+      if (this.quantity < this.defaultProduct.stock) this.quantity++;
     },
     decrement() {
-      if (this.quantity > 0) {
+      if (this.quantity > 1) {
         this.quantity--;
       }
     },
@@ -1089,9 +909,17 @@ export default defineComponent({
     }
   },
   created() {
-    console.log(this.fields);
     this.productCategoriesFields = this.fields;
   },
-  components: { PathComponent, PageBack, Maps },
+  components: {
+    PathComponent,
+    PageBack,
+    Maps,
+    PrimeButton,
+    TabView,
+    TabPanel,
+    InputText,
+    Card,
+  },
 });
 </script>

@@ -151,6 +151,9 @@ const routes = [
         path: '/account',
         name: 'Account',
         component: Account,
+        meta: {
+            requiresAuth: true,
+        },
     },
     {
         path: '/impactAdmin',

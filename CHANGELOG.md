@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.5.0](https://github.com/hivetown/frontend/compare/v2.4.1...v2.5.0) (2023-07-12)
+
+
+### Features
+
+* loaders ([547395f](https://github.com/hivetown/frontend/commit/547395fe0e32bd1d083018efaabfaab886ade836))
+
+## [2.4.1](https://github.com/hivetown/frontend/compare/v2.4.0...v2.4.1) (2023-07-11)
+
+
+### Bug Fixes
+
+* mobile colors ([fa5ac3a](https://github.com/hivetown/frontend/commit/fa5ac3afb7543771cfb99a7b5fdd217312ab581a))
+* mobile design for notifications ([c3fc374](https://github.com/hivetown/frontend/commit/c3fc3744ec0978ec0cd882890f85f5a98f047867))
+* notifications design ([87f9954](https://github.com/hivetown/frontend/commit/87f995469b10dfe604106cbf2c2a495a2b417368))
+
+## [2.4.0](https://github.com/hivetown/frontend/compare/v2.3.0...v2.4.0) (2023-07-11)
+
+
+### Features
+
+* popular products on home ([437788e](https://github.com/hivetown/frontend/commit/437788e67da51f44df06412870034b148680389f))
+
 ## [2.3.0](https://github.com/hivetown/frontend/compare/v2.2.0...v2.3.0) (2023-07-05)
 
 

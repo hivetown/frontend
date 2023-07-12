@@ -130,6 +130,7 @@ export interface Address {
     latitude: number;
     longitude: number;
     consumer?: number;
+    getFullAddress?: string;
 }
 
 export type CreateAddress = Omit<Address, 'id'>;
@@ -144,12 +145,31 @@ export interface Order {
     generalStatus: string;
     totalPrice: number;
 }
+export interface OrderProducer {
+    id: number;
+    shippingAddress: Address;
+    orderDate: string;
+    status: string;
+}
 
 export interface OrderItem {
     price: number;
     producerProduct: ProducerProduct;
     quantity: number;
     status: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
+    orderDate?: string;
+}
+
+export interface SpecificOrder {
+    id?: number;
+    shippingAddress: Address;
+    generalStatus?:
+        | 'Paid'
+        | 'Processing'
+        | 'Shipped'
+        | 'Delivered'
+        | 'Canceled';
+    status?: 'Paid' | 'Processing' | 'Shipped' | 'Delivered' | 'Canceled';
 }
 
 export interface CreateProducerProduct {
@@ -230,6 +250,7 @@ export interface ReportMap {
     shippingAddress: Address;
     productionUnitAddress: Address;
 }
+export interface Cart extends BaseItems<CartItem> {}
 
 export interface ReportEvolution {
     comprasTotais?: number;
