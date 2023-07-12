@@ -797,7 +797,6 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
-import { useStore } from '@/store';
 import Loader from '@/components/Loader.vue';
 
 import Maps from '../maps/maps.vue';
@@ -841,10 +840,6 @@ export default defineComponent({
       default: undefined,
     },
   },
-  setup() {
-    const store = useStore();
-  },
-
   data() {
     return {
       DetailsView,
