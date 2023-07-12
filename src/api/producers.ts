@@ -10,6 +10,7 @@ import {
     Shipment,
     Carrier,
     ShipmentStatus,
+    UpdateProducer,
 } from '@/types';
 import { api } from './_base';
 
@@ -92,11 +93,8 @@ export const desativarProducer = (producerId: number, search?: string) =>
 export const ativarProducer = (producerId: number) =>
     api.post(`/producers/${producerId}/reativate`);
 
-export const updateProducer = (
-    producerId: number,
-    formData: any,
-    search?: string
-) => api.put(`/producers/${producerId}`, formData, { params: { search } });
+export const updateProducer = (producerId: number, formData: UpdateProducer) =>
+    api.put(`/producers/${producerId}`, formData);
 
 export const getAddressPU = (producerId: number, search?: string) =>
     api.get<BaseItems<ProductionUnit>>(`/producers/${producerId}/units`, {

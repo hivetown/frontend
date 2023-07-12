@@ -8,7 +8,7 @@ import {
     CreateAddress,
     BaseItems,
 } from '@/types';
-import { Cart } from '../types/interfaces';
+import { Cart, UpdateConsumer } from '../types/interfaces';
 import { api } from './_base';
 
 // consumer is consumer or supplier
@@ -67,11 +67,9 @@ export const desativarConsumer = (consumerId: number, search?: string) =>
 export const ativarConsumer = (consumerId: number) =>
     api.post(`/consumers/${consumerId}/reativate`);
 
-export const updateConsumer = (
-    consumerId: number,
-    formData: any,
-    search?: string
-) => api.put(`/consumers/${consumerId}`, formData, { params: { search } });
+export const updateConsumer = (consumerId: number, formData: UpdateConsumer) =>
+    api.put(`/consumers/${consumerId}`, formData);
+
 export const postNewAdress = (consumerId: number, address: CreateAddress) =>
     api.post(`/consumers/${consumerId}/addresses`, address);
 

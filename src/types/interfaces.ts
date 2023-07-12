@@ -358,3 +358,17 @@ export interface ProductSpecFieldWithCategory {
         fieldValues: ProductSpecField[];
     }[];
 }
+
+export interface UpdateConsumer {
+    name: string;
+    email: string;
+    phone: string;
+    disableEmails?: boolean;
+}
+
+export interface UpdateProducer {
+    name: string;
+    email: string;
+    phone: string;
+    disableEmails?: boolean;
+}
