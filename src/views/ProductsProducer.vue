@@ -34,7 +34,10 @@
             <b-card-text class="">
               <div>
                 <h5 class="name-limited">{{ product.productSpec!.name }}</h5>
-                <p>Unidade: {{ product.productionUnit!.name }}</p>
+                <p class="name-limited">
+                  <span class="fw-bold">Unidade: </span
+                  >{{ product.productionUnit!.name }}
+                </p>
                 <p class="grey-txt mt-3 description">
                   {{ product.productSpec!.description }}
                 </p>
