@@ -50,13 +50,14 @@
       </div>
       <div>
         <div class="div-botao">
-          <button
+          <PrimeButton
             id="btnExtende"
-            class="btn rounded-pill"
+            rounded
+            outlined
             @click="collapsed = !collapsed"
           >
             {{ collapsed ? 'Adicionar novo endereco ' : 'Minimizar' }}
-          </button>
+          </PrimeButton>
         </div>
         <br />
       </div>
@@ -72,32 +73,31 @@
           :key="index"
           style="white-space: nowrap"
         >
-          <router-link to="/carrinho">
-            <div
-              style="display: flex; justify-content: space-between"
-              class="mobile-items"
-            >
-              <span style="font-size: 1.1em; text-decoration: none !important">
+          <div
+            style="display: flex; justify-content: space-between"
+            class="mobile-items"
+          >
+            <router-link to="/carrinho" style="text-decoration: none !important"
+              ><span style="font-size: 1.1em; color: black !important">
                 {{ cartItem.producerProduct.productSpec!.name }}
               </span>
-              <span style="font-size: 1.1em; text-decoration: none !important">
-                Qnt: {{ cartItem['quantity'] }}</span
-              >
-            </div>
-          </router-link>
+            </router-link>
+            <span style="font-size: 1.1em; color: black !important">
+              Qnt: {{ cartItem['quantity'] }}</span
+            >
+          </div>
         </div>
       </div>
       <div id="finalizar">
-        <button
+        <PrimeButton
           id="btn"
           @click="submitOrder"
-          type="button"
-          class="btn finalizar-btn rounded-pill"
-          style="text-align: center"
+          rounded
+          severity="secondary"
           :disabled="isButtonDisabled"
         >
           Finalizar a compra
-        </button>
+        </PrimeButton>
         <div id="aviso" v-if="isButtonDisabled">
           *Selecione pelo menos um endereço para finalizar a encomenda
         </div>
@@ -120,6 +120,8 @@ import { getAddresses, postOrderPayment, getCart } from '../api/cart';
 import { useStore } from '@/store';
 import AddAddress from '../components/AddAddress.vue';
 import { Address, BaseItems, CartItem } from '@/types';
+import PrimeButton from 'primevue/button';
+
 const selectedItems = ref([]); // Variável de dados para armazenar os checkboxes selecionados
 const isButtonDisabled = ref(true); // Variável de dados para controlar o estado do botão
 const store = useStore();
@@ -167,6 +169,14 @@ async function submitOrder() {
     }
   }
 }
+</script>
+
+<script lang="ts">
+export default {
+  components: {
+    PrimeButton,
+  },
+};
 </script>
 
 <style scoped>

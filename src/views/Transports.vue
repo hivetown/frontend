@@ -20,6 +20,7 @@
           <b-card-text class="">
             <div>
               <div
+                style="color: white"
                 class="rounded-pill text-center mt-3 mb-3 w-50 prod-category"
               >
                 {{ transport.licensePlate }}

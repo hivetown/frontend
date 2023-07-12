@@ -160,13 +160,7 @@
     <br />
     <div id="error-container"></div>
     <!-- Campos de formulário aqui -->
-    <button
-      type="submit"
-      class="btn guardar-btn rounded-pill"
-      @click="handleSubmit"
-    >
-      Guardar endereço
-    </button>
+    <PrimeButton rounded @click="handleSubmit"> Guardar endereço </PrimeButton>
   </div>
 </template>
 
@@ -175,6 +169,7 @@ import { postNewAdress } from '../api/consumers';
 import Swal from 'sweetalert2';
 import { CreateAddress } from '../types';
 import { AxiosError } from 'axios';
+import PrimeButton from 'primevue/button';
 
 export default {
   data() {
@@ -194,6 +189,9 @@ export default {
       longitude: '',
       latitude: '',
     };
+  },
+  components: {
+    PrimeButton,
   },
 
   methods: {
@@ -380,6 +378,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .label,
 input {
