@@ -215,7 +215,6 @@ export default {
           code: productionUnit.items.value.items[i].id.toString(),
         });
       }
-      selectedPU.value.values = optsPUs.value[0];
     };
 
     // Apply the selected product to the form
@@ -274,7 +273,6 @@ export default {
 
         // Reset form
         resetForm();
-        console.log(JSON.parse(JSON.stringify(formValues.productSpec)));
         productionUnit.searchQuery.value = '';
       } catch (error) {
         toast.add({
