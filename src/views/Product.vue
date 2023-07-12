@@ -1,12 +1,19 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
   <div>
     <!-- Caminho -->
     <PathComponent :path-list="path"></PathComponent>
   </div>
   <div class="parent">
-    <!-- TODO Arranjar para voltar para onde o user estiver antes realmente -->
     <!-- <RouterLink to="/products" style="text-decoration: none"> -->
-    <div class="parent" @click="goBack">
+    <div class="parent mb-5" @click="goBack">
       <PageBack style="margin-top: -2vh"></PageBack>
     </div>
     <!--</RouterLink> -->
@@ -103,7 +110,11 @@
         <!-- Quantidade -->
         <div class="mt-4">
           <!-- Botão da quantidade -->
-          <div class="p-inputgroup" style="max-width: 10em">
+          <div
+            class="p-inputgroup"
+            style="max-width: 10em"
+            v-if="$store.state.user?.user.type != 'PRODUCER'"
+          >
             <PrimeButton
               outlined
               severity="info"
@@ -119,7 +130,10 @@
             ></PrimeButton>
           </div>
 
-          <p class="mt-3 grey-txt">
+          <p
+            class="mt-3 grey-txt"
+            v-if="$store.state.user?.user.type != 'PRODUCER'"
+          >
             <span>{{ defaultProduct.stock }}</span> items disponíveis
           </p>
         </div>
@@ -129,9 +143,18 @@
           class="d-flex gap-2 align-items-center mb-5"
           style="margin-top: 5vh"
         >
-          <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
+          <PrimeButton
+            v-if="$store.state.user?.user.type != 'PRODUCER'"
+            rounded
+            severity="secondary"
+            @click="addItemToCart(defaultProduct.id)"
+            ><router-link :to="'/carrinho'" style="color: white !important"
+              >Comprar agora</router-link
+            ></PrimeButton
+          >
 
           <PrimeButton
+            v-if="$store.state.user?.user.type != 'PRODUCER'"
             rounded
             outlined
             severity="info"
@@ -139,6 +162,7 @@
             title="Adicionar ao carrinho"
             icon="pi pi-shopping-cart"
             style="color: #5a5a5a"
+            @click="addItemToCart(defaultProduct.id)"
           >
           </PrimeButton>
           <!-- <button type="button" class="btn btn-outline-secondary circle-btn" 
@@ -257,7 +281,11 @@
       </div>
 
       <!-- Quantidade -->
-      <div class="d-flex align-items-center gap-4" style="margin-top: 4%">
+      <div
+        class="d-flex align-items-center gap-4"
+        style="margin-top: 4%"
+        v-if="$store.state.user?.user.type != 'PRODUCER'"
+      >
         <!-- Botão da quantidade -->
         <div class="p-inputgroup" style="max-width: 10em">
           <PrimeButton
@@ -285,13 +313,24 @@
         class="d-flex gap-4 align-items-center buttons-mobile"
         style="margin-top: 5vh"
       >
-        <PrimeButton rounded severity="secondary">Comprar agora</PrimeButton>
+        <!-- Ver se isto funciona assim -->
+        <PrimeButton
+          rounded
+          severity="secondary"
+          v-b-tooltip.hover
+          title="Comprar produto"
+          @click="addItemToCart(defaultProduct.id)"
+          ><router-link :to="'/carrinho'" style="color: white !important"
+            >Comprar agora</router-link
+          ></PrimeButton
+        >
 
         <div class="aux-btns d-flex align-items-center gap-1">
           <PrimeButton
             rounded
             outlined
             severity="info"
+            @click="addItemToCart(defaultProduct.id)"
             v-b-tooltip.hover
             title="Adicionar ao carrinho"
             icon="pi pi-shopping-cart"
@@ -522,9 +561,17 @@
 
                 <template #footer>
                   <div class="flex gap-1">
-                    <PrimeButton severity="secondary" rounded class="mobile-txt"
-                      >Comprar agora</PrimeButton
-                    >
+                    <PrimeButton
+                      severity="secondary"
+                      rounded
+                      v-if="$store.state.user?.user.type != 'PRODUCER'"
+                      @click="addItemToCart(defaultProduct.id)"
+                      ><router-link
+                        :to="'/carrinho'"
+                        style="color: white !important"
+                        >Comprar agora</router-link
+                      >
+                    </PrimeButton>
 
                     <PrimeButton
                       rounded
@@ -556,6 +603,7 @@
                     </PrimeButton>
 
                     <PrimeButton
+                      v-if="$store.state.user?.user.type != 'PRODUCER'"
                       rounded
                       outlined
                       severity="info"
@@ -563,6 +611,7 @@
                       title="Adicionar ao carrinho"
                       icon="pi pi-shopping-cart"
                       style="color: #5a5a5a"
+                      @click="addItemToCart(defaultProduct.id)"
                     >
                     </PrimeButton>
                   </div>
@@ -758,6 +807,7 @@ import {
   fetchProductCategoriesFields,
   fetchLocalProducts,
   getConsumerAddresses,
+  addCartItem,
 } from '@/api';
 import {
   ProductSpec,
@@ -767,7 +817,11 @@ import {
   ProductSpecField,
   SelectedUnit,
 } from '@/types';
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, PropType, computed } from 'vue';
+import { CartNAU } from '@/utils/cartItemNAU';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+
 export default defineComponent({
   // TODO substituir o rating para ser automático e ver se isto ainda é necessário
   name: 'Rating',
@@ -786,7 +840,6 @@ export default defineComponent({
       default: undefined,
     },
   },
-
   data() {
     return {
       DetailsView,
@@ -823,6 +876,11 @@ export default defineComponent({
 
       //VENDEDORES SE A CHECKBOX LOCAL ESTA OU NAO SELECIONADA
       checkboxValue: false,
+
+      // PARA USERS NÃO AUTENTIFICADOS
+      cartNAU: new CartNAU(),
+      //Notificação de adicionar items ao carrinho
+      toast: useToast(),
     };
   },
   computed: {
@@ -887,6 +945,57 @@ export default defineComponent({
             )
           ).data;
         }
+      }
+    },
+    async addItemToCart(idToAdd: number) {
+      console.log('SOU CHAMADA');
+      const userLoggedId = computed(() => this.$store.state.user);
+      console.log(this.defaultProduct);
+      if (this.quantity >= 1) {
+        if (this.defaultProduct.stock >= this.quantity) {
+          if (userLoggedId.value) {
+            await addCartItem(
+              userLoggedId.value['user']['id'],
+              idToAdd,
+              this.quantity
+            );
+          } else {
+            const cartNAUInstance = new CartNAU();
+            this.cartNAU = cartNAUInstance;
+            for (let i = 0; i < this.producerProducts.items.length; i++) {
+              if (this.producerProducts.items[i].id === idToAdd) {
+                await this.cartNAU.addItemByItem(
+                  this.producerProducts.items[i]
+                );
+                await this.cartNAU.changeQuantity(
+                  this.producerProducts.items[i],
+                  this.quantity
+                );
+              }
+            }
+          }
+          this.toast.add({
+            severity: 'success',
+            summary: 'Adicionado com sucesso',
+            detail:
+              'O produto adicionado ao seu carrinho com sucesso, clique <a href="/carrinho/">aqui</a> para ver o seu carrinho.',
+            life: 10000,
+          });
+        } else {
+          this.toast.add({
+            severity: 'error',
+            summary: 'Sem stock suficente',
+            detail: `Você selecionou ${this.quantity} itens mas de momento só existem ${this.defaultProduct.stock} em stock, porfavor selecione um valor igual ou inferior e este.`,
+            life: 10000,
+          });
+        }
+      } else {
+        this.toast.add({
+          severity: 'error',
+          summary: 'Quantidade de produto inválida',
+          detail: 'Selecione uma quantidade válida (acima ou igual a 1).',
+          life: 10000,
+        });
       }
     },
   },
@@ -962,6 +1071,7 @@ export default defineComponent({
     TabPanel,
     InputText,
     Card,
+    Toast,
     Loader,
   },
 });
