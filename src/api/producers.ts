@@ -87,8 +87,8 @@ export const fetchAllProducers = (params?: {
 // export const fetchProductProducer = (specId: number) =>
 //     api.get<Producer[]>(`/products/${specId}`);
 
-export const desativarProducer = (producerId: number, search?: string) =>
-    api.delete(`/producers/${producerId}`, { params: { search } });
+export const desativarProducer = (producerId: number) =>
+    api.delete(`/producers/${producerId}`);
 
 export const ativarProducer = (producerId: number) =>
     api.post(`/producers/${producerId}/reativate`);

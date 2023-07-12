@@ -17,7 +17,11 @@
         <h1 class="dgreen-txt main-txt">{{ usernameValue }}</h1>
       </div>
       <div class="edit-consumer">
-        <PrimeButton rounded severity="secondary" class="buy-btn"
+        <PrimeButton
+          rounded
+          severity="danger"
+          @click="deleteAccount"
+          :loading="deletingLoading"
           >Apagar conta</PrimeButton
         >
       </div>
@@ -180,6 +184,8 @@ import {
   getAddressPU,
   updateConsumer,
   updateProducer,
+  desativarConsumer,
+  desativarProducer,
 } from '@/api';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
@@ -201,6 +207,7 @@ export default defineComponent({
       productionUnits: {} as BaseItems<ProductionUnit>,
       isEditing: false,
       editingLoading: false,
+      deletingLoading: false,
     };
   },
   async beforeMount() {
@@ -282,7 +289,7 @@ export default defineComponent({
             errorShown = true;
             this.$toast.add({
               severity: 'error',
-              summary: 'Erro',
+              summary: 'Erro ao editar',
               detail: `Dados inválidos<br/>${error.response.data.details.body[0].message}`,
               life: 3000,
             });
@@ -292,7 +299,7 @@ export default defineComponent({
         if (!errorShown) {
           this.$toast.add({
             severity: 'error',
-            summary: 'Erro',
+            summary: 'Erro ao editar',
             detail: `Ocorreu um erro ao atualizar os dados: ${
               (error as Error).message
             }`,
@@ -301,6 +308,55 @@ export default defineComponent({
         }
       } finally {
         this.editingLoading = false;
+      }
+    },
+    async deleteAccount() {
+      this.deletingLoading = true;
+      try {
+        if (this.userType === 'CONSUMER') {
+          await desativarConsumer(this.$store.state.user!.user.id);
+        } else {
+          await desativarProducer(this.$store.state.user!.user.id);
+        }
+
+        await this.$store.commit('logout', { preventRedirect: true });
+        await this.$router.push({ name: 'Bye' });
+
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Conta eliminada com sucesso',
+          life: 3000,
+        });
+      } catch (error) {
+        let errorShown = false;
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 400) {
+            errorShown = true;
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Erro ao eliminar a conta',
+              detail:
+                error.response.data.error ||
+                error.response.data.details.body[0].message ||
+                'Ocorreu um erro ao eliminar a conta',
+              life: 3000,
+            });
+          }
+        }
+
+        if (!errorShown) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Erro ao elminar a conta',
+            detail: `Ocorreu um erro ao atualizar os dados: ${
+              (error as Error).message
+            }`,
+            life: 3000,
+          });
+        }
+      } finally {
+        this.deletingLoading = false;
       }
     },
   },
@@ -353,10 +409,6 @@ export default defineComponent({
   align-items: center;
   justify-content: flex-start;
 }
-
-/* .buy-btn {
-  width: 60% !important;
-} */
 
 .form-box {
   /* background-color: red; */

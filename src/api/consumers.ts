@@ -61,8 +61,8 @@ export const fetchAllConsumers = (params?: {
 export const getConsumerId = (consumerId: number) =>
     api.get<Consumer>(`/consumers/${consumerId}?includeAll=true`);
 
-export const desativarConsumer = (consumerId: number, search?: string) =>
-    api.delete(`/consumers/${consumerId}`, { params: { search } });
+export const desativarConsumer = (consumerId: number) =>
+    api.delete(`/consumers/${consumerId}`);
 
 export const ativarConsumer = (consumerId: number) =>
     api.post(`/consumers/${consumerId}/reativate`);

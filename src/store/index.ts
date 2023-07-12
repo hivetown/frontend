@@ -150,12 +150,16 @@ export const store = createStore<State>({
                 }
             }
         },
-        async logout({ commit }) {
+        async logout(
+            { commit },
+            data: { preventRedirect?: boolean } = { preventRedirect: false }
+        ) {
             await signOut(auth);
 
             commit('CLEAR_USER');
             commit('REMOVE_TOKEN');
-            await router.push('/login');
+
+            if (!data.preventRedirect) await router.push('/login');
         },
     },
 });
