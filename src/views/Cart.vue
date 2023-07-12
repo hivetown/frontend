@@ -59,7 +59,14 @@
       <table class="table table-responsive-md" style="border: none">
         <tr>
           <td class="left-column" style="border: none">
-            <div style="max-height: 65vh; overflow-y: auto; width: 97%">
+            <div
+              style="
+                max-height: 65vh;
+                overflow-y: auto;
+                width: 97%;
+                padding: 2vh;
+              "
+            >
               <!---->
               <div v-if="itemsNumber != 0">
                 <div v-if="login">
@@ -69,6 +76,7 @@
                     @delete-cart-item="removeItem"
                     @update-cart-item="refreshValues"
                     :key="cartItem.producerProduct.productSpec?.id"
+                    style="border-bottom: solid 2px #f3f3f3"
                   ></CartItem>
                 </div>
                 <!---->
@@ -82,8 +90,8 @@
                   ></CartItemNAU>
                 </div>
               </div>
-              <div v-else>
-                <p>Não possui itens no carrinho.</p>
+              <div v-else style="display: flex; justify-content: center">
+                <p>Ainda não possui itens no carrinho.</p>
               </div>
             </div>
           </td>
