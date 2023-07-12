@@ -142,7 +142,7 @@
               </div>
             </td>
 
-            <td>
+            <td style="width: 10vh !important">
               <p class="texto">
                 {{ orderItem['quantity'] * orderItem['price'] }}
                 €
@@ -295,7 +295,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="resumo" style="background-color: ">
+      <div class="resumo">
         <h3 class="">Total: {{ totalSum }}€</h3>
       </div>
     </div>
