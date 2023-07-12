@@ -8,12 +8,14 @@
     </template>
   </ConfirmPopup>
 
-  <BButton
-    class="botao2"
-    variant="outline-primary"
+  <PrimeButton
+    rounded
+    outlined
+    severity="info"
+    style="color: #5a5a5a; font-size: 0.7em"
     @click="confirmSetForDelivery"
     :loading="loading"
-    >Registar saída</BButton
+    >Registar saída</PrimeButton
   >
 </template>
 
@@ -22,6 +24,7 @@ import { createOrderItemShipment } from '@/api';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
+import PrimeButton from 'primevue/button';
 import { PropType, ref } from 'vue';
 import { AxiosError } from 'axios';
 import {
@@ -35,6 +38,7 @@ import {
 export default {
   components: {
     ConfirmPopup,
+    PrimeButton,
   },
   props: {
     order: {

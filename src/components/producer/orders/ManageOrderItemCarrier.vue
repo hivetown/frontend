@@ -68,12 +68,14 @@
     </div>
   </OverlayPanel>
 
-  <BButton
-    class="botao2"
-    variant="outline-primary"
+  <PrimeButton
+    rounded
+    outlined
+    severity="info"
+    style="color: #5a5a5a; font-size: 0.7em"
     @click="toggleOverlay"
     :loading="submitting"
-    >Associar veículo</BButton
+    >Associar veículo</PrimeButton
   >
 </template>
 
