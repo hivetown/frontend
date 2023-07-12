@@ -173,7 +173,6 @@ import {
 import { getConsumerId, getProducerIdSimple, getAddressPU } from '@/api';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
-import Password from 'primevue/password';
 import PrimeButton from 'primevue/button';
 
 export default defineComponent({
@@ -187,7 +186,7 @@ export default defineComponent({
       passwordValue: '' as string,
       phoneValue: '' as string,
       vatValue: '' as string,
-      moradas: [] as Address[], //TODO - corrigir este tipo
+      moradas: [] as Address[] | undefined, //TODO - corrigir este tipo
       productionUnits: {} as BaseItems<ProductionUnit>,
       isEditing: false,
     };
@@ -238,7 +237,7 @@ export default defineComponent({
       }
     },
   },
-  components: { InputMask, InputText, Password, PrimeButton },
+  components: { InputMask, InputText, PrimeButton },
 });
 </script>
 
