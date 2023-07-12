@@ -68,7 +68,11 @@
     </div>
   </OverlayPanel>
 
-  <BButton class="botao2" variant="outline-primary" @click="toggleOverlay"
+  <BButton
+    class="botao2"
+    variant="outline-primary"
+    @click="toggleOverlay"
+    :loading="submitting"
     >Associar veículo</BButton
   >
 </template>
