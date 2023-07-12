@@ -1,4 +1,7 @@
 <template>
+  <div class="parent" @click="goBack">
+    <PageBack style="margin-top: -2vh"></PageBack>
+  </div>
   <div class="container">
     <div class="form-address parent">
       <h4 class="titulo dgreen-txt main-txt mb-4">Endereço de envio</h4>
@@ -114,6 +117,7 @@
 </template>
 
 <script setup lang="ts">
+import PageBack from '@/components/PageBack.vue';
 import Swal from 'sweetalert2';
 import { onMounted, ref, computed } from 'vue';
 import { getAddresses, postOrderPayment, getCart } from '../api/cart';
@@ -175,6 +179,12 @@ async function submitOrder() {
 export default {
   components: {
     PrimeButton,
+    PageBack,
+  },
+  methods: {
+    goBack() {
+      this.$router.go(-1); // Navega para a página anterior
+    },
   },
 };
 </script>
@@ -209,7 +219,7 @@ export default {
   align-items: center;
   border-radius: 0.8em;
   margin-top: 3vh;
-  border: 4px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
 }
 .form-address {
   padding: 2em;
@@ -219,7 +229,7 @@ export default {
 .enderecos {
   /* background-color: green; */
   border-radius: 0.8em;
-  border: 3px solid #f3f3f3;
+  border: 2px solid #f3f3f3;
   width: 100%;
   max-height: 40vh;
   overflow-y: auto;
