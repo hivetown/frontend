@@ -1,8 +1,24 @@
-import { BaseItems, Order, OrderItem, Shipment } from '../types/interfaces';
+import {
+    BaseItems,
+    Order,
+    OrderItem,
+    OrderProducer,
+    Shipment,
+    SpecificOrder,
+} from '../types/interfaces';
 import { api } from './_base';
 
-export const fetchAllOrders = (userId: number) =>
-    api.get<BaseItems<Order>>(`/consumers/${userId}/orders`);
+export const fetchAllOrders = (
+    userId: number,
+    page?: number,
+    pageSize?: number
+) => {
+    let url = `/consumers/${userId}/orders`;
+    if (page !== undefined && pageSize !== undefined) {
+        url += `?page=${page}&pageSize=${pageSize}`;
+    }
+    return api.get<BaseItems<Order>>(url);
+};
 
 export const fetchAllItems = (
     userId: number,
@@ -16,8 +32,31 @@ export const fetchAllItems = (
         }
     );
 
+export const fetchAllOrdersProducer = (
+    userId: number,
+    page: number,
+    pageSize: number
+) =>
+    api.get<BaseItems<OrderProducer>>(
+        `/producers/${userId}/orders?page=${page}&pageSize=${pageSize}`
+    );
+
+export const fetchAllItemsProducer = (
+    userId: number,
+    orderId: string,
+    search?: string
+) =>
+    api.get<BaseItems<OrderItem>>(
+        `/producers/${userId}/orders/${orderId}/items`,
+        {
+            params: { search },
+        }
+    );
 export const fetchOrder = (userId: number, orderId: string) =>
-    api.get<Order>(`/consumers/${userId}/orders/${orderId}`);
+    api.get<SpecificOrder>(`/consumers/${userId}/orders/${orderId}`);
+
+export const fetchOrderProducer = (userId: number, orderId: string) =>
+    api.get<SpecificOrder>(`/producers/${userId}/orders/${orderId}`);
 
 export const getShipment = (
     consumerId: number,
