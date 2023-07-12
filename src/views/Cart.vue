@@ -1,4 +1,12 @@
 <template>
+  <Toast>
+    <template #message="slotProps">
+      <div class="p-toast-message-text">
+        <span class="p-toast-summary">{{ slotProps.message.summary }}</span>
+        <div class="p-toast-detail" v-html="slotProps.message.detail" />
+      </div>
+    </template>
+  </Toast>
   <div class="root">
     <button
       @click="goBack"
@@ -94,7 +102,13 @@
 </template>
 
 <script lang="ts">
-import { fetchCartItems, deleteCart, addCartItem } from '../api/consumers';
+import {
+  fetchCartItems,
+  deleteCart,
+  addCartItem,
+  deleteCartItem,
+  updateQuantityCartItem,
+} from '../api/consumers';
 import { Cart, Image } from '@/types';
 import { computed } from 'vue';
 // N.A.U. - Import
@@ -104,8 +118,11 @@ import { ProducerProduct } from '../types/interfaces';
 import CartItem from '@/components/CartItem.vue';
 import CartItemNAU from '@/components/CartItemNAU.vue';
 
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+
 export default {
-  components: { CartItem, CartItemNAU },
+  components: { CartItem, CartItemNAU, Toast },
 
   data() {
     return {
@@ -132,6 +149,8 @@ export default {
 
       //Pop-up remover itens
       confirmationModal: false,
+
+      toast: useToast(),
     };
   },
 
@@ -253,6 +272,40 @@ export default {
 
         // Resto AU
         this.itemsCart = itemsCart.data;
+
+        //Verificações de stock
+        for (let i = 0; i < this.itemsCart.items.length; i++) {
+          // Caso não haja stock
+          if (this.itemsCart.items[i].producerProduct.stock === 0) {
+            await deleteCartItem(
+              this.userLoggedId,
+              this.itemsCart.items[i].producerProduct.id
+            );
+            this.toast.add({
+              severity: 'error',
+              summary: 'Produto sem stock',
+              detail: `O produto ${this.itemsCart.items[i].producerProduct.productSpec?.name} está de momento sem stock.`,
+              life: 10000,
+            });
+          }
+          // Caso tenha mais itens do que stock existente
+          if (
+            this.itemsCart.items[i].producerProduct.stock <
+            this.itemsCart.items[i].quantity
+          ) {
+            updateQuantityCartItem(
+              this.userLoggedId,
+              this.itemsCart.items[i].producerProduct.id,
+              this.itemsCart.items[i].producerProduct.stock
+            );
+            this.toast.add({
+              severity: 'error',
+              summary: 'Stock insuficiente',
+              detail: `A quantidade do produto ${this.itemsCart.items[i].producerProduct.productSpec?.name} estava acima do stock existente portanto a sua quantidade está agora com o máximo de stock possível.`,
+              life: 10000,
+            });
+          }
+        }
         this.itemsNumber = this.countItems();
         this.itemsPrice = this.countPrice();
       } else {
