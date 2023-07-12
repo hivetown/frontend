@@ -25,7 +25,7 @@
             reiciendis placeat corrupti odio consequatur alias nisi deserunt
             laudantium a doloremque!
           </p> -->
-        <div class="">
+        <div>
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-telephone-fill yellow-txt"></i>
             <p class="fw-bold">Telefone:</p>
@@ -34,7 +34,9 @@
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-envelope-fill yellow-txt"></i>
             <p class="fw-bold">Email:</p>
-            <span>{{ dadosProdutor.user?.email }}</span>
+            <span style="word-break: break-all">{{
+              dadosProdutor.user?.email
+            }}</span>
           </div>
           <div class="d-flex gap-2 grey-txt">
             <i class="bi bi-receipt yellow-txt"></i>
@@ -110,7 +112,7 @@ import Maps from '../maps/maps.vue';
 export default {
   data() {
     return {
-      mapImage: 1,
+      mapImage: 0,
       dadosProdutor: {} as Producer,
       unidadesProd: {} as BaseItems<ProductionUnit>,
       indiceUpSelecionada: 0 as number,
@@ -255,6 +257,7 @@ export default {
 
   .producer-mobile {
     width: 100% !important;
+    margin-left: -10vh;
   }
 
   .units-container {
@@ -267,6 +270,7 @@ export default {
     max-width: 100% !important;
     gap: 1.5vh;
     margin-bottom: 3vh;
+    height: 22vh !important;
   }
   .production-unit-container {
     display: block !important;

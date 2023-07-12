@@ -1,224 +1,267 @@
 <template>
-  <h3 class="semencoemndas" v-if="(orders?.items?.length || 0) < 0">
-    <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
-    encomendas.
-  </h3>
+  <div v-if="(orders?.items?.length || 0) < 1">
+    <h3 class="semencoemndas">
+      <i id="icon" class="bi bi-emoji-frown"></i><br />Ainda não foram efetuadas
+      encomendas.
+    </h3>
+  </div>
+  <div v-else>
+    <div class="loading-spinner" v-if="isLoading">
+      <Loader />
+    </div>
+    <div class="table-container" v-if="!isLoading" style="overflow: auto">
+      <div></div>
+      <table v-if="!!orders?.items" style="border: 2px" class="table">
+        <thead>
+          <tr>
+            <th>
+              <h4>Código</h4>
+            </th>
+            <th><h4>Artigos</h4></th>
 
-  <div class="table-container" style="overflow: auto">
-    <div></div>
-    <table v-if="!!orders?.items" style="border: 2px" class="table">
-      <thead>
-        <tr>
-          <th>
-            <h4>Código</h4>
-          </th>
-          <th><h4>Artigos</h4></th>
+            <th><h4>Estado</h4></th>
+            <th><h4>Morada de entrega</h4></th>
 
-          <th><h4>Estado</h4></th>
-          <th><h4>Morada de entrega</h4></th>
+            <th id="coluna-data">
+              <div class="data">
+                <h4>Data</h4>
+              </div>
+            </th>
+            <th><h4>Total</h4></th>
+            <th><h4>Exportar dados</h4></th>
+            <th><h4></h4></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(order, idx) in orders.items" :key="order.id">
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                class="texto"
+                style="text-decoration: none; color: black"
+                >{{ order.id }}</router-link
+              >
+            </td>
 
-          <th id="coluna-data">
-            <div class="data">
-              <h4>Data</h4>
-            </div>
-          </th>
-          <th><h4>Total</h4></th>
-          <th><h4>Exportar dados</h4></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(order, idx) in orders.items" :key="order.id">
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              class="texto"
-              style="text-decoration: none; color: black"
-              >{{ order.id }}</router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-            >
-              <img
-                style="width: 75px"
-                :src="ordersImage[order.id].url"
-                :alt="ordersImage[order.id].alt"
-                v-if="!!ordersImage[order.id]"
-              />
-              <p class="texto" v-else>Produtos sem <br />imagem</p>
-            </router-link>
-          </td>
-
-          <td>
-            <div style="display: inline-flex; gap: 0.5vh">
+            <td>
               <router-link
                 :to="'/encomenda/id' + order.id"
                 style="text-decoration: none; color: black"
               >
-                <div class="status-info">
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) === 'Entregue'
-                    "
-                    class="bi bi-check-all"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Em processamento'
-                    "
-                    class="bi bi-arrow-repeat mr-2"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) === 'Pago'
-                    "
-                    class="bi bi-currency-euro"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Cancelada'
-                    "
-                    class="bi bi-x"
-                    style="margin-top: -0.5vh"
-                  ></i>
-                  <i
-                    v-if="
-                      orderStatusTranslation(order.generalStatus) ===
-                      'Em andamento'
-                    "
-                    class="bi bi-truck mr-2"
-                    >></i
-                  >
+                <img
+                  style="width: 75px"
+                  :src="ordersImage[order.id].url"
+                  :alt="ordersImage[order.id].alt"
+                  v-if="!!ordersImage[order.id]"
+                />
+                <p class="texto" v-else>Produtos sem <br />imagem</p>
+              </router-link>
+            </td>
 
-                  <p class="texto">
-                    {{ orderStatusTranslation(order.generalStatus) }}
-                  </p>
-                </div></router-link
+            <td>
+              <div style="display: inline-flex; gap: 0.5vh">
+                <router-link
+                  :to="'/encomenda/id' + order.id"
+                  style="text-decoration: none; color: black"
+                >
+                  <div class="status-info">
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Entregue'
+                      "
+                      class="bi bi-check-all"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Em processamento'
+                      "
+                      class="bi bi-arrow-repeat mr-2"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) === 'Pago'
+                      "
+                      class="bi bi-currency-euro"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Cancelada'
+                      "
+                      class="bi bi-x"
+                      style="margin-top: -0.5vh"
+                    ></i>
+                    <i
+                      v-if="
+                        orderStatusTranslation(order.generalStatus) ===
+                        'Em transporte'
+                      "
+                      class="bi bi-truck mr-2"
+                    ></i>
+
+                    <p class="texto">
+                      {{ orderStatusTranslation(order.generalStatus) }}
+                    </p>
+                  </div></router-link
+                >
+              </div>
+
+              <div v-if="order.generalStatus === 'Shipped'">
+                <PrimeButton @click="cancelarEncomendaImpossivel()"
+                  >Cancelar encomenda</PrimeButton
+                >
+              </div>
+              <div
+                v-if="
+                  order.generalStatus === 'Paid' ||
+                  order.generalStatus === 'Processing'
+                "
               >
-            </div>
+                <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.6em"
+                  @click="cancelarEncomenda(order)"
+                  >Cancelar encomenda</PrimeButton
+                >
+              </div>
+            </td>
 
-            <div v-if="order.generalStatus === 'Shipped'">
-              <BButton
-                class="botao2"
-                variant="outline-primary"
-                @click="cancelarEncomendaImpossivel()"
-                >Cancelar encomenda</BButton
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.street }}, nº{{
+                    order.shippingAddress.number
+                  }}, andar {{ order.shippingAddress.floor }}
+                </p></router-link
               >
-            </div>
-            <div
-              v-if="
-                order.generalStatus === 'Paid' ||
-                order.generalStatus === 'Processing'
-              "
-            >
-              <!-- Conteúdo a ser exibido caso a encomenda esteja paga ou em processamento -->
-              <BButton
-                class="botao2"
-                variant="outline-primary"
-                @click="cancelarEncomenda(order)"
-                >Cancelar encomenda</BButton
+
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.zipCode }},
+                  {{ order.shippingAddress.city }}
+                </p></router-link
               >
-            </div>
-          </td>
 
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.street }}, nº{{
-                  order.shippingAddress.number
-                }}, andar {{ order.shippingAddress.floor }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.zipCode }},
-                {{ order.shippingAddress.city }}
-              </p></router-link
-            >
-
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><p id="morada2">
-                {{ order.shippingAddress.latitude }},
-                {{ order.shippingAddress.longitude }}
-              </p></router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><span class="texto">{{
-                order.orderDate.substring(0, 10)
-              }}</span></router-link
-            >
-          </td>
-
-          <td>
-            <router-link
-              :to="'/encomenda/id' + order.id"
-              style="text-decoration: none; color: black"
-              ><span class="texto">{{ order.totalPrice }}€</span></router-link
-            >
-          </td>
-
-          <td>
-            <input
-              id="name"
-              type="checkbox"
-              style="transform: scale(2)"
-              @change="onCheckboxChange()"
-              :value="order.id"
-              v-model="selectedOrders[idx]"
-            />
-            <span v-if="selectedOrders[idx]"></span>
-          </td>
-
-          <td>
-            <router-link :to="'/encomenda/id' + order.id">
-              <BButton class="botao2" variant="outline-primary"
-                >Ver detalhes</BButton
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><p id="morada2">
+                  {{ order.shippingAddress.latitude }},
+                  {{ order.shippingAddress.longitude }}
+                </p></router-link
               >
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="btn-div" v-if="isExportButtonVisible">
-    <BButton
-      id="botao"
-      class="botao"
-      variant="outline-primary"
-      @click="exportSelectedOrders"
-      ><span>Exportar dados</span></BButton
+            </td>
+
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><span class="texto">{{
+                  order.orderDate.substring(0, 10)
+                }}</span></router-link
+              >
+            </td>
+
+            <td>
+              <router-link
+                :to="'/encomenda/id' + order.id"
+                style="text-decoration: none; color: black"
+                ><span class="texto">{{ order.totalPrice }}€</span></router-link
+              >
+            </td>
+
+            <td style="text-align: center">
+              <input
+                id="name"
+                type="checkbox"
+                style="transform: scale(2)"
+                @change="onCheckboxChange()"
+                :value="order.id"
+                v-model="selectedOrders[idx]"
+              />
+              <span v-if="selectedOrders[idx]"></span>
+            </td>
+
+            <td>
+              <router-link :to="'/encomenda/id' + order.id">
+                <PrimeButton
+                  rounded
+                  outlined
+                  severity="info"
+                  style="color: #5a5a5a; font-size: 0.7em"
+                  >Ver detalhes</PrimeButton
+                >
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="btn-div" v-if="isExportButtonVisible">
+      <PrimeButton
+        severity="secondary"
+        rounded
+        id="botao"
+        @click="exportSelectedOrders"
+        ><span>Exportar dados</span></PrimeButton
+      >
+    </div>
+    <Pagination
+      v-if="orders"
+      :items="orders"
+      :page-size="currentFilters.pageSizeC"
+      :page="currentFilters.pageC"
+      @page-change="onPageChange"
     >
+    </Pagination>
   </div>
 </template>
 
 <script setup lang="ts">
+import Pagination from '../components/Pagination.vue';
 import Swal from 'sweetalert2';
+import PrimeButton from 'primevue/button';
+import { PageState } from 'primevue/paginator';
 import { exportOrders } from '../api/orders';
 import { BaseItems, Image, Order, OrderItem } from '../types/interfaces';
 import { onMounted, ref, computed } from 'vue';
 import { fetchAllOrders, cancelOrder, fetchAllItems } from '../api/orders';
 import { useStore } from '@/store';
+import { watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+import Loader from '@/components/Loader.vue';
+const isLoading = ref(true);
+
 const store = useStore();
 const user2 = computed(() => store.state.user);
+//let page = ref(1);
+//const pageSize = ref(24);
+const route = useRoute();
+const router = useRouter();
+const currentFilters = ref({
+  pageC: Number(route.query.pageC) || 1,
+  pageSizeC: Number(route.query.pageSizeC) || 24,
+  pageP: Number(route.query.pageP) || 1,
+  pageSizeP: Number(route.query.pageSizeP) || 24,
+});
 
+watch(currentFilters.value, (newFilters) => {
+  router.push({
+    query: {
+      ...newFilters,
+    },
+  });
+});
 const orderStatusTranslation = (status: string) => {
   switch (status) {
     case 'Delivered':
@@ -228,7 +271,7 @@ const orderStatusTranslation = (status: string) => {
     case 'Processing':
       return 'Em processamento';
     case 'Shipped':
-      return 'Em andamento';
+      return 'Em transporte';
     case 'Canceled':
       return 'Cancelada';
     default:
@@ -257,23 +300,60 @@ const findFirstImage = (order: OrderItem[]) => {
 
 onMounted(async () => {
   if (user2.value && user2.value.user && user2.value.user.id) {
-    const response = await fetchAllOrders(user2.value.user.id);
-    orders.value = response.data;
-
-    for (const order of orders.value.items) {
-      const orderItems = await fetchAllItems(
+    try {
+      isLoading.value = true;
+      const response = await fetchAllOrders(
         user2.value.user.id,
-        order.id.toString()
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
       );
+      orders.value = response.data;
+      console.log(orders.value);
+      for (const order of orders.value.items) {
+        const orderItems = await fetchAllItems(
+          user2.value.user.id,
+          order.id.toString()
+        );
 
-      const image = findFirstImage(orderItems.data.items);
-      if (image) {
-        ordersImage.value[order.id] = image;
+        const image = findFirstImage(orderItems.data.items);
+        if (image) {
+          ordersImage.value[order.id] = image;
+        }
       }
+    } finally {
+      isLoading.value = false;
     }
   }
 });
+const onPageChange = async (page: Partial<PageState>) => {
+  if (page.page) {
+    currentFilters.value.pageC = page.page + 1;
+  }
 
+  if (page.rows) {
+    currentFilters.value.pageSizeC = page.rows;
+  }
+
+  await loadOrders();
+};
+
+const loadOrders = async () => {
+  isLoading.value = true;
+
+  try {
+    if (user2.value) {
+      const response = await fetchAllOrders(
+        user2.value.user.id,
+        currentFilters.value.pageC,
+        currentFilters.value.pageSizeC
+      );
+
+      orders.value = response.data;
+    }
+  } finally {
+    isLoading.value = false;
+  }
+};
 function cancelarEncomenda(order: Order) {
   // exibe uma mensagem de confirmação para o usuário
   Swal.fire({
@@ -307,7 +387,7 @@ function cancelarEncomenda(order: Order) {
               Swal.fire({
                 icon: 'error',
                 title: 'Não é possível cancelar esta encomenda',
-                text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+                text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
                 confirmButtonText: 'OK',
               });
             }
@@ -350,7 +430,7 @@ function cancelarEncomendaImpossivel() {
   Swal.fire({
     icon: 'error',
     title: 'Não é possível cancelar esta encomenda',
-    text: 'Esta encomenda já se encontra em andamento ou já foi entregue.',
+    text: 'Esta encomenda já se encontra em transporte ou já foi entregue.',
     confirmButtonText: 'OK',
   });
 }
@@ -435,10 +515,11 @@ tr:hover {
 }
 
 .btn-div {
-  width: 12%;
+  width: 95%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
+  margin-top: 3vh;
 }
 .botao {
   padding: 0.7em;
@@ -483,7 +564,7 @@ tr:hover {
 @media (max-width: 768px) {
   .table-container {
     width: 100% !important;
-    max-height: 100% !important;
+    max-height: 90% !important;
   }
 
   .table h4 {
