@@ -17,7 +17,11 @@
         <h1 class="dgreen-txt main-txt">{{ usernameValue }}</h1>
       </div>
       <div class="edit-consumer">
-        <PrimeButton rounded severity="secondary" class="buy-btn"
+        <PrimeButton
+          rounded
+          severity="danger"
+          @click="deleteAccount"
+          :loading="deletingLoading"
           >Apagar conta</PrimeButton
         >
       </div>
@@ -144,7 +148,12 @@
       </div>
     </div>
     <div class="end-edit parent">
-      <PrimeButton rounded class="edit-btn" @click="toggleEdit">
+      <PrimeButton
+        rounded
+        class="edit-btn"
+        @click="handleEdit"
+        :loading="editingLoading"
+      >
         {{ isEditing ? 'Guardar' : 'Editar' }}</PrimeButton
       >
       <PrimeButton
@@ -169,10 +178,19 @@ import {
   ProductionUnit,
   BaseItems,
 } from '@/types';
-import { getConsumerId, getProducerIdSimple, getAddressPU } from '@/api';
+import {
+  getConsumerId,
+  getProducerIdSimple,
+  getAddressPU,
+  updateConsumer,
+  updateProducer,
+  desativarConsumer,
+  desativarProducer,
+} from '@/api';
 import InputText from 'primevue/inputtext';
 import InputMask from 'primevue/inputmask';
 import PrimeButton from 'primevue/button';
+import { AxiosError } from 'axios';
 
 export default defineComponent({
   data() {
@@ -188,6 +206,8 @@ export default defineComponent({
       moradas: [] as Address[] | undefined, //TODO - corrigir este tipo
       productionUnits: {} as BaseItems<ProductionUnit>,
       isEditing: false,
+      editingLoading: false,
+      deletingLoading: false,
     };
   },
   async beforeMount() {
@@ -225,14 +245,118 @@ export default defineComponent({
     }
   },
   methods: {
-    toggleEdit() {
-      this.isEditing = !this.isEditing;
+    async handleEdit() {
+      // Toggle edit mode or submit edit
+      if (this.isEditing) await this.submitEdit();
+      else this.isEditing = !this.isEditing;
     },
     cancelEdit() {
       this.isEditing = false;
       if (this.usernameValue && this.phoneValue && this.user) {
         this.usernameValue = this.user.user.name;
         this.phoneValue = this.user.user.phone;
+      }
+    },
+    async submitEdit() {
+      this.editingLoading = true;
+      try {
+        if (this.userType === 'CONSUMER') {
+          await updateConsumer(this.$store.state.user!.user.id, {
+            name: this.usernameValue,
+            phone: this.phoneValue,
+            email: this.$store.state.user!.user.email,
+          });
+        } else {
+          await updateProducer(this.$store.state.user!.user.id, {
+            name: this.usernameValue,
+            phone: this.phoneValue,
+            email: this.$store.state.user!.user.email,
+          });
+        }
+
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Dados atualizados com sucesso',
+          life: 3000,
+        });
+
+        this.isEditing = false;
+      } catch (error) {
+        let errorShown = false;
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 400) {
+            errorShown = true;
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Erro ao editar',
+              detail: `Dados inválidos<br/>${error.response.data.details.body[0].message}`,
+              life: 3000,
+            });
+          }
+        }
+
+        if (!errorShown) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Erro ao editar',
+            detail: `Ocorreu um erro ao atualizar os dados: ${
+              (error as Error).message
+            }`,
+            life: 3000,
+          });
+        }
+      } finally {
+        this.editingLoading = false;
+      }
+    },
+    async deleteAccount() {
+      this.deletingLoading = true;
+      try {
+        if (this.userType === 'CONSUMER') {
+          await desativarConsumer(this.$store.state.user!.user.id);
+        } else {
+          await desativarProducer(this.$store.state.user!.user.id);
+        }
+
+        await this.$store.dispatch('logout', { preventRedirect: true });
+        await this.$router.push({ name: 'Bye' });
+
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: 'Conta eliminada com sucesso',
+          life: 3000,
+        });
+      } catch (error) {
+        let errorShown = false;
+        if (error instanceof AxiosError) {
+          if (error.response?.status === 400) {
+            errorShown = true;
+            this.$toast.add({
+              severity: 'error',
+              summary: 'Erro ao eliminar a conta',
+              detail:
+                error.response.data.error ||
+                error.response.data.details.body[0].message ||
+                'Ocorreu um erro ao eliminar a conta',
+              life: 3000,
+            });
+          }
+        }
+
+        if (!errorShown) {
+          this.$toast.add({
+            severity: 'error',
+            summary: 'Erro ao elminar a conta',
+            detail: `Ocorreu um erro ao atualizar os dados: ${
+              (error as Error).message
+            }`,
+            life: 3000,
+          });
+        }
+      } finally {
+        this.deletingLoading = false;
       }
     },
   },
@@ -285,10 +409,6 @@ export default defineComponent({
   align-items: center;
   justify-content: flex-start;
 }
-
-/* .buy-btn {
-  width: 60% !important;
-} */
 
 .form-box {
   /* background-color: red; */
