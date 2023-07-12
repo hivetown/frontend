@@ -319,7 +319,7 @@ export default defineComponent({
           await desativarProducer(this.$store.state.user!.user.id);
         }
 
-        await this.$store.commit('logout', { preventRedirect: true });
+        await this.$store.dispatch('logout', { preventRedirect: true });
         await this.$router.push({ name: 'Bye' });
 
         this.$toast.add({
