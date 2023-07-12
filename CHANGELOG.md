@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/hivetown/frontend/compare/v2.4.1...v2.5.0) (2023-07-12)
+
+
+### Features
+
+* loaders ([547395f](https://github.com/hivetown/frontend/commit/547395fe0e32bd1d083018efaabfaab886ade836))
+
 ## [2.4.1](https://github.com/hivetown/frontend/compare/v2.4.0...v2.4.1) (2023-07-11)
 
 
