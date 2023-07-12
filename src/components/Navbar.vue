@@ -83,7 +83,16 @@
                     font-scale="1.5"
                   ></i>
                 </b-avatar>
-                Comprar
+                <span
+                  v-if="store.state.user?.user.type === 'PRODUCER'"
+                  style="margin-top: 5% !important; padding: 0.5rem !important"
+                  >Todos os produtos</span
+                >
+                <span
+                  v-else
+                  style="margin-top: 5% !important; padding: 0.5rem !important"
+                  >Comprar</span
+                >
               </router-link>
             </div>
             <div class="d-flex">
@@ -163,7 +172,10 @@
                 style="box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px"
               >
               </b-avatar>
-              <span>{{ store.state.user.user.name }}</span>
+              <span
+                style="margin-top: 5% !important; padding: 0.5rem !important"
+                >{{ store.state.user.user.name }}</span
+              >
             </router-link>
             <b-nav-item-dropdown
               right
